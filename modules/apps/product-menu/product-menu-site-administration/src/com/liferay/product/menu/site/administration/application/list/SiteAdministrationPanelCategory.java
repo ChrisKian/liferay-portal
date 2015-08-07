@@ -32,8 +32,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"panel.category.key=" + PanelCategoryKeys.ROOT,
-		"service.ranking:Integer=100"
+		"panel.category.key=" + PanelCategoryKeys.SITES,
+		"service.ranking:Integer=200"
 	},
 	service = PanelCategory.class
 )
@@ -46,7 +46,7 @@ public class SiteAdministrationPanelCategory extends BaseJSPPanelCategory {
 
 	@Override
 	public String getJspPath() {
-		return "/META-INF/resources/site_administration.jsp";
+		return "/META-INF/resources/sites/site_administration.jsp";
 	}
 
 	@Override
@@ -56,12 +56,12 @@ public class SiteAdministrationPanelCategory extends BaseJSPPanelCategory {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return LanguageUtil.get(locale, "sites");
+		return LanguageUtil.get(locale, "site-administration");
 	}
 
 	@Override
 	public String getParentCategoryKey() {
-		return PanelCategoryKeys.ROOT;
+		return PanelCategoryKeys.SITES;
 	}
 
 	@Override
