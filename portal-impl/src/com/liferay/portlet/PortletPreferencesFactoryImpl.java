@@ -617,6 +617,24 @@ public class PortletPreferencesFactoryImpl
 		long siteGroupId, Layout layout, String portletId,
 		String defaultPreferences) {
 
+		if (Validator.equals(portletId, PortletKeys.LOGIN)) {
+			try {
+				LayoutTypePortlet layoutTypePortlet =
+					(LayoutTypePortlet)layout.getLayoutType();
+
+				if (!layoutTypePortlet.hasPortletId(portletId)) {
+					return getPortletSetup(
+						siteGroupId, layout, portletId, defaultPreferences,
+						true);
+				}
+			}
+			catch (PortalException pe) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(pe, pe);
+				}
+			}
+		}
+
 		return getPortletSetup(
 			siteGroupId, layout, portletId, defaultPreferences, false);
 	}
