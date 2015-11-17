@@ -43,6 +43,7 @@ import com.liferay.portlet.messageboards.service.persistence.MBBanUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class MBBanPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -346,11 +348,9 @@ public class MBBanPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = MBBanLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<MBBan>() {
 				@Override
-				public void performAction(Object object) {
-					MBBan mbBan = (MBBan)object;
-
+				public void performAction(MBBan mbBan) {
 					Assert.assertNotNull(mbBan);
 
 					count.increment();
@@ -444,16 +444,16 @@ public class MBBanPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingMBBan.getUuid(),
 				ReflectionTestUtil.invoke(existingMBBan, "getOriginalUuid",
 					new Class<?>[0])));
-		Assert.assertEquals(existingMBBan.getGroupId(),
-			ReflectionTestUtil.invoke(existingMBBan, "getOriginalGroupId",
-				new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingMBBan.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingMBBan,
+				"getOriginalGroupId", new Class<?>[0]));
 
-		Assert.assertEquals(existingMBBan.getGroupId(),
-			ReflectionTestUtil.invoke(existingMBBan, "getOriginalGroupId",
-				new Class<?>[0]));
-		Assert.assertEquals(existingMBBan.getBanUserId(),
-			ReflectionTestUtil.invoke(existingMBBan, "getOriginalBanUserId",
-				new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingMBBan.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingMBBan,
+				"getOriginalGroupId", new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingMBBan.getBanUserId()),
+			ReflectionTestUtil.<Long>invoke(existingMBBan,
+				"getOriginalBanUserId", new Class<?>[0]));
 	}
 
 	protected MBBan addMBBan() throws Exception {

@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
+import com.liferay.portal.kernel.servlet.PortletResourcesUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -98,6 +99,16 @@ public class DynamicCSSFilter extends IgnoreModuleRequestFilter {
 
 		String requestPath = getRequestPath(request);
 
+		if (requestPath.endsWith(_CSS_EXTENSION) &&
+			PortalUtil.isRightToLeft(request)) {
+
+			int pos = requestPath.lastIndexOf(StringPool.PERIOD);
+
+			requestPath =
+				requestPath.substring(0, pos) + "_rtl" +
+					requestPath.substring(pos);
+		}
+
 		URL resourceURL = _servletContext.getResource(requestPath);
 
 		if (resourceURL == null) {
@@ -107,6 +118,16 @@ public class DynamicCSSFilter extends IgnoreModuleRequestFilter {
 			if (resourceServletContext != null) {
 				resourceURL = PortalWebResourcesUtil.getResource(
 					resourceServletContext, requestPath);
+			}
+
+			if (resourceURL == null) {
+				resourceServletContext =
+					PortletResourcesUtil.getPathServletContext(requestPath);
+
+				if (resourceServletContext != null) {
+					resourceURL = PortletResourcesUtil.getResource(
+						resourceServletContext, requestPath);
+				}
 			}
 
 			if (resourceURL == null) {

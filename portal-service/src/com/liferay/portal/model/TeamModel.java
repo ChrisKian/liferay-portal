@@ -39,7 +39,8 @@ import java.util.Date;
  * @generated
  */
 @ProviderType
-public interface TeamModel extends BaseModel<Team>, MVCCModel, StagedGroupedModel {
+public interface TeamModel extends BaseModel<Team>, MVCCModel, ShardedModel,
+	StagedGroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -249,6 +250,22 @@ public interface TeamModel extends BaseModel<Team>, MVCCModel, StagedGroupedMode
 	 * @param description the description of this team
 	 */
 	public void setDescription(String description);
+
+	/**
+	 * Returns the last publish date of this team.
+	 *
+	 * @return the last publish date of this team
+	 */
+	@Override
+	public Date getLastPublishDate();
+
+	/**
+	 * Sets the last publish date of this team.
+	 *
+	 * @param lastPublishDate the last publish date of this team
+	 */
+	@Override
+	public void setLastPublishDate(Date lastPublishDate);
 
 	@Override
 	public boolean isNew();

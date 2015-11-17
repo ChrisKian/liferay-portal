@@ -177,9 +177,8 @@ public interface Portal {
 	/**
 	 * Adds the default resource permissions for the portlet to the page.
 	 *
-	 * @param  request the servlet request for the page
-	 * @param  portlet the portlet
-	 * @throws PortalException if adding the default resource permissions failed
+	 * @param request the servlet request for the page
+	 * @param portlet the portlet
 	 */
 	public void addPortletDefaultResource(
 			HttpServletRequest request, Portlet portlet)
@@ -211,7 +210,7 @@ public interface Portal {
 
 	/**
 	 * Adds the preserved parameters doAsUserId, doAsUserLanguageId,
-	 * doAsGroupId, refererPlid, and controlPanelCategory to the URL.
+	 * doAsGroupId, and refererPlid to the URL.
 	 *
 	 * @param  themeDisplay the current theme display
 	 * @param  url the URL
@@ -288,7 +287,6 @@ public interface Portal {
 	 * @param  layout the page being requested
 	 * @return the alternate URL for the requested canonical URL in the given
 	 *         locale
-	 * @throws PortalException if a portal exception occurred
 	 */
 	public String getAlternateURL(
 			String canonicalURL, ThemeDisplay themeDisplay, Locale locale,
@@ -328,8 +326,6 @@ public interface Portal {
 	 * @return the base model instance, or <code>null</code> if the resource
 	 *         permission does not have a base model instance (such as if its a
 	 *         portlet)
-	 * @throws PortalException if a base model instance for the resource
-	 *         permission could not be found
 	 */
 	public BaseModel<?> getBaseModel(ResourcePermission resourcePermission)
 		throws PortalException;
@@ -341,8 +337,6 @@ public interface Portal {
 	 * @param  primKey the primary key of the model instance to get
 	 * @return the base model instance, or <code>null</code> if the model does
 	 *         not have a base model instance (such as if its a portlet)
-	 * @throws PortalException if a base model instance with the primary key
-	 *         could not be found
 	 */
 	public BaseModel<?> getBaseModel(String modelName, String primKey)
 		throws PortalException;
@@ -378,8 +372,6 @@ public interface Portal {
 	 * @param  layout the layout. If it is <code>null</code>, then it is
 	 *         generated for the current layout
 	 * @return the canonical URL
-	 * @throws PortalException if a friendly URL or the group could not be
-	 *         retrieved
 	 */
 	public String getCanonicalURL(
 			String completeURL, ThemeDisplay themeDisplay, Layout layout)
@@ -396,8 +388,6 @@ public interface Portal {
 	 * @param  forceLayoutFriendlyURL adds the page friendly URL to the
 	 *         canonical URL even if it is not needed
 	 * @return the canonical URL
-	 * @throws PortalException if a friendly URL or the group could not be
-	 *         retrieved
 	 */
 	public String getCanonicalURL(
 			String completeURL, ThemeDisplay themeDisplay, Layout layout,
@@ -476,15 +466,9 @@ public interface Portal {
 
 	public long[] getCompanyIds();
 
-	public String getComputerAddress();
+	public Set<String> getComputerAddresses();
 
 	public String getComputerName();
-
-	public Map<String, List<Portlet>> getControlPanelCategoriesMap(
-		HttpServletRequest request);
-
-	public String getControlPanelCategory(
-		String portletId, ThemeDisplay themeDisplay);
 
 	public String getControlPanelFullURL(
 			long scopeGroupId, String ppid, Map<String, String[]> params)
@@ -495,19 +479,19 @@ public interface Portal {
 	public long getControlPanelPlid(PortletRequest portletRequest)
 		throws PortalException;
 
-	public Set<Portlet> getControlPanelPortlets(
-		long companyId, String category);
-
-	public List<Portlet> getControlPanelPortlets(
-		String category, ThemeDisplay themeDisplay);
+	public PortletURL getControlPanelPortletURL(
+		HttpServletRequest request, Group group, String portletId,
+		long refererGroupId, long refererPlid, String lifecycle);
 
 	public PortletURL getControlPanelPortletURL(
-		HttpServletRequest request, String portletId, long referrerPlid,
-		String lifecycle);
+		HttpServletRequest request, String portletId, String lifecycle);
 
 	public PortletURL getControlPanelPortletURL(
-		PortletRequest portletRequest, String portletId, long referrerPlid,
-		String lifecycle);
+		PortletRequest portletRequest, Group group, String portletId,
+		long refererGroupId, long refererPlid, String lifecycle);
+
+	public PortletURL getControlPanelPortletURL(
+		PortletRequest portletRequest, String portletId, String lifecycle);
 
 	public String getCreateAccountURL(
 			HttpServletRequest request, ThemeDisplay themeDisplay)
@@ -574,8 +558,6 @@ public interface Portal {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public Date getDate(
 			int month, int day, int year,
@@ -596,8 +578,6 @@ public interface Portal {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public Date getDate(
 			int month, int day, int year, int hour, int min,
@@ -619,8 +599,6 @@ public interface Portal {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public Date getDate(
 			int month, int day, int year, int hour, int min, TimeZone timeZone,
@@ -640,8 +618,6 @@ public interface Portal {
 	 *         date.
 	 * @return the date object, or <code>null</code> if the date is invalid and
 	 *         no exception to throw was provided
-	 * @throws PortalException if the date was invalid and <code>clazz</code>
-	 *         was not <code>null</code>
 	 */
 	public Date getDate(
 			int month, int day, int year, TimeZone timeZone,
@@ -698,15 +674,7 @@ public interface Portal {
 			ThemeDisplay themeDisplay)
 		throws PortalException;
 
-	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
-	 */
-	@Deprecated
-	public Portlet getFirstMyAccountPortlet(ThemeDisplay themeDisplay);
-
 	public String getFirstPageLayoutTypes(HttpServletRequest request);
-
-	public Portlet getFirstSiteAdministrationPortlet(ThemeDisplay themeDisplay);
 
 	public String getFullName(
 		String firstName, String middleName, String lastName);
@@ -1107,19 +1075,22 @@ public interface Portal {
 			long companyId, long groupId, long userId)
 		throws PortalException;
 
-	public Map<String, List<Portlet>> getSiteAdministrationCategoriesMap(
-		HttpServletRequest request);
-
-	public PortletURL getSiteAdministrationURL(
-		HttpServletRequest request, ThemeDisplay themeDisplay);
-
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #getControlPanelPortletURL(PortletRequest, Group, String,
+	 *             long, String)}
+	 */
+	@Deprecated
 	public PortletURL getSiteAdministrationURL(
 		HttpServletRequest request, ThemeDisplay themeDisplay,
-		String portletName);
+		String portletId);
 
-	public PortletURL getSiteAdministrationURL(
-		PortletResponse portletResponse, ThemeDisplay themeDisplay);
-
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #getControlPanelPortletURL(PortletRequest, Group, String,
+	 *             long, String)}
+	 */
+	@Deprecated
 	public PortletURL getSiteAdministrationURL(
 		PortletResponse portletResponse, ThemeDisplay themeDisplay,
 		String portletName);
@@ -1151,7 +1122,6 @@ public interface Portal {
 	 * @param  themeDisplay the theme display for the current page
 	 * @return the URL of the login page for the current site, or
 	 *         <code>null</code> if one is not available
-	 * @throws PortalException if a portal exception occurred
 	 */
 	public String getSiteLoginURL(ThemeDisplay themeDisplay)
 		throws PortalException;
@@ -1314,9 +1284,6 @@ public interface Portal {
 
 	public boolean isCompanyControlPanelPortlet(
 			String portletId, ThemeDisplay themeDisplay)
-		throws PortalException;
-
-	public boolean isCompanyControlPanelVisible(ThemeDisplay themeDisplay)
 		throws PortalException;
 
 	public boolean isControlPanelPortlet(

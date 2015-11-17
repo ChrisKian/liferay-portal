@@ -31,7 +31,6 @@ public class TeamServiceWrapper implements TeamService,
 	}
 
 	/**
-	* @throws PortalException
 	* @deprecated As of 7.0.0, replaced by {@link #addTeam(long, String,
 	String, ServiceContext)}
 	*/
@@ -57,21 +56,21 @@ public class TeamServiceWrapper implements TeamService,
 		_teamService.deleteTeam(teamId);
 	}
 
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	@Override
-	public java.lang.String getBeanIdentifier() {
-		return _teamService.getBeanIdentifier();
-	}
-
 	@Override
 	public java.util.List<com.liferay.portal.model.Team> getGroupTeams(
 		long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _teamService.getGroupTeams(groupId);
+	}
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	@Override
+	public java.lang.String getOSGiServiceIdentifier() {
+		return _teamService.getOSGiServiceIdentifier();
 	}
 
 	@Override
@@ -106,14 +105,21 @@ public class TeamServiceWrapper implements TeamService,
 		return _teamService.hasUserTeam(userId, teamId);
 	}
 
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
 	@Override
-	public void setBeanIdentifier(java.lang.String beanIdentifier) {
-		_teamService.setBeanIdentifier(beanIdentifier);
+	public java.util.List<com.liferay.portal.model.Team> search(long groupId,
+		java.lang.String name, java.lang.String description,
+		java.util.LinkedHashMap<java.lang.String, java.lang.Object> params,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portal.model.Team> obc) {
+		return _teamService.search(groupId, name, description, params, start,
+			end, obc);
+	}
+
+	@Override
+	public int searchCount(long groupId, java.lang.String name,
+		java.lang.String description,
+		java.util.LinkedHashMap<java.lang.String, java.lang.Object> params) {
+		return _teamService.searchCount(groupId, name, description, params);
 	}
 
 	@Override

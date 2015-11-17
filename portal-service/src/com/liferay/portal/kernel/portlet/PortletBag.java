@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.poller.PollerProcessor;
 import com.liferay.portal.kernel.pop.MessageListener;
-import com.liferay.portal.kernel.scheduler.SchedulerEntry;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerEventMessageListener;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.OpenSearch;
 import com.liferay.portal.kernel.servlet.URLEncoder;
@@ -58,7 +58,7 @@ public interface PortletBag extends Cloneable {
 
 	public void destroy();
 
-	public List<AssetRendererFactory> getAssetRendererFactoryInstances();
+	public List<AssetRendererFactory<?>> getAssetRendererFactoryInstances();
 
 	public List<AtomCollectionAdapter<?>> getAtomCollectionAdapterInstances();
 
@@ -94,7 +94,8 @@ public interface PortletBag extends Cloneable {
 
 	public ResourceBundleTracker getResourceBundleTracker();
 
-	public List<SchedulerEntry> getSchedulerEntryInstances();
+	public List<SchedulerEventMessageListener>
+		getSchedulerEventMessageListeners();
 
 	public ServletContext getServletContext();
 

@@ -43,6 +43,7 @@ import com.liferay.portlet.asset.service.persistence.AssetTagUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class AssetTagPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -369,11 +371,9 @@ public class AssetTagPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = AssetTagLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<AssetTag>() {
 				@Override
-				public void performAction(Object object) {
-					AssetTag assetTag = (AssetTag)object;
-
+				public void performAction(AssetTag assetTag) {
 					Assert.assertNotNull(assetTag);
 
 					count.increment();
@@ -468,13 +468,13 @@ public class AssetTagPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingAssetTag.getUuid(),
 				ReflectionTestUtil.invoke(existingAssetTag, "getOriginalUuid",
 					new Class<?>[0])));
-		Assert.assertEquals(existingAssetTag.getGroupId(),
-			ReflectionTestUtil.invoke(existingAssetTag, "getOriginalGroupId",
-				new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingAssetTag.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingAssetTag,
+				"getOriginalGroupId", new Class<?>[0]));
 
-		Assert.assertEquals(existingAssetTag.getGroupId(),
-			ReflectionTestUtil.invoke(existingAssetTag, "getOriginalGroupId",
-				new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingAssetTag.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingAssetTag,
+				"getOriginalGroupId", new Class<?>[0]));
 		Assert.assertTrue(Validator.equals(existingAssetTag.getName(),
 				ReflectionTestUtil.invoke(existingAssetTag, "getOriginalName",
 					new Class<?>[0])));

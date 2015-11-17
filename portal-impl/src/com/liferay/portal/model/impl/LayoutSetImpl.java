@@ -103,8 +103,6 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 	 * Returns the layout set's group.
 	 *
 	 * @return the layout set's group
-	 * @throws PortalException if a group with the primary key could not be
-	 *         found
 	 */
 	@Override
 	public Group getGroup() throws PortalException {
@@ -121,8 +119,6 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 	 *
 	 * @return the layout set prototype's ID, or <code>0</code> if it has no
 	 *         layout set prototype
-	 * @throws PortalException if a matching layout set prototype could not be
-	 *         found
 	 */
 	@Override
 	public long getLayoutSetPrototypeId() throws PortalException {
@@ -335,18 +331,16 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 
 	protected Theme getTheme(String device) {
 		boolean controlPanel = false;
-		boolean userPersonalPanel = false;
 
 		try {
 			Group group = getGroup();
 
 			controlPanel = group.isControlPanel();
-			userPersonalPanel = group.isUserPersonalPanel();
 		}
 		catch (Exception e) {
 		}
 
-		if (controlPanel || userPersonalPanel) {
+		if (controlPanel) {
 			String themeId = PrefsPropsUtil.getString(
 				getCompanyId(),
 				PropsKeys.CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID);

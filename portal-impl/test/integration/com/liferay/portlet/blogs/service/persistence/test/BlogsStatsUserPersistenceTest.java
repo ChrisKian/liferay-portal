@@ -42,6 +42,7 @@ import com.liferay.portlet.blogs.service.persistence.BlogsStatsUserUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -58,8 +59,9 @@ import java.util.Set;
  * @generated
  */
 public class BlogsStatsUserPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -339,11 +341,9 @@ public class BlogsStatsUserPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = BlogsStatsUserLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<BlogsStatsUser>() {
 				@Override
-				public void performAction(Object object) {
-					BlogsStatsUser blogsStatsUser = (BlogsStatsUser)object;
-
+				public void performAction(BlogsStatsUser blogsStatsUser) {
 					Assert.assertNotNull(blogsStatsUser);
 
 					count.increment();
@@ -435,11 +435,11 @@ public class BlogsStatsUserPersistenceTest {
 
 		BlogsStatsUser existingBlogsStatsUser = _persistence.findByPrimaryKey(newBlogsStatsUser.getPrimaryKey());
 
-		Assert.assertEquals(existingBlogsStatsUser.getGroupId(),
-			ReflectionTestUtil.invoke(existingBlogsStatsUser,
+		Assert.assertEquals(Long.valueOf(existingBlogsStatsUser.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingBlogsStatsUser,
 				"getOriginalGroupId", new Class<?>[0]));
-		Assert.assertEquals(existingBlogsStatsUser.getUserId(),
-			ReflectionTestUtil.invoke(existingBlogsStatsUser,
+		Assert.assertEquals(Long.valueOf(existingBlogsStatsUser.getUserId()),
+			ReflectionTestUtil.<Long>invoke(existingBlogsStatsUser,
 				"getOriginalUserId", new Class<?>[0]));
 	}
 

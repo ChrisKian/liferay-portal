@@ -38,7 +38,7 @@
 			<var name="portletName" value="Workflow Configuration" />
 		</execute>
 
-		<execute macro="Workflow#configurePortalWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_BLOGS_ENTRY_SELECT" />
 		</execute>
@@ -55,8 +55,9 @@
 			<var name="portletName" value="Blogs" />
 		</execute>
 
-		<execute macro="BlogsEntry#addWithWorkflowCP">
+		<execute macro="Blogs#addWithWorkflow">
 			<var name="entryContent" value="Blogs Entry Content - Liferay" />
+			<var name="entrySubtitle" value="Subtitle" />
 			<var name="entryTitle" value="Blogs Entry Title - Liferay" />
 		</execute>
 
@@ -102,7 +103,15 @@
 			<var name="portletName" value="Blogs" />
 		</execute>
 
-		<execute macro="BlogsEntry#viewCP">
+		<execute macro="BlogsEntry#viewEntryTable">
+			<var name="entryTitle" value="Blogs Entry Title - Liferay" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoEntryCP">
+			<var name="entryTitle" value="Blogs Entry Title - Liferay" />
+		</execute>
+
+		<execute macro="BlogsEntry#viewEntry">
 			<var name="entryContent" value="Blogs Entry Content - Liferay" />
 			<var name="entryTitle" value="Blogs Entry Title - Liferay" />
 		</execute>
@@ -112,8 +121,9 @@
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
-		<execute macro="BlogsEntry#addWithWorkflowCP">
+		<execute macro="Blogs#addWithWorkflow">
 			<var name="entryContent" value="Blogs Entry Content - Site Name" />
+			<var name="entrySubtitle" value="Subtitle" />
 			<var name="entryTitle" value="Blogs Entry Title - Site Name" />
 		</execute>
 
@@ -162,7 +172,15 @@
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
-		<execute macro="BlogsEntry#viewCP">
+		<execute macro="BlogsEntry#viewEntryTable">
+			<var name="entryTitle" value="Blogs Entry Title - Site Name" />
+		</execute>
+
+		<execute macro="BlogsNavigator#gotoEntryCP">
+			<var name="entryTitle" value="Blogs Entry Title - Site Name" />
+		</execute>
+
+		<execute macro="BlogsEntry#viewEntry">
 			<var name="entryContent" value="Blogs Entry Content - Site Name" />
 			<var name="entryTitle" value="Blogs Entry Title - Site Name" />
 		</execute>
@@ -197,7 +215,7 @@
 			<var name="portletName" value="Workflow Configuration" />
 		</execute>
 
-		<execute macro="Workflow#configureSiteWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_BLOGS_ENTRY_SELECT" />
 		</execute>
@@ -208,6 +226,12 @@
 
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Blogs" />
+		</execute>
+
+		<execute macro="Blogs#addWithWorkflow">
+			<var name="entryContent" value="Blogs Entry Content - Liferay" />
+			<var name="entrySubtitle" value="Subtitle" />
+			<var name="entryTitle" value="Blogs Entry Title - Liferay" />
 		</execute>
 
 		<execute macro="Page#gotoMyAccount">
@@ -263,7 +287,619 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-56092" name="AddWikiPageAsSiteUser" priority="4">
+	<command name="AddDDLRecordWithDoubleApproverDefinition" priority="4">
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Workflow Definition" />
+		</execute>
+
+		<execute macro="Workflow#uploadDefinition">
+			<var name="workflowDefinitionFile" value="workflow_definition_legal_marketing.xml" />
+			<var name="workflowDefinitionTitle" value="Double Approver Definition" />
+		</execute>
+
+		<execute macro="Workflow#viewDefinition">
+			<var name="workflowDefinitionName" value="Legal and Marketing Approval" />
+			<var name="workflowDefinitionTitle" value="Double Approver Definition" />
+			<var name="workflowDefinitionVersionNumber" value="1" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP" />
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#saveCP" />
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLList#addCP">
+			<var name="workflowDefinition" value="Legal and Marketing Approval (Version 1)" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#selectCP" />
+
+		<execute macro="DDLList#saveCP" />
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#addCP" />
+
+		<execute macro="DDLRecord#populateFieldBoolean">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+		</execute>
+
+		<execute macro="DDLRecord#publishCP">
+			<var name="workflowDefinition" value="Legal and Marketing Approval (Version 1)" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#assignToMeTaskByActions">
+			<var name="ddlDataDefinitionName" value="Data Definition Name" />
+			<var name="workflowAssetTitle" value="List Name" />
+			<var name="workflowAssetType" value="Dynamic Data Lists Record" />
+			<var name="workflowTask" value="marketing-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#viewCP" />
+
+		<execute macro="DDLRecord#viewFirstFieldCP">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="workflowStatus" value="marketing-review" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#approveTaskByActions">
+			<var name="ddlDataDefinitionName" value="Data Definition Name" />
+			<var name="workflowAssetTitle" value="List Name" />
+			<var name="workflowAssetType" value="Dynamic Data Lists Record" />
+			<var name="workflowDefinitionTask" value="Marketing Approved" />
+			<var name="workflowTask" value="marketing-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#viewCP" />
+
+		<execute macro="DDLRecord#viewFirstFieldCP">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="workflowStatus" value="legal-review" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#assignToMeTaskByActions">
+			<var name="ddlDataDefinitionName" value="Data Definition Name" />
+			<var name="workflowAssetTitle" value="List Name" />
+			<var name="workflowAssetType" value="Dynamic Data Lists Record" />
+			<var name="workflowTask" value="legal-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#viewCP" />
+
+		<execute macro="DDLRecord#viewFirstFieldCP">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="workflowStatus" value="legal-review" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#approveTaskByActions">
+			<var name="ddlDataDefinitionName" value="Data Definition Name" />
+			<var name="workflowAssetTitle" value="List Name" />
+			<var name="workflowAssetType" value="Dynamic Data Lists Record" />
+			<var name="workflowDefinitionTask" value="Legal Approval" />
+			<var name="workflowTask" value="legal-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#viewCP">
+			<var name="ddlListName" value="${ddlListName}" />
+		</execute>
+
+		<execute macro="DDLRecord#viewFirstFieldCP">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+		</execute>
+	</command>
+
+	<command name="AddDocumentsAndMediaWithScriptedAssignmentDefinition" priority="3">
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Workflow Definition" />
+		</execute>
+
+		<execute macro="Workflow#uploadDefinition">
+			<var name="workflowDefinitionFile" value="workflow_definition_scripted_assignments.xml" />
+			<var name="workflowDefinitionTitle" value="Scripted Assignments" />
+		</execute>
+
+		<execute macro="Workflow#viewDefinition">
+			<var name="workflowDefinitionName" value="Scripted Single Approver" />
+			<var name="workflowDefinitionTitle" value="Scripted Assignments" />
+			<var name="workflowDefinitionVersionNumber" value="1" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="Organization#addCP">
+			<var name="orgName" value="Organization Name" />
+			<var name="orgType" value="Regular Organization" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="Organization#addSiteCP">
+			<var name="orgName" value="Organization Name" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Sites" />
+		</execute>
+
+		<execute macro="SitePage#addCP">
+			<var name="siteName" value="Organization Name" />
+			<var name="sitePageName" value="Public Page" />
+			<var name="sitePagePrivacy" value="Public" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea1@liferay.com" />
+			<var name="userFirstName" value="userfn1" />
+			<var name="userLastName" value="userln1" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea1@liferay.com" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editUserOrganizationCP">
+			<var name="orgName" value="Organization Name" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#assignOrgRoleCP">
+			<var name="roleName" value="Organization Content Reviewer" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#addCP">
+			<var name="userEmailAddress" value="userea2@liferay.com" />
+			<var name="userFirstName" value="userfn2" />
+			<var name="userLastName" value="userln2" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="userEmailAddress" value="userea2@liferay.com" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editUserSiteCP">
+			<var name="siteName" value="Liferay" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#assignSiteRoleCP">
+			<var name="siteRoleName" value="Site Content Reviewer" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Documents and Media" />
+			<var name="siteName" value="Organization Name" />
+			<var name="siteURL" value="true" />
+		</execute>
+
+		<execute macro="Workflow#configureDocumentsAndMediaWorkflow">
+			<var name="workflowDefinition" value="Scripted Single Approver (Version 1)" />
+		</execute>
+
+		<execute macro="DMDocument#addWithWorkflowCP">
+			<var name="dmDocumentDescription" value="DM Document Description" />
+			<var name="dmDocumentFile" value="Document_1.txt" />
+			<var name="dmDocumentTitle" value="DM Document Organization" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Documents and Media" />
+		</execute>
+
+		<execute macro="Workflow#configureDocumentsAndMediaWorkflow">
+			<var name="workflowDefinition" value="Scripted Single Approver (Version 1)" />
+		</execute>
+
+		<execute macro="DMDocument#addWithWorkflowCP">
+			<var name="dmDocumentDescription" value="DM Document Description" />
+			<var name="dmDocumentFile" value="Document_2.txt" />
+			<var name="dmDocumentTitle" value="DM Document Liferay" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="DM Document Liferay" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="DM Document Organization" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="userea1@liferay.com" />
+			<var name="userLoginFullName" value="userfn1 userln1" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="DM Document Organization" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskNotPresentAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="DM Document Liferay" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="userea2@liferay.com" />
+			<var name="userLoginFullName" value="userfn2 userln2" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="DM Document Liferay" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskNotPresentAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="DM Document Organization" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="userea1@liferay.com" />
+			<var name="userLoginFullName" value="userfn1 userln1" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#assignToMeTaskByActions">
+			<var name="workflowAssetTitle" value="DM Document Organization" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#approveTaskByActions">
+			<var name="workflowAssetTitle" value="DM Document Organization" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="userea2@liferay.com" />
+			<var name="userLoginFullName" value="userfn2 userln2" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#assignToMeTaskByActions">
+			<var name="workflowAssetTitle" value="DM Document Liferay" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#approveTaskByActions">
+			<var name="workflowAssetTitle" value="DM Document Liferay" />
+			<var name="workflowAssetType" value="Document" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="test@liferay.com" />
+			<var name="userLoginFullName" value="Test Test" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Documents and Media" />
+			<var name="siteName" value="Organization Name" />
+			<var name="siteURL" value="true" />
+		</execute>
+
+		<execute macro="DMDocument#gotoCP">
+			<var name="dmDocumentTitle" value="DM Document Organization" />
+		</execute>
+
+		<execute macro="DMDocument#viewCP">
+			<var name="dmDocumentTitle" value="DM Document Organization" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Documents and Media" />
+		</execute>
+
+		<execute macro="DMDocument#gotoCP">
+			<var name="dmDocumentTitle" value="DM Document Liferay" />
+		</execute>
+
+		<execute macro="DMDocument#viewCP">
+			<var name="dmDocumentTitle" value="DM Document Liferay" />
+		</execute>
+	</command>
+
+	<command name="AddWebContentWithCategorySpecificDefinition" priority="4">
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Workflow Definition" />
+		</execute>
+
+		<execute macro="Workflow#uploadDefinition">
+			<var name="workflowDefinitionFile" value="workflow_definition_category_specific.xml" />
+			<var name="workflowDefinitionTitle" value="Category Specific" />
+		</execute>
+
+		<execute macro="Workflow#viewDefinition">
+			<var name="workflowDefinitionName" value="Category Specific Approval" />
+			<var name="workflowDefinitionTitle" value="Category Specific" />
+			<var name="workflowDefinitionVersionNumber" value="1" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Categories" />
+		</execute>
+
+		<execute macro="Vocabulary#addCP">
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="Category#addCP">
+			<var name="categoryName" value="legal" />
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Categories" />
+		</execute>
+
+		<execute macro="Category#addCP">
+			<var name="categoryName" value="other" />
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Web Content" />
+		</execute>
+
+		<execute macro="Workflow#configureWebContentWorkflow">
+			<var name="workflowDefinition" value="Category Specific Approval (Version 1)" />
+		</execute>
+
+		<execute macro="WebContentNavigator#gotoAddCP" />
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="legal category" />
+			<var name="webContentTitle" value="WC With Legal Category" />
+		</execute>
+
+		<execute macro="WebContent#selectCategory">
+			<var name="categoryName" value="legal" />
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="Button#clickSubmitForPublication" />
+
+		<execute macro="Alert#viewSuccess" />
+
+		<execute macro="WebContent#viewWithWorkflowCP">
+			<var name="webContentContent" value="legal category" />
+			<var name="webContentTitle" value="WC With Legal Category" />
+			<var name="workflowTask" value="legal-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Web Content" />
+		</execute>
+
+		<execute macro="WebContentNavigator#gotoAddCP" />
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="both categories" />
+			<var name="webContentTitle" value="WC With Multiple Categories" />
+		</execute>
+
+		<execute macro="WebContent#selectCategory">
+			<var name="categoryName" value="legal" />
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="WebContent#selectCategory">
+			<var name="categoryName" value="other" />
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="Button#clickSubmitForPublication" />
+
+		<execute macro="Alert#viewSuccess" />
+
+		<execute macro="WebContent#viewWithWorkflowCP">
+			<var name="webContentContent" value="legal category" />
+			<var name="webContentTitle" value="WC With Legal Category" />
+			<var name="workflowTask" value="legal-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Web Content" />
+		</execute>
+
+		<execute macro="WebContentNavigator#gotoAddCP" />
+
+		<execute macro="WebContent#addCP">
+			<var name="webContentContent" value="other category" />
+			<var name="webContentTitle" value="WC With Other Category" />
+		</execute>
+
+		<execute macro="WebContent#selectCategory">
+			<var name="categoryName" value="other" />
+			<var name="vocabularyName" value="Vocabulary Name" />
+		</execute>
+
+		<execute macro="Button#clickSubmitForPublication" />
+
+		<execute macro="Alert#viewSuccess" />
+
+		<execute macro="WebContent#viewWithWorkflowCP">
+			<var name="webContentContent" value="other category" />
+			<var name="webContentTitle" value="WC With Other Category" />
+			<var name="workflowTask" value="content-review" />
+		</execute>
+
+		<execute macro="Page#gotoContentCP">
+			<var name="portletName" value="Web Content" />
+		</execute>
+
+		<execute macro="WebContentNavigator#gotoAddCP" />
+
+		<execute macro="WebContent#addWithWorkflowCP">
+			<var name="webContentContent" value="no category" />
+			<var name="webContentTitle" value="WC With No Category" />
+		</execute>
+
+		<execute macro="WebContent#viewWithWorkflowCP">
+			<var name="webContentContent" value="no category" />
+			<var name="webContentTitle" value="WC With No Category" />
+			<var name="workflowTask" value="content-review" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Workflow Tasks" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="WC With Legal Category" />
+			<var name="workflowAssetType" value="Web Content Article" />
+			<var name="workflowTask" value="legal-review" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="WC With Multiple Categories" />
+			<var name="workflowAssetType" value="Web Content Article" />
+			<var name="workflowTask" value="legal-review" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="WC With Other Category" />
+			<var name="workflowAssetType" value="Web Content Article" />
+			<var name="workflowTask" value="content-review" />
+		</execute>
+
+		<execute macro="Workflow#viewTaskAssignedToMyRoles">
+			<var name="workflowAssetTitle" value="WC With No Category" />
+			<var name="workflowAssetType" value="Web Content Article" />
+			<var name="workflowTask" value="content-review" />
+		</execute>
+	</command>
+
+	<command name="AddWikiPageAsSiteUser" priority="4">
 		<var name="pageName" value="Wiki Page" />
 		<var name="portletName" value="Wiki" />
 		<var name="userEmailAddress" value="userea@liferay.com" />
@@ -278,7 +914,7 @@
 			<var name="portletName" value="Workflow Configuration" />
 		</execute>
 
-		<execute macro="Workflow#configureSiteWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_WIKI_PAGE_SELECT" />
 		</execute>
@@ -361,12 +997,12 @@
 
 		<var name="key_workflowAssetTitle" value="${wikiPageTitle}" />
 
-		<execute function="AssertTextEquals" locator1="CPMysubmissions#PENDING_TABLE_DEFINITION" value1="Single Approver" />
-		<execute function="AssertTextEquals" locator1="CPMysubmissions#PENDING_TABLE_ASSET_TITLE" value1="${wikiPageTitle}" />
-		<execute function="AssertTextEquals" locator1="CPMysubmissions#PENDING_TABLE_ASSET_TYPE" value1="${workflowAssetType}" />
-		<execute function="AssertTextEquals" locator1="CPMysubmissions#PENDING_TABLE_STATUS" value1="Review" />
-		<execute function="AssertElementPresent" locator1="CPMysubmissions#PENDING_TABLE_LAST_ACTIVITY_DATE" />
-		<execute function="AssertElementPresent" locator1="CPMysubmissions#PENDING_TABLE_END_DATE" />
+		<execute function="AssertTextEquals" locator1="WorkflowSubmissions#PENDING_TABLE_DEFINITION" value1="Single Approver" />
+		<execute function="AssertTextEquals" locator1="WorkflowSubmissions#PENDING_TABLE_ASSET_TITLE" value1="${wikiPageTitle}" />
+		<execute function="AssertTextEquals" locator1="WorkflowSubmissions#PENDING_TABLE_ASSET_TYPE" value1="${workflowAssetType}" />
+		<execute function="AssertTextEquals" locator1="WorkflowSubmissions#PENDING_TABLE_STATUS" value1="Review" />
+		<execute function="AssertElementPresent" locator1="WorkflowSubmissions#PENDING_TABLE_LAST_ACTIVITY_DATE" />
+		<execute function="AssertElementPresent" locator1="WorkflowSubmissions#PENDING_TABLE_END_DATE" />
 
 		<execute macro="User#logoutPG" />
 
@@ -471,7 +1107,7 @@
 		</execute>
 	</command>
 
-	<command name="DeactivateAndDeleteUploadedDefinition" priority="4">
+	<command name="DeactivateAndDeleteUploadedDefinition" priority="5">
 		<execute macro="Page#gotoCP">
 			<var name="portletName" value="Workflow Definition" />
 		</execute>
@@ -509,14 +1145,14 @@
 		</execute>
 	</command>
 
-	<command name="ViewBlogsEntryWorkflowViaNotifications" priority="4">
+	<command name="ViewBlogsEntryWorkflowViaNotifications" priority="3">
 		<property name="portlet.plugins.includes" value="notifications-portlet" />
 
 		<execute macro="Page#gotoConfigurationCP">
 			<var name="portletName" value="Workflow Configuration" />
 		</execute>
 
-		<execute macro="Workflow#configureSiteWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_BLOGS_ENTRY_SELECT" />
 		</execute>
@@ -533,17 +1169,9 @@
 			<var name="portletName" value="Blogs" />
 		</execute>
 
-		<execute macro="BlogsEntry#addWithWorkflowPG">
+		<execute macro="Blogs#addWithWorkflow">
 			<var name="entryContent" value="Blogs Entry Content" />
-			<var name="entryTitle" value="Blogs Entry Title" />
-		</execute>
-
-		<execute macro="Page#gotoPG">
-			<var name="pageName" value="Blogs Page" />
-		</execute>
-
-		<execute macro="BlogsEntry#viewWithWorkflowPG">
-			<var name="entryContent" value="Blogs Entry Content" />
+			<var name="entrySubtitle" value="Subtitle"  />
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
 
@@ -574,7 +1202,7 @@
 			<var name="pageName" value="Blogs Page" />
 		</execute>
 
-		<execute macro="BlogsEntry#gotoPG">
+		<execute macro="BlogsNavigator#gotoEntryPG">
 			<var name="entryContent" value="Blogs Entry Content" />
 			<var name="entryTitle" value="Blogs Entry Title" />
 		</execute>
@@ -589,7 +1217,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-51687" name="ViewTaskCount" priority="3">
+	<command name="ViewTaskCount" priority="3">
 		<var name="entryContent" value="Blogs Entry Content" />
 		<var name="entryTitle" value="Blogs Entry Title" />
 		<var name="webContentContent" value="WC WebContent Content" />
@@ -599,7 +1227,7 @@
 			<var name="portletName" value="Workflow Configuration" />
 		</execute>
 
-		<execute macro="Workflow#configureSiteWorkflow">
+		<execute macro="Workflow#configureWorkflow">
 			<var name="workflowDefinition" value="Single Approver (Version 1)" />
 			<var name="workflowResourceKey" value="RESOURCE_TABLE_BLOGS_ENTRY_SELECT" />
 		</execute>
@@ -616,6 +1244,8 @@
 			<var name="portletName" value="Web Content" />
 		</execute>
 
+		<execute macro="WebContentNavigator#gotoAddCP" />
+
 		<execute macro="WebContent#addWithWorkflowCP">
 			<var name="webContentContent" value="${webContentContent}" />
 			<var name="webContentTitle" value="${webContentTitle}" />
@@ -625,8 +1255,9 @@
 			<var name="portletName" value="Blogs" />
 		</execute>
 
-		<execute macro="BlogsEntry#addWithWorkflowCP">
+		<execute macro="Blogs#addWithWorkflow">
 			<var name="entryContent" value="${entryContent}" />
+			<var name="entrySubtitle" value="Subtitle" />
 			<var name="entryTitle" value="${entryTitle}" />
 		</execute>
 
@@ -653,7 +1284,7 @@
 		<execute function="AssertElementNotPresent#assertNotVisible" locator1="//div[@id='workflowMyRolesTasksPanelContent']//tr[3]/td" />
 	</command>
 
-	<command name="ViewWebContentConfigurationCP" priority="4">
+	<command name="ViewWebContentConfigurationCP" priority="3">
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Web Content" />
 		</execute>
@@ -679,7 +1310,177 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-51687" name="XSSScriptWebContent" priority="4">
+	<command name="ViewWorkflowSubmissionsFromDifferentUsers" priority="4">
+		<description message="This is a use case for LRQA-13519." />
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Workflow Configuration" />
+		</execute>
+
+		<execute macro="Workflow#configureWorkflow">
+			<var name="workflowDefinition" value="Single Approver (Version 1)" />
+			<var name="workflowResourceKey" value="RESOURCE_TABLE_BLOGS_ENTRY_SELECT" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Roles" />
+		</execute>
+
+		<execute macro="Role#definePermissionCP">
+			<var name="permissionDefinitionKey" value="SITE_ADMIN_CONTENT_BLOGS_GENERAL_PERMISSIONS_ACCESS_IN_SITE_ADMINISTRATION_CHECKBOX" />
+			<var name="permissionDefinitionValue" value="Access in Site Administration" />
+			<var name="roleName" value="Site Member" />
+		</execute>
+
+		<execute macro="Page#gotoCP">
+			<var name="portletName" value="Roles" />
+		</execute>
+
+		<execute macro="Role#definePermissionCP">
+			<var name="permissionDefinitionKey" value="SITE_ADMIN_CONTENT_BLOGS_RESOURCE_PERMISSIONS_BLOGS_ENTRIES_ADD_ENTRY_CHECKBOX" />
+			<var name="permissionDefinitionValue" value="Add Entry" />
+			<var name="roleName" value="Site Member" />
+		</execute>
+
+		<for list="1,2" param="n">
+			<execute macro="Page#gotoCP">
+				<var name="portletName" value="Users and Organizations" />
+			</execute>
+
+			<execute macro="User#addCP">
+				<var name="userEmailAddress" value="usersn${n}@liferay.com" />
+				<var name="userFirstName" value="userfn${n}" />
+				<var name="userLastName" value="userln${n}" />
+				<var name="userScreenName" value="usersn${n}" />
+			</execute>
+
+			<execute macro="Page#gotoCP">
+				<var name="portletName" value="Users and Organizations" />
+			</execute>
+
+			<execute macro="User#editUserSiteCP">
+				<var name="siteName" value="Liferay" />
+				<var name="userScreenName" value="usersn${n}" />
+			</execute>
+
+			<execute macro="Page#gotoCP">
+				<var name="portletName" value="Users and Organizations" />
+			</execute>
+
+			<execute macro="User#editPasswordCP">
+				<var name="userEmailAddress" value="usersn${n}@liferay.com" />
+				<var name="userScreenName" value="usersn${n}" />
+			</execute>
+
+			<execute macro="User#logoutAndLoginPG">
+				<var name="userLoginEmailAddress" value="usersn${n}@liferay.com" />
+				<var name="userScreenName" value="usersn${n}" />
+			</execute>
+
+			<execute macro="Page#gotoContentCP">
+				<var name="portletName" value="Blogs" />
+			</execute>
+
+			<execute macro="Blogs#addWithWorkflow">
+				<var name="entryContent" value="User ${n} Blog Content Approved" />
+				<var name="entrySubtitle" value="User ${n} Blog Subtitle Approved" />
+				<var name="entryTitle" value="User ${n} Blog Title Approved" />
+			</execute>
+
+			<execute macro="Page#gotoContentCP">
+				<var name="portletName" value="Blogs" />
+			</execute>
+
+			<execute macro="Blogs#addWithWorkflow">
+				<var name="entryContent" value="User ${n} Blog Content Pending" />
+				<var name="entrySubtitle" value="User ${n} Blog Subtitle Pending" />
+				<var name="entryTitle" value="User ${n} Blog Title Pending" />
+			</execute>
+
+			<execute macro="User#logoutAndLoginPG">
+				<var name="userLoginEmailAddress" value="test@liferay.com" />
+				<var name="userScreenName" value="Test Test" />
+			</execute>
+
+			<execute macro="Page#gotoMyAccount">
+				<var name="portletName" value="My Workflow Tasks" />
+			</execute>
+
+			<execute macro="Workflow#assignToMeTaskByActions">
+				<var name="workflowAssetTitle" value="User ${n} Blog Title Approved" />
+				<var name="workflowAssetType" value="Blogs Entry" />
+				<var name="workflowTask" value="Review" />
+			</execute>
+
+			<execute macro="Workflow#approveTaskByActions">
+				<var name="workflowAssetTitle" value="User ${n} Blog Title Approved" />
+				<var name="workflowAssetType" value="Blogs Entry" />
+				<var name="workflowTask" value="Review" />
+			</execute>
+		</for>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="usersn1@liferay.com" />
+			<var name="userScreenName" value="usersn1" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Submissions" />
+		</execute>
+
+		<execute macro="Workflow#viewMySubmissions">
+			<var name="workflowAssetTitle" value="User 1 Blog Title Pending" />
+			<var name="workflowAssetType" value="Blogs Entry" />
+			<var name="workflowDefinition" value="Single Approver" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#viewSubmissionNotPresent">
+			<var name="workflowAssetTitle" value="User 2 Blog Title Pending" />
+		</execute>
+
+		<execute macro="Workflow#viewCompletedTasks">
+			<var name="workflowAssetTitle" value="User 1 Blog Title Approved" />
+			<var name="workflowAssetType" value="Blogs Entry" />
+			<var name="workflowTask" value="Single Approver" />
+		</execute>
+
+		<execute macro="Workflow#viewSubmissionNotPresent">
+			<var name="workflowAssetTitle" value="User 2 Blog Title Approved" />
+		</execute>
+
+		<execute macro="User#logoutAndLoginPG">
+			<var name="userLoginEmailAddress" value="usersn2@liferay.com" />
+			<var name="userScreenName" value="usersn2" />
+		</execute>
+
+		<execute macro="Page#gotoMyAccount">
+			<var name="portletName" value="My Submissions" />
+		</execute>
+
+		<execute macro="Workflow#viewMySubmissions">
+			<var name="workflowAssetTitle" value="User 2 Blog Title Pending" />
+			<var name="workflowAssetType" value="Blogs Entry" />
+			<var name="workflowDefinition" value="Single Approver" />
+			<var name="workflowTask" value="Review" />
+		</execute>
+
+		<execute macro="Workflow#viewSubmissionNotPresent">
+			<var name="workflowAssetTitle" value="User 1 Blog Title Pending" />
+		</execute>
+
+		<execute macro="Workflow#viewCompletedTasks">
+			<var name="workflowAssetTitle" value="User 2 Blog Title Approved" />
+			<var name="workflowAssetType" value="Blogs Entry" />
+			<var name="workflowTask" value="Single Approver" />
+		</execute>
+
+		<execute macro="Workflow#viewSubmissionNotPresent">
+			<var name="workflowAssetTitle" value="User 1 Blog Title Approved" />
+		</execute>
+	</command>
+
+	<command name="XSSScriptWebContent" priority="4">
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Web Content" />
 		</execute>
@@ -691,6 +1492,8 @@
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Web Content" />
 		</execute>
+
+		<execute macro="WebContentNavigator#gotoAddCP" />
 
 		<execute macro="WebContent#addWithWorkflowCP">
 			<var name="webContentContent"><![CDATA[&lt;script&gt;alert("web content article")&lt;/script&gt;]]></var>

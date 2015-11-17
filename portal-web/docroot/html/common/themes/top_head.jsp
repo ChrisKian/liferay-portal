@@ -64,7 +64,7 @@ if (!themeDisplay.isSignedIn() && layout.isPublicLayout()) {
 long cssLastModifiedTime = PortalWebResourcesUtil.getLastModified(PortalWebResourceConstants.RESOURCE_TYPE_CSS);
 %>
 
-<link href="<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, themeDisplay.getCDNDynamicResourcesHost() + PortalWebResourcesUtil.getContextPath(PortalWebResourceConstants.RESOURCE_TYPE_CSS) + "/html/css/main.css", cssLastModifiedTime)) %>" rel="stylesheet" type="text/css" />
+<link href="<%= HtmlUtil.escapeAttribute(PortalUtil.getStaticResourceURL(request, themeDisplay.getCDNDynamicResourcesHost() + PortalWebResourcesUtil.getContextPath(PortalWebResourceConstants.RESOURCE_TYPE_CSS) + "/main.css", cssLastModifiedTime)) %>" rel="stylesheet" type="text/css" />
 
 <%
 List<Portlet> portlets = null;
@@ -85,8 +85,10 @@ if (layout != null) {
 			}
 		}
 	}
-	else if ((layout.isTypeControlPanel() || layout.isTypePanel() || layout.isTypeUserPersonalPanel()) && Validator.isNotNull(ppid)) {
+	else if ((layout.isTypeControlPanel() || layout.isTypePanel()) && Validator.isNotNull(ppid)) {
 		portlets = new ArrayList<Portlet>();
+
+		portlets.addAll(layout.getEmbeddedPortlets());
 
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), ppid);
 
@@ -209,5 +211,5 @@ private String _escapeCssBlock(String css) {
 	);
 }
 
-private static Log _log = LogFactoryUtil.getLog("portal-web.docroot.html.common.themes.top_head_jsp");
+private static Log _log = LogFactoryUtil.getLog("portal_web.docroot.html.common.themes.top_head_jsp");
 %>

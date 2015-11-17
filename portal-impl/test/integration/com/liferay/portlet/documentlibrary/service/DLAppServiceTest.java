@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -49,6 +50,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.DoAsUserThread;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.test.ServiceTestUtil;
+import com.liferay.portal.test.randomizerbumpers.TikaSafeRandomizerBumper;
 import com.liferay.portal.test.rule.ExpectedLog;
 import com.liferay.portal.test.rule.ExpectedLogs;
 import com.liferay.portal.test.rule.ExpectedType;
@@ -58,7 +60,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.test.PrefsPropsTemporarySwapper;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
-import com.liferay.portlet.documentlibrary.DuplicateFileException;
+import com.liferay.portlet.documentlibrary.DuplicateFileEntryException;
 import com.liferay.portlet.documentlibrary.FileExtensionException;
 import com.liferay.portlet.documentlibrary.FileNameException;
 import com.liferay.portlet.documentlibrary.FileSizeException;
@@ -76,7 +78,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hibernate.util.JDBCExceptionReporter;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -147,7 +151,7 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 				PropsValues.DL_FILE_ENTRY_COMMENTS_ENABLED, hasDiscussion);
 		}
 
-		@Test(expected = DuplicateFileException.class)
+		@Test(expected = DuplicateFileEntryException.class)
 		public void shouldFailIfDuplicateNameAndExtensionInFolder1()
 			throws Exception {
 
@@ -159,7 +163,7 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 				_FILE_NAME, null);
 		}
 
-		@Test(expected = DuplicateFileException.class)
+		@Test(expected = DuplicateFileEntryException.class)
 		public void shouldFailIfDuplicateNameAndExtensionInFolder2()
 			throws Exception {
 
@@ -171,7 +175,7 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 				_STRIPPED_FILE_NAME, null);
 		}
 
-		@Test(expected = DuplicateFileException.class)
+		@Test(expected = DuplicateFileEntryException.class)
 		public void shouldFailIfDuplicateNameAndExtensionInFolder3()
 			throws Exception {
 
@@ -183,7 +187,7 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 				_STRIPPED_FILE_NAME, _FILE_NAME, null);
 		}
 
-		@Test(expected = DuplicateFileException.class)
+		@Test(expected = DuplicateFileEntryException.class)
 		public void shouldFailIfDuplicateNameInFolder() throws Exception {
 			addFileEntry(group.getGroupId(), parentFolder.getFolderId());
 			addFileEntry(group.getGroupId(), parentFolder.getFolderId());
@@ -952,6 +956,74 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 	}
 
 	@Sync
+	public static class WhenMovingAFileEntryToTrash extends BaseDLAppTestCase {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new AggregateTestRule(
+				new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE,
+				SynchronousDestinationTestRule.INSTANCE);
+
+		@Before
+		@Override
+		public void setUp() throws Exception {
+			super.setUp();
+
+			_fileEntry = addFileEntry(
+				group.getGroupId(), parentFolder.getFolderId());
+		}
+
+		@Test
+		public void shouldCancelCheckout() throws Exception {
+			DLAppServiceUtil.checkOutFileEntry(
+				_fileEntry.getFileEntryId(),
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+			Assert.assertTrue(_fileEntry.isCheckedOut());
+
+			DLAppServiceUtil.moveFileEntryToTrash(_fileEntry.getFileEntryId());
+
+			_fileEntry = DLAppServiceUtil.getFileEntry(
+				_fileEntry.getFileEntryId());
+
+			Assert.assertFalse(_fileEntry.isCheckedOut());
+		}
+
+		@Test
+		public void shouldDeletePWCAssetEntry() throws Exception {
+			DLAppServiceUtil.checkOutFileEntry(
+				_fileEntry.getFileEntryId(),
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+			FileVersion fileVersion = _fileEntry.getLatestFileVersion(false);
+
+			Assert.assertNotNull(
+				AssetEntryLocalServiceUtil.fetchEntry(
+					DLFileEntryConstants.getClassName(),
+					fileVersion.getFileVersionId()));
+
+			DLAppServiceUtil.moveFileEntryToTrash(_fileEntry.getFileEntryId());
+
+			Assert.assertNull(
+				AssetEntryLocalServiceUtil.fetchEntry(
+					DLFileEntryConstants.getClassName(),
+					fileVersion.getFileVersionId()));
+		}
+
+		@After
+		@Override
+		public void tearDown() throws Exception {
+			DLAppServiceUtil.deleteFileEntry(_fileEntry.getFileEntryId());
+
+			super.tearDown();
+		}
+
+		private FileEntry _fileEntry;
+
+	}
+
+	@Sync
 	public static class WhenMovingAFolder extends BaseDLAppTestCase {
 
 		@ClassRule
@@ -1214,7 +1286,8 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 					new PrefsPropsTemporarySwapper(
 						PropsKeys.DL_FILE_MAX_SIZE, 1L)) {
 
-				byte[] bytes = RandomTestUtil.randomBytes();
+				byte[] bytes = RandomTestUtil.randomBytes(
+					TikaSafeRandomizerBumper.INSTANCE);
 
 				DLAppServiceUtil.updateFileEntry(
 					fileEntry.getFileEntryId(), fileName,
@@ -1562,7 +1635,8 @@ public class DLAppServiceTest extends BaseDLAppTestCase {
 		return DLAppServiceUtil.updateFileEntry(
 			fileEntryId, fileName, ContentTypes.TEXT_PLAIN, fileName,
 			StringPool.BLANK, StringPool.BLANK, majorVersion,
-			RandomTestUtil.randomBytes(), serviceContext);
+			RandomTestUtil.randomBytes(TikaSafeRandomizerBumper.INSTANCE),
+			serviceContext);
 	}
 
 	private static final String _FILE_NAME = "Title.txt";

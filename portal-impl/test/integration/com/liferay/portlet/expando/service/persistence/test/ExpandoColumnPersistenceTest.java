@@ -42,6 +42,7 @@ import com.liferay.portlet.expando.service.persistence.ExpandoColumnUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -58,8 +59,9 @@ import java.util.Set;
  * @generated
  */
 public class ExpandoColumnPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -197,8 +199,7 @@ public class ExpandoColumnPersistenceTest {
 
 	protected OrderByComparator<ExpandoColumn> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create("ExpandoColumn", "columnId",
-			true, "companyId", true, "tableId", true, "name", true, "type",
-			true, "defaultData", true, "typeSettings", true);
+			true, "companyId", true, "tableId", true, "name", true, "type", true);
 	}
 
 	@Test
@@ -307,11 +308,9 @@ public class ExpandoColumnPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = ExpandoColumnLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ExpandoColumn>() {
 				@Override
-				public void performAction(Object object) {
-					ExpandoColumn expandoColumn = (ExpandoColumn)object;
-
+				public void performAction(ExpandoColumn expandoColumn) {
 					Assert.assertNotNull(expandoColumn);
 
 					count.increment();
@@ -403,8 +402,8 @@ public class ExpandoColumnPersistenceTest {
 
 		ExpandoColumn existingExpandoColumn = _persistence.findByPrimaryKey(newExpandoColumn.getPrimaryKey());
 
-		Assert.assertEquals(existingExpandoColumn.getTableId(),
-			ReflectionTestUtil.invoke(existingExpandoColumn,
+		Assert.assertEquals(Long.valueOf(existingExpandoColumn.getTableId()),
+			ReflectionTestUtil.<Long>invoke(existingExpandoColumn,
 				"getOriginalTableId", new Class<?>[0]));
 		Assert.assertTrue(Validator.equals(existingExpandoColumn.getName(),
 				ReflectionTestUtil.invoke(existingExpandoColumn,

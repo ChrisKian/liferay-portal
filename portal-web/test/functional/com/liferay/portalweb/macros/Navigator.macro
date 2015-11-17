@@ -1,8 +1,14 @@
 <definition>
 	<command name="_gotoPage">
+		<execute macro-mobile="MobileNavigator#clickReorderButton" />
+
 		<var name="key_pageName" value="${pageName}" />
 
 		<execute function="AssertClick" locator1="Home#PAGE" value1="${pageName}" />
+	</command>
+
+	<command name="closeSpecificWindow">
+		<execute function="Close" locator1="title=${windowTitle}" />
 	</command>
 
 	<command name="closeWindow">
@@ -24,7 +30,6 @@
 	<command name="gotoSitePage">
 		<execute macro="Navigator#openSiteURL">
 			<var name="siteName" value="${siteName}" />
-			<var name="siteNameURL" value="${siteNameURL}" />
 		</execute>
 
 		<execute macro="Navigator#_gotoPage">
@@ -42,6 +47,10 @@
 		</execute>
 	</command>
 
+	<command name="gotoStagedView">
+		<execute function="Click" locator1="Radio#STAGING" />
+	</command>
+
 	<command name="gotoStagingPage">
 		<execute macro="Navigator#openStagingURL" />
 
@@ -52,9 +61,9 @@
 
 	<command name="openSiteURL">
 		<var method="StringUtil#replace('${siteName}', ' ', '-')" name="siteNameURL" />
-		<var method="StringUtil#lowerCase('/${siteNameURL}')" name="siteNameURL" />
+		<var method="StringUtil#lowerCase('${siteNameURL}')" name="siteNameURL" />
 
-		<execute function="Open" locator1="/web/${siteNameURL}/home" />
+		<execute function="Open" locator1="/web/${siteNameURL}" />
 	</command>
 
 	<command name="openSpecificURL">
@@ -67,5 +76,9 @@
 
 	<command name="openURL">
 		<execute function="Open" locator1="/web/guest/home" />
+	</command>
+
+	<command name="selectSpecificWindow">
+		<execute function="SelectWindow" locator1="title=${windowTitle}" />
 	</command>
 </definition>

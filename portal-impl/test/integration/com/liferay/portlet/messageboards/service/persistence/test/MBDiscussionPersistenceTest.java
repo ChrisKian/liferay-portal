@@ -43,6 +43,7 @@ import com.liferay.portlet.messageboards.service.persistence.MBDiscussionUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class MBDiscussionPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -357,11 +359,9 @@ public class MBDiscussionPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = MBDiscussionLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<MBDiscussion>() {
 				@Override
-				public void performAction(Object object) {
-					MBDiscussion mbDiscussion = (MBDiscussion)object;
-
+				public void performAction(MBDiscussion mbDiscussion) {
 					Assert.assertNotNull(mbDiscussion);
 
 					count.increment();
@@ -458,19 +458,19 @@ public class MBDiscussionPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingMBDiscussion.getUuid(),
 				ReflectionTestUtil.invoke(existingMBDiscussion,
 					"getOriginalUuid", new Class<?>[0])));
-		Assert.assertEquals(existingMBDiscussion.getGroupId(),
-			ReflectionTestUtil.invoke(existingMBDiscussion,
+		Assert.assertEquals(Long.valueOf(existingMBDiscussion.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingMBDiscussion,
 				"getOriginalGroupId", new Class<?>[0]));
 
-		Assert.assertEquals(existingMBDiscussion.getThreadId(),
-			ReflectionTestUtil.invoke(existingMBDiscussion,
+		Assert.assertEquals(Long.valueOf(existingMBDiscussion.getThreadId()),
+			ReflectionTestUtil.<Long>invoke(existingMBDiscussion,
 				"getOriginalThreadId", new Class<?>[0]));
 
-		Assert.assertEquals(existingMBDiscussion.getClassNameId(),
-			ReflectionTestUtil.invoke(existingMBDiscussion,
+		Assert.assertEquals(Long.valueOf(existingMBDiscussion.getClassNameId()),
+			ReflectionTestUtil.<Long>invoke(existingMBDiscussion,
 				"getOriginalClassNameId", new Class<?>[0]));
-		Assert.assertEquals(existingMBDiscussion.getClassPK(),
-			ReflectionTestUtil.invoke(existingMBDiscussion,
+		Assert.assertEquals(Long.valueOf(existingMBDiscussion.getClassPK()),
+			ReflectionTestUtil.<Long>invoke(existingMBDiscussion,
 				"getOriginalClassPK", new Class<?>[0]));
 	}
 

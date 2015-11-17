@@ -59,11 +59,11 @@ int start = ParamUtil.getInteger(request, "start", 0);
 
 int end = ParamUtil.getInteger(request, "end", start + pageDelta);
 
-int total = AnnouncementsEntryLocalServiceUtil.getEntriesCount(user.getUserId(), scopes, portletName.equals(viewAlertsEntryPortletId), flagValue);
+int total = AnnouncementsEntryLocalServiceUtil.getEntriesCount(user.getUserId(), scopes, portletName.equals(alertsEntryPortletId), flagValue);
 
 int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(start, end, total);
 
-List<AnnouncementsEntry> results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes, portletName.equals(viewAlertsEntryPortletId), flagValue, startAndEnd[0], startAndEnd[1]);
+List<AnnouncementsEntry> results = AnnouncementsEntryLocalServiceUtil.getEntries(user.getUserId(), scopes, portletName.equals(alertsEntryPortletId), flagValue, startAndEnd[0], startAndEnd[1]);
 %>
 
 <c:if test="<%= results.isEmpty() && !readEntries %>">
@@ -77,7 +77,7 @@ List<AnnouncementsEntry> results = AnnouncementsEntryLocalServiceUtil.getEntries
 		<c:when test="<%= readEntries %>">
 			<c:if test="<%= themeDisplay.isSignedIn() && !results.isEmpty() %>">
 				<div class="header">
-					<span><%= LanguageUtil.get(request, "read-entries") %></span>
+					<span><liferay-ui:message key="read-entries" /></span>
 				</div>
 
 				<%

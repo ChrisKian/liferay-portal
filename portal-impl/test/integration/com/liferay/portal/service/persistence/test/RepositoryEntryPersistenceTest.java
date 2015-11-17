@@ -42,6 +42,7 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -58,8 +59,9 @@ import java.util.Set;
  * @generated
  */
 public class RepositoryEntryPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -355,11 +357,9 @@ public class RepositoryEntryPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = RepositoryEntryLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<RepositoryEntry>() {
 				@Override
-				public void performAction(Object object) {
-					RepositoryEntry repositoryEntry = (RepositoryEntry)object;
-
+				public void performAction(RepositoryEntry repositoryEntry) {
 					Assert.assertNotNull(repositoryEntry);
 
 					count.increment();
@@ -456,12 +456,13 @@ public class RepositoryEntryPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingRepositoryEntry.getUuid(),
 				ReflectionTestUtil.invoke(existingRepositoryEntry,
 					"getOriginalUuid", new Class<?>[0])));
-		Assert.assertEquals(existingRepositoryEntry.getGroupId(),
-			ReflectionTestUtil.invoke(existingRepositoryEntry,
+		Assert.assertEquals(Long.valueOf(existingRepositoryEntry.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingRepositoryEntry,
 				"getOriginalGroupId", new Class<?>[0]));
 
-		Assert.assertEquals(existingRepositoryEntry.getRepositoryId(),
-			ReflectionTestUtil.invoke(existingRepositoryEntry,
+		Assert.assertEquals(Long.valueOf(
+				existingRepositoryEntry.getRepositoryId()),
+			ReflectionTestUtil.<Long>invoke(existingRepositoryEntry,
 				"getOriginalRepositoryId", new Class<?>[0]));
 		Assert.assertTrue(Validator.equals(
 				existingRepositoryEntry.getMappedId(),

@@ -41,8 +41,6 @@ public class MBMailingListExportActionableDynamicQuery
 		_portletDataContext = portletDataContext;
 
 		setCompanyId(_portletDataContext.getCompanyId());
-
-		setGroupId(_portletDataContext.getScopeGroupId());
 	}
 
 	@Override

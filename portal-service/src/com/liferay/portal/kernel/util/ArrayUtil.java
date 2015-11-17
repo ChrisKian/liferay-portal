@@ -653,12 +653,12 @@ public class ArrayUtil {
 	}
 
 	public static boolean contains(Object[] array, Object value) {
-		if (isEmpty(array) || (value == null)) {
+		if (isEmpty(array)) {
 			return false;
 		}
 
 		for (int i = 0; i < array.length; i++) {
-			if (value.equals(array[i])) {
+			if (Validator.equals(value, array[i])) {
 				return true;
 			}
 		}
@@ -689,12 +689,12 @@ public class ArrayUtil {
 
 		for (int i = 0; i < array.length; i++) {
 			if (ignoreCase) {
-				if (StringUtil.equalsIgnoreCase(array[i], value )) {
+				if (StringUtil.equalsIgnoreCase(array[i], value)) {
 					return true;
 				}
 			}
 			else {
-				if (array[i].equals(value)) {
+				if (Validator.equals(array[i], value)) {
 					return true;
 				}
 			}
@@ -1412,11 +1412,11 @@ public class ArrayUtil {
 		}
 	}
 
-	public static void reverse(String[] array) {
+	public static <T> void reverse(T[] array) {
 		for (int left = 0, right = array.length - 1; left < right;
 				left++, right--) {
 
-			String value = array[left];
+			T value = array[left];
 
 			array[left] = array[right];
 			array[right] = value;

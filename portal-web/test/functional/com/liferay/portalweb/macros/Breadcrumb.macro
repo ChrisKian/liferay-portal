@@ -8,7 +8,7 @@
 				<for list="${checkSetupName}" param="checkSetupName">
 					<var name="key_checkSetupName" value="${checkSetupName}" />
 
-					<execute function="Check" locator1="PGBreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
+					<execute function="Check" locator1="BreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
 				</for>
 			</then>
 		</if>
@@ -19,7 +19,7 @@
 				<for list="${uncheckSetupName}" param="uncheckSetupName">
 					<var name="key_checkSetupName" value="${uncheckSetupName}" />
 
-					<execute function="Uncheck" locator1="PGBreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
+					<execute function="Uncheck" locator1="BreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
 				</for>
 			</then>
 		</if>
@@ -27,7 +27,7 @@
 		<if>
 			<isset var="selectADTType" />
 			<then>
-				<execute function="Select" locator1="PGBreadcrumbConfiguration#SELECT_ADT" value1="${selectADTType}" />
+				<execute function="Select" locator1="Configuration#SETUP_DISPLAY_SETTINGS_DISPLAY_TEMPLATE_SELECT" value1="${selectADTType}" />
 			</then>
 		</if>
 
@@ -37,8 +37,8 @@
 				<echo message="Configuring Breadcrumb without saving to check bug." />
 			</then>
 			<else>
-				<execute function="AssertClick" locator1="PGBreadcrumbConfiguration#PORTLET_CONFIGURATION_SAVE_BUTTON" value1="Save" />
-				<execute function="AssertTextEquals" locator1="PGBreadcrumbConfiguration#PORTLET_CONFIGURATION_SUCCESS_MESSAGE" value1="You have successfully updated the setup." />
+				<execute function="AssertClick" locator1="Button#SAVE" value1="Save" />
+				<execute function="AssertTextEquals" locator1="Message#SUCCESS" value1="You have successfully updated the setup." />
 			</else>
 		</if>
 
@@ -66,7 +66,7 @@
 	<command name="viewADTApplied">
 		<var name="key_breadcrumbADTType" value="${breadcrumbADTType}" />
 
-		<execute function="AssertElementPresent" locator1="PGBreadcrumb#BREADCRUMB_ADT" />
+		<execute function="AssertElementPresent" locator1="Breadcrumb#BREADCRUMB_ADT" />
 	</command>
 
 	<command name="viewConfigurationCheckboxes">
@@ -78,7 +78,7 @@
 				<for list="${checkSetupName}" param="checkSetupName">
 					<var name="key_checkSetupName" value="${checkSetupName}" />
 
-					<execute function="AssertChecked" locator1="PGBreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
+					<execute function="AssertChecked" locator1="BreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
 				</for>
 			</then>
 		</if>
@@ -89,7 +89,7 @@
 				<for list="${uncheckSetupName}" param="uncheckSetupName">
 					<var name="key_checkSetupName" value="${uncheckSetupName}" />
 
-					<execute function="AssertNotChecked" locator1="PGBreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
+					<execute function="AssertNotChecked" locator1="BreadcrumbConfiguration#SHOW_SPECIFIC_CHECKBOX" />
 				</for>
 			</then>
 		</if>
@@ -106,7 +106,9 @@
 				<for list="${breadcrumbListVisible}" param="breadcrumbName">
 					<var name="key_breadcrumbName" value="${breadcrumbName}" />
 
-					<execute function="AssertTextEquals" locator1="PGBreadcrumbConfiguration#BREADCRUMB_PREVIEW_PAGE" value1="${breadcrumbName}" />
+					<var method="StringUtil#upperCase('${breadcrumbName}')" name="breadcrumbNameUppercase" />
+
+					<execute function="AssertTextEquals" locator1="BreadcrumbConfiguration#BREADCRUMB_PREVIEW_PAGE" value1="${breadcrumbNameUppercase}" />
 				</for>
 			</then>
 		</if>
@@ -117,7 +119,7 @@
 				<for list="${breadcrumbListNotVisible}" param="breadcrumbName">
 					<var name="key_breadcrumbName" value="${breadcrumbName}" />
 
-					<execute function="AssertElementNotPresent" locator1="PGBreadcrumbConfiguration#BREADCRUMB_PREVIEW_PAGE" />
+					<execute function="AssertElementNotPresent" locator1="BreadcrumbConfiguration#BREADCRUMB_PREVIEW_PAGE" />
 				</for>
 			</then>
 		</if>
@@ -132,7 +134,9 @@
 				<for list="${breadcrumbListVisible}" param="breadcrumbName">
 					<var name="key_breadcrumbName" value="${breadcrumbName}" />
 
-					<execute function="AssertTextEquals" locator1="Breadcrumb#BREADCRUMB_${pathLocator}" value1="${breadcrumbName}" />
+					<var method="StringUtil#upperCase('${breadcrumbName}')" name="breadcrumbNameUppercase" />
+
+					<execute function="AssertTextEquals" locator1="Breadcrumb#BREADCRUMB_${pathLocator}" value1="${breadcrumbNameUppercase}" />
 				</for>
 			</then>
 		</if>

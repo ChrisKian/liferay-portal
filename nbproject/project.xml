@@ -18,9 +18,9 @@
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
-					<label>modules\core\registry-api\src</label>
+					<label>modules\core\registry-api\src\main\java</label>
 					<type>java</type>
-					<location>modules/core/registry-api/src</location>
+					<location>modules/core/registry-api/src/main/java</location>
 					<encoding>UTF-8</encoding>
 				</source-folder>
 				<source-folder>
@@ -257,22 +257,19 @@
 				<classpath mode="compile">lib/development/bsh.jar</classpath>
 				<classpath mode="compile">lib/development/catalina.jar</classpath>
 				<classpath mode="compile">lib/development/cobertura.jar</classpath>
+				<classpath mode="compile">lib/development/com.liferay.ant.beanshell.jar</classpath>
 				<classpath mode="compile">lib/development/com.liferay.ant.bnd.jar</classpath>
 				<classpath mode="compile">lib/development/com.liferay.ant.build.logger.jar</classpath>
 				<classpath mode="compile">lib/development/com.liferay.ant.heap.dump.jar</classpath>
 				<classpath mode="compile">lib/development/deployment.jar</classpath>
-				<classpath mode="compile">lib/development/derby.jar</classpath>
-				<classpath mode="compile">lib/development/derbytools.jar</classpath>
 				<classpath mode="compile">lib/development/dtddoc.jar</classpath>
 				<classpath mode="compile">lib/development/dtdparser.jar</classpath>
 				<classpath mode="compile">lib/development/dumbster.jar</classpath>
 				<classpath mode="compile">lib/development/error-prone-ant.jar</classpath>
-				<classpath mode="compile">lib/development/firebird.jar</classpath>
 				<classpath mode="compile">lib/development/gson.jar</classpath>
 				<classpath mode="compile">lib/development/hamcrest-core.jar</classpath>
 				<classpath mode="compile">lib/development/hamcrest-library.jar</classpath>
 				<classpath mode="compile">lib/development/hsql.jar</classpath>
-				<classpath mode="compile">lib/development/interbase.jar</classpath>
 				<classpath mode="compile">lib/development/j2h.jar</classpath>
 				<classpath mode="compile">lib/development/jalopy.jar</classpath>
 				<classpath mode="compile">lib/development/jargs.jar</classpath>
@@ -290,7 +287,6 @@
 				<classpath mode="compile">lib/development/jsonassert.jar</classpath>
 				<classpath mode="compile">lib/development/jsp-api.jar</classpath>
 				<classpath mode="compile">lib/development/jta.jar</classpath>
-				<classpath mode="compile">lib/development/jtds.jar</classpath>
 				<classpath mode="compile">lib/development/junit.jar</classpath>
 				<classpath mode="compile">lib/development/jutf7.jar</classpath>
 				<classpath mode="compile">lib/development/jymsg.jar</classpath>
@@ -316,7 +312,6 @@
 				<classpath mode="compile">lib/development/powermock-reflect.jar</classpath>
 				<classpath mode="compile">lib/development/qdox.jar</classpath>
 				<classpath mode="compile">lib/development/resin.jar</classpath>
-				<classpath mode="compile">lib/development/sap.jar</classpath>
 				<classpath mode="compile">lib/development/saxpath.jar</classpath>
 				<classpath mode="compile">lib/development/script-10.jar</classpath>
 				<classpath mode="compile">lib/development/sdk-addon-api-0.2.jar</classpath>
@@ -365,11 +360,6 @@
 				<classpath mode="compile">lib/portal/chemistry-opencmis-commons-api.jar</classpath>
 				<classpath mode="compile">lib/portal/chemistry-opencmis-commons-impl.jar</classpath>
 				<classpath mode="compile">lib/portal/closure-compiler.jar</classpath>
-				<classpath mode="compile">lib/portal/com.liferay.rtl.css.jar</classpath>
-				<classpath mode="compile">lib/portal/com.liferay.ruby.gems.jar</classpath>
-				<classpath mode="compile">lib/portal/com.liferay.sass.compiler.api.jar</classpath>
-				<classpath mode="compile">lib/portal/com.liferay.sass.compiler.jni.jar</classpath>
-				<classpath mode="compile">lib/portal/com.liferay.sass.compiler.ruby.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-beanutils.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-chain.jar</classpath>
 				<classpath mode="compile">lib/portal/commons-codec.jar</classpath>
@@ -390,7 +380,6 @@
 				<classpath mode="compile">lib/portal/commons-validator.jar</classpath>
 				<classpath mode="compile">lib/portal/concurrent.jar</classpath>
 				<classpath mode="compile">lib/portal/crypt.jar</classpath>
-				<classpath mode="compile">lib/portal/daim.jar</classpath>
 				<classpath mode="compile">lib/portal/daisydiff.jar</classpath>
 				<classpath mode="compile">lib/portal/displaytag.jar</classpath>
 				<classpath mode="compile">lib/portal/dom4j.jar</classpath>
@@ -404,12 +393,12 @@
 				<classpath mode="compile">lib/portal/hessian.jar</classpath>
 				<classpath mode="compile">lib/portal/hibernate-commons-annotations.jar</classpath>
 				<classpath mode="compile">lib/portal/hibernate-core.jar</classpath>
+				<classpath mode="compile">lib/portal/hikaricp.jar</classpath>
 				<classpath mode="compile">lib/portal/htmlparser.jar</classpath>
 				<classpath mode="compile">lib/portal/httpclient.jar</classpath>
 				<classpath mode="compile">lib/portal/httpcore.jar</classpath>
 				<classpath mode="compile">lib/portal/httpmime.jar</classpath>
 				<classpath mode="compile">lib/portal/ical4j.jar</classpath>
-				<classpath mode="compile">lib/portal/icq.jar</classpath>
 				<classpath mode="compile">lib/portal/im4java.jar</classpath>
 				<classpath mode="compile">lib/portal/isoparser.jar</classpath>
 				<classpath mode="compile">lib/portal/jabsorb.jar</classpath>
@@ -435,6 +424,7 @@
 				<classpath mode="compile">lib/portal/jhighlight.jar</classpath>
 				<classpath mode="compile">lib/portal/jhlabs-filters.jar</classpath>
 				<classpath mode="compile">lib/portal/jmatio.jar</classpath>
+				<classpath mode="compile">lib/portal/jna.jar</classpath>
 				<classpath mode="compile">lib/portal/jodconverter.jar</classpath>
 				<classpath mode="compile">lib/portal/jodd.jar</classpath>
 				<classpath mode="compile">lib/portal/jrcs-diff.jar</classpath>
@@ -459,7 +449,6 @@
 				<classpath mode="compile">lib/portal/mime4j-dom.jar</classpath>
 				<classpath mode="compile">lib/portal/mimepull.jar</classpath>
 				<classpath mode="compile">lib/portal/monte-cc.jar</classpath>
-				<classpath mode="compile">lib/portal/msnm.jar</classpath>
 				<classpath mode="compile">lib/portal/nekohtml.jar</classpath>
 				<classpath mode="compile">lib/portal/netcdf.jar</classpath>
 				<classpath mode="compile">lib/portal/netty-all.jar</classpath>
@@ -516,7 +505,6 @@
 				<classpath mode="compile">lib/portal/truezip.jar</classpath>
 				<classpath mode="compile">lib/portal/unoil.jar</classpath>
 				<classpath mode="compile">lib/portal/urlrewritefilter.jar</classpath>
-				<classpath mode="compile">lib/portal/vaadin.jar</classpath>
 				<classpath mode="compile">lib/portal/vorbis-java-core.jar</classpath>
 				<classpath mode="compile">lib/portal/vorbis-java-tika.jar</classpath>
 				<classpath mode="compile">lib/portal/wsdl4j.jar</classpath>

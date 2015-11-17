@@ -41,6 +41,7 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -57,8 +58,9 @@ import java.util.Set;
  * @generated
  */
 public class ServiceComponentPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -186,7 +188,7 @@ public class ServiceComponentPersistenceTest {
 	protected OrderByComparator<ServiceComponent> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create("ServiceComponent",
 			"mvccVersion", true, "serviceComponentId", true, "buildNamespace",
-			true, "buildNumber", true, "buildDate", true, "data", true);
+			true, "buildNumber", true, "buildDate", true);
 	}
 
 	@Test
@@ -295,11 +297,9 @@ public class ServiceComponentPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = ServiceComponentLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ServiceComponent>() {
 				@Override
-				public void performAction(Object object) {
-					ServiceComponent serviceComponent = (ServiceComponent)object;
-
+				public void performAction(ServiceComponent serviceComponent) {
 					Assert.assertNotNull(serviceComponent);
 
 					count.increment();
@@ -397,8 +397,9 @@ public class ServiceComponentPersistenceTest {
 				existingServiceComponent.getBuildNamespace(),
 				ReflectionTestUtil.invoke(existingServiceComponent,
 					"getOriginalBuildNamespace", new Class<?>[0])));
-		Assert.assertEquals(existingServiceComponent.getBuildNumber(),
-			ReflectionTestUtil.invoke(existingServiceComponent,
+		Assert.assertEquals(Long.valueOf(
+				existingServiceComponent.getBuildNumber()),
+			ReflectionTestUtil.<Long>invoke(existingServiceComponent,
 				"getOriginalBuildNumber", new Class<?>[0]));
 	}
 

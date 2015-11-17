@@ -40,7 +40,7 @@ import java.util.Date;
  */
 @ProviderType
 public interface PhoneModel extends AttachedModel, BaseModel<Phone>, MVCCModel,
-	StagedAuditedModel {
+	ShardedModel, StagedAuditedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -311,20 +311,6 @@ public interface PhoneModel extends AttachedModel, BaseModel<Phone>, MVCCModel,
 	 * @param primary the primary of this phone
 	 */
 	public void setPrimary(boolean primary);
-
-	/**
-	 * Returns the last publish date of this phone.
-	 *
-	 * @return the last publish date of this phone
-	 */
-	public Date getLastPublishDate();
-
-	/**
-	 * Sets the last publish date of this phone.
-	 *
-	 * @param lastPublishDate the last publish date of this phone
-	 */
-	public void setLastPublishDate(Date lastPublishDate);
 
 	@Override
 	public boolean isNew();

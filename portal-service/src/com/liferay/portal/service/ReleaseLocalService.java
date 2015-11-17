@@ -59,6 +59,9 @@ public interface ReleaseLocalService extends BaseLocalService,
 	public com.liferay.portal.model.Release addRelease(
 		java.lang.String servletContextName, int buildNumber);
 
+	public com.liferay.portal.model.Release addRelease(
+		java.lang.String servletContextName, java.lang.String schemaVersion);
+
 	/**
 	* Creates a new release with the primary key. Does not add the release to the database.
 	*
@@ -173,15 +176,15 @@ public interface ReleaseLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery();
 
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	public java.lang.String getBeanIdentifier();
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getBuildNumberOrCreate() throws PortalException;
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	public java.lang.String getOSGiServiceIdentifier();
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -223,13 +226,6 @@ public interface ReleaseLocalService extends BaseLocalService,
 	public int getReleasesCount();
 
 	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public void setBeanIdentifier(java.lang.String beanIdentifier);
-
-	/**
 	* Updates the release in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
 	* @param release the release
@@ -242,6 +238,9 @@ public interface ReleaseLocalService extends BaseLocalService,
 	public com.liferay.portal.model.Release updateRelease(long releaseId,
 		int buildNumber, java.util.Date buildDate, boolean verified)
 		throws PortalException;
+
+	public void updateRelease(java.lang.String servletContextName,
+		java.lang.String schemaVersion, java.lang.String previousSchemaVersion);
 
 	public void updateRelease(java.lang.String servletContextName,
 		java.util.List<com.liferay.portal.kernel.upgrade.UpgradeProcess> upgradeProcesses,

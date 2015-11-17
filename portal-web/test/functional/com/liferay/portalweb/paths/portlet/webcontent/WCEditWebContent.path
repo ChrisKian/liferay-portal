@@ -59,13 +59,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CHANGE_DEFAULT_LANGUAGE</td>
-	<td>//a[contains(@class,'change') and contains(@class,'locale')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>TEXT_FIELD_WIDTH</td>
-	<td>//div[contains(@data-fieldname,'Text')]/input[contains(@class,'input-${key_widthSize}')]</td>
+	<td>//div[contains(@data-fieldname,'Text')]//input[contains(@class,'input-${key_widthSize}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -106,7 +101,7 @@
 <!--VIEW_HISTORY-->
 <tr>
 	<td>VIEW_HISTORY_VERSION_CHECKBOX</td>
-	<td>//tr[contains(.,'${key_webContentTitle}')]/td/input</td>
+	<td>//tr[contains(.,'${key_webContentTitle}')]/td//input</td>
 	<td></td>
 </tr>
 <tr>
@@ -127,37 +122,37 @@
 <!--MENU-->
 <tr>
 	<td>MENU_CONTENT</td>
-	<td>//a[@id='_15_contentLink']</td>
+	<td>//a[contains(@id,'contentLink')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MENU_CATEGORIZATION</td>
-	<td>//a[@id='_15_categorizationLink']</td>
+	<td>//a[contains(@id,'categorizationLink')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MENU_SCHEDULE</td>
-	<td>//a[@id='_15_scheduleLink']</td>
+	<td>//a[contains(@id,'scheduleLink')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MENU_DISPLAY_PAGE</td>
-	<td>//a[@id='_15_displayPageLink']</td>
+	<td>//a[contains(@id,'displayPageLink')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MENU_RELATED_ASSETS</td>
-	<td>//a[@id='_15_relatedAssetsLink']</td>
+	<td>//a[contains(@id,'relatedAssetsLink')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MENU_PERMISSIONS</td>
-	<td>//a[@id='_15_permissionsLink']</td>
+	<td>//a[contains(@id,'permissionsLink')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>MENU_CUSTOM_FIELDS</td>
-	<td>//a[@id='_15_customFieldsLink']</td>
+	<td>//a[contains(@id,'customFieldsLink')]</td>
 	<td></td>
 </tr>
 <tr>

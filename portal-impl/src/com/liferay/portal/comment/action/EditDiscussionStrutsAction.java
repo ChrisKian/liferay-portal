@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.Function;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.PrincipalException;
@@ -40,7 +41,6 @@ import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.servlet.NamespaceServletRequest;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.messageboards.DiscussionMaxCommentsException;
 import com.liferay.portlet.messageboards.MessageBodyException;
 import com.liferay.portlet.messageboards.NoSuchMessageException;
@@ -110,8 +110,8 @@ public class EditDiscussionStrutsAction extends BaseStrutsAction {
 			}
 		}
 		catch (DiscussionMaxCommentsException | MessageBodyException |
-			NoSuchMessageException | PrincipalException |
-			RequiredMessageException e) {
+			   NoSuchMessageException | PrincipalException |
+			   RequiredMessageException e) {
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
@@ -129,9 +129,8 @@ public class EditDiscussionStrutsAction extends BaseStrutsAction {
 
 		long commentId = ParamUtil.getLong(request, "commentId");
 
-		DiscussionPermission discussionPermission =
-			CommentManagerUtil.getDiscussionPermission(
-				themeDisplay.getPermissionChecker());
+		DiscussionPermission discussionPermission = getDiscussionPermission(
+			themeDisplay);
 
 		discussionPermission.checkDeletePermission(commentId);
 
@@ -174,9 +173,8 @@ public class EditDiscussionStrutsAction extends BaseStrutsAction {
 		Function<String, ServiceContext> serviceContextFunction =
 			new ServiceContextFunction(request);
 
-		DiscussionPermission discussionPermission =
-			CommentManagerUtil.getDiscussionPermission(
-				themeDisplay.getPermissionChecker());
+		DiscussionPermission discussionPermission = getDiscussionPermission(
+			themeDisplay);
 
 		if (commentId <= 0) {
 
@@ -267,6 +265,21 @@ public class EditDiscussionStrutsAction extends BaseStrutsAction {
 		ServletResponseUtil.write(response, json.toString());
 
 		response.flushBuffer();
+	}
+
+	private DiscussionPermission getDiscussionPermission(
+			ThemeDisplay themeDisplay)
+		throws PrincipalException {
+
+		DiscussionPermission discussionPermission =
+			CommentManagerUtil.getDiscussionPermission(
+				themeDisplay.getPermissionChecker());
+
+		if (discussionPermission == null) {
+			throw new PrincipalException("Discussion permission is null");
+		}
+
+		return discussionPermission;
 	}
 
 }

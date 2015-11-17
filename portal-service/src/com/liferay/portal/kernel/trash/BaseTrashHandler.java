@@ -41,7 +41,6 @@ import com.liferay.portlet.trash.model.TrashEntry;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 
@@ -133,20 +132,8 @@ public abstract class BaseTrashHandler implements TrashHandler {
 		return StringPool.BLANK;
 	}
 
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getContainerModelName(long)}
-	 */
-	@Deprecated
 	@Override
 	public String getContainerModelName() {
-		return StringPool.BLANK;
-	}
-
-	/**
-	 * @throws PortalException
-	 */
-	@Override
-	public String getContainerModelName(long classPK) throws PortalException {
 		return StringPool.BLANK;
 	}
 
@@ -252,46 +239,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 	}
 
 	@Override
-	public String getRootContainerModelClassName() {
-		return getContainerModelClassName(0);
-	}
-
-	/**
-	 * @throws PortalException
-	 */
-	@Override
-	public long getRootContainerModelId(long classPK) throws PortalException {
-		return 0;
-	}
-
-	@Override
 	public String getRootContainerModelName() {
-		return StringPool.BLANK;
-	}
-
-	/**
-	 * @throws PortalException
-	 */
-	@Override
-	public List<ContainerModel> getRootContainerModels(long groupId)
-		throws PortalException {
-
-		return Collections.emptyList();
-	}
-
-	@Override
-	public int getRootContainerModelsCount(long groupId) {
-		return 0;
-	}
-
-	/**
-	 * @throws PortalException
-	 */
-	@Override
-	public String getRootContainerModelTitle(
-			long containerModelId, Locale locale)
-		throws PortalException {
-
 		return StringPool.BLANK;
 	}
 
@@ -357,11 +305,12 @@ public abstract class BaseTrashHandler implements TrashHandler {
 
 	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
-		AssetRendererFactory assetRendererFactory = getAssetRendererFactory();
+		AssetRendererFactory<?> assetRendererFactory =
+			getAssetRendererFactory();
 
 		if (assetRendererFactory != null) {
-			AssetRenderer assetRenderer = assetRendererFactory.getAssetRenderer(
-				classPK);
+			AssetRenderer<?> assetRenderer =
+				assetRendererFactory.getAssetRenderer(classPK);
 
 			if (assetRenderer instanceof TrashRenderer) {
 				return (TrashRenderer)assetRenderer;
@@ -426,11 +375,6 @@ public abstract class BaseTrashHandler implements TrashHandler {
 	}
 
 	@Override
-	public boolean isRootContainerModelMovable() {
-		return false;
-	}
-
-	@Override
 	@SuppressWarnings("unused")
 	public void moveEntry(
 			long userId, long classPK, long containerModelId,
@@ -465,7 +409,7 @@ public abstract class BaseTrashHandler implements TrashHandler {
 	public void updateTitle(long classPK, String title) throws PortalException {
 	}
 
-	protected AssetRendererFactory getAssetRendererFactory() {
+	protected AssetRendererFactory<?> getAssetRendererFactory() {
 		return AssetRendererFactoryRegistryUtil.
 			getAssetRendererFactoryByClassName(getClassName());
 	}

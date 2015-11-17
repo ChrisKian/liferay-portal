@@ -14,8 +14,6 @@
 
 package com.liferay.portal.kernel.settings;
 
-import com.liferay.portal.model.Layout;
-
 /**
  * @author Iván Zaera
  */
@@ -36,6 +34,10 @@ public interface SettingsLocatorHelper {
 	public Settings getPortalPropertiesSettings();
 
 	public Settings getPortletInstancePortletPreferencesSettings(
-		Layout layout, String portletId, Settings parentSettings);
+		long companyId, long ownerId, int ownerType, long plid,
+		String portletId, Settings parentSettings);
+
+	public Settings getPortletInstancePortletPreferencesSettings(
+		long companyId, long plid, String portletId, Settings parentSettings);
 
 }

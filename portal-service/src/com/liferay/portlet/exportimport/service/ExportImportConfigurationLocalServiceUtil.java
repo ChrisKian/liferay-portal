@@ -108,11 +108,9 @@ public class ExportImportConfigurationLocalServiceUtil {
 	*
 	* @param exportImportConfiguration the export import configuration
 	* @return the export import configuration that was removed
-	* @throws PortalException
 	*/
 	public static com.liferay.portlet.exportimport.model.ExportImportConfiguration deleteExportImportConfiguration(
-		com.liferay.portlet.exportimport.model.ExportImportConfiguration exportImportConfiguration)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		com.liferay.portlet.exportimport.model.ExportImportConfiguration exportImportConfiguration) {
 		return getService()
 				   .deleteExportImportConfiguration(exportImportConfiguration);
 	}
@@ -131,8 +129,7 @@ public class ExportImportConfigurationLocalServiceUtil {
 				   .deleteExportImportConfiguration(exportImportConfigurationId);
 	}
 
-	public static void deleteExportImportConfigurations(long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
+	public static void deleteExportImportConfigurations(long groupId) {
 		getService().deleteExportImportConfigurations(groupId);
 	}
 
@@ -234,15 +231,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 	}
 
 	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	public static java.lang.String getBeanIdentifier() {
-		return getService().getBeanIdentifier();
-	}
-
-	/**
 	* Returns the export import configuration with the primary key.
 	*
 	* @param exportImportConfigurationId the primary key of the export import configuration
@@ -308,6 +296,15 @@ public class ExportImportConfigurationLocalServiceUtil {
 		return getService().getExportImportConfigurationsCount(groupId, type);
 	}
 
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	public static java.lang.String getOSGiServiceIdentifier() {
+		return getService().getOSGiServiceIdentifier();
+	}
+
 	public static com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -347,15 +344,6 @@ public class ExportImportConfigurationLocalServiceUtil {
 		return getService()
 				   .searchExportImportConfigurations(companyId, groupId, type,
 			name, description, andSearch, start, end, sort);
-	}
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public static void setBeanIdentifier(java.lang.String beanIdentifier) {
-		getService().setBeanIdentifier(beanIdentifier);
 	}
 
 	/**

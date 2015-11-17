@@ -12,7 +12,7 @@
 		<execute macro="User#tearDownCP" />
 	</tear-down>
 
-	<command name="AddPageMultiplePagesToSite" priority="4">
+	<command name="AddPageMultiplePagesToSite" priority="3">
 		<execute macro="Page#openURL" />
 
 		<execute macro="Page#addPG">
@@ -30,7 +30,13 @@
 		<execute macro="SitePage#deleteSitepagesPG" />
 	</command>
 
-	<command name="AddPageWithMultipleChildPagesToSite" priority="4">
+	<command name="AddPageWithEscapeCharacter" priority="3">
+		<execute macro="Page#addPG">
+			<var name="pageName" value="Tester&apos;s Page" />
+		</execute>
+	</command>
+
+	<command name="AddPageWithMultipleChildPagesToSite" priority="3">
 		<execute macro="Page#gotoCP">
 			<var name="portletName" value="Sites" />
 		</execute>
@@ -165,6 +171,7 @@
 		<execute macro="Page#addPG">
 			<var name="pageAccess" value="Private" />
 			<var name="pageName" value="Blogs Page" />
+			<var name="privatePage" value="Private Pages" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -179,6 +186,8 @@
 	</command>
 
 	<command name="AddSitePublicChildPage" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoCP">
 			<var name="portletName" value="Sites" />
 		</execute>
@@ -220,6 +229,8 @@
 	</command>
 
 	<command name="AddSitePublicPage" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoCP">
 			<var name="portletName" value="Sites" />
 		</execute>
@@ -283,7 +294,7 @@
 		</execute>
 	</command>
 
-	<command name="ChangePageLayout" priority="4">
+	<command name="ChangePageLayout" priority="3">
 		<execute macro="Page#addPG">
 			<var name="pageName" value="site Page Name" />
 		</execute>
@@ -347,6 +358,8 @@
 	</command>
 
 	<command name="DeleteSitePages" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoCP">
 			<var name="portletName" value="Sites" />
 		</execute>
@@ -379,6 +392,8 @@
 	</command>
 
 	<command name="EditSitePage" priority="5">
+		<property name="portal.acceptance" value="true" />
+
 		<execute macro="Page#gotoPagesCP" >
 			<var name="portletName" value="Site Pages" />
 		</execute>
@@ -475,7 +490,7 @@
 		<execute macro="Blogs#viewControlsPG" />
 	</command>
 
-	<command name="ViewNoInfoMessageWhenChangingSiteTemplateAsUser" priority="4">
+	<command name="ViewNoInfoMessageWhenChangingSiteTemplateAsUser" priority="3">
 		<execute macro="Page#gotoCP">
 			<var name="portletName" value="Users and Organizations" />
 		</execute>
@@ -553,7 +568,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute function="AssertTextNotPresent" locator1="Dockbar#PAGE_INFO_MESSAGE" value1="This page has been changed since the last update from the site template." />
+		<execute macro="SiteTemplates#viewNoInfoMessage" />
 
 		<execute macro="User#firstLoginPG">
 			<var name="password" value="test" />

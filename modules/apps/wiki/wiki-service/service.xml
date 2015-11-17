@@ -290,6 +290,7 @@
 		<reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
 		<reference package-path="com.liferay.portlet.asset" entity="AssetTag" />
 		<reference package-path="com.liferay.portlet.expando" entity="ExpandoRow" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
 		<reference package-path="com.liferay.portlet.trash" entity="TrashEntry" />
 		<reference package-path="com.liferay.portlet.trash" entity="TrashVersion" />
 		<reference package-path="com.liferay.wiki" entity="WikiNode" />
@@ -309,6 +310,10 @@
 
 		<column name="groupId" type="long" />
 
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
 		<!-- Other fields -->
 
 		<column name="nodeId" type="long" />
@@ -325,7 +330,6 @@
 		<exception>DuplicateNodeName</exception>
 		<exception>DuplicatePage</exception>
 		<exception>ImportFiles</exception>
-		<exception>NodeChange</exception>
 		<exception>NodeName</exception>
 		<exception>NoSuchNode</exception>
 		<exception>NoSuchPage</exception>

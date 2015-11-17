@@ -42,6 +42,7 @@ import com.liferay.portal.test.rule.PersistenceTestRule;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -58,8 +59,9 @@ import java.util.Set;
  * @generated
  */
 public class PortletItemPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -330,11 +332,9 @@ public class PortletItemPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = PortletItemLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<PortletItem>() {
 				@Override
-				public void performAction(Object object) {
-					PortletItem portletItem = (PortletItem)object;
-
+				public void performAction(PortletItem portletItem) {
 					Assert.assertNotNull(portletItem);
 
 					count.increment();
@@ -428,8 +428,8 @@ public class PortletItemPersistenceTest {
 
 		PortletItem existingPortletItem = _persistence.findByPrimaryKey(newPortletItem.getPrimaryKey());
 
-		Assert.assertEquals(existingPortletItem.getGroupId(),
-			ReflectionTestUtil.invoke(existingPortletItem,
+		Assert.assertEquals(Long.valueOf(existingPortletItem.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingPortletItem,
 				"getOriginalGroupId", new Class<?>[0]));
 		Assert.assertTrue(Validator.equals(existingPortletItem.getName(),
 				ReflectionTestUtil.invoke(existingPortletItem,
@@ -437,8 +437,8 @@ public class PortletItemPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingPortletItem.getPortletId(),
 				ReflectionTestUtil.invoke(existingPortletItem,
 					"getOriginalPortletId", new Class<?>[0])));
-		Assert.assertEquals(existingPortletItem.getClassNameId(),
-			ReflectionTestUtil.invoke(existingPortletItem,
+		Assert.assertEquals(Long.valueOf(existingPortletItem.getClassNameId()),
+			ReflectionTestUtil.<Long>invoke(existingPortletItem,
 				"getOriginalClassNameId", new Class<?>[0]));
 	}
 

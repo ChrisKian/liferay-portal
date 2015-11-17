@@ -41,7 +41,7 @@
 		<property name="defaultDestinationName" value="liferay/async_service" />
 		<property name="nextMethodInterceptor" ref="threadLocalCacheAdvice" />
 	</bean>
-	<bean id="threadLocalCacheAdvice" class="com.liferay.portal.cache.ThreadLocalCacheAdvice">
+	<bean id="threadLocalCacheAdvice" class="com.liferay.portal.cache.thread.local.ThreadLocalCacheAdvice">
 		<property name="nextMethodInterceptor" ref="bufferedIncrementAdvice" />
 	</bean>
 	<bean id="bufferedIncrementAdvice" class="com.liferay.portal.increment.BufferedIncrementAdvice">
@@ -54,6 +54,9 @@
 		<property name="nextMethodInterceptor" ref="serviceContextAdvice" />
 	</bean>
 	<bean id="serviceContextAdvice" class="com.liferay.portal.service.ServiceContextAdvice">
+		<property name="nextMethodInterceptor" ref="retryAdvice" />
+	</bean>
+	<bean id="retryAdvice" class="com.liferay.portal.spring.aop.RetryAdvice">
 		<property name="nextMethodInterceptor" ref="transactionAdvice" />
 	</bean>
 	<bean id="transactionAdvice" class="com.liferay.portal.dao.jdbc.aop.DynamicDataSourceAdviceFactoryUtil" factory-method="createDynamicDataSourceAdvice">

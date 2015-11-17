@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.model.AuditedModel;
 import com.liferay.portal.model.GroupedModel;
@@ -136,13 +137,11 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * </li>
 	 * </ol>
 	 *
-	 * @param  auditedModel the model to associate with the resources
-	 * @param  serviceContext the service context to apply. Can set whether to
-	 *         add the model's default group and guest permissions, set whether
-	 *         to derive default group and guest permissions from the model, set
-	 *         group permissions to apply, and set guest permissions to apply.
-	 * @throws PortalException if no portal actions could be found associated
-	 *         with the model or if a portal exception occurred
+	 * @param auditedModel the model to associate with the resources
+	 * @param serviceContext the service context to apply. Can set whether to
+	 *        add the model's default group and guest permissions, set whether
+	 *        to derive default group and guest permissions from the model, set
+	 *        group permissions to apply, and set guest permissions to apply.
 	 */
 	@Override
 	public void addModelResources(
@@ -202,16 +201,14 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * at the group, group template, and company scope if such resources don't
 	 * already exist.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  userId the primary key of the user adding the resources
-	 * @param  name a name for the resource, typically the model's class name
-	 * @param  primKey the primary key of the model instance, optionally
-	 *         <code>0</code> if no instance exists
-	 * @param  groupPermissions the group permissions to be applied
-	 * @param  guestPermissions the guest permissions to be applied
-	 * @throws PortalException if no portal actions could be found associated
-	 *         with the model or if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param userId the primary key of the user adding the resources
+	 * @param name a name for the resource, typically the model's class name
+	 * @param primKey the primary key of the model instance, optionally
+	 *        <code>0</code> if no instance exists
+	 * @param groupPermissions the group permissions to be applied
+	 * @param guestPermissions the guest permissions to be applied
 	 */
 	@Override
 	public void addModelResources(
@@ -240,16 +237,14 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * at the group, group template, and company scope if such resources don't
 	 * already exist.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  userId the primary key of the user adding the resources
-	 * @param  name a name for the resource, typically the model's class name
-	 * @param  primKey the primary key string of the model instance, optionally
-	 *         an empty string if no instance exists
-	 * @param  groupPermissions the group permissions to be applied
-	 * @param  guestPermissions the guest permissions to be applied
-	 * @throws PortalException if no portal actions could be found associated
-	 *         with the model or if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param userId the primary key of the user adding the resources
+	 * @param name a name for the resource, typically the model's class name
+	 * @param primKey the primary key string of the model instance, optionally
+	 *        an empty string if no instance exists
+	 * @param groupPermissions the group permissions to be applied
+	 * @param guestPermissions the guest permissions to be applied
 	 */
 	@Override
 	public void addModelResources(
@@ -269,19 +264,17 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * at the group, group template, and company scope if such resources don't
 	 * already exist.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  userId the primary key of the user adding the resources
-	 * @param  name a name for the resource, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  primKey the primary key of the resource instance, optionally
-	 *         <code>0</code> if no instance exists
-	 * @param  portletActions whether to associate portlet actions with the
-	 *         resource
-	 * @param  addGroupPermissions whether to add group permissions
-	 * @param  addGuestPermissions whether to add guest permissions
-	 * @throws PortalException if no portal actions could be found associated
-	 *         with the resource or if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param userId the primary key of the user adding the resources
+	 * @param name a name for the resource, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param primKey the primary key of the resource instance, optionally
+	 *        <code>0</code> if no instance exists
+	 * @param portletActions whether to associate portlet actions with the
+	 *        resource
+	 * @param addGroupPermissions whether to add group permissions
+	 * @param addGuestPermissions whether to add guest permissions
 	 */
 	@Override
 	public void addResources(
@@ -301,19 +294,17 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * resources at the group, group template, and company scope if such
 	 * resources don't already exist.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  userId the primary key of the user adding the resources
-	 * @param  name a name for the resource, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  primKey the primary key string of the resource instance,
-	 *         optionally an empty string if no instance exists
-	 * @param  portletActions whether to associate portlet actions with the
-	 *         resource
-	 * @param  addGroupPermissions whether to add group permissions
-	 * @param  addGuestPermissions whether to add guest permissions
-	 * @throws PortalException if no portal actions could be found associated
-	 *         with the resource or if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param userId the primary key of the user adding the resources
+	 * @param name a name for the resource, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param primKey the primary key string of the resource instance,
+	 *        optionally an empty string if no instance exists
+	 * @param portletActions whether to associate portlet actions with the
+	 *        resource
+	 * @param addGroupPermissions whether to add group permissions
+	 * @param addGuestPermissions whether to add guest permissions
 	 */
 	@Override
 	public void addResources(
@@ -331,14 +322,12 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * Adds resources for the entity with the name. Use this method if the user
 	 * is unknown or irrelevant and there is no current entity instance.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  name a name for the resource, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  portletActions whether to associate portlet actions with the
-	 *         resource
-	 * @throws PortalException if no portal actions could be found associated
-	 *         with the resource or if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param name a name for the resource, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param portletActions whether to associate portlet actions with the
+	 *        resource
 	 */
 	@Override
 	public void addResources(
@@ -352,10 +341,9 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	/**
 	 * Deletes the resource associated with the model at the scope.
 	 *
-	 * @param  auditedModel the model associated with the resource
-	 * @param  scope the scope of the resource. For more information see {@link
-	 *         ResourceConstants}.
-	 * @throws PortalException if a portal exception occurred
+	 * @param auditedModel the model associated with the resource
+	 * @param scope the scope of the resource. For more information see {@link
+	 *        ResourceConstants}.
 	 */
 	@Override
 	public void deleteResource(AuditedModel auditedModel, int scope)
@@ -370,13 +358,12 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	/**
 	 * Deletes the resource matching the primary key at the scope.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  name the resource's name, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  scope the scope of the resource. For more information see {@link
-	 *         ResourceConstants}.
-	 * @param  primKey the primary key of the resource instance
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param name the resource's name, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param scope the scope of the resource. For more information see {@link
+	 *        ResourceConstants}.
+	 * @param primKey the primary key of the resource instance
 	 */
 	@Override
 	public void deleteResource(
@@ -389,13 +376,12 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	/**
 	 * Deletes the resource matching the primary key at the scope.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  name the resource's name, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  scope the scope of the resource. For more information see {@link
-	 *         ResourceConstants}.
-	 * @param  primKey the primary key string of the resource instance
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param name the resource's name, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param scope the scope of the resource. For more information see {@link
+	 *        ResourceConstants}.
+	 * @param primKey the primary key string of the resource instance
 	 */
 	@Override
 	public void deleteResource(
@@ -445,9 +431,6 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * @param  roleIds the primary keys of the roles
 	 * @return <code>true</code> if the roles have permission to perform the
 	 *         action on the resources;<code>false</code> otherwise
-	 * @throws PortalException if any one of the roles with the primary keys
-	 *         could not be found or if a resource action with the action ID
-	 *         could not be found
 	 */
 	@Override
 	public boolean hasUserPermissions(
@@ -474,10 +457,9 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * Updates the resources for the model, replacing their group and guest
 	 * permissions with new ones from the service context.
 	 *
-	 * @param  auditedModel the model associated with the resources
-	 * @param  serviceContext the service context to be applied. Can set group
-	 *         and guest permissions.
-	 * @throws PortalException if a portal exception occurred
+	 * @param auditedModel the model associated with the resources
+	 * @param serviceContext the service context to be applied. Can set group
+	 *        and guest permissions.
 	 */
 	@Override
 	public void updateModelResources(
@@ -496,13 +478,12 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * Updates resources matching the group, name, and primary key at the
 	 * individual scope, setting new permissions.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  name the resource's name, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  primKey the primary key of the resource instance
-	 * @param  modelPermissions the model permissions to be applied
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param name the resource's name, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param primKey the primary key of the resource instance
+	 * @param modelPermissions the model permissions to be applied
 	 */
 	@Override
 	public void updateResources(
@@ -519,14 +500,13 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * Updates resources matching the group, name, and primary key at the
 	 * individual scope, setting new group and guest permissions.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  name the resource's name, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  primKey the primary key of the resource instance
-	 * @param  groupPermissions the group permissions to be applied
-	 * @param  guestPermissions the guest permissions to be applied
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param name the resource's name, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param primKey the primary key of the resource instance
+	 * @param groupPermissions the group permissions to be applied
+	 * @param guestPermissions the guest permissions to be applied
 	 */
 	@Override
 	public void updateResources(
@@ -543,13 +523,12 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * Updates resources matching the group, name, and primary key string at the
 	 * individual scope, setting new permissions.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  name the resource's name, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  primKey the primary key string of the resource instance
-	 * @param  modelPermissions the model permissions to be applied
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param name the resource's name, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param primKey the primary key string of the resource instance
+	 * @param modelPermissions the model permissions to be applied
 	 */
 	@Override
 	public void updateResources(
@@ -565,14 +544,13 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	 * Updates resources matching the group, name, and primary key string at the
 	 * individual scope, setting new group and guest permissions.
 	 *
-	 * @param  companyId the primary key of the portal instance
-	 * @param  groupId the primary key of the group
-	 * @param  name the resource's name, which should be a portlet ID if the
-	 *         resource is a portlet or the resource's class name otherwise
-	 * @param  primKey the primary key string of the resource instance
-	 * @param  groupPermissions the group permissions to be applied
-	 * @param  guestPermissions the guest permissions to be applied
-	 * @throws PortalException if a portal exception occurred
+	 * @param companyId the primary key of the portal instance
+	 * @param groupId the primary key of the group
+	 * @param name the resource's name, which should be a portlet ID if the
+	 *        resource is a portlet or the resource's class name otherwise
+	 * @param primKey the primary key string of the resource instance
+	 * @param groupPermissions the group permissions to be applied
+	 * @param guestPermissions the guest permissions to be applied
 	 */
 	@Override
 	public void updateResources(
@@ -1169,6 +1147,23 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 	}
 
 	protected void updateResourcePermissions(
+			long groupId, Resource resource, ModelPermissions modelPermissions)
+		throws PortalException {
+
+		for (String roleName : modelPermissions.getRoleNames()) {
+			Role role = getRole(resource.getCompanyId(), groupId, roleName);
+
+			List<String> actionIds = modelPermissions.getActionIdsList(
+				roleName);
+
+			resourcePermissionLocalService.setResourcePermissions(
+				resource.getCompanyId(), resource.getName(),
+				resource.getScope(), resource.getPrimKey(), role.getRoleId(),
+				actionIds.toArray(new String[actionIds.size()]));
+		}
+	}
+
+	protected void updateResourcePermissions(
 		long companyId, String name, int scope, String primKey,
 		String newPrimKey) {
 
@@ -1178,25 +1173,9 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 
 		for (ResourcePermission resourcePermission : resourcePermissions) {
 			resourcePermission.setPrimKey(newPrimKey);
+			resourcePermission.setPrimKeyId(GetterUtil.getLong(newPrimKey));
 
 			resourcePermissionPersistence.update(resourcePermission);
-		}
-	}
-
-	protected void updateResourcePermissions(
-			Resource resource, ModelPermissions modelPermissions)
-		throws PortalException {
-
-		for (String roleName : modelPermissions.getRoleNames()) {
-			Role role = getRole(resource.getCompanyId(), 0, roleName);
-
-			List<String> actionIds = modelPermissions.getActionIdsList(
-				roleName);
-
-			resourcePermissionLocalService.setResourcePermissions(
-				resource.getCompanyId(), resource.getName(),
-				resource.getScope(), resource.getPrimKey(), role.getRoleId(),
-				actionIds.toArray(new String[actionIds.size()]));
 		}
 	}
 
@@ -1214,7 +1193,7 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 				groupId, resource, modelPermissions, permissionedModel);
 		}
 		else {
-			updateResourcePermissions(resource, modelPermissions);
+			updateResourcePermissions(groupId, resource, modelPermissions);
 		}
 	}
 

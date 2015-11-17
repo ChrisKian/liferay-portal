@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TransientValue;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Element;
@@ -46,7 +47,7 @@ import com.liferay.portlet.asset.model.AssetTag;
 import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
 import com.liferay.portlet.asset.service.AssetTagLocalServiceUtil;
 import com.liferay.portlet.exportimport.lifecycle.ExportImportLifecycleConstants;
-import com.liferay.portlet.exportimport.lifecycle.ExportImportLifecycleManager;
+import com.liferay.portlet.exportimport.lifecycle.ExportImportLifecycleManagerUtil;
 import com.liferay.portlet.ratings.model.RatingsEntry;
 import com.liferay.portlet.ratings.service.RatingsEntryLocalServiceUtil;
 import com.liferay.portlet.trash.util.TrashUtil;
@@ -72,6 +73,10 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 		throws PortalException;
 
 	@Override
+	public abstract void deleteStagedModel(T stagedModel)
+		throws PortalException;
+
+	@Override
 	public void exportStagedModel(
 			PortletDataContext portletDataContext, T stagedModel)
 		throws PortletDataException {
@@ -85,7 +90,7 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 		}
 
 		try {
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_EXPORT_STARTED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
@@ -111,14 +116,14 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 
 			portletDataContext.cleanUpMissingReferences(stagedModel);
 
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_EXPORT_SUCCEEDED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
 				new TransientValue<T>(stagedModel));
 		}
 		catch (PortletDataException pde) {
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_EXPORT_FAILED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
@@ -127,7 +132,7 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 			throw pde;
 		}
 		catch (Throwable t) {
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_EXPORT_FAILED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
@@ -288,23 +293,17 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 			PortletDataContext portletDataContext, Element referenceElement)
 		throws PortletDataException {
 
-		importMissingGroupReference(portletDataContext, referenceElement);
+		try {
+			doImportMissingReference(portletDataContext, referenceElement);
+		}
+		catch (Exception e) {
+			if (!StringUtil.equalsIgnoreCase(
+					referenceElement.attributeValue("type"),
+					PortletDataContext.REFERENCE_TYPE_DEPENDENCY_DISPOSABLE)) {
 
-		String uuid = referenceElement.attributeValue("uuid");
-
-		Map<Long, Long> groupIds =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				Group.class);
-
-		long groupId = GetterUtil.getLong(
-			referenceElement.attributeValue("group-id"));
-
-		groupId = MapUtil.getLong(groupIds, groupId);
-
-		long classPK = GetterUtil.getLong(
-			referenceElement.attributeValue("class-pk"));
-
-		importMissingReference(portletDataContext, uuid, groupId, classPK);
+				throw e;
+			}
+		}
 	}
 
 	@Override
@@ -337,7 +336,7 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 		}
 
 		try {
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_IMPORT_STARTED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
@@ -370,14 +369,14 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 			manifestSummary.incrementModelAdditionCount(
 				stagedModel.getStagedModelType());
 
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_IMPORT_SUCCEEDED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
 				new TransientValue<T>(stagedModel));
 		}
 		catch (PortletDataException pde) {
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_IMPORT_FAILED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
@@ -386,7 +385,7 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 			throw pde;
 		}
 		catch (Throwable t) {
-			ExportImportLifecycleManager.fireExportImportLifecycleEvent(
+			ExportImportLifecycleManagerUtil.fireExportImportLifecycleEvent(
 				EVENT_STAGED_MODEL_IMPORT_FAILED, getProcessFlag(),
 				PortletDataContextFactoryUtil.clonePortletDataContext(
 					portletDataContext),
@@ -448,6 +447,29 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 	protected abstract void doExportStagedModel(
 			PortletDataContext portletDataContext, T stagedModel)
 		throws Exception;
+
+	protected void doImportMissingReference(
+			PortletDataContext portletDataContext, Element referenceElement)
+		throws PortletDataException {
+
+		importMissingGroupReference(portletDataContext, referenceElement);
+
+		String uuid = referenceElement.attributeValue("uuid");
+
+		Map<Long, Long> groupIds =
+			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+				Group.class);
+
+		long groupId = GetterUtil.getLong(
+			referenceElement.attributeValue("group-id"));
+
+		groupId = MapUtil.getLong(groupIds, groupId);
+
+		long classPK = GetterUtil.getLong(
+			referenceElement.attributeValue("class-pk"));
+
+		importMissingReference(portletDataContext, uuid, groupId, classPK);
+	}
 
 	protected void doImportMissingReference(
 			PortletDataContext portletDataContext, String uuid, long groupId,

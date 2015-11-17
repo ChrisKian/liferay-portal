@@ -20,6 +20,9 @@ import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactory
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.module.framework.test.ModuleFrameworkTestUtil;
+import com.liferay.portal.service.test.ServiceTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.MainServletTestRule;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -28,11 +31,14 @@ import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.ServiceRegistration;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,6 +53,21 @@ public class EditorConfigContributorTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE);
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		ServiceTestUtil.setUser(TestPropsValues.getUser());
+
+		_bundleIds = ModuleFrameworkTestUtil.getBundleIds(
+			EditorConfigContributor.class, null);
+
+		ModuleFrameworkTestUtil.stopBundles(_bundleIds);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		ModuleFrameworkTestUtil.startBundles(_bundleIds);
+	}
 
 	@After
 	public void tearDown() {
@@ -520,6 +541,8 @@ public class EditorConfigContributorTest {
 	private static final String _EDITOR_NAME_2 = "testEditorName2";
 
 	private static final String _PORTLET_NAME = "testPortletName";
+
+	private static Collection<Long> _bundleIds;
 
 	private ServiceRegistration<EditorConfigContributor>
 		_editorConfigContributorServiceRegistration1;

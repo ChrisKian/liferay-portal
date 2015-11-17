@@ -16,7 +16,11 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil;
+import com.liferay.portlet.asset.model.AssetEntry;
+import com.liferay.portlet.asset.model.AssetRendererFactory;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerMap;
 
@@ -43,6 +47,20 @@ public class PortletProviderUtil {
 	}
 
 	public static PortletURL getPortletURL(
+			HttpServletRequest request, Group group, String className,
+			PortletProvider.Action action)
+		throws PortalException {
+
+		PortletProvider portletProvider = getPortletProvider(className, action);
+
+		if (portletProvider != null) {
+			return portletProvider.getPortletURL(request, group);
+		}
+
+		return null;
+	}
+
+	public static PortletURL getPortletURL(
 			HttpServletRequest request, String className,
 			PortletProvider.Action action)
 		throws PortalException {
@@ -54,6 +72,16 @@ public class PortletProviderUtil {
 		}
 
 		return null;
+	}
+
+	public static PortletURL getPortletURL(
+			PortletRequest portletRequest, Group group, String className,
+			PortletProvider.Action action)
+		throws PortalException {
+
+		return getPortletURL(
+			PortalUtil.getHttpServletRequest(portletRequest), group, className,
+			action);
 	}
 
 	public static PortletURL getPortletURL(
@@ -72,47 +100,50 @@ public class PortletProviderUtil {
 		PortletProvider portletProvider = null;
 
 		if (action.equals(PortletProvider.Action.ADD)) {
-			portletProvider = _addServiceTrackerMap.getService(className);
-
-			if (portletProvider == null) {
-				portletProvider = _addServiceTrackerMap.getService(
-					PortletProvider.CLASS_NAME_ANY);
-			}
+			return getPortletProvider(className, _addServiceTrackerMap);
 		}
 		else if (action.equals(PortletProvider.Action.BROWSE)) {
-			portletProvider = _browseServiceTrackerMap.getService(className);
-
-			if (portletProvider == null) {
-				portletProvider = _browseServiceTrackerMap.getService(
-					PortletProvider.CLASS_NAME_ANY);
-			}
+			return getPortletProvider(className, _browseServiceTrackerMap);
 		}
 		else if (action.equals(PortletProvider.Action.EDIT)) {
-			portletProvider = _editServiceTrackerMap.getService(className);
-
-			if (portletProvider == null) {
-				portletProvider = _editServiceTrackerMap.getService(
-					PortletProvider.CLASS_NAME_ANY);
-			}
+			return getPortletProvider(className, _editServiceTrackerMap);
 		}
 		else if (action.equals(PortletProvider.Action.MANAGE)) {
-			portletProvider = _manageServiceTrackerMap.getService(className);
-
-			if (portletProvider == null) {
-				portletProvider = _manageServiceTrackerMap.getService(
-					PortletProvider.CLASS_NAME_ANY);
-			}
+			return getPortletProvider(className, _manageServiceTrackerMap);
 		}
 		else if (action.equals(PortletProvider.Action.VIEW)) {
-			portletProvider = _viewServiceTrackerMap.getService(className);
-
-			if (portletProvider == null) {
-				portletProvider = _viewServiceTrackerMap.getService(
-					PortletProvider.CLASS_NAME_ANY);
-			}
+			return getPortletProvider(className, _viewServiceTrackerMap);
 		}
 
 		return portletProvider;
+	}
+
+	protected static PortletProvider getPortletProvider(
+		String className,
+		ServiceTrackerMap
+			<String, ? extends PortletProvider> serviceTrackerMap) {
+
+		PortletProvider portletProvider = serviceTrackerMap.getService(
+			className);
+
+		if ((portletProvider == null) && isAssetObject(className)) {
+			portletProvider = serviceTrackerMap.getService(
+				AssetEntry.class.getName());
+		}
+
+		return portletProvider;
+	}
+
+	protected static boolean isAssetObject(String className) {
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
+
+		if (assetRendererFactory != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final ServiceTrackerMap<String, AddPortletProvider>

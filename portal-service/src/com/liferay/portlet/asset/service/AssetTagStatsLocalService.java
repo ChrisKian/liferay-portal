@@ -118,8 +118,6 @@ public interface AssetTagStatsLocalService extends BaseLocalService,
 	* Deletes the asset tag statistics instance matching the tag statistics ID.
 	*
 	* @param tagStatsId the primary key of the asset tag statistics instance
-	* @throws PortalException if the assetTagStats with the primary key could
-	not be found
 	*/
 	public void deleteTagStats(long tagStatsId) throws PortalException;
 
@@ -245,11 +243,11 @@ public interface AssetTagStatsLocalService extends BaseLocalService,
 	public int getAssetTagStatsesCount();
 
 	/**
-	* Returns the Spring bean ID for this bean.
+	* Returns the OSGi service identifier.
 	*
-	* @return the Spring bean ID for this bean
+	* @return the OSGi service identifier
 	*/
-	public java.lang.String getBeanIdentifier();
+	public java.lang.String getOSGiServiceIdentifier();
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -294,13 +292,6 @@ public interface AssetTagStatsLocalService extends BaseLocalService,
 		long tagId, long classNameId);
 
 	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	public void setBeanIdentifier(java.lang.String beanIdentifier);
-
-	/**
 	* Updates the asset tag stats in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
 	* @param assetTagStats the asset tag stats
@@ -316,8 +307,6 @@ public interface AssetTagStatsLocalService extends BaseLocalService,
 	* @param tagId the primary key of the tag
 	* @param classNameId the asset entry's class name ID
 	* @return the updated asset tag statistics instance
-	* @throws PortalException if an asset tag with the tag ID could not be
-	found
 	*/
 	public com.liferay.portlet.asset.model.AssetTagStats updateTagStats(
 		long tagId, long classNameId) throws PortalException;

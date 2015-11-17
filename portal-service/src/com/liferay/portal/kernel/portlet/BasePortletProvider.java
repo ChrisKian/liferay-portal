@@ -16,6 +16,7 @@ package com.liferay.portal.kernel.portlet;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.PortletURLFactoryUtil;
@@ -34,12 +35,29 @@ public abstract class BasePortletProvider implements PortletProvider {
 	public PortletURL getPortletURL(HttpServletRequest request)
 		throws PortalException {
 
+		return getPortletURL(request, null);
+	}
+
+	@Override
+	public PortletURL getPortletURL(HttpServletRequest request, Group group)
+		throws PortalException {
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		return PortletURLFactoryUtil.create(
-			request, getPortletId(), getPlid(themeDisplay),
-			PortletRequest.RENDER_PHASE);
+		long plid = getPlid(themeDisplay);
+		long controlPanelPlid = PortalUtil.getControlPanelPlid(
+			themeDisplay.getCompanyId());
+
+		if (plid == controlPanelPlid) {
+			return PortalUtil.getControlPanelPortletURL(
+				request, group, getPortletId(), 0, 0,
+				PortletRequest.RENDER_PHASE);
+		}
+		else {
+			return PortletURLFactoryUtil.create(
+				request, getPortletId(), plid, PortletRequest.RENDER_PHASE);
+		}
 	}
 
 	protected long getPlid(ThemeDisplay themeDisplay) throws PortalException {

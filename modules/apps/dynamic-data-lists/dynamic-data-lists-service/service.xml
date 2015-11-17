@@ -29,6 +29,7 @@
 		<column name="recordSetId" type="long" />
 		<column name="version" type="String" />
 		<column name="displayIndex" type="int" />
+		<column name="lastPublishDate" type="Date" />
 
 		<!-- Finder methods -->
 
@@ -50,6 +51,7 @@
 		<reference package-path="com.liferay.portal" entity="User" />
 		<reference package-path="com.liferay.portal" entity="WorkflowInstanceLink" />
 		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
 	</entity>
 	<entity name="DDLRecordSet" uuid="true" local-service="true" remote-service="true">
 
@@ -77,6 +79,8 @@
 		<column name="description" type="String" localized="true" />
 		<column name="minDisplayRows" type="int" />
 		<column name="scope" type="int" />
+		<column name="settings" type="String" />
+		<column name="lastPublishDate" type="Date" />
 
 		<!-- Finder methods -->
 
@@ -143,5 +147,6 @@
 		<exception>RecordSetDDMStructureId</exception>
 		<exception>RecordSetDuplicateRecordSetKey</exception>
 		<exception>RecordSetName</exception>
+		<exception>RecordSetSettings</exception>
 	</exceptions>
 </service-builder>

@@ -41,6 +41,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFileRankUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -57,8 +58,9 @@ import java.util.Set;
  * @generated
  */
 public class DLFileRankPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -320,11 +322,9 @@ public class DLFileRankPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = DLFileRankLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<DLFileRank>() {
 				@Override
-				public void performAction(Object object) {
-					DLFileRank dlFileRank = (DLFileRank)object;
-
+				public void performAction(DLFileRank dlFileRank) {
 					Assert.assertNotNull(dlFileRank);
 
 					count.increment();
@@ -416,14 +416,14 @@ public class DLFileRankPersistenceTest {
 
 		DLFileRank existingDLFileRank = _persistence.findByPrimaryKey(newDLFileRank.getPrimaryKey());
 
-		Assert.assertEquals(existingDLFileRank.getCompanyId(),
-			ReflectionTestUtil.invoke(existingDLFileRank,
+		Assert.assertEquals(Long.valueOf(existingDLFileRank.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(existingDLFileRank,
 				"getOriginalCompanyId", new Class<?>[0]));
-		Assert.assertEquals(existingDLFileRank.getUserId(),
-			ReflectionTestUtil.invoke(existingDLFileRank, "getOriginalUserId",
-				new Class<?>[0]));
-		Assert.assertEquals(existingDLFileRank.getFileEntryId(),
-			ReflectionTestUtil.invoke(existingDLFileRank,
+		Assert.assertEquals(Long.valueOf(existingDLFileRank.getUserId()),
+			ReflectionTestUtil.<Long>invoke(existingDLFileRank,
+				"getOriginalUserId", new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingDLFileRank.getFileEntryId()),
+			ReflectionTestUtil.<Long>invoke(existingDLFileRank,
 				"getOriginalFileEntryId", new Class<?>[0]));
 	}
 

@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -204,7 +205,7 @@ public class AssetVocabularyLocalServiceImpl
 		action = SystemEventConstants.ACTION_SKIP,
 		type = SystemEventConstants.TYPE_DELETE
 	)
-	public void deleteVocabulary(AssetVocabulary vocabulary)
+	public AssetVocabulary deleteVocabulary(AssetVocabulary vocabulary)
 		throws PortalException {
 
 		// Vocabulary
@@ -221,6 +222,8 @@ public class AssetVocabularyLocalServiceImpl
 
 		assetCategoryLocalService.deleteVocabularyCategories(
 			vocabulary.getVocabularyId());
+
+		return vocabulary;
 	}
 
 	@Override
@@ -377,8 +380,17 @@ public class AssetVocabularyLocalServiceImpl
 			long companyId, long groupId, String title, int start, int end)
 		throws PortalException {
 
+		return searchVocabularies(companyId, groupId, title, start, end, null);
+	}
+
+	@Override
+	public BaseModelSearchResult<AssetVocabulary> searchVocabularies(
+			long companyId, long groupId, String title, int start, int end,
+			Sort sort)
+		throws PortalException {
+
 		SearchContext searchContext = buildSearchContext(
-			companyId, groupId, title, start, end);
+			companyId, groupId, title, start, end, sort);
 
 		return searchVocabularies(searchContext);
 	}
@@ -416,7 +428,8 @@ public class AssetVocabularyLocalServiceImpl
 	}
 
 	protected SearchContext buildSearchContext(
-		long companyId, long groupId, String title, int start, int end) {
+		long companyId, long groupId, String title, int start, int end,
+		Sort sort) {
 
 		SearchContext searchContext = new SearchContext();
 
@@ -425,6 +438,7 @@ public class AssetVocabularyLocalServiceImpl
 		searchContext.setEnd(end);
 		searchContext.setGroupIds(new long[] {groupId});
 		searchContext.setKeywords(title);
+		searchContext.setSorts(sort);
 		searchContext.setStart(start);
 
 		QueryConfig queryConfig = searchContext.getQueryConfig();

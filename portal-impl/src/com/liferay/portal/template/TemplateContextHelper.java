@@ -52,7 +52,8 @@ import com.liferay.portal.kernel.util.StringUtil_IW;
 import com.liferay.portal.kernel.util.TimeZoneUtil_IW;
 import com.liferay.portal.kernel.util.UnicodeFormatter_IW;
 import com.liferay.portal.kernel.util.Validator_IW;
-import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.Theme;
 import com.liferay.portal.service.GroupLocalService;
@@ -78,10 +79,8 @@ import com.liferay.portal.theme.NavItem;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.SessionClicks_IW;
-import com.liferay.portal.util.WebKeys;
 import com.liferay.portal.webserver.WebServerServletTokenUtil;
 import com.liferay.portlet.PortletURLFactoryUtil;
-import com.liferay.portlet.dynamicdatamapping.util.DDMUtil;
 import com.liferay.portlet.expando.service.ExpandoColumnLocalService;
 import com.liferay.portlet.expando.service.ExpandoRowLocalService;
 import com.liferay.portlet.expando.service.ExpandoTableLocalService;
@@ -429,15 +428,6 @@ public class TemplateContextHelper {
 
 		variables.put("dateUtil", DateUtil_IW.getInstance());
 
-		// Dynamic data mapping util
-
-		try {
-			variables.put("ddmUtil", DDMUtil.getDDM());
-		}
-		catch (SecurityException se) {
-			_log.error(se, se);
-		}
-
 		// Expando column service
 
 		try {
@@ -630,7 +620,7 @@ public class TemplateContextHelper {
 			try {
 				variables.put(
 					"saxReaderUtil",
-					utilLocator.findUtil(SAXReaderUtil.class.getName()));
+					utilLocator.findUtil(SAXReader.class.getName()));
 			}
 			catch (SecurityException se) {
 				_log.error(se, se);
@@ -842,16 +832,18 @@ public class TemplateContextHelper {
 	protected void prepareTiles(
 		Map<String, Object> contextObjects, HttpServletRequest request) {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		ComponentContext componentContext =
 			(ComponentContext)request.getAttribute(
 				ComponentConstants.COMPONENT_CONTEXT);
 
 		if (componentContext == null) {
+			themeDisplay.setTilesSelectable(true);
+
 			return;
 		}
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		String tilesTitle = (String)componentContext.getAttribute("title");
 

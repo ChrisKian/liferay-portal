@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.LocalizedModel;
+import com.liferay.portal.model.ShardedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.service.ServiceContext;
 
@@ -47,7 +48,7 @@ import java.util.Map;
  */
 @ProviderType
 public interface AssetVocabularyModel extends BaseModel<AssetVocabulary>,
-	LocalizedModel, StagedGroupedModel {
+	LocalizedModel, ShardedModel, StagedGroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -447,6 +448,7 @@ public interface AssetVocabularyModel extends BaseModel<AssetVocabulary>,
 	 *
 	 * @return the last publish date of this asset vocabulary
 	 */
+	@Override
 	public Date getLastPublishDate();
 
 	/**
@@ -454,6 +456,7 @@ public interface AssetVocabularyModel extends BaseModel<AssetVocabulary>,
 	 *
 	 * @param lastPublishDate the last publish date of this asset vocabulary
 	 */
+	@Override
 	public void setLastPublishDate(Date lastPublishDate);
 
 	@Override

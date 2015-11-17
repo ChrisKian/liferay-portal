@@ -20,7 +20,7 @@
 			</if>
 		</for>
 
-		<execute function="AssertClick" locator1="Permissions#SAVE_BUTTON" value1="Save" />
+		<execute function="AssertClick" locator1="Button#SAVE" value1="Save" />
 		<execute function="AssertTextEquals" locator1="Permissions#SUCCESS_MESSAGE" value1="Your request completed successfully." />
 	</command>
 
@@ -78,18 +78,38 @@
 		</for>
 	</command>
 
-	<command name="gotoBlogsEntryCP">
+	<command name="gotoBlogsCP">
 		<execute macro="Page#gotoContentCP">
-			<var name="pageName" value="${pageName}" />
-			<var name="portletName" value="${portletName}" />
+			<var name="friendlyURL" value="${friendlyURL}" />
+			<var name="nodePort" value="${nodePort}" />
+			<var name="pageAccess" value="${pageAccess}" />
+			<var name="pageStaging" value="${pageStaging}" />
+			<var name="portletName" value="Blogs" />
 			<var name="siteName" value="${siteName}" />
-			<var name="siteURL" value="${siteURLTemp}" />
+			<var name="siteNameURL" value="${siteNameURL}" />
+			<var name="siteScopeName" value="${siteScopeName}" />
+			<var name="siteURL" value="${siteURL}" />
+			<var name="specificURL" value="${specificURL}" />
+			<var name="virtualHostsURL" value="${virtualHostsURL}" />
 		</execute>
 
-		<var name="key_entryTitle" value="${entryTitle}" />
+		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
 
-		<execute function="Click" locator1="CPBlogs#ENTRY_TABLE_ACTIONS" />
-		<execute function="AssertClick" locator1="CPBlogs#ENTRY_MENULIST_PERMISSIONS" value1="Permissions" />
+		<execute function="AssertClick" locator1="Blogs#PERMISSIONS" value1="Permissions" />
+
+		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
+	</command>
+
+	<command name="gotoBlogsEntryCP">
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Blogs" />
+		</execute>
+
+		<var name="key_assetEntry" value="${entryTitle}" />
+
+		<execute function="Click" locator1="Icon#DESCRIPTIVE_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS_LEXICON" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -105,27 +125,11 @@
 			<var name="soPage" value="${soPage}" />
 		</execute>
 
-		<var name="key_entryTitle" value="${entryTitle}" />
+		<execute function="Click" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
 
-		<execute function="AssertClick" locator1="PGBlogs#ENTRY_PERMISSIONS" value1="Permissions" />
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS_LEXICON" value1="Permissions" />
 
-		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
-	</command>
-
-	<command name="gotoBlogsPG">
-		<execute macro="Page#gotoPG">
-			<var name="defaultURL" value="${defaultURL}" />
-			<var name="nodePort" value="${nodePort}" />
-			<var name="pageName" value="${pageName}" />
-			<var name="siteName" value="${siteName}" />
-			<var name="siteURL" value="${siteURLTemp}" />
-			<var name="soDashboard" value="${soDashboard}" />
-			<var name="soPage" value="${soPage}" />
-		</execute>
-
-		<execute function="AssertClick" locator1="PGBlogs#PERMISSIONS_BUTTON" value1="Permissions" />
-
-		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 	</command>
 
 	<command name="gotoConfigurationPG">
@@ -139,12 +143,22 @@
 		<execute function="AssertClick" locator1="BasePortletConfiguration#NAVIGATION_PERMISSIONS" value1="Permissions" />
 	</command>
 
+	<command name="gotoDMDocumentCP">
+		<var name="key_assetEntry" value="${dmDocumentTitle}" />
+
+		<execute function="Click" locator1="Icon#DESCRIPTIVE_VERTICAL_ELLIPSIS" />
+
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS_LEXICON" value1="Permissions" />
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+	</command>
+
 	<command name="gotoDMDocumentPG">
 		<var name="key_dmDocumentTitle" value="${dmDocumentTitle}" />
 
-		<execute function="AssertElementPresent" locator1="CPDocumentsandmedia#DOCUMENT_CONTAINER_DOCUMENT" />
-		<execute function="AssertClick" locator1="CPDocumentsandmedia#DOCUMENT_CONTAINER_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
-		<execute function="AssertClick#assertTextClick" locator1="PGDocumentsandmediaDocument#TOOLBAR_PERMISSIONS_BUTTON" value1="Permissions" />
+		<execute function="AssertElementPresent" locator1="DocumentsAndMedia#ICON_DOCUMENT" />
+		<execute function="AssertClick" locator1="DocumentsAndMedia#ICON_DOCUMENT_TITLE" value1="${dmDocumentTitle}" />
+		<execute function="AssertClick#assertTextClick" locator1="Button#PERMISSIONS" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -162,8 +176,8 @@
 
 		<var name="key_dmFolderName" value="${dmFolderName}" />
 
-		<execute function="Click" locator1="PGDocumentsandmedia#ENTRY_ICON_FOLDER_ACTIONS" />
-		<execute function="AssertClick" locator1="PGDocumentsandmedia#FOLDER_MENULIST_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="DocumentsAndMedia#ICON_FOLDER_ACTIONS" />
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -179,8 +193,8 @@
 			<var name="soPage" value="${soPage}" />
 		</execute>
 
-		<execute function="Click" locator1="PGDocumentsandmedia#FILTER_HOME_ACTIONS" />
-		<execute function="AssertClick" locator1="PGDocumentsandmedia#HOME_MENULIST_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="DocumentsAndMedia#FILTER_HOME_ACTIONS" />
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -191,16 +205,16 @@
 			<then>
 				<var name="key_categoryDescription" value="${categoryDescription}" />
 
-				<execute function="AssertClick" locator1="PGMessageboards#CATEGORY_TABLE_CATEGORY_DESCRIPTION" value1="${categoryDescription}" />
+				<execute function="AssertClick" locator1="MessageBoards#CATEGORY_TABLE_CATEGORY_DESCRIPTION" value1="${categoryDescription}" />
 			</then>
 			<else>
 				<var name="key_categoryName" value="${categoryName}" />
 
-				<execute function="AssertClick" locator1="PGMessageboards#CATEGORY_TABLE_CATEGORY" value1="${categoryName}" />
+				<execute function="AssertClick" locator1="MessageBoards#CATEGORY_TABLE_CATEGORY" value1="${categoryName}" />
 			</else>
 		</if>
 
-		<execute function="AssertClick" locator1="PGMessageboardsCategory#PERMISSIONS_BUTTON" value1="Permissions" />
+		<execute function="AssertClick" locator1="MessageBoards#PERMISSIONS_BUTTON" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -216,7 +230,7 @@
 			<var name="soPage" value="${soPage}" />
 		</execute>
 
-		<execute function="AssertClick" locator1="PGMessageboards#PERMISSIONS_BUTTON" value1="Permissions" />
+		<execute function="AssertClick" locator1="MessageBoards#PERMISSIONS_BUTTON" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -234,9 +248,9 @@
 
 		<var name="key_threadSubject" value="${threadSubject}" />
 
-		<execute function="AssertClick" locator1="PGMessageboards#THREAD_TABLE_THREAD" value1="${threadSubject}" />
+		<execute function="AssertClick" locator1="MessageBoards#THREAD_TABLE_THREAD" value1="${threadSubject}" />
 
-		<execute function="AssertClick" locator1="PGMessageboardsThread#MESSAGE_REPLY_PERMISSIONS_1" value1="Permissions" />
+		<execute function="AssertClick" locator1="MessageBoardsThread#MESSAGE_REPLY_PERMISSIONS_1" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -264,9 +278,9 @@
 			</then>
 		</if>
 
-		<execute function="Click#clickAtSidebarClickAt" locator1="Dockbar#EDIT" />
+		<execute function="Click" locator1="ControlMenu#EDIT_COG" />
 
-		<execute function="Click" locator1="DockbarEditpanel#TOOLBAR_PERMISSIONS" />
+		<execute function="Click" locator1="SitePages#TOOLBAR_PERMISSIONS" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -274,8 +288,8 @@
 	<command name="gotoPollPermissionsCP">
 		<var name="key_pollsQuestionTitle" value="${pollsQuestionTitle}" />
 
-		<execute function="Click" locator1="CPPolls#POLLS_TABLE_ACTION" />
-		<execute function="AssertClick" locator1="CPPolls#POLLS_MENULIST_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="Polls#POLLS_TABLE_ACTION" />
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -289,8 +303,8 @@
 
 		<var name="key_sitePageName" value="${sitePageName}" />
 
-		<execute function="Click" locator1="CPSitepages#PAGE_TREE_PAGE_LINK_1" value1="${sitePageName}" />
-		<execute function="AssertClick" locator1="CPSitepages#TOOLBAR_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="SitePages#PAGE_TREE_PAGE_LINK_1" value1="${sitePageName}" />
+		<execute function="AssertClick" locator1="SitePages#TOOLBAR_PERMISSIONS" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -301,10 +315,10 @@
 			<var name="siteScopeName" value="${siteScopeName}" />
 		</execute>
 
-		<var name="key_teamName" value="${teamName}" />
+		<var name="key_listEntry" value="${teamName}" />
 
-		<execute function="Click" locator1="CPSiteteams#TEAM_TABLE_ACTIONS" />
-		<execute function="AssertClick" locator1="CPSiteteams#TEAM_MENULIST_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="Icon#DESCRIPTIVE_VERTICAL_ELLIPSIS" />
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS_LEXICON" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -317,8 +331,8 @@
 
 		<var name="key_sitePageName" value="${sitePageName}" />
 
-		<execute function="Click" locator1="CPSitepages#PAGE_TREE_PAGE_LINK_1" value1="${sitePageName}" />
-		<execute function="AssertClick" locator1="CPSitepages#TOOLBAR_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="SitePages#PAGE_TREE_PAGE_LINK_1" value1="${sitePageName}" />
+		<execute function="AssertClick" locator1="SitePages#TOOLBAR_PERMISSIONS" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 	</command>
@@ -330,16 +344,15 @@
 
 		<var name="key_userGroupName" value="${userGroupName}" />
 
-		<execute function="Click" locator1="CPUsergroups#USER_GROUP_TABLE_ACTIONS" />
-		<execute function="AssertClick" locator1="CPUsergroups#USER_GROUP_MENULIST_SITE_PERMISSIONS" value1="Site Permissions" />
+		<execute function="Click" locator1="UserGroups#USER_GROUP_TABLE_ACTIONS" />
+		<execute function="AssertClick" locator1="MenuItem#SITE_PERMISSIONS" value1="Site Permissions" />
 	</command>
 
 	<command name="gotoWCArticle">
-		<var name="key_webContentTitle" value="${webContentTitle}" />
+		<var name="key_descriptiveEntry" value="${webContentTitle}" />
 
-		<execute function="MouseOver" locator1="CPWebcontent#ENTRY_DESCRIPTIVE_THUMBNAIL" />
-		<execute function="Click" locator1="CPWebcontent#ENTRY_DESCRIPTIVE_MENULIST_ARROW" />
-		<execute function="AssertClick" locator1="CPWebcontent#ENTRY_MENULIST_PERMISSIONS" value1="Permissions" />
+		<execute function="Click" locator1="Icon#DESCRIPTIVE_VERTICAL_ELLIPSIS" />
+		<execute function="AssertClick" locator1="MenuItem#PERMISSIONS_LEXICON" value1="Permissions" />
 
 		<execute function="SelectFrame" locator1="Permissions#PERMISSIONS_IFRAME" />
 		<execute function="AssertTextEquals" locator1="Permissions#HEADER_TITLE" value1="${webContentTitle}" />

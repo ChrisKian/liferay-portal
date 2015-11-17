@@ -24,6 +24,7 @@
 
 		<!-- References -->
 
+		<reference package-path="com.liferay.portal" entity="ClassName" />
 		<reference package-path="com.liferay.portal" entity="Group" />
 		<reference package-path="com.liferay.portal" entity="Image" />
 		<reference package-path="com.liferay.portal" entity="Layout" />
@@ -231,6 +232,7 @@
 		<reference package-path="com.liferay.portlet.documentlibrary" entity="DLFolder" />
 		<reference package-path="com.liferay.portlet.expando" entity="ExpandoRow" />
 		<reference package-path="com.liferay.portlet.expando" entity="ExpandoTable" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
 		<reference package-path="com.liferay.portlet.trash" entity="TrashEntry" />
 
 		<!-- Transactions -->
@@ -242,6 +244,10 @@
 		<!-- PK fields -->
 
 		<column name="fileEntryMetadataId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
 
 		<!-- Other fields -->
 
@@ -479,6 +485,7 @@
 		<column name="version" type="String" />
 		<column name="size" type="long" />
 		<column name="checksum" type="String" />
+		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
 		<column name="statusByUserId" type="long" />
 		<column name="statusByUserName" type="String" />
@@ -631,6 +638,12 @@
 			<finder-column name="parentFolderId" />
 			<finder-column name="hidden" />
 		</finder>
+		<finder name="G_M_T_H" return-type="Collection" db-index="false">
+			<finder-column name="groupId" />
+			<finder-column name="mountPoint" />
+			<finder-column name="treePath" comparator="LIKE" />
+			<finder-column name="hidden" />
+		</finder>
 		<finder name="G_P_H_S" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="parentFolderId" />
@@ -661,6 +674,7 @@
 		<reference package-path="com.liferay.portlet.documentlibrary" entity="DLFileShortcut" />
 		<reference package-path="com.liferay.portlet.documentlibrary" entity="DLFileVersion" />
 		<reference package-path="com.liferay.portlet.expando" entity="ExpandoRow" />
+		<reference package-path="com.liferay.portlet.ratings" entity="RatingsStats" />
 		<reference package-path="com.liferay.portlet.trash" entity="TrashEntry" />
 	</entity>
 	<entity name="DLSyncEvent" local-service="true" remote-service="false">
@@ -671,6 +685,7 @@
 
 		<!-- Audit fields -->
 
+		<column name="companyId" type="long" />
 		<column name="modifiedTime" type="long" />
 
 		<!-- Other fields -->
@@ -698,6 +713,7 @@
 		<exception>DirectoryName</exception>
 		<exception>DuplicateDirectory</exception>
 		<exception>DuplicateFile</exception>
+		<exception>DuplicateFileEntry</exception>
 		<exception>DuplicateFileEntryType</exception>
 		<exception>DuplicateFolderName</exception>
 		<exception>DuplicateRepositoryName</exception>

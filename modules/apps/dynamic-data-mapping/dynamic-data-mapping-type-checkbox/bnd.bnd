@@ -3,5 +3,6 @@ Bundle-SymbolicName: com.liferay.dynamic.data.mapping.type.checkbox
 Bundle-Version: 1.0.0
 Include-Resource:\
 	classes,\
-	META-INF/resources=src/META-INF/resources
-Web-ContextPath: /ddm-type-checkbox
+	META-INF/resources=src/main/resources/META-INF/resources
+JS-Config: /META-INF/resources/config.js
+Web-ContextPath: /dynamic-data-mapping-type-checkbox

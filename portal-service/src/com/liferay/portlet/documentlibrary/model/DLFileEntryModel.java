@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.model.AttachedModel;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.ShardedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.model.TrashedModel;
 import com.liferay.portal.service.ServiceContext;
@@ -48,7 +49,7 @@ import java.util.Date;
  */
 @ProviderType
 public interface DLFileEntryModel extends AttachedModel, BaseModel<DLFileEntry>,
-	StagedGroupedModel, TrashedModel {
+	ShardedModel, StagedGroupedModel, TrashedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -542,6 +543,7 @@ public interface DLFileEntryModel extends AttachedModel, BaseModel<DLFileEntry>,
 	 *
 	 * @return the last publish date of this document library file entry
 	 */
+	@Override
 	public Date getLastPublishDate();
 
 	/**
@@ -549,6 +551,7 @@ public interface DLFileEntryModel extends AttachedModel, BaseModel<DLFileEntry>,
 	 *
 	 * @param lastPublishDate the last publish date of this document library file entry
 	 */
+	@Override
 	public void setLastPublishDate(Date lastPublishDate);
 
 	/**

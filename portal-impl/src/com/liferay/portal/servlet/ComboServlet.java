@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.RequestDispatcherUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -35,7 +36,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.language.AggregateResourceBundle;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.minifier.MinifierUtil;
 import com.liferay.portal.model.Portlet;
@@ -141,15 +141,20 @@ public class ComboServlet extends HttpServlet {
 
 			name = HttpUtil.decodePath(name);
 
+			ServletContext servletContext = getServletContext();
+
+			String contextPath = servletContext.getContextPath();
+
+			if (name.startsWith(contextPath)) {
+				name = name.replaceFirst(contextPath, StringPool.BLANK);
+			}
+
 			modulePathsSet.add(name);
 		}
 
 		if (modulePathsSet.isEmpty()) {
-			response.sendError(
-				HttpServletResponse.SC_BAD_REQUEST,
-				"Modules paths set is empty");
-
-			return;
+			throw new IllegalArgumentException(
+				"Query string translates to an empty module paths set");
 		}
 
 		String[] modulePaths = modulePathsSet.toArray(

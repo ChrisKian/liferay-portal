@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.model.AttachedModel;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.model.ShardedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.service.ServiceContext;
 
@@ -44,7 +45,7 @@ import java.util.Date;
  */
 @ProviderType
 public interface MBDiscussionModel extends AttachedModel, BaseModel<MBDiscussion>,
-	StagedGroupedModel {
+	ShardedModel, StagedGroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -270,6 +271,7 @@ public interface MBDiscussionModel extends AttachedModel, BaseModel<MBDiscussion
 	 *
 	 * @return the last publish date of this message boards discussion
 	 */
+	@Override
 	public Date getLastPublishDate();
 
 	/**
@@ -277,6 +279,7 @@ public interface MBDiscussionModel extends AttachedModel, BaseModel<MBDiscussion
 	 *
 	 * @param lastPublishDate the last publish date of this message boards discussion
 	 */
+	@Override
 	public void setLastPublishDate(Date lastPublishDate);
 
 	@Override

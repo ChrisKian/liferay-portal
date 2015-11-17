@@ -136,16 +136,16 @@
 
 		<var name="key_kfProcessName" value="${kfProcessName}" />
 
-		<execute function="AssertClick" locator1="PGKaleoforms#ASSIGNED_TO_MY_ROLES_TABLE_NAME" value1="${kfProcessName}" />
+		<execute function="AssertClick" locator1="KaleoForms#ASSIGNED_TO_MY_ROLES_TABLE_NAME" value1="${kfProcessName}" />
 
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#ASSIGNED_TO_LABEL" value1="Assigned to" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#ASSIGNED_TO" value1="Assigned to Nobody - Assign to Me" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#ASSIGNED_TO_ASSIGN_TO_ME_LINK" value1="Assign to Me" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#STATE_LABEL" value1="State" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#STATE_STATUS" value1="State ${kfProcessStatus}" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#DUE_DATE_LABEL" value1="Due Date" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#DUE_DATE_DATE" value1="Due Date Never - (Change)" />
-		<execute function="AssertTextEquals" locator1="PGKaleoformsInboxProcess#WORKFLOW_STATUS" value1="${kfProcessStatus}" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#ASSIGNED_TO_LABEL" value1="Assigned to" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#ASSIGNED_TO" value1="Assigned to Nobody - Assign to Me" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#ASSIGNED_TO_ASSIGN_TO_ME_LINK" value1="Assign to Me" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#WORKFLOW_STATUS_LABEL" value1="State" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#WORKFLOW_STATUS" value1="State ${kfProcessStatus}" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#DUE_DATE_LABEL" value1="Due Date" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#DUE_DATE_DATE" value1="Due Date Never - (Change)" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsViewProcessRecord#WORKFLOW_STATUS" value1="${kfProcessStatus}" />
 	</command>
 
 	<command name="AssertEditFormNotUsedAsCreateForm" priority="4">
@@ -268,7 +268,7 @@
 			<var name="kfProcessFieldData" value="4" />
 		</execute>
 
-		<execute function="AssertElementNotPresent" locator1="PGKaleoformsSubmitnew#NEW_PROCESS_FIELDS_SEPARATOR" />
+		<execute function="AssertElementNotPresent" locator1="DDLEditRecord#SEPARATOR_FIELD" />
 
 		<execute macro="KaleoFormsPortlet#saveProcessRecord" />
 
@@ -524,8 +524,8 @@
 			<var name="userLoginFullName" value="userfn userln" />
 		</execute>
 
-		<execute function="AssertClick#assertTextClickAtClickDockbar" locator1="Dockbar#ADMIN" value1="Admin" />
-		<execute function="AssertClick" locator1="Dockbar#ADMIN_SITE_ADMINISTRATION_CONTENT" value1="Content" />
+		<execute function="AssertClick#assertTextClickAtClickDockbar" locator1="ControlMenu#ADMIN" value1="Admin" />
+		<execute function="AssertClick" locator1="ControlMenu#ADMIN_SITE_ADMINISTRATION_CONTENT" value1="Content" />
 
 		<execute macro="KaleoFormsAdmin#addProcess" />
 
@@ -1704,7 +1704,7 @@
 		<execute macro="DynamicDataMapping#addField">
 			<var name="field" value="Text Box" />
 			<var name="fieldFieldLabel" value="Text Box" />
-			<var name="fieldName" value="Text_Box" />
+			<var name="fieldName" value="TextBox" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -1877,7 +1877,7 @@
 		<execute macro="KaleoFormsPortlet#viewMyCompletedRequestsTasks" />
 	</command>
 
-	<command known-issues="LRQA-13709" name="CompleteProcessAndViewEmailNotifications" priority="4">
+	<command name="CompleteProcessAndViewEmailNotifications" priority="4">
 		<property name="test.assert.javascript.errors" value="false" />
 
 		<var name="field" value="Text" />
@@ -1891,28 +1891,28 @@
 		<var name="role1Name" value="Administrator" />
 		<var name="role2Name" value="Reviewer Name" />
 		<var name="role3Name" value="Updater Name" />
-		<var name="user1EmailAddress" property-value="email.address.2" />
+		<var method="TestPropsUtil#get('email.address.2')" name="user1EmailAddress" />
 		<var name="user1FirstName" value="userfn" />
 		<var name="user1LastName" value="Creator" />
 		<var name="user1ScreenName" value="creator" />
-		<var name="user2EmailAddress" property-value="email.address.3" />
-		<var name="user2EmailPassword" property-value="email.password.3" />
+		<var method="TestPropsUtil#get('email.address.3')" name="user2EmailAddress" />
+		<var method="TestPropsUtil#get('email.password.3')" name="user2EmailPassword" />
 		<var name="user2FirstName" value="userfn" />
 		<var name="user2LastName" value="Reviewer" />
 		<var name="user2ScreenName" value="reviewer" />
-		<var name="user3EmailAddress" property-value="email.address.4" />
-		<var name="user3EmailPassword" property-value="email.password.4" />
+		<var method="TestPropsUtil#get('email.address.4')" name="user3EmailAddress" />
+		<var method="TestPropsUtil#get('email.password.4')" name="user3EmailPassword" />
 		<var name="user3FirstName" value="userfn" />
 		<var name="user3LastName" value="Updater" />
 		<var name="user3ScreenName" value="updater" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Server Administration" />
+		<execute macro="ProductMenu#gotoControlPanelSystem">
+			<var name="portlet" value="Server Administration" />
 		</execute>
 
 		<execute macro="ServerAdministration#configureMailServerSettings">
-			<var name="userName" property-value="email.address.1" />
-			<var name="userPassword" property-value="email.password.1" />
+			<var method="TestPropsUtil#get('email.address.1')" name="userName" />
+			<var method="TestPropsUtil#get('email.password.1')" name="userPassword" />
 		</execute>
 
 		<execute macro="Page#gotoCP">
@@ -2126,7 +2126,9 @@
 			<var name="kfFormName" value="Created Task Form" />
 		</execute>
 
-		<execute macro="KaleoFormsAdmin#saveProcess" />
+		<execute macro="KaleoFormsAdmin#saveProcess">
+			<var name="kfProcessName" value="${kfProcessName}" />
+		</execute>
 
 		<execute macro="KaleoFormsAdmin#viewProcess">
 			<var name="kfProcessName" value="${kfProcessName}" />
@@ -3002,11 +3004,6 @@
 			<var name="kfProcessFieldData" value="Userfn" />
 		</execute>
 
-		<execute macro="KaleoFormsPortlet#populateFieldSelect">
-			<var name="fieldName" value="imService" />
-			<var name="kfProcessFieldData" value="AOL" />
-		</execute>
-
 		<execute macro="KaleoFormsPortlet#populateFieldText">
 			<var name="fieldName" value="imUserName" />
 			<var name="kfProcessFieldData" value="IMUsername" />
@@ -3071,11 +3068,6 @@
 		<execute macro="KaleoFormsPortlet#viewMyCompletedRequestsField">
 			<var name="fieldName" value="First Name" />
 			<var name="kfProcessFieldData" value="Userfn" />
-		</execute>
-
-		<execute macro="KaleoFormsPortlet#viewMyCompletedRequestsField">
-			<var name="fieldName" value="Instant Messenger Service" />
-			<var name="kfProcessFieldData" value="AOL" />
 		</execute>
 
 		<execute macro="KaleoFormsPortlet#viewMyCompletedRequestsField">
@@ -4205,8 +4197,8 @@
 
 		<var name="key_kfProcessName" value="${kfProcessName}" />
 
-		<execute function="Click" locator1="PGKaleoforms#ASSIGNED_TO_ME_TABLE_ACTIONS_1" />
-		<execute function="AssertElementNotPresent" locator1="PGKaleoforms#ASSIGNED_TO_ME_MENULIST_REJECT" />
+		<execute function="Click" locator1="KaleoForms#ASSIGNED_TO_ME_TABLE_ACTIONS_1" />
+		<execute function="AssertElementNotPresent" locator1="KaleoForms#ASSIGNED_TO_ME_MENULIST_REJECT" />
 
 		<execute macro="KaleoFormsPortlet#approveProcess">
 			<var name="kfProcessName" value="${kfProcessName}" />
@@ -4560,7 +4552,9 @@
 			<var name="kfFormName" value="Edited Create Task Form" />
 		</execute>
 
-		<execute macro="KaleoFormsAdmin#saveProcess" />
+		<execute macro="KaleoFormsAdmin#saveProcess">
+			<var name="kfProcessName" value="${kfProcessName}" />
+		</execute>
 
 		<execute macro="KaleoFormsAdmin#viewProcess">
 			<var name="kfProcessName" value="${kfProcessName}" />
@@ -4748,7 +4742,9 @@
 			<var name="kfFormName" value="New Review Task Form" />
 		</execute>
 
-		<execute macro="KaleoFormsAdmin#saveProcess" />
+		<execute macro="KaleoFormsAdmin#saveProcess">
+			<var name="kfProcessName" value="${kfProcessName}" />
+		</execute>
 
 		<execute macro="Page#gotoPG">
 			<var name="kfProcessName" value="${kfProcessName}" />
@@ -4767,7 +4763,7 @@
 
 		<var name="key_fieldName" value="Fieldset" />
 
-		<execute function="AssertElementNotPresent" locator1="PGKaleoformsSubmitnew#NEW_PROCESS_FIELDS_FIELDSET" />
+		<execute function="AssertElementNotPresent" locator1="DDLEditRecord#FIELD_FIELDSET" />
 
 		<execute macro="Page#gotoPG">
 			<var name="pageName" value="Kaleo Forms Page" />
@@ -6276,7 +6272,7 @@
 
 		<var name="key_fieldName" value="quantity" />
 
-		<execute function="AssertElementNotPresent" locator1="PGKaleoformsSubmitnew#NEW_PROCESS_FIELDS_TEXT_FIELD" />
+		<execute function="AssertElementNotPresent" locator1="DDLEditRecord#TEXT_FIELD" />
 
 		<execute macro="Page#gotoContentCP">
 			<var name="portletName" value="Dynamic Data Lists" />
@@ -7735,7 +7731,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="LRQA-13709" name="ViewEmailNotificationSentToTaskAssignees" priority="4">
+	<command name="ViewEmailNotificationSentToTaskAssignees" priority="4">
 		<description message="This is a use case for LPS-50688 and LPS-35263." />
 
 		<property name="test.assert.javascript.errors" value="false" />
@@ -7751,29 +7747,29 @@
 		<var name="role1Name" value="KaleoSubmitRole Name" />
 		<var name="role2Name" value="KaleoReviewRole Name" />
 		<var name="role3Name" value="Administrator" />
-		<var name="user1EmailAddress" property-value="email.address.2" />
-		<var name="user1EmailPassword" property-value="email.password.2" />
+		<var method="TestPropsUtil#get('email.address.2')" name="user1EmailAddress" />
+		<var method="TestPropsUtil#get('email.password.2')" name="user1EmailPassword" />
 		<var name="user1FirstName" value="userfn1" />
 		<var name="user1LastName" value="Submitter" />
 		<var name="user1ScreenName" value="kaloesubmitter" />
-		<var name="user2EmailAddress" property-value="email.address.3" />
-		<var name="user2EmailPassword" property-value="email.password.3" />
+		<var method="TestPropsUtil#get('email.address.3')" name="user2EmailAddress" />
+		<var method="TestPropsUtil#get('email.password.3')" name="user2EmailPassword" />
 		<var name="user2FirstName" value="userfn2" />
 		<var name="user2LastName" value="Updater" />
 		<var name="user2ScreenName" value="kaleoupdater" />
-		<var name="user3EmailAddress" property-value="email.address.4" />
-		<var name="user3EmailPassword" property-value="email.password.4" />
+		<var method="TestPropsUtil#get('email.address.4')" name="user3EmailAddress" />
+		<var method="TestPropsUtil#get('email.password.4')" name="user3EmailPassword" />
 		<var name="user3FirstName" value="userfn3" />
 		<var name="user3LastName" value="Administrator" />
 		<var name="user3ScreenName" value="admin" />
 
-		<execute macro="Page#gotoCP">
-			<var name="portletName" value="Server Administration" />
+		<execute macro="ProductMenu#gotoControlPanelSystem">
+			<var name="portlet" value="Server Administration" />
 		</execute>
 
 		<execute macro="ServerAdministration#configureMailServerSettings">
-			<var name="userName" property-value="email.address.1" />
-			<var name="userPassword" property-value="email.password.1" />
+			<var method="TestPropsUtil#get('email.address.1')" name="userName" />
+			<var method="TestPropsUtil#get('email.password.1')" name="userPassword" />
 		</execute>
 
 		<execute macro="Page#gotoCP">
@@ -8494,8 +8490,8 @@
 
 		<var name="key_kfFormName" value="Created Task Form" />
 
-		<execute function="AssertTextEquals" locator1="CPKaleoformsadminNewprocessSelectform#FORM_TABLE_NAME" value1="Created Task Form" />
-		<execute function="AssertElementNotPresent" locator1="CPKaleoformsadminNewprocessSelectform#FORM_TABLE_NAME_2" />
+		<execute function="AssertTextEquals" locator1="KaleoFormsAdminEditProcessForm#FORM_TABLE_NAME" value1="Created Task Form" />
+		<execute function="AssertElementNotPresent" locator1="KaleoFormsAdminEditProcessForm#FORM_TABLE_NAME_2" />
 	</command>
 
 	<command name="ViewProcessWithComments" priority="4">

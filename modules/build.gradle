@@ -2,18 +2,24 @@ import com.liferay.gradle.util.FileUtil
 
 buildscript {
 	repositories {
-		mavenLocal()
+		if (!Boolean.getBoolean("maven.local.ignore")) {
+			mavenLocal()
+		}
 
 		maven {
-			url "http://cdn.repository.liferay.com/nexus/content/groups/public"
+			url System.properties["repository.url"] ?: "http://cdn.repository.liferay.com/nexus/content/groups/public"
 		}
 	}
 
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "+"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins", version: "1.0.36"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.alloy.taglib", version: "1.0.1"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.cache", version: "1.0.1"
 		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.maven.plugin.builder", version: "1.0.2"
 	}
 }
+
+buildDir = new File(rootDir.parentFile, "build")
 
 gradle.beforeProject {
 	Project project ->
@@ -29,19 +35,41 @@ gradle.taskGraph.useFilter {
 	Task task ->
 
 	if (task.name == "compileJSP") {
-		FileTree jspFileTree = fileTree(dir: task.project.projectDir, excludes: ["**/custom_jsps/**/*", "**/dependencies/**/*"], includes: ["docroot/**/*.jsp", "src/META-INF/resources/**/*.jsp"])
+		FileTree jspFileTree = fileTree(dir: task.project.projectDir, excludes: ["**/custom_jsps/**/*", "**/dependencies/**/*"], includes: ["docroot/**/*.jsp", "src/main/resources/META-INF/resources/**/*.jsp"])
 
 		if (jspFileTree.empty) {
 			return false
 		}
 	}
 	else if (task.name == "test") {
-		if (!FileUtil.exists(task.project, "test/unit")) {
+		if (!_hasTestClasses(task.project, "src/test/java") && !_hasTestClasses(task.project, "test/unit")) {
 			return false
 		}
 	}
 	else if (task.name == "testIntegration") {
-		if (!FileUtil.exists(task.project, "test/integration")) {
+		if (!_hasTestClasses(task.project, "src/testIntegration/java") && !_hasTestClasses(task.project, "test/integration")) {
+			return false
+		}
+	}
+
+	return true
+}
+
+private boolean _hasTestClasses(Project project, String testClassesDirName) {
+	File testClassesDir = project.file(testClassesDirName)
+
+	if (!testClassesDir.exists()) {
+		return false
+	}
+
+	if (project.gradle.hasProperty("testClassGroupIndex")) {
+		List<String> testJavaClasses = project.gradle.testClasses.collect {
+			it.replace ".class", ".java"
+		}
+
+		FileTree testJavaClassesFileTree = project.fileTree(dir: testClassesDir, includes: testJavaClasses)
+
+		if (testJavaClassesFileTree.empty) {
 			return false
 		}
 	}

@@ -19,13 +19,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CONFIGURATION_OPTIONS</td>
-	<td>//a[@title='Options']</td>
+	<td>BREADCRUMB_LAST</td>
+	<td>//div[contains(@id,'breadcrumbContainer')]//li[contains(.,'${key_dmFolderName}')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>PORTLET_TITLE</td>
-	<td>//span[contains(@class,'portlet-title-text')]</td>
+	<td>CONFIGURATION_OPTIONS</td>
+	<td>//a[@title='Options']</td>
 	<td></td>
 </tr>
 <tr>
@@ -34,8 +34,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>LIVE_BUTTON</td>
-	<td>//li[contains(@class,'live-link') and contains(@class,'staging-toggle')]/a/span</td>
+	<td>PORTLET_TITLE</td>
+	<td>//span[contains(@class,'portlet-title-text')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -57,6 +57,11 @@
 <tr>
 	<td>ICON_DOCUMENT_THUMBNAIL</td>
 	<td>//div[@data-title='${key_dmDocumentTitle}']//div[@class='entry-thumbnail']/img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ICON_DOCUMENT_THUMBNAIL_GENERIC</td>
+	<td>//a[@data-folder='false']/div[@class='entry-thumbnail']</td>
 	<td></td>
 </tr>
 <tr>
@@ -86,7 +91,12 @@
 </tr>
 <tr>
 	<td>ICON_DOCUMENT_TITLE</td>
-	<td>//div[contains(@id,'entriesContainer')]//div[contains(.,'${key_dmDocumentTitle}')]/a/span/span</td>
+	<td>//div[contains(@class,'toggle-card')]//div[contains(@class,'card-dm-text') and contains(.,'${key_dmDocumentTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ICON_DOCUMENT_VERTICAL_ELLIPSIS</td>
+	<td>//li[contains(@data-title,'${key_dmDocumentTitle}')]//span[contains(@class,'icon-ellipsis-vertical')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -102,27 +112,27 @@
 <!--ICON_FOLDER-->
 <tr>
 	<td>ICON_FOLDER_THUMBNAIL</td>
-	<td>//div[contains(@id,'entriesContainer')]//div[contains(.,'${key_dmFolderName}')]/a</td>
+	<td>//div[contains(@class,'selectable') and contains(.,'${key_dmFolderName}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ICON_FOLDER_THUMBNAIL_GENERIC</td>
-	<td>//a[@data-folder='true']/div[@class='entry-thumbnail']</td>
+	<td>//div[contains(@class,'card-row') and contains(@class,'selectable')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ICON_FOLDER_CHECKBOX</td>
-	<td>//div[@data-title='${key_dmFolderName}']//input[@type='checkbox']</td>
+	<td>//div[contains(@class,'selectable') and contains(.,'${key_dmFolderName}')]//input[(@type='checkbox')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ICON_FOLDER_ACTIONS</td>
-	<td>//div[contains(@id,'entriesContainer')]//div[contains(.,'${key_dmFolderName}')]/span/div/a</td>
+	<td>//div[contains(@class,'selectable') and contains(.,'${key_dmFolderName}')]//span[contains(@class,'ellipsis-vertical')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ICON_FOLDER_TITLE</td>
-	<td>//div[contains(.,'${key_dmFolderName}') and a[@data-folder='true']]//span[@class='entry-title']/span</td>
+	<td>//div[contains(@class,'selectable') and contains(.,'${key_dmFolderName}')]//h4/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -159,6 +169,37 @@
 <tr>
 	<td>DESCRIPTIVE_LIST_DOCUMENT_ACTION</td>
 	<td>//div[@data-title='${key_dmDocumentTitle}']//span[contains(@class,'entry-action')]/div/a/</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--LIST_DOCUMENT-->
+<tr>
+	<td>LIST_DOCUMENT</td>
+	<td>//table[@class='table table-list']//tr[contains(.,'${key_dmDocumentTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_DOCUMENT_CHECKBOX</td>
+	<td>//table[@class='table table-list']//tr[contains(.,'${key_dmDocumentTitle}')]/td//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_DOCUMENT_ACTIONS</td>
+	<td>//table[@class='table table-list']//tr[contains(.,'${key_dmDocumentTitle}')]//span/div/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_DOCUMENT_TITLE</td>
+	<td>//table[@class='table table-list']//tr[contains(.,'${key_dmDocumentTitle}')]/td[2]/div/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LIST_DOCUMENT_WORKFLOW_STATUS</td>
+	<td>//table[@class='table table-list']//tr[contains(.,'${key_dmDocumentTitle}')]//span[@class='workflow-status']/strong</td>
 	<td></td>
 </tr>
 <tr>

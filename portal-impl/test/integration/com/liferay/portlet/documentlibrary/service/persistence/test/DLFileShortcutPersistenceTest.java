@@ -43,6 +43,7 @@ import com.liferay.portlet.documentlibrary.service.persistence.DLFileShortcutUti
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class DLFileShortcutPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -409,11 +411,9 @@ public class DLFileShortcutPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = DLFileShortcutLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<DLFileShortcut>() {
 				@Override
-				public void performAction(Object object) {
-					DLFileShortcut dlFileShortcut = (DLFileShortcut)object;
-
+				public void performAction(DLFileShortcut dlFileShortcut) {
 					Assert.assertNotNull(dlFileShortcut);
 
 					count.increment();
@@ -510,8 +510,8 @@ public class DLFileShortcutPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingDLFileShortcut.getUuid(),
 				ReflectionTestUtil.invoke(existingDLFileShortcut,
 					"getOriginalUuid", new Class<?>[0])));
-		Assert.assertEquals(existingDLFileShortcut.getGroupId(),
-			ReflectionTestUtil.invoke(existingDLFileShortcut,
+		Assert.assertEquals(Long.valueOf(existingDLFileShortcut.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingDLFileShortcut,
 				"getOriginalGroupId", new Class<?>[0]));
 	}
 

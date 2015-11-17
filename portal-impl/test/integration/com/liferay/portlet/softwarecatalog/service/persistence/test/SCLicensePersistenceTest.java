@@ -39,6 +39,7 @@ import com.liferay.portlet.softwarecatalog.service.persistence.SCLicenseUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -55,8 +56,9 @@ import java.util.Set;
  * @generated
  */
 public class SCLicensePersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -113,6 +115,8 @@ public class SCLicensePersistenceTest {
 
 		SCLicense newSCLicense = _persistence.create(pk);
 
+		newSCLicense.setCompanyId(RandomTestUtil.nextLong());
+
 		newSCLicense.setName(RandomTestUtil.randomString());
 
 		newSCLicense.setUrl(RandomTestUtil.randomString());
@@ -129,6 +133,8 @@ public class SCLicensePersistenceTest {
 
 		Assert.assertEquals(existingSCLicense.getLicenseId(),
 			newSCLicense.getLicenseId());
+		Assert.assertEquals(existingSCLicense.getCompanyId(),
+			newSCLicense.getCompanyId());
 		Assert.assertEquals(existingSCLicense.getName(), newSCLicense.getName());
 		Assert.assertEquals(existingSCLicense.getUrl(), newSCLicense.getUrl());
 		Assert.assertEquals(existingSCLicense.getOpenSource(),
@@ -179,8 +185,8 @@ public class SCLicensePersistenceTest {
 
 	protected OrderByComparator<SCLicense> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create("SCLicense", "licenseId",
-			true, "name", true, "url", true, "openSource", true, "active",
-			true, "recommended", true);
+			true, "companyId", true, "name", true, "url", true, "openSource",
+			true, "active", true, "recommended", true);
 	}
 
 	@Test
@@ -289,11 +295,9 @@ public class SCLicensePersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = SCLicenseLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<SCLicense>() {
 				@Override
-				public void performAction(Object object) {
-					SCLicense scLicense = (SCLicense)object;
-
+				public void performAction(SCLicense scLicense) {
 					Assert.assertNotNull(scLicense);
 
 					count.increment();
@@ -381,6 +385,8 @@ public class SCLicensePersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		SCLicense scLicense = _persistence.create(pk);
+
+		scLicense.setCompanyId(RandomTestUtil.nextLong());
 
 		scLicense.setName(RandomTestUtil.randomString());
 

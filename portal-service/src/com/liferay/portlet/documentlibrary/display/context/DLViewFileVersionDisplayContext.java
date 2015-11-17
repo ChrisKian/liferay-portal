@@ -17,8 +17,8 @@ package com.liferay.portlet.documentlibrary.display.context;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.servlet.taglib.ui.Menu;
 import com.liferay.portal.kernel.servlet.taglib.ui.ToolbarItem;
+import com.liferay.portlet.dynamicdatamapping.DDMFormValues;
 import com.liferay.portlet.dynamicdatamapping.DDMStructure;
-import com.liferay.portlet.dynamicdatamapping.storage.DDMFormValues;
 
 import java.io.IOException;
 
@@ -32,6 +32,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Iván Zaera
  */
 public interface DLViewFileVersionDisplayContext extends DLDisplayContext {
+
+	public String getCssClassFileMimeType();
 
 	public DDMFormValues getDDMFormValues(DDMStructure ddmStructure)
 		throws PortalException;

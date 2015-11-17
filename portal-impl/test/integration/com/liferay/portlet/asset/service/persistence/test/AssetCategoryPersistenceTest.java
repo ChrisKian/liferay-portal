@@ -43,6 +43,7 @@ import com.liferay.portlet.asset.service.persistence.AssetCategoryUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -59,8 +60,9 @@ import java.util.Set;
  * @generated
  */
 public class AssetCategoryPersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -463,11 +465,9 @@ public class AssetCategoryPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = AssetCategoryLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<AssetCategory>() {
 				@Override
-				public void performAction(Object object) {
-					AssetCategory assetCategory = (AssetCategory)object;
-
+				public void performAction(AssetCategory assetCategory) {
 					Assert.assertNotNull(assetCategory);
 
 					count.increment();
@@ -562,18 +562,20 @@ public class AssetCategoryPersistenceTest {
 		Assert.assertTrue(Validator.equals(existingAssetCategory.getUuid(),
 				ReflectionTestUtil.invoke(existingAssetCategory,
 					"getOriginalUuid", new Class<?>[0])));
-		Assert.assertEquals(existingAssetCategory.getGroupId(),
-			ReflectionTestUtil.invoke(existingAssetCategory,
+		Assert.assertEquals(Long.valueOf(existingAssetCategory.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingAssetCategory,
 				"getOriginalGroupId", new Class<?>[0]));
 
-		Assert.assertEquals(existingAssetCategory.getParentCategoryId(),
-			ReflectionTestUtil.invoke(existingAssetCategory,
+		Assert.assertEquals(Long.valueOf(
+				existingAssetCategory.getParentCategoryId()),
+			ReflectionTestUtil.<Long>invoke(existingAssetCategory,
 				"getOriginalParentCategoryId", new Class<?>[0]));
 		Assert.assertTrue(Validator.equals(existingAssetCategory.getName(),
 				ReflectionTestUtil.invoke(existingAssetCategory,
 					"getOriginalName", new Class<?>[0])));
-		Assert.assertEquals(existingAssetCategory.getVocabularyId(),
-			ReflectionTestUtil.invoke(existingAssetCategory,
+		Assert.assertEquals(Long.valueOf(
+				existingAssetCategory.getVocabularyId()),
+			ReflectionTestUtil.<Long>invoke(existingAssetCategory,
 				"getOriginalVocabularyId", new Class<?>[0]));
 	}
 

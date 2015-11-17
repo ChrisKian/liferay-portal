@@ -43,7 +43,7 @@ import java.util.Map;
  */
 @ProviderType
 public interface RoleModel extends AttachedModel, BaseModel<Role>, LocalizedModel,
-	MVCCModel, StagedAuditedModel {
+	MVCCModel, ShardedModel, StagedAuditedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -493,20 +493,6 @@ public interface RoleModel extends AttachedModel, BaseModel<Role>, LocalizedMode
 	 * @param subtype the subtype of this role
 	 */
 	public void setSubtype(String subtype);
-
-	/**
-	 * Returns the last publish date of this role.
-	 *
-	 * @return the last publish date of this role
-	 */
-	public Date getLastPublishDate();
-
-	/**
-	 * Sets the last publish date of this role.
-	 *
-	 * @param lastPublishDate the last publish date of this role
-	 */
-	public void setLastPublishDate(Date lastPublishDate);
 
 	@Override
 	public boolean isNew();

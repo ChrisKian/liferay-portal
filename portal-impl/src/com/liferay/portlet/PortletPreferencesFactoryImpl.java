@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.LayoutConstants;
@@ -52,7 +53,6 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.WebKeys;
 import com.liferay.portal.xml.StAXReaderUtil;
 import com.liferay.portlet.portletconfiguration.util.ConfigurationPortletRequest;
 
@@ -86,6 +86,53 @@ import javax.xml.stream.events.XMLEvent;
 @DoPrivileged
 public class PortletPreferencesFactoryImpl
 	implements PortletPreferencesFactory {
+
+	public static Map<String, Preference> createPreferencesMap(String xml) {
+		XMLEventReader xmlEventReader = null;
+
+		Map<String, Preference> preferencesMap = new HashMap<>();
+
+		try {
+			XMLInputFactory xmlInputFactory =
+				StAXReaderUtil.getXMLInputFactory();
+
+			xmlEventReader = xmlInputFactory.createXMLEventReader(
+				new UnsyncStringReader(xml));
+
+			while (xmlEventReader.hasNext()) {
+				XMLEvent xmlEvent = xmlEventReader.nextEvent();
+
+				if (xmlEvent.isStartElement()) {
+					StartElement startElement = xmlEvent.asStartElement();
+
+					String elementName = startElement.getName().getLocalPart();
+
+					if (elementName.equals("preference")) {
+						Preference preference = readPreference(xmlEventReader);
+
+						preferencesMap.put(preference.getName(), preference);
+					}
+				}
+			}
+		}
+		catch (XMLStreamException xse) {
+			throw new SystemException(xse);
+		}
+		finally {
+			if (xmlEventReader != null) {
+				try {
+					xmlEventReader.close();
+				}
+				catch (XMLStreamException xse) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(xse, xse);
+					}
+				}
+			}
+		}
+
+		return preferencesMap;
+	}
 
 	@Override
 	public void checkControlPanelPortletPreferences(
@@ -223,9 +270,18 @@ public class PortletPreferencesFactoryImpl
 			ownerType = PortletKeys.PREFS_OWNER_TYPE_USER;
 		}
 
-		return PortletPreferencesLocalServiceUtil.getPreferences(
+		return getLayoutPortletSetup(
 			layout.getCompanyId(), ownerId, ownerType, layout.getPlid(),
 			portletId, defaultPreferences);
+	}
+
+	@Override
+	public PortletPreferences getLayoutPortletSetup(
+		long companyId, long ownerId, int ownerType, long plid,
+		String portletId, String defaultPreferences) {
+
+		return PortletPreferencesLocalServiceUtil.getPreferences(
+			companyId, ownerId, ownerType, plid, portletId, defaultPreferences);
 	}
 
 	@Override
@@ -451,6 +507,13 @@ public class PortletPreferencesFactoryImpl
 				ownerType = PortletKeys.PREFS_OWNER_TYPE_LAYOUT;
 				plid = layout.getPlid();
 
+				LayoutTypePortlet layoutTypePortlet =
+					(LayoutTypePortlet)layout.getLayoutType();
+
+				if (layoutTypePortlet.isPortletEmbedded(portletId)) {
+					plid = PortletKeys.PREFS_PLID_SHARED;
+				}
+
 				if (portlet.isPreferencesOwnedByGroup()) {
 				}
 				else {
@@ -570,23 +633,8 @@ public class PortletPreferencesFactoryImpl
 		long siteGroupId, Layout layout, String portletId,
 		String defaultPreferences) {
 
-		try {
-			LayoutTypePortlet layoutTypePortlet =
-				(LayoutTypePortlet)layout.getLayoutType();
-
-			if (layoutTypePortlet.hasPortletId(portletId)) {
-				return getPortletSetup(
-					siteGroupId, layout, portletId, defaultPreferences, false);
-			}
-		}
-		catch (PortalException pe) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(pe, pe);
-			}
-		}
-
 		return getPortletSetup(
-			siteGroupId, layout, portletId, defaultPreferences, true);
+			siteGroupId, layout, portletId, defaultPreferences, false);
 	}
 
 	@Override
@@ -737,6 +785,50 @@ public class PortletPreferencesFactoryImpl
 		return portletPreferencesImpl.toXML();
 	}
 
+	protected static Preference readPreference(XMLEventReader xmlEventReader)
+		throws XMLStreamException {
+
+		String name = null;
+		List<String> values = new ArrayList<>();
+		boolean readOnly = false;
+
+		while (xmlEventReader.hasNext()) {
+			XMLEvent xmlEvent = xmlEventReader.nextEvent();
+
+			if (xmlEvent.isStartElement()) {
+				StartElement startElement = xmlEvent.asStartElement();
+
+				String elementName = startElement.getName().getLocalPart();
+
+				if (elementName.equals("name")) {
+					name = StAXReaderUtil.read(xmlEventReader);
+				}
+				else if (elementName.equals("value")) {
+					String value = StAXReaderUtil.read(xmlEventReader);
+
+					values.add(value);
+				}
+				else if (elementName.equals("read-only")) {
+					String value = StAXReaderUtil.read(xmlEventReader);
+
+					readOnly = GetterUtil.getBoolean(value);
+				}
+			}
+			else if (xmlEvent.isEndElement()) {
+				EndElement endElement = xmlEvent.asEndElement();
+
+				String elementName = endElement.getName().getLocalPart();
+
+				if (elementName.equals("preference")) {
+					break;
+				}
+			}
+		}
+
+		return new Preference(
+			name, values.toArray(new String[values.size()]), readOnly);
+	}
+
 	protected PortletPreferences getPortletSetup(
 		long siteGroupId, Layout layout, String portletId,
 		String defaultPreferences, boolean strictMode) {
@@ -811,50 +903,6 @@ public class PortletPreferencesFactoryImpl
 			defaultPreferences);
 	}
 
-	protected Preference readPreference(XMLEventReader xmlEventReader)
-		throws XMLStreamException {
-
-		String name = null;
-		List<String> values = new ArrayList<>();
-		boolean readOnly = false;
-
-		while (xmlEventReader.hasNext()) {
-			XMLEvent xmlEvent = xmlEventReader.nextEvent();
-
-			if (xmlEvent.isStartElement()) {
-				StartElement startElement = xmlEvent.asStartElement();
-
-				String elementName = startElement.getName().getLocalPart();
-
-				if (elementName.equals("name")) {
-					name = StAXReaderUtil.read(xmlEventReader);
-				}
-				else if (elementName.equals("value")) {
-					String value = StAXReaderUtil.read(xmlEventReader);
-
-					values.add(value);
-				}
-				else if (elementName.equals("read-only")) {
-					String value = StAXReaderUtil.read(xmlEventReader);
-
-					readOnly = GetterUtil.getBoolean(value);
-				}
-			}
-			else if (xmlEvent.isEndElement()) {
-				EndElement endElement = xmlEvent.asEndElement();
-
-				String elementName = endElement.getName().getLocalPart();
-
-				if (elementName.equals("preference")) {
-					break;
-				}
-			}
-		}
-
-		return new Preference(
-			name, values.toArray(new String[values.size()]), readOnly);
-	}
-
 	protected Map<String, Preference> toPreferencesMap(String xml) {
 		if (Validator.isNull(xml)) {
 			return Collections.emptyMap();
@@ -869,54 +917,7 @@ public class PortletPreferencesFactoryImpl
 			return preferencesMap;
 		}
 
-		XMLEventReader xmlEventReader = null;
-
-		try {
-			XMLInputFactory xmlInputFactory =
-				StAXReaderUtil.getXMLInputFactory();
-
-			xmlEventReader = xmlInputFactory.createXMLEventReader(
-				new UnsyncStringReader(xml));
-
-			while (xmlEventReader.hasNext()) {
-				XMLEvent xmlEvent = xmlEventReader.nextEvent();
-
-				if (xmlEvent.isStartElement()) {
-					StartElement startElement = xmlEvent.asStartElement();
-
-					String elementName = startElement.getName().getLocalPart();
-
-					if (elementName.equals("preference")) {
-						Preference preference = readPreference(xmlEventReader);
-
-						if (preferencesMap == null) {
-							preferencesMap = new HashMap<>();
-						}
-
-						preferencesMap.put(preference.getName(), preference);
-					}
-				}
-			}
-		}
-		catch (XMLStreamException xse) {
-			throw new SystemException(xse);
-		}
-		finally {
-			if (xmlEventReader != null) {
-				try {
-					xmlEventReader.close();
-				}
-				catch (XMLStreamException xse) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(xse, xse);
-					}
-				}
-			}
-		}
-
-		if (preferencesMap == null) {
-			preferencesMap = Collections.emptyMap();
-		}
+		preferencesMap = createPreferencesMap(xml);
 
 		_preferencesMapPortalCache.put(cacheKey, preferencesMap);
 
@@ -941,8 +942,9 @@ public class PortletPreferencesFactoryImpl
 		return String.valueOf(cacheKeyGenerator.getCacheKey(xml));
 	}
 
-	private final Log _log = LogFactoryUtil.getLog(
+	private static final Log _log = LogFactoryUtil.getLog(
 		PortletPreferencesFactoryImpl.class);
+
 	private final PortalCache<String, Map<String, Preference>>
 		_preferencesMapPortalCache = SingleVMPoolUtil.getPortalCache(
 			PortletPreferencesFactoryImpl.class.getName());

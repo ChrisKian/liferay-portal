@@ -475,16 +475,6 @@ public class AssetCategoryLocalServiceWrapper
 		return _assetCategoryLocalService.getAssetEntryPrimaryKeys(categoryId);
 	}
 
-	/**
-	* Returns the Spring bean ID for this bean.
-	*
-	* @return the Spring bean ID for this bean
-	*/
-	@Override
-	public java.lang.String getBeanIdentifier() {
-		return _assetCategoryLocalService.getBeanIdentifier();
-	}
-
 	@Override
 	public java.util.List<com.liferay.portlet.asset.model.AssetCategory> getCategories() {
 		return _assetCategoryLocalService.getCategories();
@@ -573,6 +563,16 @@ public class AssetCategoryLocalServiceWrapper
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		com.liferay.portlet.exportimport.lar.PortletDataContext portletDataContext) {
 		return _assetCategoryLocalService.getExportActionableDynamicQuery(portletDataContext);
+	}
+
+	/**
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
+	@Override
+	public java.lang.String getOSGiServiceIdentifier() {
+		return _assetCategoryLocalService.getOSGiServiceIdentifier();
 	}
 
 	@Override
@@ -684,6 +684,16 @@ public class AssetCategoryLocalServiceWrapper
 	@Override
 	public com.liferay.portal.kernel.search.BaseModelSearchResult<com.liferay.portlet.asset.model.AssetCategory> searchCategories(
 		long companyId, long[] groupIds, java.lang.String title,
+		long[] vocabularyIds, long[] parentCategoryIds, int start, int end,
+		com.liferay.portal.kernel.search.Sort sort)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _assetCategoryLocalService.searchCategories(companyId, groupIds,
+			title, vocabularyIds, parentCategoryIds, start, end, sort);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.BaseModelSearchResult<com.liferay.portlet.asset.model.AssetCategory> searchCategories(
+		long companyId, long[] groupIds, java.lang.String title,
 		long[] vocabularyIds, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _assetCategoryLocalService.searchCategories(companyId, groupIds,
@@ -694,16 +704,6 @@ public class AssetCategoryLocalServiceWrapper
 	public void setAssetEntryAssetCategories(long entryId, long[] categoryIds) {
 		_assetCategoryLocalService.setAssetEntryAssetCategories(entryId,
 			categoryIds);
-	}
-
-	/**
-	* Sets the Spring bean ID for this bean.
-	*
-	* @param beanIdentifier the Spring bean ID for this bean
-	*/
-	@Override
-	public void setBeanIdentifier(java.lang.String beanIdentifier) {
-		_assetCategoryLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
 	/**

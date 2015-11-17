@@ -79,14 +79,19 @@ public class ResourceBlockLocalServiceTest {
 	@ExpectedLogs(
 		expectedLogs = {
 			@ExpectedLog(
-				dbType = DB.TYPE_DB2,
-				expectedLog =
-					"Error for batch element #0: DB2 SQL error: SQLCODE: " +
-						"-803, SQLSTATE: 23505",
+				dbType = DB.TYPE_DB2, expectedLog = "Error for batch element",
 				expectedType = ExpectedType.PREFIX
 			),
 			@ExpectedLog(
-				dbType = DB.TYPE_DB2, expectedLog = "Non-atomic batch failure.",
+				dbType = DB.TYPE_DB2,
+				expectedLog = "[jcc][t4][102][10040][4.16.53] Batch failure.",
+				expectedType = ExpectedType.PREFIX
+			),
+			@ExpectedLog(
+				dbType = DB.TYPE_HYPERSONIC,
+				expectedLog =
+					"integrity constraint violation: unique constraint or " +
+						"index violation:",
 				expectedType = ExpectedType.PREFIX
 			),
 			@ExpectedLog(
@@ -115,6 +120,13 @@ public class ResourceBlockLocalServiceTest {
 				expectedLog =
 					"ERROR: duplicate key value violates unique constraint ",
 				expectedType = ExpectedType.PREFIX
+			),
+			@ExpectedLog(
+				dbType = DB.TYPE_SYBASE,
+				expectedLog =
+					"Attempt to insert duplicate key row in object " +
+						"'ResourceBlock'",
+				expectedType = ExpectedType.CONTAINS
 			)
 		},
 		level = "ERROR", loggerClass = JDBCExceptionReporter.class
@@ -197,14 +209,19 @@ public class ResourceBlockLocalServiceTest {
 	@ExpectedLogs(
 		expectedLogs = {
 			@ExpectedLog(
-				dbType = DB.TYPE_DB2,
-				expectedLog =
-					"Error for batch element #0: DB2 SQL error: SQLCODE: " +
-						"-803, SQLSTATE: 23505",
+				dbType = DB.TYPE_DB2, expectedLog = "Error for batch element",
 				expectedType = ExpectedType.PREFIX
 			),
 			@ExpectedLog(
-				dbType = DB.TYPE_DB2, expectedLog = "Non-atomic batch failure.",
+				dbType = DB.TYPE_DB2,
+				expectedLog = "[jcc][t4][102][10040][4.16.53] Batch failure.",
+				expectedType = ExpectedType.PREFIX
+			),
+			@ExpectedLog(
+				dbType = DB.TYPE_HYPERSONIC,
+				expectedLog =
+					"integrity constraint violation: unique constraint or " +
+						"index violation:",
 				expectedType = ExpectedType.PREFIX
 			),
 			@ExpectedLog(
@@ -233,6 +250,13 @@ public class ResourceBlockLocalServiceTest {
 				expectedLog =
 					"ERROR: duplicate key value violates unique constraint ",
 				expectedType = ExpectedType.PREFIX
+			),
+			@ExpectedLog(
+				dbType = DB.TYPE_SYBASE,
+				expectedLog =
+					"Attempt to insert duplicate key row in object " +
+						"'ResourceBlock'",
+				expectedType = ExpectedType.CONTAINS
 			)
 		},
 		level = "ERROR", loggerClass = JDBCExceptionReporter.class

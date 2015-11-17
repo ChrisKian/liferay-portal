@@ -45,7 +45,6 @@ page import="com.liferay.portal.model.Group" %><%@
 page import="com.liferay.portal.model.Organization" %><%@
 page import="com.liferay.portal.model.Role" %><%@
 page import="com.liferay.portal.model.User" %><%@
-page import="com.liferay.portal.model.UserConstants" %><%@
 page import="com.liferay.portal.model.UserGroup" %><%@
 page import="com.liferay.portal.security.auth.PrincipalException" %><%@
 page import="com.liferay.portal.security.permission.ActionKeys" %><%@
@@ -88,12 +87,16 @@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %><%@
 taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
+<%@ page import="com.liferay.portlet.PortletURLUtil" %>
+
 <portlet:defineObjects />
 
 <liferay-theme:defineObjects />
 
 <%
-String currentURL = PortalUtil.getCurrentURL(request);
+PortletURL currentURLObj = PortletURLUtil.getCurrent(liferayPortletRequest, liferayPortletResponse);
+
+String currentURL = currentURLObj.toString();
 
 Group group = themeDisplay.getScopeGroup();
 
@@ -104,7 +107,7 @@ String selectedScopeOrganizationIds = PrefsParamUtil.getString(portletPreference
 String selectedScopeRoleIds = PrefsParamUtil.getString(portletPreferences, request, "selectedScopeRoleIds", "");
 String selectedScopeUserGroupIds = PrefsParamUtil.getString(portletPreferences, request, "selectedScopeUserGroupIds", "");
 
-String viewAlertsEntryPortletId = PortletProviderUtil.getPortletId(AnnouncementsConstants.CLASS_NAME_ALERTS_ENTRY, PortletProvider.Action.VIEW);
+String alertsEntryPortletId = PortletProviderUtil.getPortletId(AnnouncementsConstants.CLASS_NAME_ALERTS_ENTRY, PortletProvider.Action.VIEW);
 
 Format dateFormatDate = FastDateFormatFactoryUtil.getDate(DateFormat.FULL, themeDisplay.getLocale(), themeDisplay.getTimeZone());
 %>

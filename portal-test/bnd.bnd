@@ -2,6 +2,7 @@ Bundle-Name: Liferay Portal Test
 Bundle-Version: 7.0.0
 Export-Package:\
 	com.liferay.portal.kernel.test,\
+	com.liferay.portal.kernel.test.junit,\
 	com.liferay.portal.kernel.test.randomizerbumpers,\
 	com.liferay.portal.kernel.test.rule,\
 	com.liferay.portal.kernel.test.rule.callback,\
@@ -9,10 +10,10 @@ Export-Package:\
 	com.liferay.portal.kernel.test.util,\
 	com.liferay.portlet.asset.service.persistence.test,\
 	com.liferay.portlet.blogs.util.test,\
-	com.liferay.portlet.documentlibrary.util.test,\
 	com.liferay.portlet.dynamicdatamapping.util.test,\
 	com.liferay.portlet.expando.util.test,\
 	com.liferay.portlet.messageboards.util.test,\
+	com.liferay.portlet.ratings.test,\
 	com.liferay.portlet.ratings.util.test,\
 	junit.*,\
 	org.hamcrest.*,\

@@ -38,6 +38,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -157,7 +161,8 @@ public class DeployUtil {
 			!appServerType.equals(ServerDetector.JBOSS_ID) &&
 			!appServerType.equals(ServerDetector.JETTY_ID) &&
 			!appServerType.equals(ServerDetector.TOMCAT_ID) &&
-			!appServerType.equals(ServerDetector.WEBLOGIC_ID)) {
+			!appServerType.equals(ServerDetector.WEBLOGIC_ID) &&
+			!appServerType.equals(ServerDetector.WILDFLY_ID)) {
 
 			return;
 		}
@@ -204,7 +209,9 @@ public class DeployUtil {
 				getJettyHome() + "/contexts/" + deployDir.getName() + ".xml");
 		}
 
-		if (appServerType.equals(ServerDetector.JBOSS_ID)) {
+		if (appServerType.equals(ServerDetector.JBOSS_ID) ||
+			appServerType.equals(ServerDetector.WILDFLY_ID)) {
+
 			File deployedFile = new File(
 				deployDir.getParent(), deployDir.getName() + ".deployed");
 
@@ -259,10 +266,11 @@ public class DeployUtil {
 			return null;
 		}
 
-		String tmpDir = SystemProperties.get(SystemProperties.TMP_DIR);
+		Path tempDirPath = Files.createTempDirectory(
+			Paths.get(SystemProperties.get(SystemProperties.TMP_DIR)), null);
 
 		File file = new File(
-			tmpDir + "/liferay/com/liferay/portal/deploy/dependencies/" +
+			tempDirPath + "/liferay/com/liferay/portal/deploy/dependencies/" +
 				resource);
 
 		//if (!file.exists() || resource.startsWith("ext-")) {

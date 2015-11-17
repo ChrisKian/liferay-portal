@@ -14,16 +14,31 @@
 
 package com.liferay.portlet.asset.service.impl;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Criterion;
+import com.liferay.portal.kernel.dao.orm.Disjunction;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.model.User;
+import com.liferay.portal.model.adapter.ModelAdapterUtil;
 import com.liferay.portlet.asset.NoSuchLinkException;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.asset.model.AssetLink;
 import com.liferay.portlet.asset.model.AssetLinkConstants;
+import com.liferay.portlet.asset.model.adapter.StagedAssetLink;
 import com.liferay.portlet.asset.service.base.AssetLinkLocalServiceBaseImpl;
+import com.liferay.portlet.exportimport.lar.PortletDataContext;
+import com.liferay.portlet.exportimport.lar.StagedModelDataHandlerUtil;
+import com.liferay.portlet.exportimport.lar.StagedModelType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +71,6 @@ public class AssetLinkLocalServiceImpl extends AssetLinkLocalServiceBaseImpl {
 	 * @param  weight the weight of the relationship, allowing precedence
 	 *         ordering of links
 	 * @return the asset link
-	 * @throws PortalException if the user could not be found
 	 */
 	@Override
 	public AssetLink addLink(
@@ -126,8 +140,7 @@ public class AssetLinkLocalServiceImpl extends AssetLinkLocalServiceBaseImpl {
 	/**
 	 * Deletes the asset link.
 	 *
-	 * @param  linkId the primary key of the asset link
-	 * @throws PortalException if the asset link could not be found
+	 * @param linkId the primary key of the asset link
 	 */
 	@Override
 	public void deleteLink(long linkId) throws PortalException {
@@ -234,6 +247,87 @@ public class AssetLinkLocalServiceImpl extends AssetLinkLocalServiceBaseImpl {
 		return assetLinks;
 	}
 
+	@Override
+	public ExportActionableDynamicQuery getExportActionbleDynamicQuery(
+		final PortletDataContext portletDataContext) {
+
+		final ExportActionableDynamicQuery exportActionableDynamicQuery =
+			new ExportActionableDynamicQuery();
+
+		exportActionableDynamicQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
+
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Criterion createDateCriterion =
+						portletDataContext.getDateRangeCriteria("createDate");
+
+					if (createDateCriterion != null) {
+						dynamicQuery.add(createDateCriterion);
+					}
+
+					DynamicQuery assetEntryDynamicQuery =
+						DynamicQueryFactoryUtil.forClass(
+							AssetEntry.class, "assetEntry", getClassLoader());
+
+					assetEntryDynamicQuery.setProjection(
+						ProjectionFactoryUtil.alias(
+							ProjectionFactoryUtil.property(
+								"assetEntry.entryId"),
+							"assetEntry.assetEntryId"));
+
+					Property groupIdProperty = PropertyFactoryUtil.forName(
+						"groupId");
+
+					Criterion groupIdCriterion = groupIdProperty.eq(
+						portletDataContext.getScopeGroupId());
+
+					assetEntryDynamicQuery.add(groupIdCriterion);
+
+					Disjunction disjunction =
+						RestrictionsFactoryUtil.disjunction();
+
+					Property entryId1Property = PropertyFactoryUtil.forName(
+						"entryId1");
+					Property entryId2Property = PropertyFactoryUtil.forName(
+						"entryId2");
+
+					disjunction.add(
+						entryId1Property.in(assetEntryDynamicQuery));
+					disjunction.add(
+						entryId2Property.in(assetEntryDynamicQuery));
+
+					dynamicQuery.add(disjunction);
+				}
+
+			});
+		exportActionableDynamicQuery.setBaseLocalService(this);
+		exportActionableDynamicQuery.setClass(AssetLink.class);
+		exportActionableDynamicQuery.setClassLoader(getClassLoader());
+		exportActionableDynamicQuery.setCompanyId(
+			portletDataContext.getCompanyId());
+		exportActionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<AssetLink>() {
+
+				@Override
+				public void performAction(AssetLink assetLink)
+					throws PortalException {
+
+					StagedAssetLink stagedAssetLink = ModelAdapterUtil.adapt(
+						assetLink, AssetLink.class, StagedAssetLink.class);
+
+					StagedModelDataHandlerUtil.exportStagedModel(
+						portletDataContext, stagedAssetLink);
+				}
+
+			});
+		exportActionableDynamicQuery.setPrimaryKeyPropertyName("linkId");
+		exportActionableDynamicQuery.setStagedModelType(
+			new StagedModelType(StagedModelType.class));
+
+		return exportActionableDynamicQuery;
+	}
+
 	/**
 	 * Returns all the asset links whose first or second entry ID is the given
 	 * entry ID.
@@ -334,16 +428,15 @@ public class AssetLinkLocalServiceImpl extends AssetLinkLocalServiceBaseImpl {
 	 * contained in the given link entry IDs.
 	 * </p>
 	 *
-	 * @param  userId the primary key of the user updating the links
-	 * @param  entryId the primary key of the asset entry to be managed
-	 * @param  linkEntryIds the primary keys of the asset entries to be linked
-	 *         with the asset entry to be managed
-	 * @param  typeId the type of the asset links to be created. Acceptable
-	 *         values include {@link AssetLinkConstants#TYPE_RELATED} which is a
-	 *         bidirectional relationship and {@link
-	 *         AssetLinkConstants#TYPE_CHILD} which is a unidirectional
-	 *         relationship. For more information see {@link AssetLinkConstants}
-	 * @throws PortalException if the user could not be found
+	 * @param userId the primary key of the user updating the links
+	 * @param entryId the primary key of the asset entry to be managed
+	 * @param linkEntryIds the primary keys of the asset entries to be linked
+	 *        with the asset entry to be managed
+	 * @param typeId the type of the asset links to be created. Acceptable
+	 *        values include {@link AssetLinkConstants#TYPE_RELATED} which is a
+	 *        bidirectional relationship and {@link
+	 *        AssetLinkConstants#TYPE_CHILD} which is a unidirectional
+	 *        relationship. For more information see {@link AssetLinkConstants}
 	 */
 	@Override
 	public void updateLinks(

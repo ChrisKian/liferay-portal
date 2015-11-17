@@ -39,7 +39,7 @@ if (entry == null) {
 <aui:form method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveEntry();" %>'>
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="entryId" type="hidden" value="<%= entryId %>" />
-	<aui:input name="alert" type="hidden" value="<%= portletName.equals(viewAlertsEntryPortletId) %>" />
+	<aui:input name="alert" type="hidden" value="<%= portletName.equals(alertsEntryPortletId) %>" />
 
 	<aui:model-context bean="<%= entry %>" model="<%= AnnouncementsEntry.class %>" />
 
@@ -136,16 +136,15 @@ if (entry == null) {
 	<div class="clearfix entry hide" id="<portlet:namespace />preview">
 		<div class="user-portrait">
 			<span class="avatar">
-
-				<%
-				User currentUser = UserLocalServiceUtil.getUserById(themeDisplay.getUserId());
-				%>
-
-				<a href="<%= currentUser.getDisplayURL(themeDisplay) %>">
-					<img alt="<%= HtmlUtil.escapeAttribute(currentUser.getFullName()) %>" src="<%= currentUser.getPortraitURL(themeDisplay) %>" />
-				</a>
+				<liferay-ui:user-portrait
+					userId="<%= themeDisplay.getUserId() %>"
+				/>
 			</span>
 		</div>
+
+		<%
+		User currentUser = UserLocalServiceUtil.getUserById(themeDisplay.getUserId());
+		%>
 
 		<div class="entry-header">
 			<div class="entry-action">
@@ -153,7 +152,7 @@ if (entry == null) {
 			</div>
 
 			<div class="entry-time">
-				<%= LanguageUtil.get(request, "about-a-minute-ago") %>
+				<liferay-ui:message key="about-a-minute-ago" />
 			</div>
 		</div>
 
@@ -237,8 +236,6 @@ if (entry == null) {
 		var previewContent = A.one('#<portlet:namespace />entryContent');
 
 		previewContent.html(content);
-
-		var previewFooter = A.one('#<portlet:namespace />entryFooter');
 
 		if (previewContent.height() > 75) {
 			var toggle = preview.one('.toggle');

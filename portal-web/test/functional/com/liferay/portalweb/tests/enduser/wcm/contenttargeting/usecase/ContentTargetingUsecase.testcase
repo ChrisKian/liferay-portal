@@ -1109,17 +1109,17 @@
 
 		<execute macro="ContentTargetingCampaign#saveCP" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1127,7 +1127,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1158,7 +1158,7 @@
 
 		<execute macro="ContentTargetingCampaign#deleteAllCP" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1167,13 +1167,13 @@
 			<var name="contentDeletion" value="true" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1181,7 +1181,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1219,17 +1219,17 @@
 	<command name="ExportImportSmoke" priority="4">
 		<execute macro="LAR#setupContentTargeting" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1237,7 +1237,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1343,7 +1343,7 @@
 
 		<execute macro="ContentTargetingCampaign#saveCP" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1363,13 +1363,13 @@
 			<var name="uncheckContentNameList" value="Web Content" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1377,7 +1377,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1426,7 +1426,7 @@
 	<command name="ExportImportUncheckAppCTRefAllAndContentAll" priority="4">
 		<execute macro="LAR#setupContentTargeting" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1448,13 +1448,13 @@
 			<var name="uncheckContentNameList" value="Web Content" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1462,7 +1462,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1484,7 +1484,7 @@
 	<command name="ExportImportUncheckAppCTRefAllAndContentAT" priority="4">
 		<execute macro="LAR#setupContentTargeting" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1502,13 +1502,13 @@
 			<var name="uncheckContentNameList" value="Audience Targeting" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1516,7 +1516,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1538,7 +1538,7 @@
 	<command name="ExportImportUncheckAppCTRefAllAndContentWC" priority="4">
 		<execute macro="LAR#setupContentTargeting" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1556,13 +1556,13 @@
 			<var name="uncheckContentNameList" value="Web Content" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1570,7 +1570,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1666,7 +1666,7 @@
 
 		<execute macro="ContentTargetingCampaign#saveCP" />
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1678,13 +1678,13 @@
 			<var name="uncheckContentNameList" value="Web Content" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1692,7 +1692,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1783,7 +1783,7 @@
 			<var name="webContentTitle" value="WC Title Unreferenced" />
 		</execute>
 
-		<execute macro="LAR#gotoExportSite">
+		<execute macro="LAR#gotoExportSiteCmd">
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -1791,13 +1791,13 @@
 			<var name="uncheckContentNameList" value="Audience Targeting,Web Content" />
 		</execute>
 
-		<execute function="AssertClick" locator1="CPSitepagesExport#EXPORT_BUTTON" value1="Export" />
+		<execute function="AssertClick" locator1="SitePagesExport#EXPORT_BUTTON" value1="Export" />
 
 		<var name="key_larFileName" value="${larFileName}" />
 
-		<execute function="AssertTextEquals" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_STATUS" value1="Successful" />
 
-		<var method="selenium#getText('//tr/td[5]/span/a')" name="valueName" />
+		<var method="selenium#getElementText('//tr/td[5]/span/a')" name="valueName" />
 
 		<echo message="value name ${valueName}" />
 
@@ -1805,7 +1805,7 @@
 
 		<echo message="lar file name ${larFileName}" />
 
-		<execute function="Click" locator1="CPSitepagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
+		<execute function="Click" locator1="SitePagesExport#CURRENT_AND_PREVIOUS_DOWNLOAD" />
 		<execute function="DownloadTempFile" />
 		<execute function="SelectFrame" value1="relative=top" />
 
@@ -1830,8 +1830,8 @@
 	</command>
 
 	<command name="StagingContentTargeting" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteName" value="Site Name" />
 			<var name="siteURL" value="true" />
 		</execute>
@@ -2091,8 +2091,8 @@
 	</command>
 
 	<command name="StagingCTDeletions" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -2158,8 +2158,8 @@
 	</command>
 
 	<command name="StagingCTDisabled" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -2274,8 +2274,8 @@
 	</command>
 
 	<command name="StagingCTEnabled" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -2413,8 +2413,8 @@
 	</command>
 
 	<command name="StagingUncheckAppAllAndContentCTRefAllAndWC" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -2518,9 +2518,9 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-54232" name="StagingUncheckAppCTRefAllAndContentAll" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+	<command name="StagingUncheckAppCTRefAllAndContentAll" priority="4">
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -2561,9 +2561,9 @@
 		</execute>
 	</command>
 
-	<command known-issues="WCM-345,LPS-54232" name="StagingUncheckAppCTRefAllAndContentAT" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+	<command name="StagingUncheckAppCTRefAllAndContentAT" priority="4">
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -2604,9 +2604,9 @@
 		</execute>
 	</command>
 
-	<command known-issues="LPS-54232" name="StagingUncheckAppCTRefAllAndContentWC" priority="4">
-		<execute macro="Page#gotoConfigurationCP">
-			<var name="portletName" value="Site Settings" />
+	<command name="StagingUncheckAppCTRefAllAndContentWC" priority="4">
+		<execute macro="Page#gotoPublishingTools">
+			<var name="portletName" value="Staging Configuration" />
 			<var name="siteScopeName" value="Site Name" />
 		</execute>
 
@@ -3435,7 +3435,7 @@
 			<var name="siteURL" value="true" />
 		</execute>
 
-		<execute function="SikuliClick" locator1="PGUsersegmentcontentdisplay#PREVIEW_DOCUMENT_1_PNG" />
+		<execute function="SikuliClick" locator1="UserSegmentContentDisplay#PREVIEW_DOCUMENT_1_PNG" />
 	</command>
 
 	<command name="UserSegmentAddWithDoesNotBelongViaUserSegmentContentDisplayPortlet" priority="4">
@@ -4016,7 +4016,7 @@
 		</execute>
 	</command>
 
-	<command known-issues="WCM-206" name="UserSegmentViewSpecificContentWithCategorizationViaContentListPortlet" priority="4">
+	<command name="UserSegmentViewSpecificContentWithCategorizationViaContentListPortlet" priority="4">
 		<execute macro="Page#gotoConfigurationCP">
 			<var name="portletName" value="Audience Targeting" />
 			<var name="siteScopeName" value="Site Name" />

@@ -68,12 +68,12 @@ public class StagedGroupImpl extends GroupImpl implements StagedGroup {
 	}
 
 	@Override
-	public void setCreateDate(Date date) {
+	public void setCreateDate(Date createDate) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void setModifiedDate(Date date) {
+	public void setModifiedDate(Date modifiedDate) {
 		throw new UnsupportedOperationException();
 	}
 

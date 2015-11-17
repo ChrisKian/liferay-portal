@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.LocalizedModel;
+import com.liferay.portal.model.ShardedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.service.ServiceContext;
 
@@ -47,7 +48,7 @@ import java.util.Map;
  */
 @ProviderType
 public interface AssetCategoryModel extends BaseModel<AssetCategory>,
-	LocalizedModel, StagedGroupedModel {
+	LocalizedModel, ShardedModel, StagedGroupedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -488,6 +489,7 @@ public interface AssetCategoryModel extends BaseModel<AssetCategory>,
 	 *
 	 * @return the last publish date of this asset category
 	 */
+	@Override
 	public Date getLastPublishDate();
 
 	/**
@@ -495,6 +497,7 @@ public interface AssetCategoryModel extends BaseModel<AssetCategory>,
 	 *
 	 * @param lastPublishDate the last publish date of this asset category
 	 */
+	@Override
 	public void setLastPublishDate(Date lastPublishDate);
 
 	@Override

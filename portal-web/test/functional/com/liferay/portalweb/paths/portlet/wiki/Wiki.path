@@ -10,12 +10,12 @@
 <tbody>
 <tr>
 	<td>ADD_PAGE_FORMAT_DROPDOWN</td>
-	<td>//select[@id='_154_WAR_wikiweb_format']</td>
+	<td>//select[contains(@id,'format')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>BODY</td>
-	<td>//div[@class='wiki-body']/p</td>
+	<td>//div[@class='wiki-body']//p</td>
 	<td></td>
 </tr>
 <tr>
@@ -26,6 +26,16 @@
 <tr>
 	<td>BODY_GENERIC</td>
 	<td>//div[@class='wiki-body']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_HEADER</td>
+	<td>//div[@class='wiki-body']/h1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_FIELD_CONTENT</td>
+	<td>//div[contains(@class,'custom-attributes')]/div/span[contains(.,'${key_customFieldContent}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -61,6 +71,16 @@
 <tr>
 	<td>PAGE_TAG</td>
 	<td>//div[@class='page-tags']/span/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAGE_HEADER</td>
+	<td>//div[contains(@class,'taglib-header') and contains(.,'${key_wikiPageTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>RICH_TEXT_EDITOR</td>
+	<td>//div[contains(@class,'alloy-editor') and contains(@aria-label,'Rich Text Editor')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -146,7 +166,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ALL_PAGES_TABLE_ACTIONS_GENERIC_DROPDOWN_2</td>
+	<td>ALL_PAGES_TABLE_ACTIONS_DROPDOWN_GENERIC_2</td>
 	<td>//tr[2]/td[6]/div/a</td>
 	<td></td>
 </tr>
@@ -483,7 +503,7 @@
 <!--NODE_TABLE-->
 <tr>
 	<td>NODE_TABLE</td>
-	<td>//div[contains(@id,'wikiweb_ocerSearchContainer')]//table</td>
+	<td>//div[contains(@id,'WikiAdminPortlet') and contains(@id,'SearchContainer')]//table</td>
 	<td></td>
 </tr>
 <tr>
@@ -494,6 +514,11 @@
 <tr>
 	<td>NODE_TABLE_WIKI_GENERIC</td>
 	<td>//tr[1]/td[1]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>NODE_TABLE_WIKI_GENERIC_2</td>
+	<td>//tr[2]/td[1]/a</td>
 	<td></td>
 </tr>
 <tr>

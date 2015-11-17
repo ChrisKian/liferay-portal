@@ -41,8 +41,6 @@ public class CalEventExportActionableDynamicQuery
 		_portletDataContext = portletDataContext;
 
 		setCompanyId(_portletDataContext.getCompanyId());
-
-		setGroupId(_portletDataContext.getScopeGroupId());
 	}
 
 	@Override

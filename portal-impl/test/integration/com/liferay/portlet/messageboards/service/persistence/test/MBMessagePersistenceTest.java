@@ -44,6 +44,7 @@ import com.liferay.portlet.messageboards.service.persistence.MBMessageUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -60,8 +61,9 @@ import java.util.Set;
  * @generated
  */
 public class MBMessagePersistenceTest {
+	@ClassRule
 	@Rule
-	public final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
+	public static final AggregateTestRule aggregateTestRule = new AggregateTestRule(new LiferayIntegrationTestRule(),
 			PersistenceTestRule.INSTANCE,
 			new TransactionalTestRule(Propagation.REQUIRED));
 
@@ -492,10 +494,10 @@ public class MBMessagePersistenceTest {
 			true, "userName", true, "createDate", true, "modifiedDate", true,
 			"classNameId", true, "classPK", true, "categoryId", true,
 			"threadId", true, "rootMessageId", true, "parentMessageId", true,
-			"subject", true, "body", true, "format", true, "anonymous", true,
-			"priority", true, "allowPingbacks", true, "answer", true,
-			"lastPublishDate", true, "status", true, "statusByUserId", true,
-			"statusByUserName", true, "statusDate", true);
+			"subject", true, "format", true, "anonymous", true, "priority",
+			true, "allowPingbacks", true, "answer", true, "lastPublishDate",
+			true, "status", true, "statusByUserId", true, "statusByUserName",
+			true, "statusDate", true);
 	}
 
 	@Test
@@ -604,11 +606,9 @@ public class MBMessagePersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = MBMessageLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<MBMessage>() {
 				@Override
-				public void performAction(Object object) {
-					MBMessage mbMessage = (MBMessage)object;
-
+				public void performAction(MBMessage mbMessage) {
 					Assert.assertNotNull(mbMessage);
 
 					count.increment();
@@ -703,9 +703,9 @@ public class MBMessagePersistenceTest {
 		Assert.assertTrue(Validator.equals(existingMBMessage.getUuid(),
 				ReflectionTestUtil.invoke(existingMBMessage, "getOriginalUuid",
 					new Class<?>[0])));
-		Assert.assertEquals(existingMBMessage.getGroupId(),
-			ReflectionTestUtil.invoke(existingMBMessage, "getOriginalGroupId",
-				new Class<?>[0]));
+		Assert.assertEquals(Long.valueOf(existingMBMessage.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(existingMBMessage,
+				"getOriginalGroupId", new Class<?>[0]));
 	}
 
 	protected MBMessage addMBMessage() throws Exception {

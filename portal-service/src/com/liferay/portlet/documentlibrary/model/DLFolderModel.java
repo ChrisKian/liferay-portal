@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ContainerModel;
+import com.liferay.portal.model.ShardedModel;
 import com.liferay.portal.model.StagedGroupedModel;
 import com.liferay.portal.model.TrashedModel;
 import com.liferay.portal.model.WorkflowedModel;
@@ -49,7 +50,7 @@ import java.util.Date;
  */
 @ProviderType
 public interface DLFolderModel extends BaseModel<DLFolder>, ContainerModel,
-	StagedGroupedModel, TrashedModel, WorkflowedModel {
+	ShardedModel, StagedGroupedModel, TrashedModel, WorkflowedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
@@ -376,6 +377,7 @@ public interface DLFolderModel extends BaseModel<DLFolder>, ContainerModel,
 	 *
 	 * @return the last publish date of this document library folder
 	 */
+	@Override
 	public Date getLastPublishDate();
 
 	/**
@@ -383,6 +385,7 @@ public interface DLFolderModel extends BaseModel<DLFolder>, ContainerModel,
 	 *
 	 * @param lastPublishDate the last publish date of this document library folder
 	 */
+	@Override
 	public void setLastPublishDate(Date lastPublishDate);
 
 	/**
