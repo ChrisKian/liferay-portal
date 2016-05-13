@@ -16,6 +16,7 @@ package com.liferay.blogs.service.impl.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.kernel.model.BlogsEntry;
+import com.liferay.blogs.kernel.service.BlogsEntryLocalService;
 import com.liferay.blogs.kernel.service.BlogsEntryLocalServiceUtil;
 import com.liferay.portal.kernel.comment.CommentManagerUtil;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
@@ -35,6 +36,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
@@ -95,4 +97,95 @@ public class BlogsEntryLocalServiceImplTest {
 				BlogsEntry.class.getName(), blogsEntry.getEntryId()));
 	}
 
+
+	@Test
+	public void testFindPreviousAndNext() throws Exception {
+
+		int[][] testOne = new int[][]{
+			new int[]{0, 0},
+			new int[]{1, 1},
+			new int[]{2, 2}};
+
+		generateBlogsEntries(testOne);
+
+		int[][] testTwo = new int[][]{
+			new int[]{0, 0},
+			new int[]{2, 2},
+			new int[]{1, 1}};
+
+		generateBlogsEntries(testTwo);
+
+		int[][] testThree = new int[][]{
+			new int[]{0, 0},
+			new int[]{0, 1},
+			new int[]{1, 2},
+			new int[]{1, 3}};
+
+		generateBlogsEntries(testThree);
+
+		int[][] testFour = new int[][]{
+			new int[]{0, 0},
+			new int[]{0, 1},
+			new int[]{0, 2},
+			new int[]{2, 7},
+			new int[]{2, 8},
+			new int[]{2, 9},
+			new int[]{1, 6},
+			new int[]{1, 7},
+			new int[]{1, 8}};
+
+		generateBlogsEntries(testFour);
+	}
+
+	public void generateBlogsEntries(int[][] displayDateOrder)
+		throws Exception {
+
+		long day = 86400000;
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		BlogsEntry[] blogsEntries = new BlogsEntry[displayDateOrder.length];
+
+		for (int i = 0; i < displayDateOrder.length; i++) {
+			int displayDate = displayDateOrder[i][0];
+			int order = displayDateOrder[i][1];
+
+			blogsEntries[order] = BlogsEntryLocalServiceUtil.addEntry(
+				TestPropsValues.getUserId(), StringUtil.randomString(),
+				StringUtil.randomString(), new Date(displayDate * day),
+				serviceContext);
+		}
+
+		for (int i = 0; i < blogsEntries.length; i++) {
+			long entryId = blogsEntries[i].getEntryId();
+
+			BlogsEntry[] prevAndNextValues =
+				_blogsEntryLocalService.getEntriesPrevAndNext(entryId);
+
+			if (i > 0) {
+				Assert.assertEquals(prevAndNextValues[0].getEntryId(),
+					blogsEntries[i-1].getEntryId());
+			}
+			else {
+				Assert.assertNull(prevAndNextValues[0]);
+			}
+
+			if (i < blogsEntries.length) {
+				Assert.assertEquals(prevAndNextValues[2].getEntryId(),
+					blogsEntries[i+1].getEntryId());
+			}
+			else {
+				Assert.assertNull(prevAndNextValues[2]);
+			}
+		}
+
+	}
+
+	@Reference(unbind = "-")
+	protected void setBlogsEntryLocalService(BlogsEntryLocalService blogsEntryLocalService) {
+			_blogsEntryLocalService = blogsEntryLocalService;
+	}
+
+	private BlogsEntryLocalService _blogsEntryLocalService;
 }
