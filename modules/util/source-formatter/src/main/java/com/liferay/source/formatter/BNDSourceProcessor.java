@@ -109,7 +109,8 @@ public class BNDSourceProcessor extends BaseSourceProcessor {
 		if (absolutePath.contains("/portal-kernel/") ||
 			absolutePath.contains("/util-bridges/") ||
 			absolutePath.contains("/util-java/") ||
-			absolutePath.contains("/util-taglib/")) {
+			absolutePath.contains("/util-taglib/") ||
+			fileName.endsWith("/system.packages.extra.bnd")) {
 
 			return;
 		}
@@ -130,7 +131,7 @@ public class BNDSourceProcessor extends BaseSourceProcessor {
 			if (wildcardImport.matches("^!?com\\.liferay\\..+")) {
 				processErrorMessage(
 					fileName,
-					"Don't use wildcard in Export-Package '" + wildcardImport +
+					"Do not use wildcard in Export-Package '" + wildcardImport +
 						"': " + fileName);
 			}
 		}
@@ -325,8 +326,7 @@ public class BNDSourceProcessor extends BaseSourceProcessor {
 		"\nImport-Package:(\\\\\n| )(.*?\n|\\Z)[^\t]",
 		Pattern.DOTALL | Pattern.MULTILINE);
 	private final Pattern _includeResourcePattern = Pattern.compile(
-		"^((-liferay)?-includeresource|Include-Resource):[\\s\\S]*?([^\\\\]" +
-			"\n|\\Z)",
+		"^(-includeresource|Include-Resource):[\\s\\S]*?([^\\\\]\n|\\Z)",
 		Pattern.MULTILINE);
 	private final Pattern _incorrectTabPattern = Pattern.compile(
 		"\n[^\t].*:\\\\\n(\t{2,})[^\t]");
