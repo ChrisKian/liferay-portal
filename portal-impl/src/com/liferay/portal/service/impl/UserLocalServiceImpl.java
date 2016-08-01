@@ -95,6 +95,7 @@ import com.liferay.portal.kernel.security.auth.ScreenNameValidator;
 import com.liferay.portal.kernel.security.ldap.LDAPSettingsUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.BaseServiceImpl;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.spring.aop.Skip;
@@ -550,6 +551,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			long[] roleIds, long[] userGroupIds, boolean sendEmail,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		Company company = CompanyLocalServiceUtil.getCompany(companyId);
+
+		if (!company.isStrangers()) {
+			return null;
+		}
 
 		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
