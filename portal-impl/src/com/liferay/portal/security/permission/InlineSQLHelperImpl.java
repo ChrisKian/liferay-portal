@@ -592,28 +592,37 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 				roleIdsOrOwnerIdSQL
 			});
 
+		StringBundler sb = new StringBundler(3);
+
 		int pos = sql.indexOf(_WHERE_CLAUSE);
 
 		if (pos != -1) {
-			return sql.substring(0, pos + 1).concat(permissionJoin).concat(
-				sql.substring(pos + 1));
+			sb.append("AND (");
 		}
+		else {
+			sb.append("WHERE (");
+		}
+
+		sb.append(classPKField);
+		sb.append(" IN (");
+		sb.append(permissionJoin);
+		sb.append("))");
 
 		pos = sql.indexOf(_GROUP_BY_CLAUSE);
 
 		if (pos != -1) {
-			return sql.substring(0, pos + 1).concat(permissionJoin).concat(
+			return sql.substring(0, pos + 1).concat(sb.toString()).concat(
 				sql.substring(pos + 1));
 		}
 
 		pos = sql.indexOf(_ORDER_BY_CLAUSE);
 
 		if (pos != -1) {
-			return sql.substring(0, pos + 1).concat(permissionJoin).concat(
+			return sql.substring(0, pos + 1).concat(sb.toString()).concat(
 				sql.substring(pos + 1));
 		}
 
-		return sql.concat(StringPool.SPACE).concat(permissionJoin);
+		return sql.concat(StringPool.SPACE).concat(sb.toString());
 	}
 
 	private static final String _GROUP_BY_CLAUSE = " GROUP BY ";
