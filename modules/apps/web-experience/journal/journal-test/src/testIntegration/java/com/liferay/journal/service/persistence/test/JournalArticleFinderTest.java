@@ -33,12 +33,18 @@ import com.liferay.journal.util.comparator.ArticleReviewDateComparator;
 import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -216,6 +222,68 @@ public class JournalArticleFinderTest {
 		testQueryByG_C(
 			_group.getGroupId(), Collections.<Long>emptyList(),
 			JournalArticleConstants.CLASSNAME_ID_DEFAULT, queryDefinition, 0);
+	}
+
+	@Test
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void testFilterFindByG_F_C() throws Exception {
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			_user.getUserId(), _group.getGroupId(), _folder.getFolderId());
+
+		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
+			WorkflowConstants.STATUS_ANY, _user.getUserId(), false, 0, 2, null);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			List<JournalArticle> journalArticles =
+				_journalArticleFinder.filterFindByG_F_C(
+					_group.getGroupId(),
+					Collections.singletonList(article.getFolderId()), 0,
+					queryDefinition);
+
+			Assert.assertEquals(1, journalArticles.size());
+			Assert.assertEquals(article, journalArticles.get(0));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	@Test
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void testFilterFindByKeywords() throws Exception {
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			_user.getUserId(), _group.getGroupId(), _folder.getFolderId());
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			List<JournalArticle> journalArticles =
+				_journalArticleFinder.filterFindByKeywords(
+					article.getCompanyId(), article.getGroupId(),
+					Collections.singletonList(article.getFolderId()), 0, null,
+					article.getVersion(), null, null, null, null,
+					article.getStatus(), null, -1, -1, null);
+
+			Assert.assertEquals(1, journalArticles.size());
+			Assert.assertEquals(article, journalArticles.get(0));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
 	}
 
 	@Test
@@ -606,5 +674,8 @@ public class JournalArticleFinderTest {
 
 	private JournalArticleFinder _journalArticleFinder;
 	private ServiceReference<JournalArticleFinder> _serviceReference;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
