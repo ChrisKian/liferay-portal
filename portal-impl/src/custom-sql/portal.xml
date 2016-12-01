@@ -46,13 +46,7 @@
 				(ResourcePermission.name = '[$CLASS_NAME$]') AND
 				(ResourcePermission.scope = [$RESOURCE_SCOPE_INDIVIDUAL$]) AND
 				(ResourcePermission.viewActionId = [$TRUE$]) AND
-				(
-					(
-						[$ROLE_IDS_OR_OWNER_ID$] AND
-						[$PRIM_KEYS$]
-					) OR
-					([$GROUP_ADMIN_RESOURCE_PERMISSION$])
-				)
+				([$ROLE_IDS_OR_OWNER_ID$])
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.countByLayouts">
