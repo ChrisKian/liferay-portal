@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -1468,7 +1467,8 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDLRecordVersionModelImpl)ddlRecordVersion);
+		clearUniqueFindersCache((DDLRecordVersionModelImpl)ddlRecordVersion,
+			true);
 	}
 
 	@Override
@@ -1480,52 +1480,40 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 			entityCache.removeResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
 				DDLRecordVersionImpl.class, ddlRecordVersion.getPrimaryKey());
 
-			clearUniqueFindersCache((DDLRecordVersionModelImpl)ddlRecordVersion);
+			clearUniqueFindersCache((DDLRecordVersionModelImpl)ddlRecordVersion,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDLRecordVersionModelImpl ddlRecordVersionModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddlRecordVersionModelImpl.getRecordId(),
-					ddlRecordVersionModelImpl.getVersion()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_R_V, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_R_V, args,
-				ddlRecordVersionModelImpl);
-		}
-		else {
-			if ((ddlRecordVersionModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_R_V.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddlRecordVersionModelImpl.getRecordId(),
-						ddlRecordVersionModelImpl.getVersion()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_R_V, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_R_V, args,
-					ddlRecordVersionModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDLRecordVersionModelImpl ddlRecordVersionModelImpl) {
 		Object[] args = new Object[] {
 				ddlRecordVersionModelImpl.getRecordId(),
 				ddlRecordVersionModelImpl.getVersion()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_R_V, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_R_V, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_R_V, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_R_V, args,
+			ddlRecordVersionModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDLRecordVersionModelImpl ddlRecordVersionModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddlRecordVersionModelImpl.getRecordId(),
+					ddlRecordVersionModelImpl.getVersion()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_R_V, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_R_V, args);
+		}
 
 		if ((ddlRecordVersionModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_R_V.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddlRecordVersionModelImpl.getOriginalRecordId(),
 					ddlRecordVersionModelImpl.getOriginalVersion()
 				};
@@ -1717,8 +1705,8 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 			DDLRecordVersionImpl.class, ddlRecordVersion.getPrimaryKey(),
 			ddlRecordVersion, false);
 
-		clearUniqueFindersCache(ddlRecordVersionModelImpl);
-		cacheUniqueFindersCache(ddlRecordVersionModelImpl, isNew);
+		clearUniqueFindersCache(ddlRecordVersionModelImpl, false);
+		cacheUniqueFindersCache(ddlRecordVersionModelImpl);
 
 		ddlRecordVersion.resetOriginalValues();
 
@@ -1800,12 +1788,14 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 	 */
 	@Override
 	public DDLRecordVersion fetchByPrimaryKey(Serializable primaryKey) {
-		DDLRecordVersion ddlRecordVersion = (DDLRecordVersion)entityCache.getResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
 				DDLRecordVersionImpl.class, primaryKey);
 
-		if (ddlRecordVersion == _nullDDLRecordVersion) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDLRecordVersion ddlRecordVersion = (DDLRecordVersion)serializable;
 
 		if (ddlRecordVersion == null) {
 			Session session = null;
@@ -1821,8 +1811,7 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 				}
 				else {
 					entityCache.putResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
-						DDLRecordVersionImpl.class, primaryKey,
-						_nullDDLRecordVersion);
+						DDLRecordVersionImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1876,18 +1865,20 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDLRecordVersion ddlRecordVersion = (DDLRecordVersion)entityCache.getResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
 					DDLRecordVersionImpl.class, primaryKey);
 
-			if (ddlRecordVersion == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddlRecordVersion);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDLRecordVersion)serializable);
+				}
 			}
 		}
 
@@ -1929,8 +1920,7 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDLRecordVersionModelImpl.ENTITY_CACHE_ENABLED,
-					DDLRecordVersionImpl.class, primaryKey,
-					_nullDDLRecordVersion);
+					DDLRecordVersionImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2167,23 +2157,4 @@ public class DDLRecordVersionPersistenceImpl extends BasePersistenceImpl<DDLReco
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No DDLRecordVersion exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No DDLRecordVersion exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(DDLRecordVersionPersistenceImpl.class);
-	private static final DDLRecordVersion _nullDDLRecordVersion = new DDLRecordVersionImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDLRecordVersion> toCacheModel() {
-				return _nullDDLRecordVersionCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDLRecordVersion> _nullDDLRecordVersionCacheModel =
-		new CacheModel<DDLRecordVersion>() {
-			@Override
-			public DDLRecordVersion toEntityModel() {
-				return _nullDDLRecordVersion;
-			}
-		};
 }

@@ -166,8 +166,8 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 			Set<String> generatedUniqueTitles = new HashSet<>();
 
 			try (PreparedStatement ps1 = connection.prepareStatement(
-					"select fileEntryId, groupId, folderId, extension, title," +
-						" version from DLFileEntry");
+					"select fileEntryId, groupId, folderId, extension, " +
+						"title, version from DLFileEntry");
 				PreparedStatement ps2 =
 					AutoBatchPreparedStatementUtil.autoBatch(
 						connection.prepareStatement(
@@ -360,8 +360,9 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 				if (rs.next()) {
 					throw new IllegalStateException(
 						String.format(
-							"Found more than one row in table DLFileEntryType" +
-								" with groupId %s and fileEntryTypeKey %s",
+							"Found more than one row in table " +
+								"DLFileEntryType with groupId %s and " +
+									"fileEntryTypeKey %s",
 							groupId, dlFileEntryTypeKey));
 				}
 
@@ -382,35 +383,27 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 		Locale defaultLocale = LocaleUtil.fromLanguageId(
 			UpgradeProcessUtil.getDefaultLanguageId(companyId));
 
-		String defaultValue = LanguageUtil.get(defaultLocale, nameLanguageKey);
-
 		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
 			nameXML);
 		Map<Locale, String> descriptionMap =
 			LocalizationUtil.getLocalizationMap(descriptionXML);
 
-		for (Locale locale : LanguageUtil.getSupportedLocales()) {
-			String value = LanguageUtil.get(locale, nameLanguageKey);
+		String value = LanguageUtil.get(defaultLocale, nameLanguageKey);
 
-			if (!locale.equals(defaultLocale) && value.equals(defaultValue)) {
-				continue;
-			}
+		String description = descriptionMap.get(defaultLocale);
 
-			String description = descriptionMap.get(locale);
+		if (description == null) {
+			descriptionMap.put(defaultLocale, value);
 
-			if (description == null) {
-				descriptionMap.put(locale, value);
+			update = true;
+		}
 
-				update = true;
-			}
+		String name = nameMap.get(defaultLocale);
 
-			String name = nameMap.get(locale);
+		if (name == null) {
+			nameMap.put(defaultLocale, value);
 
-			if (name == null) {
-				nameMap.put(locale, value);
-
-				update = true;
-			}
+			update = true;
 		}
 
 		if (update) {
@@ -482,6 +475,7 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 						title, extension);
 
 					ps2.setString(1, fileName);
+
 					ps2.setLong(2, fileVersionId);
 
 					ps2.addBatch();

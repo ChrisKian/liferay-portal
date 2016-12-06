@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -1402,7 +1401,7 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDMTemplateLinkModelImpl)ddmTemplateLink);
+		clearUniqueFindersCache((DDMTemplateLinkModelImpl)ddmTemplateLink, true);
 	}
 
 	@Override
@@ -1414,52 +1413,39 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 			entityCache.removeResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
 				DDMTemplateLinkImpl.class, ddmTemplateLink.getPrimaryKey());
 
-			clearUniqueFindersCache((DDMTemplateLinkModelImpl)ddmTemplateLink);
+			clearUniqueFindersCache((DDMTemplateLinkModelImpl)ddmTemplateLink,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDMTemplateLinkModelImpl ddmTemplateLinkModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddmTemplateLinkModelImpl.getClassNameId(),
-					ddmTemplateLinkModelImpl.getClassPK()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_C_C, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_C_C, args,
-				ddmTemplateLinkModelImpl);
-		}
-		else {
-			if ((ddmTemplateLinkModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_C_C.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmTemplateLinkModelImpl.getClassNameId(),
-						ddmTemplateLinkModelImpl.getClassPK()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_C_C, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_C_C, args,
-					ddmTemplateLinkModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDMTemplateLinkModelImpl ddmTemplateLinkModelImpl) {
 		Object[] args = new Object[] {
 				ddmTemplateLinkModelImpl.getClassNameId(),
 				ddmTemplateLinkModelImpl.getClassPK()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_C_C, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_C_C, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_C_C, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_C_C, args,
+			ddmTemplateLinkModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDMTemplateLinkModelImpl ddmTemplateLinkModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmTemplateLinkModelImpl.getClassNameId(),
+					ddmTemplateLinkModelImpl.getClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_C_C, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_C_C, args);
+		}
 
 		if ((ddmTemplateLinkModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_C_C.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmTemplateLinkModelImpl.getOriginalClassNameId(),
 					ddmTemplateLinkModelImpl.getOriginalClassPK()
 				};
@@ -1647,8 +1633,8 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 			DDMTemplateLinkImpl.class, ddmTemplateLink.getPrimaryKey(),
 			ddmTemplateLink, false);
 
-		clearUniqueFindersCache(ddmTemplateLinkModelImpl);
-		cacheUniqueFindersCache(ddmTemplateLinkModelImpl, isNew);
+		clearUniqueFindersCache(ddmTemplateLinkModelImpl, false);
+		cacheUniqueFindersCache(ddmTemplateLinkModelImpl);
 
 		ddmTemplateLink.resetOriginalValues();
 
@@ -1719,12 +1705,14 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 	 */
 	@Override
 	public DDMTemplateLink fetchByPrimaryKey(Serializable primaryKey) {
-		DDMTemplateLink ddmTemplateLink = (DDMTemplateLink)entityCache.getResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
 				DDMTemplateLinkImpl.class, primaryKey);
 
-		if (ddmTemplateLink == _nullDDMTemplateLink) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDMTemplateLink ddmTemplateLink = (DDMTemplateLink)serializable;
 
 		if (ddmTemplateLink == null) {
 			Session session = null;
@@ -1740,8 +1728,7 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 				}
 				else {
 					entityCache.putResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
-						DDMTemplateLinkImpl.class, primaryKey,
-						_nullDDMTemplateLink);
+						DDMTemplateLinkImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1795,18 +1782,20 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDMTemplateLink ddmTemplateLink = (DDMTemplateLink)entityCache.getResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
 					DDMTemplateLinkImpl.class, primaryKey);
 
-			if (ddmTemplateLink == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddmTemplateLink);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDMTemplateLink)serializable);
+				}
 			}
 		}
 
@@ -1848,7 +1837,7 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDMTemplateLinkModelImpl.ENTITY_CACHE_ENABLED,
-					DDMTemplateLinkImpl.class, primaryKey, _nullDDMTemplateLink);
+					DDMTemplateLinkImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2085,23 +2074,4 @@ public class DDMTemplateLinkPersistenceImpl extends BasePersistenceImpl<DDMTempl
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No DDMTemplateLink exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No DDMTemplateLink exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(DDMTemplateLinkPersistenceImpl.class);
-	private static final DDMTemplateLink _nullDDMTemplateLink = new DDMTemplateLinkImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDMTemplateLink> toCacheModel() {
-				return _nullDDMTemplateLinkCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDMTemplateLink> _nullDDMTemplateLinkCacheModel =
-		new CacheModel<DDMTemplateLink>() {
-			@Override
-			public DDMTemplateLink toEntityModel() {
-				return _nullDDMTemplateLink;
-			}
-		};
 }

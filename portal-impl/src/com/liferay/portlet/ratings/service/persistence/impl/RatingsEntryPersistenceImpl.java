@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -2669,7 +2668,7 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((RatingsEntryModelImpl)ratingsEntry);
+		clearUniqueFindersCache((RatingsEntryModelImpl)ratingsEntry, true);
 	}
 
 	@Override
@@ -2681,42 +2680,11 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 			entityCache.removeResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
 				RatingsEntryImpl.class, ratingsEntry.getPrimaryKey());
 
-			clearUniqueFindersCache((RatingsEntryModelImpl)ratingsEntry);
+			clearUniqueFindersCache((RatingsEntryModelImpl)ratingsEntry, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		RatingsEntryModelImpl ratingsEntryModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ratingsEntryModelImpl.getUserId(),
-					ratingsEntryModelImpl.getClassNameId(),
-					ratingsEntryModelImpl.getClassPK()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_U_C_C, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_U_C_C, args,
-				ratingsEntryModelImpl);
-		}
-		else {
-			if ((ratingsEntryModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_U_C_C.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ratingsEntryModelImpl.getUserId(),
-						ratingsEntryModelImpl.getClassNameId(),
-						ratingsEntryModelImpl.getClassPK()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_U_C_C, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_U_C_C, args,
-					ratingsEntryModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		RatingsEntryModelImpl ratingsEntryModelImpl) {
 		Object[] args = new Object[] {
 				ratingsEntryModelImpl.getUserId(),
@@ -2724,12 +2692,28 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 				ratingsEntryModelImpl.getClassPK()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_U_C_C, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_U_C_C, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_U_C_C, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_U_C_C, args,
+			ratingsEntryModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		RatingsEntryModelImpl ratingsEntryModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ratingsEntryModelImpl.getUserId(),
+					ratingsEntryModelImpl.getClassNameId(),
+					ratingsEntryModelImpl.getClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_C_C, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_U_C_C, args);
+		}
 
 		if ((ratingsEntryModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_U_C_C.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ratingsEntryModelImpl.getOriginalUserId(),
 					ratingsEntryModelImpl.getOriginalClassNameId(),
 					ratingsEntryModelImpl.getOriginalClassPK()
@@ -2997,8 +2981,8 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 			RatingsEntryImpl.class, ratingsEntry.getPrimaryKey(), ratingsEntry,
 			false);
 
-		clearUniqueFindersCache(ratingsEntryModelImpl);
-		cacheUniqueFindersCache(ratingsEntryModelImpl, isNew);
+		clearUniqueFindersCache(ratingsEntryModelImpl, false);
+		cacheUniqueFindersCache(ratingsEntryModelImpl);
 
 		ratingsEntry.resetOriginalValues();
 
@@ -3074,12 +3058,14 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 	 */
 	@Override
 	public RatingsEntry fetchByPrimaryKey(Serializable primaryKey) {
-		RatingsEntry ratingsEntry = (RatingsEntry)entityCache.getResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
 				RatingsEntryImpl.class, primaryKey);
 
-		if (ratingsEntry == _nullRatingsEntry) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		RatingsEntry ratingsEntry = (RatingsEntry)serializable;
 
 		if (ratingsEntry == null) {
 			Session session = null;
@@ -3095,7 +3081,7 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 				}
 				else {
 					entityCache.putResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
-						RatingsEntryImpl.class, primaryKey, _nullRatingsEntry);
+						RatingsEntryImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -3149,18 +3135,20 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			RatingsEntry ratingsEntry = (RatingsEntry)entityCache.getResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
 					RatingsEntryImpl.class, primaryKey);
 
-			if (ratingsEntry == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ratingsEntry);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (RatingsEntry)serializable);
+				}
 			}
 		}
 
@@ -3202,7 +3190,7 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(RatingsEntryModelImpl.ENTITY_CACHE_ENABLED,
-					RatingsEntryImpl.class, primaryKey, _nullRatingsEntry);
+					RatingsEntryImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -3445,22 +3433,4 @@ public class RatingsEntryPersistenceImpl extends BasePersistenceImpl<RatingsEntr
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final RatingsEntry _nullRatingsEntry = new RatingsEntryImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<RatingsEntry> toCacheModel() {
-				return _nullRatingsEntryCacheModel;
-			}
-		};
-
-	private static final CacheModel<RatingsEntry> _nullRatingsEntryCacheModel = new CacheModel<RatingsEntry>() {
-			@Override
-			public RatingsEntry toEntityModel() {
-				return _nullRatingsEntry;
-			}
-		};
 }

@@ -18,7 +18,7 @@
 
 <aui:input name="layoutIds" type="hidden" value="<%= ExportImportHelperUtil.getSelectedLayoutsJSON(groupId, privateLayout, selectedLayoutIds) %>" />
 
-<aui:fieldset collapsible="<%= true %>" cssClass="options-group" label="pages" markupView="lexicon">
+<aui:fieldset collapsible="<%= true %>" cssClass="options-group" id="pages-fieldset" label="pages" markupView="lexicon">
 	<ul class="flex-container layout-selector" id="<portlet:namespace />pages">
 		<c:if test="<%= !disableInputs || LayoutStagingUtil.isBranchingLayoutSet(group, privateLayout) %>">
 			<li class="layout-selector-options">
@@ -131,7 +131,6 @@
 				</c:choose>
 			</aui:fieldset>
 		</li>
-
 		<li class="layout-selector-options">
 			<aui:fieldset label="look-and-feel">
 				<aui:input disabled="<%= disableInputs %>" helpMessage="export-import-theme-settings-help" label="theme-settings" name="<%= PortletDataHandlerKeys.THEME_REFERENCE %>" type="checkbox" value="<%= MapUtil.getBoolean(parameterMap, PortletDataHandlerKeys.THEME_REFERENCE, ParamUtil.getBoolean(request, PortletDataHandlerKeys.THEME_REFERENCE, true)) %>" />

@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -855,7 +854,7 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DLSyncEventModelImpl)dlSyncEvent);
+		clearUniqueFindersCache((DLSyncEventModelImpl)dlSyncEvent, true);
 	}
 
 	@Override
@@ -867,43 +866,34 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 			entityCache.removeResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
 				DLSyncEventImpl.class, dlSyncEvent.getPrimaryKey());
 
-			clearUniqueFindersCache((DLSyncEventModelImpl)dlSyncEvent);
+			clearUniqueFindersCache((DLSyncEventModelImpl)dlSyncEvent, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DLSyncEventModelImpl dlSyncEventModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] { dlSyncEventModelImpl.getTypePK() };
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_TYPEPK, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_TYPEPK, args,
-				dlSyncEventModelImpl);
-		}
-		else {
-			if ((dlSyncEventModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_TYPEPK.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] { dlSyncEventModelImpl.getTypePK() };
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_TYPEPK, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_TYPEPK, args,
-					dlSyncEventModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DLSyncEventModelImpl dlSyncEventModelImpl) {
 		Object[] args = new Object[] { dlSyncEventModelImpl.getTypePK() };
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_TYPEPK, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_TYPEPK, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_TYPEPK, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_TYPEPK, args,
+			dlSyncEventModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DLSyncEventModelImpl dlSyncEventModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] { dlSyncEventModelImpl.getTypePK() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_TYPEPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_TYPEPK, args);
+		}
 
 		if ((dlSyncEventModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_TYPEPK.getColumnBitmask()) != 0) {
-			args = new Object[] { dlSyncEventModelImpl.getOriginalTypePK() };
+			Object[] args = new Object[] {
+					dlSyncEventModelImpl.getOriginalTypePK()
+				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_TYPEPK, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_TYPEPK, args);
@@ -1051,8 +1041,8 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 			DLSyncEventImpl.class, dlSyncEvent.getPrimaryKey(), dlSyncEvent,
 			false);
 
-		clearUniqueFindersCache(dlSyncEventModelImpl);
-		cacheUniqueFindersCache(dlSyncEventModelImpl, isNew);
+		clearUniqueFindersCache(dlSyncEventModelImpl, false);
+		cacheUniqueFindersCache(dlSyncEventModelImpl);
 
 		dlSyncEvent.resetOriginalValues();
 
@@ -1124,12 +1114,14 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 	 */
 	@Override
 	public DLSyncEvent fetchByPrimaryKey(Serializable primaryKey) {
-		DLSyncEvent dlSyncEvent = (DLSyncEvent)entityCache.getResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
 				DLSyncEventImpl.class, primaryKey);
 
-		if (dlSyncEvent == _nullDLSyncEvent) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DLSyncEvent dlSyncEvent = (DLSyncEvent)serializable;
 
 		if (dlSyncEvent == null) {
 			Session session = null;
@@ -1145,7 +1137,7 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 				}
 				else {
 					entityCache.putResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
-						DLSyncEventImpl.class, primaryKey, _nullDLSyncEvent);
+						DLSyncEventImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1199,18 +1191,20 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DLSyncEvent dlSyncEvent = (DLSyncEvent)entityCache.getResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
 					DLSyncEventImpl.class, primaryKey);
 
-			if (dlSyncEvent == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, dlSyncEvent);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DLSyncEvent)serializable);
+				}
 			}
 		}
 
@@ -1252,7 +1246,7 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DLSyncEventModelImpl.ENTITY_CACHE_ENABLED,
-					DLSyncEventImpl.class, primaryKey, _nullDLSyncEvent);
+					DLSyncEventImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -1495,22 +1489,4 @@ public class DLSyncEventPersistenceImpl extends BasePersistenceImpl<DLSyncEvent>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"type"
 			});
-	private static final DLSyncEvent _nullDLSyncEvent = new DLSyncEventImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DLSyncEvent> toCacheModel() {
-				return _nullDLSyncEventCacheModel;
-			}
-		};
-
-	private static final CacheModel<DLSyncEvent> _nullDLSyncEventCacheModel = new CacheModel<DLSyncEvent>() {
-			@Override
-			public DLSyncEvent toEntityModel() {
-				return _nullDLSyncEvent;
-			}
-		};
 }

@@ -105,7 +105,7 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 
 							<c:choose>
 								<c:when test="<%= commentSectionDisplayContext.isReplyButtonVisible() %>">
-									<div class="card panel">
+									<div class="panel">
 										<div class="panel-body">
 											<div class="lfr-discussion-details">
 												<liferay-ui:user-portrait
@@ -188,7 +188,7 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 		</div>
 
 		<%
-		PortletURL loginURL = PortletURLFactoryUtil.create(request, PortletKeys.FAST_LOGIN, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+		PortletURL loginURL = PortletURLFactoryUtil.create(request, PortletKeys.FAST_LOGIN, PortletRequest.RENDER_PHASE);
 
 		loginURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 		loginURL.setParameter("mvcRenderCommandName", "/login/login");
@@ -298,8 +298,8 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 					Liferay.Util.openWindow(
 						{
 							dialog: {
-								height: 460,
-								width: 770
+								height: 450,
+								width: 560
 							},
 							id: '<%= namespace %>signInDialog',
 							title: '<%= UnicodeLanguageUtil.get(resourceBundle, "sign-in") %>',
@@ -325,20 +325,25 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 
 				var commentButtonList = form.find('.btn-comment');
 
+				var cmd = form.fm('<%= randomNamespace %><%= Constants.CMD %>').val();
+
+				var dataType = cmd === '<%= Constants.ADD %>' || cmd === '<%= Constants.UPDATE %>' ? 'json' : null;
+
 				form.ajaxSubmit(
 					{
 						beforeSubmit: function() {
 							Util.toggleDisabled(commentButtonList, true);
 						},
+						dataType: dataType,
 						complete: function() {
 							Util.toggleDisabled(commentButtonList, false);
 						},
 						error: function() {
 							<%= randomNamespace %>showStatusMessage(
 								{
-									id: <%= randomNamespace %>,
+									id: '<%= randomNamespace %>',
 									message: '<%= UnicodeLanguageUtil.get(resourceBundle, "your-request-failed-to-complete") %>',
-									type: 'error'
+									type: 'danger'
 								}
 							);
 						},
@@ -376,9 +381,9 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 
 								<%= randomNamespace %>showStatusMessage(
 									{
-										id: <%= randomNamespace %>,
+										id: '<%= randomNamespace %>',
 										message: errorKey,
-										type: 'error'
+										type: 'danger'
 									}
 								);
 							}
@@ -396,7 +401,7 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 
 				var html = window[editorName].getHTML();
 
-				Liferay.Util.toggleDisabled('#' + editorName.replace('Body', 'Button'), (html === ''));
+				Liferay.Util.toggleDisabled('#' + editorName.replace('Body', 'Button'), html === '');
 
 				<%= randomNamespace %>showEl(formId);
 			}
@@ -449,6 +454,14 @@ CommentSectionDisplayContext commentSectionDisplayContext = CommentDisplayContex
 
 				editorInstance.dispose();
 			}
+
+			<%
+			String messageId = ParamUtil.getString(request, "messageId");
+			%>
+
+			<c:if test="<%= Validator.isNotNull(messageId) %>">
+				<%= randomNamespace %>scrollIntoView(<%= messageId %>);
+			</c:if>
 		</aui:script>
 
 		<aui:script sandbox="<%= true %>">

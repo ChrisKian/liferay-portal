@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -2408,7 +2407,7 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((KBTemplateModelImpl)kbTemplate);
+		clearUniqueFindersCache((KBTemplateModelImpl)kbTemplate, true);
 	}
 
 	@Override
@@ -2420,51 +2419,37 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 			entityCache.removeResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
 				KBTemplateImpl.class, kbTemplate.getPrimaryKey());
 
-			clearUniqueFindersCache((KBTemplateModelImpl)kbTemplate);
+			clearUniqueFindersCache((KBTemplateModelImpl)kbTemplate, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		KBTemplateModelImpl kbTemplateModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					kbTemplateModelImpl.getUuid(),
-					kbTemplateModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				kbTemplateModelImpl);
-		}
-		else {
-			if ((kbTemplateModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						kbTemplateModelImpl.getUuid(),
-						kbTemplateModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					kbTemplateModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		KBTemplateModelImpl kbTemplateModelImpl) {
 		Object[] args = new Object[] {
 				kbTemplateModelImpl.getUuid(), kbTemplateModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			kbTemplateModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		KBTemplateModelImpl kbTemplateModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					kbTemplateModelImpl.getUuid(),
+					kbTemplateModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((kbTemplateModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					kbTemplateModelImpl.getOriginalUuid(),
 					kbTemplateModelImpl.getOriginalGroupId()
 				};
@@ -2703,8 +2688,8 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 		entityCache.putResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
 			KBTemplateImpl.class, kbTemplate.getPrimaryKey(), kbTemplate, false);
 
-		clearUniqueFindersCache(kbTemplateModelImpl);
-		cacheUniqueFindersCache(kbTemplateModelImpl, isNew);
+		clearUniqueFindersCache(kbTemplateModelImpl, false);
+		cacheUniqueFindersCache(kbTemplateModelImpl);
 
 		kbTemplate.resetOriginalValues();
 
@@ -2781,12 +2766,14 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 	 */
 	@Override
 	public KBTemplate fetchByPrimaryKey(Serializable primaryKey) {
-		KBTemplate kbTemplate = (KBTemplate)entityCache.getResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
 				KBTemplateImpl.class, primaryKey);
 
-		if (kbTemplate == _nullKBTemplate) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		KBTemplate kbTemplate = (KBTemplate)serializable;
 
 		if (kbTemplate == null) {
 			Session session = null;
@@ -2802,7 +2789,7 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 				}
 				else {
 					entityCache.putResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
-						KBTemplateImpl.class, primaryKey, _nullKBTemplate);
+						KBTemplateImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -2856,18 +2843,20 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			KBTemplate kbTemplate = (KBTemplate)entityCache.getResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
 					KBTemplateImpl.class, primaryKey);
 
-			if (kbTemplate == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, kbTemplate);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (KBTemplate)serializable);
+				}
 			}
 		}
 
@@ -2909,7 +2898,7 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(KBTemplateModelImpl.ENTITY_CACHE_ENABLED,
-					KBTemplateImpl.class, primaryKey, _nullKBTemplate);
+					KBTemplateImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -3164,22 +3153,4 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final KBTemplate _nullKBTemplate = new KBTemplateImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<KBTemplate> toCacheModel() {
-				return _nullKBTemplateCacheModel;
-			}
-		};
-
-	private static final CacheModel<KBTemplate> _nullKBTemplateCacheModel = new CacheModel<KBTemplate>() {
-			@Override
-			public KBTemplate toEntityModel() {
-				return _nullKBTemplate;
-			}
-		};
 }

@@ -24,10 +24,10 @@ long parentGroupId = ParamUtil.getLong(request, "parentGroupSearchContainerPrima
 
 if (parentGroupId <= 0) {
 	parentGroupId = GroupConstants.DEFAULT_PARENT_GROUP_ID;
+}
 
-	if (liveGroup != null) {
-		parentGroupId = liveGroup.getParentGroupId();
-	}
+if (liveGroup != null) {
+	parentGroupId = liveGroup.getParentGroupId();
 }
 
 Group parentGroup = null;
@@ -185,21 +185,17 @@ else if (group != null) {
 			modelVar="curGroup"
 		>
 			<liferay-ui:search-container-column-text
-				cssClass="content-column name-column title-column"
 				name="name"
 				truncate="<%= true %>"
 				value="<%= HtmlUtil.escape(curGroup.getDescriptiveName(locale)) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
-				cssClass="text-column type-column"
 				name="type"
 				value="<%= LanguageUtil.get(request, curGroup.getTypeLabel()) %>"
 			/>
 
-			<liferay-ui:search-container-column-text
-				cssClass="entry-action-column"
-			>
+			<liferay-ui:search-container-column-text>
 				<a class="modify-link" data-rowId="<%= curGroup.getGroupId() %>" href="javascript:;"><%= removeGroupIcon %></a>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
@@ -263,15 +259,15 @@ else if (group != null) {
 
 						var rowColumns = [];
 
-						var href = '<portlet:renderURL><portlet:param name="mvcPath" value="/edit_site.jsp" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:renderURL>&<portlet:namespace />groupId=' + event.groupid;
+						var href = '<portlet:renderURL><portlet:param name="mvcPath" value="/edit_site.jsp" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:renderURL>&<portlet:namespace />groupId=' + event.entityid;
 
-						rowColumns.push(event.groupdescriptivename);
+						rowColumns.push(event.entityname);
 						rowColumns.push(event.grouptype);
-						rowColumns.push('<a class="modify-link" data-rowId="' + event.groupid + '" href="javascript:;"><%= UnicodeFormatter.toString(removeGroupIcon) %></a>');
+						rowColumns.push('<a class="modify-link" data-rowId="' + event.entityid + '" href="javascript:;"><%= UnicodeFormatter.toString(removeGroupIcon) %></a>');
 
 						searchContainer.deleteRow(1, searchContainer.getData());
-						searchContainer.addRow(rowColumns, event.groupid);
-						searchContainer.updateDataStore(event.groupid);
+						searchContainer.addRow(rowColumns, event.entityid);
+						searchContainer.updateDataStore(event.entityid);
 
 						A.one('#<portlet:namespace />membershipRestrictionContainer').show();
 					}

@@ -165,6 +165,9 @@ public class UpgradeClient {
 		commands.add(_getClassPath());
 		commands.addAll(Arrays.asList(_jvmOpts.split(" ")));
 		commands.add("-Dexternal-properties=portal-upgrade.properties");
+		commands.add(
+			"-Dserver.detector.server.id=" +
+				_appServer.getServerDetectorServerId());
 		commands.add("com.liferay.portal.tools.DBUpgrader");
 
 		processBuilder.command(commands);
@@ -433,7 +436,8 @@ public class UpgradeClient {
 	}
 
 	private void _verifyAppServerProperties() throws IOException {
-		String value = _appServerProperties.getProperty("dir");
+		String value = _appServerProperties.getProperty(
+			"server.detector.server.id");
 
 		if ((value == null) || value.isEmpty()) {
 			String response = null;
@@ -516,12 +520,16 @@ public class UpgradeClient {
 				"global.lib.dir", _getRelativeFileName(dir, globalLibDir));
 			_appServerProperties.setProperty(
 				"portal.dir", _getRelativeFileName(dir, portalDir));
+			_appServerProperties.setProperty(
+				"server.detector.server.id",
+				_appServer.getServerDetectorServerId());
 		}
 		else {
 			_appServer = new AppServer(
-				value, _appServerProperties.getProperty("extra.lib.dirs"),
+				_appServerProperties.getProperty("dir"),
+				_appServerProperties.getProperty("extra.lib.dirs"),
 				_appServerProperties.getProperty("global.lib.dir"),
-				_appServerProperties.getProperty("portal.dir"));
+				_appServerProperties.getProperty("portal.dir"), value);
 		}
 	}
 
@@ -628,7 +636,7 @@ public class UpgradeClient {
 
 			System.out.println("Please enter your database password: ");
 
-			String password = _consoleReader.readLine();
+			String password = _consoleReader.readLine('*');
 
 			_portalUpgradeDatabaseProperties.setProperty(
 				"jdbc.default.driverClassName", dataSource.getClassName());
@@ -664,6 +672,8 @@ public class UpgradeClient {
 
 	private static final Map<String, AppServer> _appServers =
 		new LinkedHashMap<>();
+	private static final Map<String, Database> _databases =
+		new LinkedHashMap<>();
 
 	static {
 		_appServers.put("jboss", AppServer.getJBossEAPAppServer());
@@ -674,12 +684,7 @@ public class UpgradeClient {
 		_appServers.put("weblogic", AppServer.getWebLogicAppServer());
 		_appServers.put("websphere", AppServer.getWebSphereAppServer());
 		_appServers.put("wildfly", AppServer.getWildFlyAppServer());
-	}
 
-	private static final Map<String, Database> _databases =
-		new LinkedHashMap<>();
-
-	static {
 		_databases.put("db2", Database.getDB2Database());
 		_databases.put("mariadb", Database.getMariaDBDatabase());
 		_databases.put("mysql", Database.getMySQLDatabase());

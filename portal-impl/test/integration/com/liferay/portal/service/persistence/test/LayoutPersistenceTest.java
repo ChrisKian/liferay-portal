@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.TransactionalTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.IntegerWrapper;
@@ -37,6 +36,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
+import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -313,6 +313,14 @@ public class LayoutPersistenceTest {
 	}
 
 	@Test
+	public void testCountByI_P() throws Exception {
+		_persistence.countByI_P(RandomTestUtil.nextLong(),
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByI_P(0L, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
 	public void testCountByG_P_L() throws Exception {
 		_persistence.countByG_P_L(RandomTestUtil.nextLong(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.nextLong());
@@ -362,6 +370,15 @@ public class LayoutPersistenceTest {
 
 		_persistence.countByG_P_SPLU(0L, RandomTestUtil.randomBoolean(),
 			(String)null);
+	}
+
+	@Test
+	public void testCountByG_P_P_LtP() throws Exception {
+		_persistence.countByG_P_P_LtP(RandomTestUtil.nextLong(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByG_P_P_LtP(0L, RandomTestUtil.randomBoolean(), 0L, 0);
 	}
 
 	@Test
@@ -613,6 +630,13 @@ public class LayoutPersistenceTest {
 		Assert.assertEquals(Long.valueOf(existingLayout.getIconImageId()),
 			ReflectionTestUtil.<Long>invoke(existingLayout,
 				"getOriginalIconImageId", new Class<?>[0]));
+
+		Assert.assertEquals(Long.valueOf(existingLayout.getIconImageId()),
+			ReflectionTestUtil.<Long>invoke(existingLayout,
+				"getOriginalIconImageId", new Class<?>[0]));
+		Assert.assertEquals(Boolean.valueOf(existingLayout.getPrivateLayout()),
+			ReflectionTestUtil.<Boolean>invoke(existingLayout,
+				"getOriginalPrivateLayout", new Class<?>[0]));
 
 		Assert.assertEquals(Long.valueOf(existingLayout.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(existingLayout,

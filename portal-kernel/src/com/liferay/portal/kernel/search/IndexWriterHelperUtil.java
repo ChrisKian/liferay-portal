@@ -17,7 +17,7 @@ package com.liferay.portal.kernel.search;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
-import com.liferay.portal.kernel.util.ProxyFactory;
+import com.liferay.portal.kernel.util.ServiceProxyFactory;
 
 import java.io.Serializable;
 
@@ -247,7 +247,9 @@ public class IndexWriterHelperUtil {
 		_indexWriterHelper.updatePermissionFields(name, primKey);
 	}
 
-	private static final IndexWriterHelper _indexWriterHelper =
-		ProxyFactory.newServiceTrackedInstance(IndexWriterHelper.class);
+	private static volatile IndexWriterHelper _indexWriterHelper =
+		ServiceProxyFactory.newServiceTrackedInstance(
+			IndexWriterHelper.class, IndexWriterHelperUtil.class,
+			"_indexWriterHelper", false);
 
 }

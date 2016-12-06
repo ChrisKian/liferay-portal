@@ -37,6 +37,13 @@
 				managementBarFilterItems="<%= assetBrowserDisplayContext.getManagementBarFilterItem() %>"
 				value="<%= assetBrowserDisplayContext.getManagementBarFilterLabel() %>"
 			/>
+
+			<liferay-frontend:management-bar-sort
+				orderByCol="<%= assetBrowserDisplayContext.getOrderByCol() %>"
+				orderByType="<%= assetBrowserDisplayContext.getOrderByType() %>"
+				orderColumns="<%= assetBrowserDisplayContext.getOrderColumns() %>"
+				portletURL="<%= assetBrowserDisplayContext.getPortletURL() %>"
+			/>
 		</liferay-frontend:management-bar-filters>
 
 		<liferay-portlet:actionURL name="changeDisplayStyle" varImpl="changeDisplayStyleURL">
@@ -73,11 +80,11 @@
 			Map<String, Object> data = new HashMap<String, Object>();
 
 			if (assetEntry.getEntryId() != assetBrowserDisplayContext.getRefererAssetEntryId()) {
-				data.put("assetentryid", assetEntry.getEntryId());
 				data.put("assetclassname", assetEntry.getClassName());
 				data.put("assetclasspk", assetEntry.getClassPK());
-				data.put("assettype", assetRendererFactory.getTypeName(locale, assetBrowserDisplayContext.getSubtypeSelectionId()));
 				data.put("assettitle", assetEntry.getTitle(locale));
+				data.put("assettype", assetRendererFactory.getTypeName(locale, assetBrowserDisplayContext.getSubtypeSelectionId()));
+				data.put("entityid", assetEntry.getEntryId());
 				data.put("groupdescriptivename", group.getDescriptiveName(locale));
 
 				cssClass = "selector-button";
@@ -158,7 +165,6 @@
 				</c:when>
 				<c:when test='<%= Objects.equals(assetBrowserDisplayContext.getDisplayStyle(), "list") %>'>
 					<liferay-ui:search-container-column-text
-						cssClass="content-column title-column"
 						name="title"
 						truncate="<%= true %>"
 					>
@@ -175,26 +181,22 @@
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-text
-						cssClass="content-column description-column"
 						name="description"
 						truncate="<%= true %>"
 						value="<%= HtmlUtil.stripHtml(assetEntry.getDescription(locale)) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="user-name-column text-column"
 						name="user-name"
 						value="<%= PortalUtil.getUserName(assetEntry) %>"
 					/>
 
 					<liferay-ui:search-container-column-date
-						cssClass="modified-date-column text-column"
 						name="modified-date"
 						value="<%= assetEntry.getModifiedDate() %>"
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="site-column text-column"
 						name="site"
 						value="<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>"
 					/>

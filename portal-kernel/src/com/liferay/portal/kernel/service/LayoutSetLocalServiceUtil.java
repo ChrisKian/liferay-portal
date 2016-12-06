@@ -110,8 +110,19 @@ public class LayoutSetLocalServiceUtil {
 	}
 
 	public static com.liferay.portal.kernel.model.LayoutSet fetchLayoutSet(
+		long groupId, boolean privateLayout) {
+		return getService().fetchLayoutSet(groupId, privateLayout);
+	}
+
+	public static com.liferay.portal.kernel.model.LayoutSet fetchLayoutSet(
 		long layoutSetId) {
 		return getService().fetchLayoutSet(layoutSetId);
+	}
+
+	public static com.liferay.portal.kernel.model.LayoutSet fetchLayoutSetByLogoId(
+		long logoId, boolean privateLayout)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().fetchLayoutSetByLogoId(logoId, privateLayout);
 	}
 
 	public static com.liferay.portal.kernel.model.LayoutSet getLayoutSet(

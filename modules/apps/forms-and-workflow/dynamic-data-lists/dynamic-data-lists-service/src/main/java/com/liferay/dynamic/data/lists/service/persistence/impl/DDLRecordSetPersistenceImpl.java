@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -3133,7 +3132,7 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDLRecordSetModelImpl)ddlRecordSet);
+		clearUniqueFindersCache((DDLRecordSetModelImpl)ddlRecordSet, true);
 	}
 
 	@Override
@@ -3145,75 +3144,48 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 			entityCache.removeResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
 				DDLRecordSetImpl.class, ddlRecordSet.getPrimaryKey());
 
-			clearUniqueFindersCache((DDLRecordSetModelImpl)ddlRecordSet);
+			clearUniqueFindersCache((DDLRecordSetModelImpl)ddlRecordSet, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDLRecordSetModelImpl ddlRecordSetModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddlRecordSetModelImpl.getUuid(),
-					ddlRecordSetModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				ddlRecordSetModelImpl);
-
-			args = new Object[] {
-					ddlRecordSetModelImpl.getGroupId(),
-					ddlRecordSetModelImpl.getRecordSetKey()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_R, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_R, args,
-				ddlRecordSetModelImpl);
-		}
-		else {
-			if ((ddlRecordSetModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddlRecordSetModelImpl.getUuid(),
-						ddlRecordSetModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					ddlRecordSetModelImpl);
-			}
-
-			if ((ddlRecordSetModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_R.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddlRecordSetModelImpl.getGroupId(),
-						ddlRecordSetModelImpl.getRecordSetKey()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_R, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_R, args,
-					ddlRecordSetModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDLRecordSetModelImpl ddlRecordSetModelImpl) {
 		Object[] args = new Object[] {
 				ddlRecordSetModelImpl.getUuid(),
 				ddlRecordSetModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			ddlRecordSetModelImpl, false);
+
+		args = new Object[] {
+				ddlRecordSetModelImpl.getGroupId(),
+				ddlRecordSetModelImpl.getRecordSetKey()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_R, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_R, args,
+			ddlRecordSetModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDLRecordSetModelImpl ddlRecordSetModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddlRecordSetModelImpl.getUuid(),
+					ddlRecordSetModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((ddlRecordSetModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddlRecordSetModelImpl.getOriginalUuid(),
 					ddlRecordSetModelImpl.getOriginalGroupId()
 				};
@@ -3222,17 +3194,19 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
-		args = new Object[] {
-				ddlRecordSetModelImpl.getGroupId(),
-				ddlRecordSetModelImpl.getRecordSetKey()
-			};
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddlRecordSetModelImpl.getGroupId(),
+					ddlRecordSetModelImpl.getRecordSetKey()
+				};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_R, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_R, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_R, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_R, args);
+		}
 
 		if ((ddlRecordSetModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_R.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddlRecordSetModelImpl.getOriginalGroupId(),
 					ddlRecordSetModelImpl.getOriginalRecordSetKey()
 				};
@@ -3473,8 +3447,8 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 			DDLRecordSetImpl.class, ddlRecordSet.getPrimaryKey(), ddlRecordSet,
 			false);
 
-		clearUniqueFindersCache(ddlRecordSetModelImpl);
-		cacheUniqueFindersCache(ddlRecordSetModelImpl, isNew);
+		clearUniqueFindersCache(ddlRecordSetModelImpl, false);
+		cacheUniqueFindersCache(ddlRecordSetModelImpl);
 
 		ddlRecordSet.resetOriginalValues();
 
@@ -3556,12 +3530,14 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 	 */
 	@Override
 	public DDLRecordSet fetchByPrimaryKey(Serializable primaryKey) {
-		DDLRecordSet ddlRecordSet = (DDLRecordSet)entityCache.getResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
 				DDLRecordSetImpl.class, primaryKey);
 
-		if (ddlRecordSet == _nullDDLRecordSet) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDLRecordSet ddlRecordSet = (DDLRecordSet)serializable;
 
 		if (ddlRecordSet == null) {
 			Session session = null;
@@ -3577,7 +3553,7 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 				}
 				else {
 					entityCache.putResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
-						DDLRecordSetImpl.class, primaryKey, _nullDDLRecordSet);
+						DDLRecordSetImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -3631,18 +3607,20 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDLRecordSet ddlRecordSet = (DDLRecordSet)entityCache.getResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
 					DDLRecordSetImpl.class, primaryKey);
 
-			if (ddlRecordSet == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddlRecordSet);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDLRecordSet)serializable);
+				}
 			}
 		}
 
@@ -3684,7 +3662,7 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDLRecordSetModelImpl.ENTITY_CACHE_ENABLED,
-					DDLRecordSetImpl.class, primaryKey, _nullDDLRecordSet);
+					DDLRecordSetImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -3939,22 +3917,4 @@ public class DDLRecordSetPersistenceImpl extends BasePersistenceImpl<DDLRecordSe
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid", "settings"
 			});
-	private static final DDLRecordSet _nullDDLRecordSet = new DDLRecordSetImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDLRecordSet> toCacheModel() {
-				return _nullDDLRecordSetCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDLRecordSet> _nullDDLRecordSetCacheModel = new CacheModel<DDLRecordSet>() {
-			@Override
-			public DDLRecordSet toEntityModel() {
-				return _nullDDLRecordSet;
-			}
-		};
 }

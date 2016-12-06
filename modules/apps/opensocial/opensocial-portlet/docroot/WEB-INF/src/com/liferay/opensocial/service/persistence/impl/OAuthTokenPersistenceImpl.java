@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -934,11 +933,15 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 						finderArgs, list);
 				}
 				else {
-					if ((list.size() > 1) && _log.isWarnEnabled()) {
-						_log.warn(
-							"OAuthTokenPersistenceImpl.fetchByU_G_S_M_T(long, String, String, long, String, boolean) with parameters (" +
-							StringUtil.merge(finderArgs) +
-							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"OAuthTokenPersistenceImpl.fetchByU_G_S_M_T(long, String, String, long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
 					}
 
 					OAuthToken oAuthToken = list.get(0);
@@ -1201,7 +1204,7 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((OAuthTokenModelImpl)oAuthToken);
+		clearUniqueFindersCache((OAuthTokenModelImpl)oAuthToken, true);
 	}
 
 	@Override
@@ -1213,46 +1216,11 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 			entityCache.removeResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
 				OAuthTokenImpl.class, oAuthToken.getPrimaryKey());
 
-			clearUniqueFindersCache((OAuthTokenModelImpl)oAuthToken);
+			clearUniqueFindersCache((OAuthTokenModelImpl)oAuthToken, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		OAuthTokenModelImpl oAuthTokenModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					oAuthTokenModelImpl.getUserId(),
-					oAuthTokenModelImpl.getGadgetKey(),
-					oAuthTokenModelImpl.getServiceName(),
-					oAuthTokenModelImpl.getModuleId(),
-					oAuthTokenModelImpl.getTokenName()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_U_G_S_M_T, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_U_G_S_M_T, args,
-				oAuthTokenModelImpl);
-		}
-		else {
-			if ((oAuthTokenModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_U_G_S_M_T.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						oAuthTokenModelImpl.getUserId(),
-						oAuthTokenModelImpl.getGadgetKey(),
-						oAuthTokenModelImpl.getServiceName(),
-						oAuthTokenModelImpl.getModuleId(),
-						oAuthTokenModelImpl.getTokenName()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_U_G_S_M_T, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_U_G_S_M_T, args,
-					oAuthTokenModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		OAuthTokenModelImpl oAuthTokenModelImpl) {
 		Object[] args = new Object[] {
 				oAuthTokenModelImpl.getUserId(),
@@ -1262,12 +1230,30 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 				oAuthTokenModelImpl.getTokenName()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_U_G_S_M_T, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_U_G_S_M_T, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_U_G_S_M_T, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_U_G_S_M_T, args,
+			oAuthTokenModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		OAuthTokenModelImpl oAuthTokenModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					oAuthTokenModelImpl.getUserId(),
+					oAuthTokenModelImpl.getGadgetKey(),
+					oAuthTokenModelImpl.getServiceName(),
+					oAuthTokenModelImpl.getModuleId(),
+					oAuthTokenModelImpl.getTokenName()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_G_S_M_T, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_U_G_S_M_T, args);
+		}
 
 		if ((oAuthTokenModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_U_G_S_M_T.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					oAuthTokenModelImpl.getOriginalUserId(),
 					oAuthTokenModelImpl.getOriginalGadgetKey(),
 					oAuthTokenModelImpl.getOriginalServiceName(),
@@ -1466,8 +1452,8 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 		entityCache.putResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
 			OAuthTokenImpl.class, oAuthToken.getPrimaryKey(), oAuthToken, false);
 
-		clearUniqueFindersCache(oAuthTokenModelImpl);
-		cacheUniqueFindersCache(oAuthTokenModelImpl, isNew);
+		clearUniqueFindersCache(oAuthTokenModelImpl, false);
+		cacheUniqueFindersCache(oAuthTokenModelImpl);
 
 		oAuthToken.resetOriginalValues();
 
@@ -1547,12 +1533,14 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 	 */
 	@Override
 	public OAuthToken fetchByPrimaryKey(Serializable primaryKey) {
-		OAuthToken oAuthToken = (OAuthToken)entityCache.getResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
 				OAuthTokenImpl.class, primaryKey);
 
-		if (oAuthToken == _nullOAuthToken) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		OAuthToken oAuthToken = (OAuthToken)serializable;
 
 		if (oAuthToken == null) {
 			Session session = null;
@@ -1568,7 +1556,7 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 				}
 				else {
 					entityCache.putResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
-						OAuthTokenImpl.class, primaryKey, _nullOAuthToken);
+						OAuthTokenImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1622,18 +1610,20 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			OAuthToken oAuthToken = (OAuthToken)entityCache.getResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
 					OAuthTokenImpl.class, primaryKey);
 
-			if (oAuthToken == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, oAuthToken);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (OAuthToken)serializable);
+				}
 			}
 		}
 
@@ -1675,7 +1665,7 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(OAuthTokenModelImpl.ENTITY_CACHE_ENABLED,
-					OAuthTokenImpl.class, primaryKey, _nullOAuthToken);
+					OAuthTokenImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -1910,22 +1900,4 @@ public class OAuthTokenPersistenceImpl extends BasePersistenceImpl<OAuthToken>
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No OAuthToken exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No OAuthToken exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(OAuthTokenPersistenceImpl.class);
-	private static final OAuthToken _nullOAuthToken = new OAuthTokenImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<OAuthToken> toCacheModel() {
-				return _nullOAuthTokenCacheModel;
-			}
-		};
-
-	private static final CacheModel<OAuthToken> _nullOAuthTokenCacheModel = new CacheModel<OAuthToken>() {
-			@Override
-			public OAuthToken toEntityModel() {
-				return _nullOAuthToken;
-			}
-		};
 }

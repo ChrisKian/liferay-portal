@@ -67,6 +67,7 @@ renderResponse.setTitle(headerTitle);
 												<liferay-ui:user-portrait userId="<%= workflowTask.getAssigneeUserId() %>" />
 											</div>
 										</div>
+
 										<div class="card-col-content card-col-gutters">
 											<div class="lfr-asset-assigned">
 												<%= workflowTaskDisplayContext.getWorkflowTaskAssigneeUserName(workflowTask) %>
@@ -134,6 +135,7 @@ renderResponse.setTitle(headerTitle);
 
 										<portlet:param name="type" value="<%= assetRendererFactory.getType() %>" />
 										<portlet:param name="showEditURL" value="<%= String.valueOf(workflowTaskDisplayContext.isShowEditURL(workflowTask)) %>" />
+										<portlet:param name="workflowTaskId" value="<%= String.valueOf(workflowTask.getWorkflowTaskId()) %>" />
 									</portlet:renderURL>
 
 									<liferay-frontend:management-bar-button

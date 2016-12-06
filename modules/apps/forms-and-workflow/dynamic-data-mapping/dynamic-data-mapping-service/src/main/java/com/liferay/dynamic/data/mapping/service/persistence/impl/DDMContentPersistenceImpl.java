@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -2550,7 +2549,7 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDMContentModelImpl)ddmContent);
+		clearUniqueFindersCache((DDMContentModelImpl)ddmContent, true);
 	}
 
 	@Override
@@ -2562,51 +2561,37 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 			entityCache.removeResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
 				DDMContentImpl.class, ddmContent.getPrimaryKey());
 
-			clearUniqueFindersCache((DDMContentModelImpl)ddmContent);
+			clearUniqueFindersCache((DDMContentModelImpl)ddmContent, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDMContentModelImpl ddmContentModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddmContentModelImpl.getUuid(),
-					ddmContentModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				ddmContentModelImpl);
-		}
-		else {
-			if ((ddmContentModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmContentModelImpl.getUuid(),
-						ddmContentModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					ddmContentModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDMContentModelImpl ddmContentModelImpl) {
 		Object[] args = new Object[] {
 				ddmContentModelImpl.getUuid(), ddmContentModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			ddmContentModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDMContentModelImpl ddmContentModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmContentModelImpl.getUuid(),
+					ddmContentModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((ddmContentModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmContentModelImpl.getOriginalUuid(),
 					ddmContentModelImpl.getOriginalGroupId()
 				};
@@ -2862,8 +2847,8 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 		entityCache.putResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
 			DDMContentImpl.class, ddmContent.getPrimaryKey(), ddmContent, false);
 
-		clearUniqueFindersCache(ddmContentModelImpl);
-		cacheUniqueFindersCache(ddmContentModelImpl, isNew);
+		clearUniqueFindersCache(ddmContentModelImpl, false);
+		cacheUniqueFindersCache(ddmContentModelImpl);
 
 		ddmContent.resetOriginalValues();
 
@@ -2940,12 +2925,14 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 	 */
 	@Override
 	public DDMContent fetchByPrimaryKey(Serializable primaryKey) {
-		DDMContent ddmContent = (DDMContent)entityCache.getResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
 				DDMContentImpl.class, primaryKey);
 
-		if (ddmContent == _nullDDMContent) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDMContent ddmContent = (DDMContent)serializable;
 
 		if (ddmContent == null) {
 			Session session = null;
@@ -2961,7 +2948,7 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 				}
 				else {
 					entityCache.putResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
-						DDMContentImpl.class, primaryKey, _nullDDMContent);
+						DDMContentImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -3015,18 +3002,20 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDMContent ddmContent = (DDMContent)entityCache.getResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
 					DDMContentImpl.class, primaryKey);
 
-			if (ddmContent == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddmContent);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDMContent)serializable);
+				}
 			}
 		}
 
@@ -3068,7 +3057,7 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDMContentModelImpl.ENTITY_CACHE_ENABLED,
-					DDMContentImpl.class, primaryKey, _nullDDMContent);
+					DDMContentImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -3313,22 +3302,4 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid", "data"
 			});
-	private static final DDMContent _nullDDMContent = new DDMContentImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDMContent> toCacheModel() {
-				return _nullDDMContentCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDMContent> _nullDDMContentCacheModel = new CacheModel<DDMContent>() {
-			@Override
-			public DDMContent toEntityModel() {
-				return _nullDDMContent;
-			}
-		};
 }

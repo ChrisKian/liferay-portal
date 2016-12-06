@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.service.persistence.LayoutSetPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.TransactionalTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.IntegerWrapper;
@@ -37,6 +36,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
+import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -204,6 +204,14 @@ public class LayoutSetPersistenceTest {
 			RandomTestUtil.randomBoolean());
 
 		_persistence.countByG_P(0L, RandomTestUtil.randomBoolean());
+	}
+
+	@Test
+	public void testCountByL_P() throws Exception {
+		_persistence.countByL_P(RandomTestUtil.nextLong(),
+			RandomTestUtil.randomBoolean());
+
+		_persistence.countByL_P(0L, RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -440,6 +448,14 @@ public class LayoutSetPersistenceTest {
 		Assert.assertEquals(Long.valueOf(existingLayoutSet.getGroupId()),
 			ReflectionTestUtil.<Long>invoke(existingLayoutSet,
 				"getOriginalGroupId", new Class<?>[0]));
+		Assert.assertEquals(Boolean.valueOf(
+				existingLayoutSet.getPrivateLayout()),
+			ReflectionTestUtil.<Boolean>invoke(existingLayoutSet,
+				"getOriginalPrivateLayout", new Class<?>[0]));
+
+		Assert.assertEquals(Long.valueOf(existingLayoutSet.getLogoId()),
+			ReflectionTestUtil.<Long>invoke(existingLayoutSet,
+				"getOriginalLogoId", new Class<?>[0]));
 		Assert.assertEquals(Boolean.valueOf(
 				existingLayoutSet.getPrivateLayout()),
 			ReflectionTestUtil.<Boolean>invoke(existingLayoutSet,

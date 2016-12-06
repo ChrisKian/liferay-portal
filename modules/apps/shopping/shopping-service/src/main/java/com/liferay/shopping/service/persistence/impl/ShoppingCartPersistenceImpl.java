@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -1385,7 +1384,7 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((ShoppingCartModelImpl)shoppingCart);
+		clearUniqueFindersCache((ShoppingCartModelImpl)shoppingCart, true);
 	}
 
 	@Override
@@ -1397,52 +1396,38 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 			entityCache.removeResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
 				ShoppingCartImpl.class, shoppingCart.getPrimaryKey());
 
-			clearUniqueFindersCache((ShoppingCartModelImpl)shoppingCart);
+			clearUniqueFindersCache((ShoppingCartModelImpl)shoppingCart, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		ShoppingCartModelImpl shoppingCartModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					shoppingCartModelImpl.getGroupId(),
-					shoppingCartModelImpl.getUserId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_U, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_U, args,
-				shoppingCartModelImpl);
-		}
-		else {
-			if ((shoppingCartModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_U.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						shoppingCartModelImpl.getGroupId(),
-						shoppingCartModelImpl.getUserId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_U, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_U, args,
-					shoppingCartModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		ShoppingCartModelImpl shoppingCartModelImpl) {
 		Object[] args = new Object[] {
 				shoppingCartModelImpl.getGroupId(),
 				shoppingCartModelImpl.getUserId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_U, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_U, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_U, args,
+			shoppingCartModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		ShoppingCartModelImpl shoppingCartModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					shoppingCartModelImpl.getGroupId(),
+					shoppingCartModelImpl.getUserId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_U, args);
+		}
 
 		if ((shoppingCartModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_U.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					shoppingCartModelImpl.getOriginalGroupId(),
 					shoppingCartModelImpl.getOriginalUserId()
 				};
@@ -1651,8 +1636,8 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 			ShoppingCartImpl.class, shoppingCart.getPrimaryKey(), shoppingCart,
 			false);
 
-		clearUniqueFindersCache(shoppingCartModelImpl);
-		cacheUniqueFindersCache(shoppingCartModelImpl, isNew);
+		clearUniqueFindersCache(shoppingCartModelImpl, false);
+		cacheUniqueFindersCache(shoppingCartModelImpl);
 
 		shoppingCart.resetOriginalValues();
 
@@ -1729,12 +1714,14 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 	 */
 	@Override
 	public ShoppingCart fetchByPrimaryKey(Serializable primaryKey) {
-		ShoppingCart shoppingCart = (ShoppingCart)entityCache.getResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
 				ShoppingCartImpl.class, primaryKey);
 
-		if (shoppingCart == _nullShoppingCart) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		ShoppingCart shoppingCart = (ShoppingCart)serializable;
 
 		if (shoppingCart == null) {
 			Session session = null;
@@ -1750,7 +1737,7 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 				}
 				else {
 					entityCache.putResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
-						ShoppingCartImpl.class, primaryKey, _nullShoppingCart);
+						ShoppingCartImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1804,18 +1791,20 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			ShoppingCart shoppingCart = (ShoppingCart)entityCache.getResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
 					ShoppingCartImpl.class, primaryKey);
 
-			if (shoppingCart == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, shoppingCart);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (ShoppingCart)serializable);
+				}
 			}
 		}
 
@@ -1857,7 +1846,7 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(ShoppingCartModelImpl.ENTITY_CACHE_ENABLED,
-					ShoppingCartImpl.class, primaryKey, _nullShoppingCart);
+					ShoppingCartImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2094,22 +2083,4 @@ public class ShoppingCartPersistenceImpl extends BasePersistenceImpl<ShoppingCar
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ShoppingCart exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ShoppingCart exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(ShoppingCartPersistenceImpl.class);
-	private static final ShoppingCart _nullShoppingCart = new ShoppingCartImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<ShoppingCart> toCacheModel() {
-				return _nullShoppingCartCacheModel;
-			}
-		};
-
-	private static final CacheModel<ShoppingCart> _nullShoppingCartCacheModel = new CacheModel<ShoppingCart>() {
-			@Override
-			public ShoppingCart toEntityModel() {
-				return _nullShoppingCart;
-			}
-		};
 }

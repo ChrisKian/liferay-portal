@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -2545,11 +2544,15 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 						finderArgs, list);
 				}
 				else {
-					if ((list.size() > 1) && _log.isWarnEnabled()) {
-						_log.warn(
-							"KBFolderPersistenceImpl.fetchByG_P_N(long, long, String, boolean) with parameters (" +
-							StringUtil.merge(finderArgs) +
-							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"KBFolderPersistenceImpl.fetchByG_P_N(long, long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
 					}
 
 					KBFolder kbFolder = list.get(0);
@@ -2833,11 +2836,15 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 						finderArgs, list);
 				}
 				else {
-					if ((list.size() > 1) && _log.isWarnEnabled()) {
-						_log.warn(
-							"KBFolderPersistenceImpl.fetchByG_P_UT(long, long, String, boolean) with parameters (" +
-							StringUtil.merge(finderArgs) +
-							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"KBFolderPersistenceImpl.fetchByG_P_UT(long, long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
 					}
 
 					KBFolder kbFolder = list.get(0);
@@ -3052,7 +3059,7 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((KBFolderModelImpl)kbFolder);
+		clearUniqueFindersCache((KBFolderModelImpl)kbFolder, true);
 	}
 
 	@Override
@@ -3064,99 +3071,57 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 			entityCache.removeResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
 				KBFolderImpl.class, kbFolder.getPrimaryKey());
 
-			clearUniqueFindersCache((KBFolderModelImpl)kbFolder);
+			clearUniqueFindersCache((KBFolderModelImpl)kbFolder, true);
 		}
 	}
 
-	protected void cacheUniqueFindersCache(
-		KBFolderModelImpl kbFolderModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					kbFolderModelImpl.getUuid(), kbFolderModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				kbFolderModelImpl);
-
-			args = new Object[] {
-					kbFolderModelImpl.getGroupId(),
-					kbFolderModelImpl.getParentKBFolderId(),
-					kbFolderModelImpl.getName()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_N, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_N, args,
-				kbFolderModelImpl);
-
-			args = new Object[] {
-					kbFolderModelImpl.getGroupId(),
-					kbFolderModelImpl.getParentKBFolderId(),
-					kbFolderModelImpl.getUrlTitle()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_UT, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_UT, args,
-				kbFolderModelImpl);
-		}
-		else {
-			if ((kbFolderModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						kbFolderModelImpl.getUuid(),
-						kbFolderModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					kbFolderModelImpl);
-			}
-
-			if ((kbFolderModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_P_N.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						kbFolderModelImpl.getGroupId(),
-						kbFolderModelImpl.getParentKBFolderId(),
-						kbFolderModelImpl.getName()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_N, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_N, args,
-					kbFolderModelImpl);
-			}
-
-			if ((kbFolderModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_P_UT.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						kbFolderModelImpl.getGroupId(),
-						kbFolderModelImpl.getParentKBFolderId(),
-						kbFolderModelImpl.getUrlTitle()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_UT, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_UT, args,
-					kbFolderModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(KBFolderModelImpl kbFolderModelImpl) {
+	protected void cacheUniqueFindersCache(KBFolderModelImpl kbFolderModelImpl) {
 		Object[] args = new Object[] {
 				kbFolderModelImpl.getUuid(), kbFolderModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			kbFolderModelImpl, false);
+
+		args = new Object[] {
+				kbFolderModelImpl.getGroupId(),
+				kbFolderModelImpl.getParentKBFolderId(),
+				kbFolderModelImpl.getName()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_N, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_N, args,
+			kbFolderModelImpl, false);
+
+		args = new Object[] {
+				kbFolderModelImpl.getGroupId(),
+				kbFolderModelImpl.getParentKBFolderId(),
+				kbFolderModelImpl.getUrlTitle()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_UT, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_UT, args,
+			kbFolderModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		KBFolderModelImpl kbFolderModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					kbFolderModelImpl.getUuid(), kbFolderModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((kbFolderModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					kbFolderModelImpl.getOriginalUuid(),
 					kbFolderModelImpl.getOriginalGroupId()
 				};
@@ -3165,18 +3130,20 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
-		args = new Object[] {
-				kbFolderModelImpl.getGroupId(),
-				kbFolderModelImpl.getParentKBFolderId(),
-				kbFolderModelImpl.getName()
-			};
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					kbFolderModelImpl.getGroupId(),
+					kbFolderModelImpl.getParentKBFolderId(),
+					kbFolderModelImpl.getName()
+				};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_N, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_N, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_N, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_N, args);
+		}
 
 		if ((kbFolderModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_P_N.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					kbFolderModelImpl.getOriginalGroupId(),
 					kbFolderModelImpl.getOriginalParentKBFolderId(),
 					kbFolderModelImpl.getOriginalName()
@@ -3186,18 +3153,20 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_N, args);
 		}
 
-		args = new Object[] {
-				kbFolderModelImpl.getGroupId(),
-				kbFolderModelImpl.getParentKBFolderId(),
-				kbFolderModelImpl.getUrlTitle()
-			};
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					kbFolderModelImpl.getGroupId(),
+					kbFolderModelImpl.getParentKBFolderId(),
+					kbFolderModelImpl.getUrlTitle()
+				};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_UT, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_UT, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_UT, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_UT, args);
+		}
 
 		if ((kbFolderModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_P_UT.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					kbFolderModelImpl.getOriginalGroupId(),
 					kbFolderModelImpl.getOriginalParentKBFolderId(),
 					kbFolderModelImpl.getOriginalUrlTitle()
@@ -3439,8 +3408,8 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 		entityCache.putResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
 			KBFolderImpl.class, kbFolder.getPrimaryKey(), kbFolder, false);
 
-		clearUniqueFindersCache(kbFolderModelImpl);
-		cacheUniqueFindersCache(kbFolderModelImpl, isNew);
+		clearUniqueFindersCache(kbFolderModelImpl, false);
+		cacheUniqueFindersCache(kbFolderModelImpl);
 
 		kbFolder.resetOriginalValues();
 
@@ -3519,12 +3488,14 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 	 */
 	@Override
 	public KBFolder fetchByPrimaryKey(Serializable primaryKey) {
-		KBFolder kbFolder = (KBFolder)entityCache.getResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
 				KBFolderImpl.class, primaryKey);
 
-		if (kbFolder == _nullKBFolder) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		KBFolder kbFolder = (KBFolder)serializable;
 
 		if (kbFolder == null) {
 			Session session = null;
@@ -3539,7 +3510,7 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 				}
 				else {
 					entityCache.putResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
-						KBFolderImpl.class, primaryKey, _nullKBFolder);
+						KBFolderImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -3593,18 +3564,20 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			KBFolder kbFolder = (KBFolder)entityCache.getResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
 					KBFolderImpl.class, primaryKey);
 
-			if (kbFolder == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, kbFolder);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (KBFolder)serializable);
+				}
 			}
 		}
 
@@ -3646,7 +3619,7 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(KBFolderModelImpl.ENTITY_CACHE_ENABLED,
-					KBFolderImpl.class, primaryKey, _nullKBFolder);
+					KBFolderImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -3900,22 +3873,4 @@ public class KBFolderPersistenceImpl extends BasePersistenceImpl<KBFolder>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final KBFolder _nullKBFolder = new KBFolderImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<KBFolder> toCacheModel() {
-				return _nullKBFolderCacheModel;
-			}
-		};
-
-	private static final CacheModel<KBFolder> _nullKBFolderCacheModel = new CacheModel<KBFolder>() {
-			@Override
-			public KBFolder toEntityModel() {
-				return _nullKBFolder;
-			}
-		};
 }

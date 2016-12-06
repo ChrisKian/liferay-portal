@@ -28,6 +28,7 @@ import java.util.List;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.JavaExec;
+import org.gradle.util.CollectionUtils;
 
 /**
  * @author Raymond Augé
@@ -51,9 +52,21 @@ public class FormatSourceTask extends JavaExec {
 			getProject(), _sourceFormatterArgs.getBaseDirName());
 	}
 
+	public String getBaseDirName() {
+		return _sourceFormatterArgs.getBaseDirName();
+	}
+
 	public File getCopyrightFile() {
 		return GradleUtil.toFile(
 			getProject(), _sourceFormatterArgs.getCopyrightFileName());
+	}
+
+	public String getCopyrightFileName() {
+		return _sourceFormatterArgs.getCopyrightFileName();
+	}
+
+	public List<String> getFileNames() {
+		return _sourceFormatterArgs.getFileNames();
 	}
 
 	public FileCollection getFiles() {
@@ -66,6 +79,10 @@ public class FormatSourceTask extends JavaExec {
 		}
 
 		return project.files(fileNames);
+	}
+
+	public String getGitWorkingBranchName() {
+		return _sourceFormatterArgs.getGitWorkingBranchName();
 	}
 
 	public int getMaxLineLength() {
@@ -92,6 +109,10 @@ public class FormatSourceTask extends JavaExec {
 		return _sourceFormatterArgs.isFormatLocalChanges();
 	}
 
+	public boolean isIncludeSubrepositories() {
+		return _sourceFormatterArgs.isIncludeSubrepositories();
+	}
+
 	public boolean isPrintErrors() {
 		return _sourceFormatterArgs.isPrintErrors();
 	}
@@ -116,8 +137,13 @@ public class FormatSourceTask extends JavaExec {
 		_sourceFormatterArgs.setCopyrightFileName(copyrightFileName);
 	}
 
-	public void setFileNames(String[] fileNames) {
-		_sourceFormatterArgs.setFileNames(Arrays.asList(fileNames));
+	public void setFileNames(Iterable<String> fileNames) {
+		_sourceFormatterArgs.setFileNames(
+			CollectionUtils.toStringList(fileNames));
+	}
+
+	public void setFileNames(String... fileNames) {
+		setFileNames(Arrays.asList(fileNames));
 	}
 
 	public void setFormatCurrentBranch(boolean formatCurrentBranch) {
@@ -130,6 +156,14 @@ public class FormatSourceTask extends JavaExec {
 
 	public void setFormatLocalChanges(boolean formatLocalChanges) {
 		_sourceFormatterArgs.setFormatLocalChanges(formatLocalChanges);
+	}
+
+	public void setGitWorkingBranchName(String gitWorkingBranchName) {
+		_sourceFormatterArgs.setGitWorkingBranchName(gitWorkingBranchName);
+	}
+
+	public void setIncludeSubrepositories(boolean includeSubrepositories) {
+		_sourceFormatterArgs.setIncludeSubrepositories(includeSubrepositories);
 	}
 
 	public void setMaxLineLength(int maxLineLength) {
@@ -158,6 +192,8 @@ public class FormatSourceTask extends JavaExec {
 		args.add("format.current.branch=" + isFormatCurrentBranch());
 		args.add("format.latest.author=" + isFormatLatestAuthor());
 		args.add("format.local.changes=" + isFormatLocalChanges());
+		args.add("git.working.branch.name=" + getGitWorkingBranchName());
+		args.add("include.subrepositories=" + isIncludeSubrepositories());
 		args.add("max.line.length=" + getMaxLineLength());
 		args.add("processor.thread.count=" + getProcessorThreadCount());
 		args.add("source.auto.fix=" + isAutoFix());

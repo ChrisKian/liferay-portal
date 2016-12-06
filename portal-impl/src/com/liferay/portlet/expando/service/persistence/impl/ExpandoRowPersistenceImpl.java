@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -1383,7 +1382,7 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((ExpandoRowModelImpl)expandoRow);
+		clearUniqueFindersCache((ExpandoRowModelImpl)expandoRow, true);
 	}
 
 	@Override
@@ -1395,52 +1394,38 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 			entityCache.removeResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
 				ExpandoRowImpl.class, expandoRow.getPrimaryKey());
 
-			clearUniqueFindersCache((ExpandoRowModelImpl)expandoRow);
+			clearUniqueFindersCache((ExpandoRowModelImpl)expandoRow, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		ExpandoRowModelImpl expandoRowModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					expandoRowModelImpl.getTableId(),
-					expandoRowModelImpl.getClassPK()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_T_C, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_T_C, args,
-				expandoRowModelImpl);
-		}
-		else {
-			if ((expandoRowModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_T_C.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						expandoRowModelImpl.getTableId(),
-						expandoRowModelImpl.getClassPK()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_T_C, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_T_C, args,
-					expandoRowModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		ExpandoRowModelImpl expandoRowModelImpl) {
 		Object[] args = new Object[] {
 				expandoRowModelImpl.getTableId(),
 				expandoRowModelImpl.getClassPK()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_T_C, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_T_C, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_T_C, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_T_C, args,
+			expandoRowModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		ExpandoRowModelImpl expandoRowModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					expandoRowModelImpl.getTableId(),
+					expandoRowModelImpl.getClassPK()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_T_C, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_T_C, args);
+		}
 
 		if ((expandoRowModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_T_C.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					expandoRowModelImpl.getOriginalTableId(),
 					expandoRowModelImpl.getOriginalClassPK()
 				};
@@ -1625,8 +1610,8 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 		entityCache.putResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
 			ExpandoRowImpl.class, expandoRow.getPrimaryKey(), expandoRow, false);
 
-		clearUniqueFindersCache(expandoRowModelImpl);
-		cacheUniqueFindersCache(expandoRowModelImpl, isNew);
+		clearUniqueFindersCache(expandoRowModelImpl, false);
+		cacheUniqueFindersCache(expandoRowModelImpl);
 
 		expandoRow.resetOriginalValues();
 
@@ -1696,12 +1681,14 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 	 */
 	@Override
 	public ExpandoRow fetchByPrimaryKey(Serializable primaryKey) {
-		ExpandoRow expandoRow = (ExpandoRow)entityCache.getResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
 				ExpandoRowImpl.class, primaryKey);
 
-		if (expandoRow == _nullExpandoRow) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		ExpandoRow expandoRow = (ExpandoRow)serializable;
 
 		if (expandoRow == null) {
 			Session session = null;
@@ -1717,7 +1704,7 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 				}
 				else {
 					entityCache.putResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
-						ExpandoRowImpl.class, primaryKey, _nullExpandoRow);
+						ExpandoRowImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1771,18 +1758,20 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			ExpandoRow expandoRow = (ExpandoRow)entityCache.getResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
 					ExpandoRowImpl.class, primaryKey);
 
-			if (expandoRow == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, expandoRow);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (ExpandoRow)serializable);
+				}
 			}
 		}
 
@@ -1824,7 +1813,7 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(ExpandoRowModelImpl.ENTITY_CACHE_ENABLED,
-					ExpandoRowImpl.class, primaryKey, _nullExpandoRow);
+					ExpandoRowImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2067,22 +2056,4 @@ public class ExpandoRowPersistenceImpl extends BasePersistenceImpl<ExpandoRow>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"rowId"
 			});
-	private static final ExpandoRow _nullExpandoRow = new ExpandoRowImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<ExpandoRow> toCacheModel() {
-				return _nullExpandoRowCacheModel;
-			}
-		};
-
-	private static final CacheModel<ExpandoRow> _nullExpandoRowCacheModel = new CacheModel<ExpandoRow>() {
-			@Override
-			public ExpandoRow toEntityModel() {
-				return _nullExpandoRow;
-			}
-		};
 }

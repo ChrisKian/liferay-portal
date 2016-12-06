@@ -1,3 +1,5 @@
+@import "mixins";
+
 .portlet-blogs {
 	.entry-subtitle {
 		margin-bottom: 20px;
@@ -63,7 +65,13 @@
 		text-align: right;
 	}
 
-	fieldset {
-		display: table-cell;
+	.social-bookmarks {
+		.fb-like.fb_iframe_widget span {
+			vertical-align: top !important;
+		}
 	}
+}
+
+.firefox .portlet-blogs fieldset {
+	display: table-cell;
 }

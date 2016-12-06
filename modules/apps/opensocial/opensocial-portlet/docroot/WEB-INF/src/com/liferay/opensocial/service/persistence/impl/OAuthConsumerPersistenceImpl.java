@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -792,11 +791,15 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 						list);
 				}
 				else {
-					if ((list.size() > 1) && _log.isWarnEnabled()) {
-						_log.warn(
-							"OAuthConsumerPersistenceImpl.fetchByG_S(String, String, boolean) with parameters (" +
-							StringUtil.merge(finderArgs) +
-							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"OAuthConsumerPersistenceImpl.fetchByG_S(String, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
 					}
 
 					OAuthConsumer oAuthConsumer = list.get(0);
@@ -1011,7 +1014,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((OAuthConsumerModelImpl)oAuthConsumer);
+		clearUniqueFindersCache((OAuthConsumerModelImpl)oAuthConsumer, true);
 	}
 
 	@Override
@@ -1023,52 +1026,38 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 			entityCache.removeResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
 				OAuthConsumerImpl.class, oAuthConsumer.getPrimaryKey());
 
-			clearUniqueFindersCache((OAuthConsumerModelImpl)oAuthConsumer);
+			clearUniqueFindersCache((OAuthConsumerModelImpl)oAuthConsumer, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		OAuthConsumerModelImpl oAuthConsumerModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					oAuthConsumerModelImpl.getGadgetKey(),
-					oAuthConsumerModelImpl.getServiceName()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_S, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_S, args,
-				oAuthConsumerModelImpl);
-		}
-		else {
-			if ((oAuthConsumerModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_S.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						oAuthConsumerModelImpl.getGadgetKey(),
-						oAuthConsumerModelImpl.getServiceName()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_S, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_S, args,
-					oAuthConsumerModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		OAuthConsumerModelImpl oAuthConsumerModelImpl) {
 		Object[] args = new Object[] {
 				oAuthConsumerModelImpl.getGadgetKey(),
 				oAuthConsumerModelImpl.getServiceName()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_S, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_S, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_S, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_S, args,
+			oAuthConsumerModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		OAuthConsumerModelImpl oAuthConsumerModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					oAuthConsumerModelImpl.getGadgetKey(),
+					oAuthConsumerModelImpl.getServiceName()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_S, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_S, args);
+		}
 
 		if ((oAuthConsumerModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_S.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					oAuthConsumerModelImpl.getOriginalGadgetKey(),
 					oAuthConsumerModelImpl.getOriginalServiceName()
 				};
@@ -1262,8 +1251,8 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 			OAuthConsumerImpl.class, oAuthConsumer.getPrimaryKey(),
 			oAuthConsumer, false);
 
-		clearUniqueFindersCache(oAuthConsumerModelImpl);
-		cacheUniqueFindersCache(oAuthConsumerModelImpl, isNew);
+		clearUniqueFindersCache(oAuthConsumerModelImpl, false);
+		cacheUniqueFindersCache(oAuthConsumerModelImpl);
 
 		oAuthConsumer.resetOriginalValues();
 
@@ -1338,12 +1327,14 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 */
 	@Override
 	public OAuthConsumer fetchByPrimaryKey(Serializable primaryKey) {
-		OAuthConsumer oAuthConsumer = (OAuthConsumer)entityCache.getResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
 				OAuthConsumerImpl.class, primaryKey);
 
-		if (oAuthConsumer == _nullOAuthConsumer) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		OAuthConsumer oAuthConsumer = (OAuthConsumer)serializable;
 
 		if (oAuthConsumer == null) {
 			Session session = null;
@@ -1359,7 +1350,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 				}
 				else {
 					entityCache.putResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
-						OAuthConsumerImpl.class, primaryKey, _nullOAuthConsumer);
+						OAuthConsumerImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1413,18 +1404,20 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			OAuthConsumer oAuthConsumer = (OAuthConsumer)entityCache.getResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
 					OAuthConsumerImpl.class, primaryKey);
 
-			if (oAuthConsumer == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, oAuthConsumer);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (OAuthConsumer)serializable);
+				}
 			}
 		}
 
@@ -1466,7 +1459,7 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(OAuthConsumerModelImpl.ENTITY_CACHE_ENABLED,
-					OAuthConsumerImpl.class, primaryKey, _nullOAuthConsumer);
+					OAuthConsumerImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -1701,22 +1694,4 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No OAuthConsumer exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No OAuthConsumer exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(OAuthConsumerPersistenceImpl.class);
-	private static final OAuthConsumer _nullOAuthConsumer = new OAuthConsumerImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<OAuthConsumer> toCacheModel() {
-				return _nullOAuthConsumerCacheModel;
-			}
-		};
-
-	private static final CacheModel<OAuthConsumer> _nullOAuthConsumerCacheModel = new CacheModel<OAuthConsumer>() {
-			@Override
-			public OAuthConsumer toEntityModel() {
-				return _nullOAuthConsumer;
-			}
-		};
 }

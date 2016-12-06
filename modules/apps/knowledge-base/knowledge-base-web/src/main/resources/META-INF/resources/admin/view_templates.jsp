@@ -53,9 +53,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "templates"));
 		<aui:form action="<%= searchURL %>" method="get" name="fm2">
 			<liferay-portlet:renderURLParams varImpl="searchURL" />
 
-			<aui:nav-bar-search>
-				<liferay-ui:input-search markupView="lexicon" />
-			</aui:nav-bar-search>
+			<liferay-ui:input-search markupView="lexicon" />
 		</aui:form>
 	</aui:nav-bar-search>
 </aui:nav-bar>
@@ -131,11 +129,6 @@ String keywords = ParamUtil.getString(request, "keywords");
 				rowChecker="<%= AdminPermission.contains(permissionChecker, scopeGroupId, KBActionKeys.DELETE_KB_TEMPLATES) ? new RowChecker(renderResponse) : null %>"
 				searchContainer="<%= new KBTemplateSearch(renderRequest, iteratorURL) %>"
 			>
-
-				<%
-				KBTemplateSearchTerms searchTerms = (KBTemplateSearchTerms)searchContainer.getSearchTerms();
-				%>
-
 				<%@ include file="/admin/template_search_results.jspf" %>
 
 				<liferay-ui:search-container-row

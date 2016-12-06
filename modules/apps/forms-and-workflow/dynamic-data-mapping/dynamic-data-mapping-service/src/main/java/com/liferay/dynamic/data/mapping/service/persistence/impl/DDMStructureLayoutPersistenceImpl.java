@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -1771,7 +1770,8 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDMStructureLayoutModelImpl)ddmStructureLayout);
+		clearUniqueFindersCache((DDMStructureLayoutModelImpl)ddmStructureLayout,
+			true);
 	}
 
 	@Override
@@ -1783,73 +1783,47 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 			entityCache.removeResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStructureLayoutImpl.class, ddmStructureLayout.getPrimaryKey());
 
-			clearUniqueFindersCache((DDMStructureLayoutModelImpl)ddmStructureLayout);
+			clearUniqueFindersCache((DDMStructureLayoutModelImpl)ddmStructureLayout,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDMStructureLayoutModelImpl ddmStructureLayoutModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddmStructureLayoutModelImpl.getUuid(),
-					ddmStructureLayoutModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				ddmStructureLayoutModelImpl);
-
-			args = new Object[] {
-					ddmStructureLayoutModelImpl.getStructureVersionId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_STRUCTUREVERSIONID,
-				args, Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID,
-				args, ddmStructureLayoutModelImpl);
-		}
-		else {
-			if ((ddmStructureLayoutModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmStructureLayoutModelImpl.getUuid(),
-						ddmStructureLayoutModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					ddmStructureLayoutModelImpl);
-			}
-
-			if ((ddmStructureLayoutModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmStructureLayoutModelImpl.getStructureVersionId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_STRUCTUREVERSIONID,
-					args, Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID,
-					args, ddmStructureLayoutModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDMStructureLayoutModelImpl ddmStructureLayoutModelImpl) {
 		Object[] args = new Object[] {
 				ddmStructureLayoutModelImpl.getUuid(),
 				ddmStructureLayoutModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			ddmStructureLayoutModelImpl, false);
+
+		args = new Object[] { ddmStructureLayoutModelImpl.getStructureVersionId() };
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_STRUCTUREVERSIONID, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID, args,
+			ddmStructureLayoutModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDMStructureLayoutModelImpl ddmStructureLayoutModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmStructureLayoutModelImpl.getUuid(),
+					ddmStructureLayoutModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((ddmStructureLayoutModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmStructureLayoutModelImpl.getOriginalUuid(),
 					ddmStructureLayoutModelImpl.getOriginalGroupId()
 				};
@@ -1858,14 +1832,20 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
-		args = new Object[] { ddmStructureLayoutModelImpl.getStructureVersionId() };
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmStructureLayoutModelImpl.getStructureVersionId()
+				};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_STRUCTUREVERSIONID, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_STRUCTUREVERSIONID,
+				args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID,
+				args);
+		}
 
 		if ((ddmStructureLayoutModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_STRUCTUREVERSIONID.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmStructureLayoutModelImpl.getOriginalStructureVersionId()
 				};
 
@@ -2093,8 +2073,8 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 			DDMStructureLayoutImpl.class, ddmStructureLayout.getPrimaryKey(),
 			ddmStructureLayout, false);
 
-		clearUniqueFindersCache(ddmStructureLayoutModelImpl);
-		cacheUniqueFindersCache(ddmStructureLayoutModelImpl, isNew);
+		clearUniqueFindersCache(ddmStructureLayoutModelImpl, false);
+		cacheUniqueFindersCache(ddmStructureLayoutModelImpl);
 
 		ddmStructureLayout.resetOriginalValues();
 
@@ -2171,12 +2151,14 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 	 */
 	@Override
 	public DDMStructureLayout fetchByPrimaryKey(Serializable primaryKey) {
-		DDMStructureLayout ddmStructureLayout = (DDMStructureLayout)entityCache.getResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStructureLayoutImpl.class, primaryKey);
 
-		if (ddmStructureLayout == _nullDDMStructureLayout) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDMStructureLayout ddmStructureLayout = (DDMStructureLayout)serializable;
 
 		if (ddmStructureLayout == null) {
 			Session session = null;
@@ -2192,8 +2174,7 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 				}
 				else {
 					entityCache.putResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
-						DDMStructureLayoutImpl.class, primaryKey,
-						_nullDDMStructureLayout);
+						DDMStructureLayoutImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -2247,18 +2228,20 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDMStructureLayout ddmStructureLayout = (DDMStructureLayout)entityCache.getResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
 					DDMStructureLayoutImpl.class, primaryKey);
 
-			if (ddmStructureLayout == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddmStructureLayout);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDMStructureLayout)serializable);
+				}
 			}
 		}
 
@@ -2301,8 +2284,7 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDMStructureLayoutModelImpl.ENTITY_CACHE_ENABLED,
-					DDMStructureLayoutImpl.class, primaryKey,
-					_nullDDMStructureLayout);
+					DDMStructureLayoutImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2547,23 +2529,4 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final DDMStructureLayout _nullDDMStructureLayout = new DDMStructureLayoutImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDMStructureLayout> toCacheModel() {
-				return _nullDDMStructureLayoutCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDMStructureLayout> _nullDDMStructureLayoutCacheModel =
-		new CacheModel<DDMStructureLayout>() {
-			@Override
-			public DDMStructureLayout toEntityModel() {
-				return _nullDDMStructureLayout;
-			}
-		};
 }
