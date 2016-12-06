@@ -341,8 +341,6 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 		StringBundler sb = new StringBundler();
 
-		sb.append(StringPool.OPEN_PARENTHESIS);
-
 		sb.append("ResourcePermission.roleId IN (");
 
 		long[] roleIds = getRoleIds(groupIds);
@@ -373,8 +371,6 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 				sb.append(StringPool.CLOSE_PARENTHESIS);
 			}
 		}
-
-		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
 	}
