@@ -178,7 +178,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		String sql = replacePermissionCheck(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, new long[]{_groupOne.getGroupId()}, null);
+			_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, null);
 
 		Assert.assertSame(_SQL_PLAIN, sql);
 
@@ -235,23 +235,10 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		replacePermissionCheck(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, new long[]{
+			_GROUP_ID_FIELD, new long[] {
 				_groupOne.getGroupId(), group.getGroupId()
 			},
 			null);
-	}
-
-	@Test
-	public void testIsEnabledSiteAdmin() throws Exception {
-		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
-
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(_user);
-
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
-
-		Assert.assertFalse(isEnabled(_groupOne.getGroupId()));
-		Assert.assertTrue(isEnabled(_groupTwo.getGroupId()));
 	}
 
 	@Test
@@ -267,6 +254,19 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
 		Assert.assertFalse(isEnabled(_groupIds));
+	}
+
+	@Test
+	public void testIsNotEnabledSiteAdmin() throws Exception {
+		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_user);
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+		Assert.assertFalse(isEnabled(_groupOne.getGroupId()));
+		Assert.assertTrue(isEnabled(_groupTwo.getGroupId()));
 	}
 
 	@Test
@@ -371,8 +371,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 	}
 
 	private void _assertAndOrWhereClause(
-			String sql, String classPK, Boolean hasExistingWhereClause)
-		throws Exception {
+		String sql, String classPK, Boolean hasExistingWhereClause) {
 
 		StringBundler sb = new StringBundler(4);
 
@@ -390,9 +389,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
-	private void _assertClauseOrdering(String sql, String endingClause)
-		throws Exception {
-
+	private void _assertClauseOrdering(String sql, String endingClause) {
 		String actualSql = replacePermissionCheckJoin(
 			sql, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD, _GROUP_ID_FIELD,
 			_groupIds, null);
