@@ -619,14 +619,10 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			}
 		}
 
-		String permissionJoin = null;
+		String permissionJoin = CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION);
 
 		if (Validator.isNotNull(bridgeJoin)) {
-			permissionJoin = bridgeJoin.concat(
-				CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION));
-		}
-		else {
-			permissionJoin = CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION);
+			permissionJoin = bridgeJoin.concat(permissionJoin);
 		}
 
 		StringBundler primKeysSQL = new StringBundler(
@@ -719,38 +715,53 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 				roleIdsOrOwnerIdSQL
 			});
 
-		StringBundler sb4 = new StringBundler(6);
+		StringBundler permissionQuerySB = new StringBundler(5);
+
+		permissionQuerySB.append("(");
+		permissionQuerySB.append(classPKField);
+		permissionQuerySB.append(" IN (");
+		permissionQuerySB.append(permissionJoin);
+		permissionQuerySB.append(")) ");
+
+		StringBundler sb = new StringBundler(9);
 
 		int pos = sql.indexOf(_WHERE_CLAUSE);
 
-		if (pos != -1) {
-			sb4.append(" AND ");
+		if (pos == -1) {
+			pos = sql.indexOf(_GROUP_BY_CLAUSE);
+
+			if (pos == -1) {
+				pos = sql.indexOf(_ORDER_BY_CLAUSE);
+			}
+
+			if (pos == -1) {
+				sb.append(sql);
+			}
+			else {
+				sb.append(sql.substring(0, pos));
+			}
+
+			sb.append(_WHERE_CLAUSE);
+
+			sb.append(permissionQuerySB);
+
+			if (pos != -1) {
+				sb.append(sql.substring(pos));
+			}
 		}
 		else {
-			sb4.append(_WHERE_CLAUSE);
+			pos += _WHERE_CLAUSE.length();
+
+			sb.append(sql.substring(0, pos));
+
+			sb.append(permissionQuerySB);
+
+			sb.append("AND ");
+
+			sb.append(sql.substring(pos));
 		}
 
-		sb4.append("(");
-		sb4.append(classPKField);
-		sb4.append(" IN (");
-		sb4.append(permissionJoin);
-		sb4.append(")) ");
-
-		pos = sql.indexOf(_GROUP_BY_CLAUSE);
-
-		if (pos != -1) {
-			return sql.substring(0, pos + 1).concat(sb4.toString()).concat(
-				sql.substring(pos + 1));
-		}
-
-		pos = sql.indexOf(_ORDER_BY_CLAUSE);
-
-		if (pos != -1) {
-			return sql.substring(0, pos + 1).concat(sb4.toString()).concat(
-				sql.substring(pos + 1));
-		}
-
-		return sql.concat(StringPool.SPACE).concat(sb4.toString());
+		return sb.toString();
 	}
 
 	private static final String _GROUP_BY_CLAUSE = " GROUP BY ";
