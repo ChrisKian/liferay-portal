@@ -41,6 +41,14 @@
 		<execute function="AssertElementPresent" locator1="NavBar#ACTIVE_NAV_ITEM_LINK" />
 	</command>
 
+	<command name="gotoNavTab">
+		<var name="key_tab" value="${navTab}" />
+
+		<execute function="AssertClick" locator1="NavTab#TAB_LINK" value1="${navTab}" />
+
+		<execute function="AssertElementPresent" locator1="NavTab#ACTIVE_TAB_LINK" />
+	</command>
+
 	<command name="gotoPage" summary="Navigate to the page named '${pageName}'">
 		<execute macro="Navigator#openURL" />
 
@@ -50,6 +58,8 @@
 				<execute macro="ProductMenu#gotoPrivatePages" />
 			</then>
 		</if>
+
+		<execute function="Pause" locator1="3000" />
 
 		<execute macro="Navigator#_gotoPage">
 			<var name="pageName" value="${pageName}" />
@@ -102,14 +112,6 @@
 		<execute macro="ProductMenuHelper#openProductMenu" />
 
 		<execute function="Click" locator1="Link#STAGING" />
-	</command>
-
-	<command name="gotoTab">
-		<var name="key_tab" value="${tab}" />
-
-		<execute function="Click" locator1="NavTab#TAB_LINK" />
-
-		<execute function="AssertElementPresent" locator1="NavTab#ACTIVE_TAB_LINK" />
 	</command>
 
 	<command name="gotoViewPage">

@@ -190,7 +190,9 @@ public class SecureFilter extends BasePortalFilter {
 	protected void initThreadLocals(User user) throws Exception {
 		CompanyThreadLocal.setCompanyId(user.getCompanyId());
 
-		PrincipalThreadLocal.setName(user.getUserId());
+		long userId = user.getUserId();
+
+		PrincipalThreadLocal.setName(userId);
 
 		if (!_usePermissionChecker) {
 			return;
@@ -199,7 +201,9 @@ public class SecureFilter extends BasePortalFilter {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if (permissionChecker != null) {
+		if ((permissionChecker != null) &&
+			(permissionChecker.getUserId() == userId)) {
+
 			return;
 		}
 
@@ -214,21 +218,19 @@ public class SecureFilter extends BasePortalFilter {
 			FilterChain filterChain)
 		throws Exception {
 
-		String remoteAddr = request.getRemoteAddr();
-
 		if (AccessControlUtil.isAccessAllowed(request, _hostsAllowed)) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Access allowed for " + remoteAddr);
+				_log.debug("Access allowed for " + request.getRemoteAddr());
 			}
 		}
 		else {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Access denied for " + remoteAddr);
+				_log.warn("Access denied for " + request.getRemoteAddr());
 			}
 
 			response.sendError(
 				HttpServletResponse.SC_FORBIDDEN,
-				"Access denied for " + remoteAddr);
+				"Access denied for " + request.getRemoteAddr());
 
 			return;
 		}
@@ -269,10 +271,8 @@ public class SecureFilter extends BasePortalFilter {
 			response.sendRedirect(redirectURL.toString());
 		}
 		else {
-			String completeURL = HttpUtil.getCompleteURL(request);
-
 			if (_log.isDebugEnabled()) {
-				_log.debug("Not securing " + completeURL);
+				_log.debug("Not securing " + HttpUtil.getCompleteURL(request));
 			}
 
 			User user = null;
@@ -281,7 +281,14 @@ public class SecureFilter extends BasePortalFilter {
 				user = PortalUtil.initUser(request);
 			}
 			catch (NoSuchUserException nsue) {
-				response.sendRedirect(completeURL);
+
+				// LPS-52675
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(nsue, nsue);
+				}
+
+				response.sendRedirect(HttpUtil.getCompleteURL(request));
 
 				return;
 			}
@@ -320,8 +327,9 @@ public class SecureFilter extends BasePortalFilter {
 
 		request = new ProtectedServletRequest(request, userIdString, authType);
 
-		session.setAttribute(WebKeys.USER, user);
 		session.setAttribute(_AUTHENTICATED_USER, userIdString);
+
+		session.setAttribute(WebKeys.USER, user);
 
 		initThreadLocals(request);
 

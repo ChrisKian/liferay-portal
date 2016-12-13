@@ -67,13 +67,12 @@ public class FailureMessageUtilTest extends BaseJenkinsResultsParserTestCase {
 		throws Exception {
 
 		String urlString =
-			"https://${hostName}.liferay.com/job/${jobName}/" +
-				"/${buildNumber}/";
+			"https://${hostName}.liferay.com/job/${jobName}//${buildNumber}/";
 
 		if (axisVariable != null) {
 			urlString =
-				"https://${hostName}.liferay.com/job/${jobName}/" +
-					"AXIS_VARIABLE=${axis}/${buildNumber}/";
+				"https://${hostName}.liferay.com/job/${jobName}" +
+					"/AXIS_VARIABLE=${axis}/${buildNumber}/";
 
 			urlString = replaceToken(urlString, "axis", axisVariable);
 		}
@@ -100,10 +99,9 @@ public class FailureMessageUtilTest extends BaseJenkinsResultsParserTestCase {
 	protected Project getProject() {
 		Project project = new Project();
 
+		project.setProperty("github.origin.name", "junit-pr-origin-username");
 		project.setProperty(
-			"github.pull.request.head.branch", "junit-pr-head-branch");
-		project.setProperty(
-			"github.pull.request.head.username", "junit-pr-head-username");
+			"github.sender.branch.name", "junit-pr-sender-branch");
 		project.setProperty("plugins.branch.name", "junit-plugins-branch-name");
 		project.setProperty("plugins.repository", "junit-plugins-repository");
 		project.setProperty("portal.repository", "junit-portal-repository");

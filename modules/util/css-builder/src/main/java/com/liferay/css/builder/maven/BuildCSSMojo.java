@@ -16,16 +16,22 @@ package com.liferay.css.builder.maven;
 
 import com.liferay.css.builder.CSSBuilderArgs;
 import com.liferay.css.builder.CSSBuilderInvoker;
+import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
+import org.codehaus.plexus.util.Scanner;
+
+import org.sonatype.plexus.build.incremental.BuildContext;
+
 /**
  * Compiles CSS files.
  *
  * @author Andrea Di Giorgi
+ * @author Gregory Amerson
  * @goal build-css
  */
 public class BuildCSSMojo extends AbstractMojo {
@@ -33,7 +39,24 @@ public class BuildCSSMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException {
 		try {
-			CSSBuilderInvoker.invoke(baseDir, _cssBuilderArgs);
+			if (buildContext.isIncremental()) {
+				Scanner scanner = buildContext.newScanner(baseDir);
+
+				String[] includes = {"", "**/*.scss"};
+
+				scanner.setIncludes(includes);
+
+				scanner.scan();
+
+				String[] includedFiles = scanner.getIncludedFiles();
+
+				if (ArrayUtil.isNotEmpty(includedFiles)) {
+					CSSBuilderInvoker.invoke(baseDir, _cssBuilderArgs);
+				}
+			}
+			else {
+				CSSBuilderInvoker.invoke(baseDir, _cssBuilderArgs);
+			}
 		}
 		catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
@@ -48,7 +71,7 @@ public class BuildCSSMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter
+	 * @parameter default-value="${project.build.directory}/${project.build.finalName}"
 	 */
 	public void setDocrootDirName(String docrootDirName) {
 		_cssBuilderArgs.setDocrootDirName(docrootDirName);
@@ -62,11 +85,18 @@ public class BuildCSSMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter
+	 * @parameter default-value="/"
+	 */
+	public void setOutputDirName(String outputDirName) {
+		_cssBuilderArgs.setOutputDirName(outputDirName);
+	}
+
+	/**
+	 * @parameter default-value="/"
 	 * @required
 	 */
-	public void setPortalCommonDirName(String portalCommonDirName) {
-		_cssBuilderArgs.setPortalCommonDirName(portalCommonDirName);
+	public void setPortalCommonPath(String portalCommonPath) {
+		_cssBuilderArgs.setPortalCommonPath(portalCommonPath);
 	}
 
 	/**
@@ -91,10 +121,15 @@ public class BuildCSSMojo extends AbstractMojo {
 	}
 
 	/**
-	 * @parameter default-value="${project.basedir}
+	 * @parameter default-value="${project.basedir}"
 	 * @readonly
 	 */
 	protected File baseDir;
+
+	/**
+	 * @component
+	 */
+	protected BuildContext buildContext;
 
 	private final CSSBuilderArgs _cssBuilderArgs = new CSSBuilderArgs();
 

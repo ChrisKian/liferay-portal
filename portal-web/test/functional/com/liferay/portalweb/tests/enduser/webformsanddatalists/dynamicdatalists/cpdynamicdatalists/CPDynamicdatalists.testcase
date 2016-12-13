@@ -35,14 +35,6 @@
 	</tear-down>
 
 	<command name="AddDisplayTemplateFreeMarker" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-		<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
-		<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -50,13 +42,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -68,25 +60,14 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateTextFieldScript" value="${ddlDisplayTemplateTextFieldScript}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
+			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 	</command>
 
 	<command name="AddDisplayTemplateVelocity" priority="5">
-		<property name="portal.acceptance" value="true" />
-
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
-		<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-		<var name="formFieldKey" value="FORM_TEXT_FIELD_1" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -94,13 +75,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -112,22 +93,16 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateTextFieldScript" value="${ddlDisplayTemplateTextFieldScript}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
+			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 	</command>
 
 	<command name="AddFormTemplate" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -135,13 +110,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -153,14 +128,14 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLTemplate#saveFormTemplateCP" />
@@ -172,24 +147,18 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 	</command>
 
 	<command name="AddList" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -197,13 +166,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -215,11 +184,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -231,13 +200,11 @@
 		</execute>
 
 		<execute macro="DDLList#viewCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 	</command>
 
 	<command name="AddListAndRecordWithContactsPredefinedDataDefinition" priority="3">
-		<var name="ddlDataDefinitionName" value="Contacts" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -245,12 +212,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlDataDefinitionName} Description" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListDescription" value="Contacts Description" />
+			<var name="ddlListName" value="Contacts" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Contacts" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -262,8 +229,8 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Contacts" />
+			<var name="ddlListName" value="Contacts" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
@@ -335,13 +302,11 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListName" value="Contacts" />
 		</execute>
 	</command>
 
 	<command name="AddListAndRecordWithEventsPredefinedDataDefinition" priority="3">
-		<var name="ddlDataDefinitionName" value="Events" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -349,12 +314,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlDataDefinitionName} Description" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListDescription" value="Events Description" />
+			<var name="ddlListName" value="Events" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Events" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -366,8 +331,8 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Events" />
+			<var name="ddlListName" value="Events" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldDocumentsAndMediaChooseFromDocumentLibrary">
@@ -421,13 +386,11 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListName" value="Events" />
 		</execute>
 	</command>
 
 	<command name="AddListAndRecordWithInventoryPredefinedDataDefinition" priority="3">
-		<var name="ddlDataDefinitionName" value="Inventory" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -435,12 +398,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlDataDefinitionName} Description" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListDescription" value="Inventory Description" />
+			<var name="ddlListName" value="Inventory" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Inventory" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -452,8 +415,8 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Inventory" />
+			<var name="ddlListName" value="Inventory" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldTextBox">
@@ -501,13 +464,11 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListName" value="Inventory" />
 		</execute>
 	</command>
 
 	<command name="AddListAndRecordWithIssuesTrackingPredefinedDataDefinition" priority="3">
-		<var name="ddlDataDefinitionName" value="Issues Tracking" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -515,12 +476,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlDataDefinitionName} Description" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListDescription" value="Issues Tracking Description" />
+			<var name="ddlListName" value="Issues Tracking" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Issues Tracking" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -532,8 +493,8 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Issues Tracking" />
+			<var name="ddlListName" value="Issues Tracking" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
@@ -599,13 +560,11 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListName" value="Issues Tracking" />
 		</execute>
 	</command>
 
 	<command name="AddListAndRecordWithMeetingMinutesPredefinedDataDefinition" priority="3">
-		<var name="ddlDataDefinitionName" value="Meeting Minutes" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -613,12 +572,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlDataDefinitionName} Description" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListDescription" value="Meeting Minutes Description" />
+			<var name="ddlListName" value="Meeting Minutes" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Meeting Minutes" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -630,8 +589,8 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Meeting Minutes" />
+			<var name="ddlListName" value="Meeting Minutes" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldDocumentsAndMediaChooseFromDocumentLibrary">
@@ -685,14 +644,12 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListName" value="Meeting Minutes" />
 		</execute>
 	</command>
 
 	<command name="AddListAndRecordWithToDoPredefinedDataDefinition" priority="5">
 		<property name="portal.acceptance" value="true" />
-
-		<var name="ddlDataDefinitionName" value="To Do" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -701,12 +658,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlDataDefinitionName} Description" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListDescription" value="To Do Description" />
+			<var name="ddlListName" value="To Do" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="To Do" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -718,8 +675,8 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="To Do" />
+			<var name="ddlListName" value="To Do" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
@@ -791,18 +748,11 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlDataDefinitionName}" />
+			<var name="ddlListName" value="To Do" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithBooleanField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Yes" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldName" value="Boolean" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -810,13 +760,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -828,14 +778,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -845,11 +795,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -861,14 +811,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldBoolean">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -880,25 +830,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithDateField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="04/01/2017" />
-		<var name="ddlRecordFieldDataFormatted" value="4/1/17" />
-		<var name="field" value="Date" />
-		<var name="fieldFieldLabel" value="Date" />
-		<var name="fieldName" value="Date" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -906,13 +848,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Date" />
+			<var name="fieldFieldLabel" value="Date" />
+			<var name="fieldName" value="Date" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -924,14 +866,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Date" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Date" />
+			<var name="fieldFieldLabel" value="Date" />
+			<var name="fieldName" value="Date" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -941,11 +883,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -957,14 +899,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldDate">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="04/01/2017" />
+			<var name="fieldFieldLabel" value="Date" />
+			<var name="fieldName" value="Date" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -976,24 +918,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldDataFormatted}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="4/1/17" />
+			<var name="field" value="Date" />
+			<var name="fieldFieldLabel" value="Date" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithDecimalField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="11.18" />
-		<var name="field" value="Decimal" />
-		<var name="fieldFieldLabel" value="Decimal" />
-		<var name="fieldName" value="Decimal" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1001,13 +936,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Decimal" />
+			<var name="fieldFieldLabel" value="Decimal" />
+			<var name="fieldName" value="Decimal" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1019,14 +954,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Decimal" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Decimal" />
+			<var name="fieldFieldLabel" value="Decimal" />
+			<var name="fieldName" value="Decimal" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1036,11 +971,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1052,14 +987,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldDecimal">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="11.18" />
+			<var name="fieldFieldLabel" value="Decimal" />
+			<var name="fieldName" value="Decimal" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1071,24 +1006,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="11.18" />
+			<var name="field" value="Decimal" />
+			<var name="fieldFieldLabel" value="Decimal" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithDocumentsAndMediaField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="document" value="Document_1.txt" />
-		<var name="field" value="Documents and Media" />
-		<var name="fieldFieldLabel" value="Documents and Media" />
-		<var name="fieldName" value="DocumentsAndMedia" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1096,13 +1024,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Documents and Media" />
+			<var name="fieldFieldLabel" value="Documents and Media" />
+			<var name="fieldName" value="DocumentsAndMedia" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1114,14 +1042,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Documents and Media" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Documents and Media" />
+			<var name="fieldFieldLabel" value="Documents and Media" />
+			<var name="fieldName" value="DocumentsAndMedia" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1131,11 +1059,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1147,14 +1075,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldDocumentsAndMediaChooseFromDocumentLibrary">
-			<var name="document" value="${document}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="document" value="Document_1.txt" />
+			<var name="fieldFieldLabel" value="Documents and Media" />
+			<var name="fieldName" value="DocumentsAndMedia" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1166,23 +1094,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${document}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Document_1.txt" />
+			<var name="field" value="Documents and Media" />
+			<var name="fieldFieldLabel" value="Documents and Media" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithGeolocationField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="field" value="Geolocation" />
-		<var name="fieldFieldLabel" value="Geolocation" />
-		<var name="fieldName" value="Geolocation" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1190,13 +1112,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Geolocation" />
+			<var name="fieldFieldLabel" value="Geolocation" />
+			<var name="fieldName" value="Geolocation" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1208,14 +1130,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Geolocation" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Geolocation" />
+			<var name="fieldFieldLabel" value="Geolocation" />
+			<var name="fieldName" value="Geolocation" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1225,11 +1147,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1241,13 +1163,12 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldGeolocation">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldName" value="Geolocation" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1259,24 +1180,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewGeolocationRecord">
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="fieldFieldLabel" value="Geolocation" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithHTMLField" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Record HTML" />
-		<var name="field" value="HTML" />
-		<var name="fieldFieldLabel" value="HTML" />
-		<var name="fieldName" value="HTML" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1284,13 +1198,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="HTML" />
+			<var name="fieldFieldLabel" value="HTML" />
+			<var name="fieldName" value="HTML" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1302,14 +1216,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="HTML" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="HTML" />
+			<var name="fieldFieldLabel" value="HTML" />
+			<var name="fieldName" value="HTML" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1319,11 +1233,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1335,14 +1249,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldHTML">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Record HTML" />
+			<var name="fieldFieldLabel" value="HTML" />
+			<var name="fieldName" value="HTML" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1354,24 +1268,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Record HTML" />
+			<var name="field" value="HTML" />
+			<var name="fieldFieldLabel" value="HTML" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithIntegerField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="7" />
-		<var name="field" value="Integer" />
-		<var name="fieldFieldLabel" value="Integer" />
-		<var name="fieldName" value="Integer" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1379,13 +1286,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Integer" />
+			<var name="fieldFieldLabel" value="Integer" />
+			<var name="fieldName" value="Integer" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1397,14 +1304,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Integer" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Integer" />
+			<var name="fieldFieldLabel" value="Integer" />
+			<var name="fieldName" value="Integer" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1414,11 +1321,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1430,14 +1337,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldInteger">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="7" />
+			<var name="fieldFieldLabel" value="Integer" />
+			<var name="fieldName" value="Integer" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1449,26 +1356,22 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="7" />
+			<var name="field" value="Integer" />
+			<var name="fieldFieldLabel" value="Integer" />
 		</execute>
 	</command>
 
-	<command name="AddListRecordWithLinkToPageField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Test Page" />
-		<var name="field" value="Link to Page" />
-		<var name="fieldFieldLabel" value="Link to Page" />
-		<var name="fieldName" value="LinkToPage" />
+	<command name="AddListRecordWithLinkToPageField" priority="5">
+		<description message="This is a use case for LPS-65726" />
+		<property name="portal.acceptance" value="true" />
 
 		<execute macro="Page#add">
-			<var name="pageName" value="${ddlRecordFieldData}" />
+			<var name="pageName" value="Test Page" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1478,13 +1381,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Link to Page" />
+			<var name="fieldFieldLabel" value="Link to Page" />
+			<var name="fieldName" value="LinkToPage" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1496,14 +1399,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Link to Page" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Link to Page" />
+			<var name="fieldFieldLabel" value="Link to Page" />
+			<var name="fieldName" value="LinkToPage" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1513,11 +1416,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1529,14 +1432,19 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldLinkToPage">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Test Page" />
+			<var name="fieldName" value="LinkToPage" />
 			<var name="pagePrivacy" value="Public" />
+		</execute>
+
+		<execute macro="DDLRecord#viewSelectedLinkToPage">
+			<var name="ddlRecordFieldData" value="Test Page" />
+			<var name="fieldName" value="LinkToPage" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1548,28 +1456,21 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Test Page" />
+			<var name="field" value="Link to Page" />
+			<var name="fieldFieldLabel" value="Link to Page" />
 		</execute>
 
 		<execute macro="DDLRecord#viewLinkToPageLink">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
+			<var name="ddlRecordFieldData" value="Test Page" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithNumberField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="46" />
-		<var name="field" value="Number" />
-		<var name="fieldFieldLabel" value="Number" />
-		<var name="fieldName" value="Number" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1577,13 +1478,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Number" />
+			<var name="fieldFieldLabel" value="Number" />
+			<var name="fieldName" value="Number" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1595,14 +1496,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Number" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Number" />
+			<var name="fieldFieldLabel" value="Number" />
+			<var name="fieldName" value="Number" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1612,11 +1513,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1628,14 +1529,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldNumber">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="46" />
+			<var name="fieldFieldLabel" value="Number" />
+			<var name="fieldName" value="Number" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1647,24 +1548,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="46" />
+			<var name="field" value="Number" />
+			<var name="fieldFieldLabel" value="Number" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithRadioField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="option 2" />
-		<var name="field" value="Radio" />
-		<var name="fieldFieldLabel" value="Radio" />
-		<var name="fieldName" value="Radio" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1672,13 +1566,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1690,14 +1584,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Radio" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1707,11 +1601,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1723,14 +1617,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldRadio">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="option 2" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1742,24 +1636,107 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="option 2" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+		</execute>
+	</command>
+
+	<command name="AddListRecordWithRequiredBooleanField" priority="4">
+		<description message="This is a use case for LPS-65248" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP" />
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#editFieldRequired">
+			<var name="fieldFieldLabel" value="Boolean" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#viewCP">
+			<var name="fieldFieldLabel" value="Boolean" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewField">
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLList#addCP" />
+
+		<execute macro="DDLDataDefinition#selectCP" />
+
+		<execute macro="DDLList#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#addCP" />
+
+		<execute macro="FormFields#viewRequiredAsterisk" />
+
+		<execute macro="Button#clickPublish" />
+
+		<execute macro="Alert#viewRequiredField" />
+
+		<execute macro="FormFields#viewRequiredAsterisk" />
+
+		<execute macro="DDLRecord#populateFieldBoolean">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean Required" />
+			<var name="fieldName" value="Boolean" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLNavigator#gotoListRecords" />
+
+		<execute macro="DDLRecord#viewFirstFieldCP">
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithSelectField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="option 2" />
-		<var name="field" value="Select" />
-		<var name="fieldFieldLabel" value="Select" />
-		<var name="fieldName" value="Select" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1767,13 +1744,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1785,14 +1762,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Select" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1802,11 +1779,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1818,14 +1795,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldSelect">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="option 2" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1837,24 +1814,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="option 2" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithTextBoxField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Text Box Data" />
-		<var name="field" value="Text Box" />
-		<var name="fieldFieldLabel" value="Text Box" />
-		<var name="fieldName" value="TextBox" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1862,13 +1832,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text Box" />
+			<var name="fieldFieldLabel" value="Text Box" />
+			<var name="fieldName" value="TextBox" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1880,14 +1850,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Text Box" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text Box" />
+			<var name="fieldFieldLabel" value="Text Box" />
+			<var name="fieldName" value="TextBox" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1897,11 +1867,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -1913,14 +1883,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldTextBox">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Text Box Data" />
+			<var name="fieldFieldLabel" value="Text Box" />
+			<var name="fieldName" value="TextBox" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -1932,24 +1902,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Text Box Data" />
+			<var name="field" value="Text Box" />
+			<var name="fieldFieldLabel" value="Text Box" />
 		</execute>
 	</command>
 
 	<command name="AddListRecordWithTextField" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Text Data" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -1957,13 +1920,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -1975,14 +1938,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Text" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -1992,11 +1955,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -2008,14 +1971,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Text Data" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -2027,22 +1990,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Text Data" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
 		</execute>
 	</command>
 
 	<command name="CopyDataDefinition" priority="3">
-		<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2050,7 +2008,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -2068,8 +2026,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addFieldFormTemplateSpecific">
@@ -2085,9 +2043,9 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
 			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
@@ -2098,8 +2056,8 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#copyCP">
-			<var name="ddlDataDefinitionCopyName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2109,7 +2067,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -2124,16 +2082,11 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewDefaultNoTemplatesCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
 		</execute>
 	</command>
 
 	<command name="CopyDataDefinitionWithCopyDisplayTemplates" priority="3">
-		<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2141,7 +2094,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -2159,8 +2112,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addFieldFormTemplateSpecific">
@@ -2176,9 +2129,9 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
 			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
@@ -2190,8 +2143,8 @@
 
 		<execute macro="DDLDataDefinition#copyCP">
 			<var name="copyDisplayTemplates" value="true" />
-			<var name="ddlDataDefinitionCopyName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2201,7 +2154,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -2216,8 +2169,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Display Template Name" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2227,17 +2180,12 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewNoTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 	</command>
 
 	<command name="CopyDataDefinitionWithCopyFormTemplates" priority="3">
-		<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2245,7 +2193,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -2263,8 +2211,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addFieldFormTemplateSpecific">
@@ -2280,9 +2228,9 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
 			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
@@ -2294,8 +2242,8 @@
 
 		<execute macro="DDLDataDefinition#copyCP">
 			<var name="copyFormTemplates" value="true" />
-			<var name="ddlDataDefinitionCopyName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2305,7 +2253,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -2320,8 +2268,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -2342,17 +2290,12 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewNoTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Display Template Name" />
 		</execute>
 	</command>
 
 	<command name="CopyDataDefinitionWithCopyFormTemplatesAndCopyDisplayTemplates" priority="4">
-		<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2360,7 +2303,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -2378,8 +2321,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addFieldFormTemplateSpecific">
@@ -2395,9 +2338,9 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
 			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
@@ -2410,8 +2353,8 @@
 		<execute macro="DDLDataDefinition#copyCP">
 			<var name="copyDisplayTemplates" value="true" />
 			<var name="copyFormTemplates" value="true" />
-			<var name="ddlDataDefinitionCopyName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2421,7 +2364,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -2436,8 +2379,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Display Template Name" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2447,8 +2390,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -2464,11 +2407,6 @@
 	</command>
 
 	<command name="DeleteDataDefinition" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2476,13 +2414,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2494,19 +2432,11 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#deleteCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 	</command>
 
 	<command name="DeleteDisplayTemplateFreeMarker" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-		<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
-		<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2514,13 +2444,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2532,10 +2462,10 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateTextFieldScript" value="${ddlDisplayTemplateTextFieldScript}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
+			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2545,20 +2475,12 @@
 		</execute>
 
 		<execute macro="DDLTemplate#deleteTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlTemplateName" value="Data Definition FreeMarker Display Template Name" />
 		</execute>
 	</command>
 
 	<command name="DeleteDisplayTemplateVelocity" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
-		<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2566,13 +2488,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2584,10 +2506,10 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateTextFieldScript" value="${ddlDisplayTemplateTextFieldScript}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
+			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2597,18 +2519,12 @@
 		</execute>
 
 		<execute macro="DDLTemplate#deleteTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlTemplateName" value="Data Definition Velocity Display Template Name" />
 		</execute>
 	</command>
 
 	<command name="DeleteFormTemplate" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2616,13 +2532,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2634,8 +2550,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DDLTemplate#saveFormTemplateCP" />
@@ -2647,19 +2563,13 @@
 		</execute>
 
 		<execute macro="DDLTemplate#deleteTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 	</command>
 
 	<command name="DeleteList" priority="5">
 		<property name="portal.acceptance" value="true" />
-
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -2668,13 +2578,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2686,11 +2596,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -2702,19 +2612,12 @@
 		</execute>
 
 		<execute macro="DDLList#deleteCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 	</command>
 
 	<command name="DeleteListRecord" priority="5">
 		<property name="portal.acceptance" value="true" />
-
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Text Field" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -2723,13 +2626,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2741,11 +2644,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -2757,14 +2660,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Text Field" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -2776,22 +2679,13 @@
 		</execute>
 
 		<execute macro="DDLRecord#deleteCP">
-			<var name="ddlListName" value="${ddlListName}" />
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
+			<var name="ddlListName" value="List Name" />
+			<var name="ddlRecordFieldData" value="Text Field" />
 		</execute>
 	</command>
 
 	<command name="EditBooleanFieldFieldLabel" priority="5">
-		<property name="portal.acceptance" value="true" />
-
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Yes" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldFieldLabelEdit" value="Boolean Edit" />
-		<var name="fieldName" value="Boolean" />
-		<var name="fieldNameEdit" value="BooleanEdit" />
+		<property name="portal.acceptance" value="quarantine" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -2805,9 +2699,9 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
+			<var name="field" value="Boolean" />
 			<var name="fieldFieldLabel" value="Boolean" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2819,15 +2713,15 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldFieldLabelEdit" value="${fieldFieldLabelEdit}" />
-			<var name="fieldNameEdit" value="${fieldNameEdit}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldFieldLabelEdit" value="Boolean Edit" />
+			<var name="fieldNameEdit" value="BooleanEdit" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2839,14 +2733,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabelEdit}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean Edit" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabelEdit}" />
-			<var name="fieldName" value="${fieldNameEdit}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean Edit" />
+			<var name="fieldName" value="BooleanEdit" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2856,11 +2750,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -2872,14 +2766,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldBoolean">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabelEdit}" />
-			<var name="fieldName" value="${fieldNameEdit}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean Edit" />
+			<var name="fieldName" value="BooleanEdit" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -2891,25 +2785,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabelEdit}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean Edit" />
 		</execute>
 	</command>
 
 	<command name="EditBooleanFieldName" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Yes" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldName" value="Boolean" />
-		<var name="fieldNameEdit" value="BooleanEdit" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -2922,9 +2808,9 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2936,14 +2822,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldNameEdit" value="${fieldNameEdit}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldNameEdit" value="BooleanEdit" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -2955,14 +2841,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldNameEdit}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="BooleanEdit" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -2972,11 +2858,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -2988,14 +2874,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldBoolean">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldNameEdit}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="BooleanEdit" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -3007,26 +2893,18 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldNameEdit}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="BooleanEdit" />
 		</execute>
 	</command>
 
 	<command name="EditBooleanFieldShowLabel" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Yes" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldName" value="Boolean" />
-		<var name="fieldShowLabel" value="No" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3039,14 +2917,14 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldShowLabel">
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldShowLabel" value="${fieldShowLabel}" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldShowLabel" value="No" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3058,15 +2936,15 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldShowLabel" value="${fieldShowLabel}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldShowLabel" value="No" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -3076,11 +2954,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -3092,15 +2970,15 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldBoolean">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldShowLabel" value="${fieldShowLabel}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldShowLabel" value="No" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -3112,25 +2990,19 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldShowLabel" value="${fieldShowLabel}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldShowLabel" value="No" />
 		</execute>
 	</command>
 
 	<command name="EditBooleanFieldTip" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldName" value="Boolean" />
-		<var name="fieldTip" value="Boolean Field Tip" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3143,14 +3015,14 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldTip">
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldTip" value="${fieldTip}" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldTip" value="Boolean Field Tip" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3162,26 +3034,21 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldTip" value="${fieldTip}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldTip" value="Boolean Field Tip" />
 		</execute>
 	</command>
 
 	<command name="EditDataDefinition" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
-		<var name="ddlDataDefinitionDescriptionEdit" value="Data Definition Description Edit" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDataDefinitionNameEdit" value="Data Definition Edit" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3189,8 +3056,8 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescription}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -3208,9 +3075,9 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#editCP">
-			<var name="ddlDataDefinitionDescriptionEdit" value="${ddlDataDefinitionDescriptionEdit}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDataDefinitionNameEdit" value="${ddlDataDefinitionNameEdit}" />
+			<var name="ddlDataDefinitionDescriptionEdit" value="Data Definition Description Edit" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDataDefinitionNameEdit" value="Data Definition Edit" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -3228,8 +3095,8 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescriptionEdit}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionNameEdit}" />
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description Edit" />
+			<var name="ddlDataDefinitionName" value="Data Definition Edit" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
@@ -3246,16 +3113,6 @@
 	</command>
 
 	<command name="EditDisplayTemplateFreeMarker" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-		<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
-		<var name="ddlDisplayTemplateNameEdit" value="Data Definition FreeMarker Display Template Name Edit" />
-		<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
-		<var name="ddlDisplayTemplateTextFieldScriptEdit" value="Text" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3263,13 +3120,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3281,10 +3138,10 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateTextFieldScript" value="${ddlDisplayTemplateTextFieldScript}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
+			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -3294,79 +3151,11 @@
 		</execute>
 
 		<execute macro="DDLTemplate#editDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateNameEdit" value="${ddlDisplayTemplateNameEdit}" />
-			<var name="ddlDisplayTemplateTextFieldScriptEdit" value="${ddlDisplayTemplateTextFieldScriptEdit}" />
-		</execute>
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLTemplate#viewDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateNameEdit}" />
-		</execute>
-	</command>
-
-	<command name="EditDisplayTemplateVelocity" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
-		<var name="ddlDisplayTemplateNameEdit" value="Data Definition Velocity Display Template Name Edit" />
-		<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
-		<var name="ddlDisplayTemplateTextFieldScriptEdit" value="Text" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#save" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateTextFieldScript" value="${ddlDisplayTemplateTextFieldScript}" />
-		</execute>
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLTemplate#editDisplayTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlDisplayTemplateLanguage" value="${ddlDisplayTemplateLanguage}" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
-			<var name="ddlDisplayTemplateNameEdit" value="${ddlDisplayTemplateNameEdit}" />
-			<var name="ddlDisplayTemplateTextFieldScriptEdit" value="${ddlDisplayTemplateTextFieldScriptEdit}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition FreeMarker Display Template Name" />
+			<var name="ddlDisplayTemplateNameEdit" value="Data Definition FreeMarker Display Template Name Edit" />
+			<var name="ddlDisplayTemplateTextFieldScriptEdit" value="Text" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -3377,18 +3166,11 @@
 
 		<execute macro="DDLTemplate#viewDisplayTemplateCP">
 			<var name="ddlDataDefinitionName" value="Data Definition" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateNameEdit}" />
+			<var name="ddlTemplateName" value="Data Definition FreeMarker Display Template Name Edit" />
 		</execute>
 	</command>
 
-	<command name="EditFormTemplate" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-		<var name="ddlFormTemplateNameEdit" value="Data Definition Form Template Name Edit" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
+	<command name="EditDisplayTemplateVelocity" priority="4">
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3396,13 +3178,71 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLTemplate#addDisplayTemplateCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
+			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLTemplate#editDisplayTemplateCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlDisplayTemplateLanguage" value="Velocity (.vm)" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Velocity Display Template Name" />
+			<var name="ddlDisplayTemplateNameEdit" value="Data Definition Velocity Display Template Name Edit" />
+			<var name="ddlDisplayTemplateTextFieldScriptEdit" value="Text" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLTemplate#viewDisplayTemplateCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlTemplateName" value="Data Definition Velocity Display Template Name Edit" />
+		</execute>
+	</command>
+
+	<command name="EditFormTemplate" priority="4">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3414,8 +3254,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DDLTemplate#saveFormTemplateCP" />
@@ -3427,9 +3267,9 @@
 		</execute>
 
 		<execute macro="DDLTemplate#editFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
-			<var name="ddlFormTemplateNameEdit" value="${ddlFormTemplateNameEdit}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
+			<var name="ddlFormTemplateNameEdit" value="Data Definition Form Template Name Edit" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addFieldFormTemplateSpecific">
@@ -3459,14 +3299,14 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateNameEdit}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name Edit" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewFieldFormTemplateSpecific">
@@ -3489,15 +3329,6 @@
 	</command>
 
 	<command name="EditList" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListDescription" value="List Description" />
-		<var name="ddlListDescriptionEdit" value="List Description Edit" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlListNameEdit" value="List Name Edit" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3505,13 +3336,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3523,12 +3354,12 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlListDescription}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListDescription" value="List Description" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -3540,9 +3371,9 @@
 		</execute>
 
 		<execute macro="DDLList#editCP">
-			<var name="ddlListDescriptionEdit" value="${ddlListDescriptionEdit}" />
-			<var name="ddlListName" value="${ddlListName}" />
-			<var name="ddlListNameEdit" value="${ddlListNameEdit}" />
+			<var name="ddlListDescriptionEdit" value="List Description Edit" />
+			<var name="ddlListName" value="List Name" />
+			<var name="ddlListNameEdit" value="List Name Edit" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -3552,19 +3383,13 @@
 		</execute>
 
 		<execute macro="DDLList#viewCP">
-			<var name="ddlListDescription" value="${ddlListDescriptionEdit}" />
-			<var name="ddlListName" value="${ddlListNameEdit}" />
+			<var name="ddlListDescription" value="List Description Edit" />
+			<var name="ddlListName" value="List Name Edit" />
 		</execute>
 	</command>
 
 	<command name="EditListRecord" priority="5">
 		<property name="portal.acceptance" value="true" />
-
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
 
 		<execute macro="Navigator#openURL" />
 
@@ -3573,13 +3398,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3591,11 +3416,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -3607,13 +3432,13 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
 			<var name="ddlRecordFieldData" value="Record Text" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -3625,13 +3450,13 @@
 		</execute>
 
 		<execute macro="DDLRecord#editCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 			<var name="ddlRecordFieldData" value="Record Text" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
 			<var name="ddlRecordFieldData" value="Record Text Edited" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -3643,23 +3468,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
 			<var name="ddlRecordFieldData" value="Record Text Edited" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
 		</execute>
 	</command>
 
 	<command name="EditListRecordViaRecordView" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3667,13 +3486,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3685,11 +3504,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -3701,13 +3520,13 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
 			<var name="ddlRecordFieldData" value="Record Text" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -3719,12 +3538,12 @@
 		</execute>
 
 		<execute macro="DDLRecord#editViaRecordViewCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldText">
 			<var name="ddlRecordFieldData" value="Record Text Edited" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="fieldName" value="Text" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -3736,24 +3555,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
 			<var name="ddlRecordFieldData" value="Record Text Edited" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
 		</execute>
 	</command>
 
 	<command name="EditRadioFieldOptions" priority="4">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="field" value="Radio" />
-		<var name="fieldFieldLabel" value="Radio" />
-		<var name="fieldName" value="Radio" />
-		<var name="fieldOptionsNames" value="Radio Name 1,Radio Name 2,Radio Name 3" />
-		<var name="fieldOptionsValues" value="Radio Value 1,Radio Value 2,Radio Value 3" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3766,17 +3578,17 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldOptions">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
+			<var name="fieldOptionsNames" value="Radio Name 1,Radio Name 2,Radio Name 3" />
+			<var name="fieldOptionsValues" value="Radio Value 1,Radio Value 2,Radio Value 3" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3788,27 +3600,20 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Radio" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
+			<var name="fieldOptionsNames" value="Radio Name 1,Radio Name 2,Radio Name 3" />
+			<var name="fieldOptionsValues" value="Radio Value 1,Radio Value 2,Radio Value 3" />
 		</execute>
 	</command>
 
 	<command name="EditRadioFieldOptionsWithUTF8Characters" priority="3">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="field" value="Radio" />
-		<var name="fieldFieldLabel" value="Radio" />
-		<var name="fieldName" value="Radio" />
-		<var name="fieldOptionsNames" value="りん�?�,�?ナナ,クランベリー" />
-		<var name="fieldOptionsValues" value="Radio Value 1,Radio Value 2,Radio Value 3" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3821,17 +3626,17 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldOptions">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
+			<var name="fieldOptionsNames" value="りん�?�,�?ナナ,クランベリー" />
+			<var name="fieldOptionsValues" value="Radio Value 1,Radio Value 2,Radio Value 3" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3843,29 +3648,22 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Radio" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Radio" />
+			<var name="fieldFieldLabel" value="Radio" />
+			<var name="fieldName" value="Radio" />
+			<var name="fieldOptionsNames" value="りん�?�,�?ナナ,クランベリー" />
+			<var name="fieldOptionsValues" value="Radio Value 1,Radio Value 2,Radio Value 3" />
 		</execute>
 	</command>
 
 	<command name="EditSelectFieldOptions" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="field" value="Select" />
-		<var name="fieldFieldLabel" value="Select" />
-		<var name="fieldName" value="Select" />
-		<var name="fieldOptionsNames" value="Select Name 1,Select Name 2,Select Name 3" />
-		<var name="fieldOptionsValues" value="Select Value 1,Select Value 2,Select Value 3" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3878,17 +3676,17 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldOptions">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
+			<var name="fieldOptionsNames" value="Select Name 1,Select Name 2,Select Name 3" />
+			<var name="fieldOptionsValues" value="Select Value 1,Select Value 2,Select Value 3" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3900,27 +3698,20 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Select" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
+			<var name="fieldOptionsNames" value="Select Name 1,Select Name 2,Select Name 3" />
+			<var name="fieldOptionsValues" value="Select Value 1,Select Value 2,Select Value 3" />
 		</execute>
 	</command>
 
 	<command name="EditSelectFieldOptionsWithUTF8Characters" priority="3">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="field" value="Select" />
-		<var name="fieldFieldLabel" value="Select" />
-		<var name="fieldName" value="Select" />
-		<var name="fieldOptionsNames" value="りん�?�,�?ナナ,クランベリー" />
-		<var name="fieldOptionsValues" value="Select Value 1,Select Value 2,Select Value 3" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3933,17 +3724,17 @@
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldOptions">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
+			<var name="fieldOptionsNames" value="りん�?�,�?ナナ,クランベリー" />
+			<var name="fieldOptionsValues" value="Select Value 1,Select Value 2,Select Value 3" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -3955,30 +3746,22 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Select" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldOptionsNames" value="${fieldOptionsNames}" />
-			<var name="fieldOptionsValues" value="${fieldOptionsValues}" />
+			<var name="field" value="Select" />
+			<var name="fieldFieldLabel" value="Select" />
+			<var name="fieldName" value="Select" />
+			<var name="fieldOptionsNames" value="りん�?�,�?ナナ,クランベリー" />
+			<var name="fieldOptionsValues" value="Select Value 1,Select Value 2,Select Value 3" />
 		</execute>
 	</command>
 
 	<command name="ImportLAR" priority="5">
 		<property name="portal.acceptance" value="true" />
 
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Yes" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldName" value="Boolean" />
-		<var name="larFileName" value="Dynamic_Data_Lists.portlet.lar" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -3986,13 +3769,13 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -4004,11 +3787,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -4020,14 +3803,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldBoolean">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -4039,7 +3822,7 @@
 		</execute>
 
 		<execute macro="LAR#exportDDL">
-			<var name="larFileName" value="${larFileName}" />
+			<var name="larFileName" value="Dynamic_Data_Lists.portlet.lar" />
 		</execute>
 
 		<execute macro="DDLList#tearDownCP" />
@@ -4053,7 +3836,7 @@
 		</execute>
 
 		<execute macro="LAR#importPortlet">
-			<var name="larFileName" value="${larFileName}" />
+			<var name="larFileName" value="Dynamic_Data_Lists.portlet.lar" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4063,14 +3846,14 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4080,7 +3863,7 @@
 		</execute>
 
 		<execute macro="DDLList#viewCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4090,25 +3873,17 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="Yes" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 	</command>
 
 	<command name="ViewBooleanFieldPredefinedValue" priority="3">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="No" />
-		<var name="field" value="Boolean" />
-		<var name="fieldFieldLabel" value="Boolean" />
-		<var name="fieldName" value="Boolean" />
-		<var name="fieldPredefinedValue" value="Yes" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -4116,20 +3891,20 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#editFieldPredefinedValue">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldPredefinedValue" value="${fieldPredefinedValue}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldPredefinedValue" value="Yes" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#save" />
@@ -4141,15 +3916,15 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldPredefinedValue" value="${fieldPredefinedValue}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldPredefinedValue" value="Yes" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4159,11 +3934,11 @@
 		</execute>
 
 		<execute macro="DDLList#addCP">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DDLList#save" />
@@ -4175,15 +3950,15 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFieldPredefinedValue">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldPredefinedValue" value="${fieldPredefinedValue}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
+			<var name="fieldPredefinedValue" value="Yes" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -4195,13 +3970,13 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFirstFieldCP">
 			<var name="ddlRecordFieldData" value="Yes" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4211,14 +3986,14 @@
 		</execute>
 
 		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#populateFieldBoolean">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
+			<var name="ddlRecordFieldData" value="No" />
+			<var name="fieldFieldLabel" value="Boolean" />
+			<var name="fieldName" value="Boolean" />
 		</execute>
 
 		<execute macro="PortletEntry#publish" />
@@ -4230,13 +4005,13 @@
 		</execute>
 
 		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
+			<var name="ddlListName" value="List Name" />
 		</execute>
 
 		<execute macro="DDLRecord#viewFieldCP">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
+			<var name="ddlRecordFieldData" value="No" />
+			<var name="field" value="Boolean" />
+			<var name="fieldFieldLabel" value="Boolean" />
 		</execute>
 	</command>
 
@@ -4306,13 +4081,6 @@
 	</command>
 
 	<command name="ViewFormTemplateFieldReadOnlyWithEditMode" priority="3">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-		<var name="fieldReadOnly" value="No" />
-
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoSitesContent">
@@ -4320,305 +4088,7 @@
 		</execute>
 
 		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#save" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewField">
-			<var name="ddlFormTemplateMode" value="Create" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldReadOnly" value="${fieldReadOnly}" />
-		</execute>
-
-		<execute macro="DDLTemplate#editFormTemplateModeCP">
-			<var name="ddlFormTemplateMode" value="Edit" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewField">
-			<var name="ddlFormTemplateMode" value="Edit" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldReadOnly" value="${fieldReadOnly}" />
-		</execute>
-
-		<execute macro="DDLTemplate#editFormTemplateModeCP">
-			<var name="ddlFormTemplateMode" value="Create" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewField">
-			<var name="ddlFormTemplateMode" value="Create" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-			<var name="fieldReadOnly" value="${fieldReadOnly}" />
-		</execute>
-	</command>
-
-	<command name="ViewFormTemplateFields" priority="3">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#save" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Fieldset" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Paragraph" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Separator" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCannotAddField">
-			<var name="field" value="${fieldFieldLabel}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#deleteField">
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Fieldset" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Paragraph" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Separator" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="${fieldFieldLabel}" />
-		</execute>
-	</command>
-
-	<command name="ViewFormTemplateFieldsAfterSaveAndContinue" priority="3">
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#save" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
-		</execute>
-
-		<execute macro="DDLTemplate#saveAndContinueFormTemplateCP" />
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Fieldset" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Paragraph" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCanAddField">
-			<var name="field" value="Separator" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewCannotAddField">
-			<var name="field" value="${fieldFieldLabel}" />
-		</execute>
-	</command>
-
-	<command name="ViewListRecordAndAssertAnchorLink"  priority="3">
-		<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlListDescription" value="List Description" />
-		<var name="ddlListName" value="List Name" />
-		<var name="ddlRecordFieldData" value="Text Data" />
-		<var name="field" value="Text" />
-		<var name="fieldFieldLabel" value="Text" />
-		<var name="fieldName" value="Text" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescription}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#addField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#save" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#viewCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescription}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-		</execute>
-
-		<execute macro="DynamicDataMapping#viewField">
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLList#addCP">
-			<var name="ddlListDescription" value="${ddlListDescription}" />
-			<var name="ddlListName" value="${ddlListName}" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#selectCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-		</execute>
-
-		<execute macro="DDLList#save" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLRecord#addCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlListName" value="${ddlListName}" />
-		</execute>
-
-		<execute macro="DDLRecord#populateFieldText">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="field" value="${field}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-			<var name="fieldName" value="${fieldName}" />
-		</execute>
-
-		<execute macro="PortletEntry#publish" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLNavigator#gotoListRecords">
-			<var name="ddlListName" value="${ddlListName}" />
-		</execute>
-
-		<execute macro="DDLRecord#viewViaAnchorLink">
-			<var name="ddlRecordFieldData" value="${ddlRecordFieldData}" />
-			<var name="fieldFieldLabel" value="${fieldFieldLabel}" />
-		</execute>
-	</command>
-
-	<command name="ViewNoDuplicatesInOriginalAfterCopy" priority="3">
-		<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
-		<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
-		<var name="ddlDataDefinitionName" value="Data Definition" />
-		<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
-		<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
-
-		<execute macro="Navigator#openURL" />
-
-		<execute macro="ProductMenu#gotoSitesContent">
-			<var name="portlet" value="Dynamic Data Lists" />
-		</execute>
-
-		<execute macro="DDLDataDefinition#addCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescription}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="DynamicDataMapping#addField">
@@ -4636,9 +4106,280 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addFormTemplateCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescription}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
-			<var name="ddlFormTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewField">
+			<var name="ddlFormTemplateMode" value="Create" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+			<var name="fieldReadOnly" value="No" />
+		</execute>
+
+		<execute macro="DDLTemplate#editFormTemplateModeCP">
+			<var name="ddlFormTemplateMode" value="Edit" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewField">
+			<var name="ddlFormTemplateMode" value="Edit" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+			<var name="fieldReadOnly" value="No" />
+		</execute>
+
+		<execute macro="DDLTemplate#editFormTemplateModeCP">
+			<var name="ddlFormTemplateMode" value="Create" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewField">
+			<var name="ddlFormTemplateMode" value="Create" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+			<var name="fieldReadOnly" value="No" />
+		</execute>
+	</command>
+
+	<command name="ViewFormTemplateFields" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLTemplate#addFormTemplateCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Fieldset" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Paragraph" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Separator" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCannotAddField">
+			<var name="field" value="Text" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#deleteField">
+			<var name="fieldFieldLabel" value="Text" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Fieldset" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Paragraph" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Separator" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Text" />
+		</execute>
+	</command>
+
+	<command name="ViewFormTemplateFieldsAfterSaveAndContinue" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLTemplate#addFormTemplateCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
+		</execute>
+
+		<execute macro="DDLTemplate#saveAndContinueFormTemplateCP" />
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Fieldset" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Paragraph" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCanAddField">
+			<var name="field" value="Separator" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewCannotAddField">
+			<var name="field" value="Text" />
+		</execute>
+	</command>
+
+	<command name="ViewListRecordAndAssertAnchorLink"  priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP">
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#viewCP">
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="fieldFieldLabel" value="Text" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#viewField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLList#addCP">
+			<var name="ddlListDescription" value="List Description" />
+			<var name="ddlListName" value="List Name" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#selectCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+		</execute>
+
+		<execute macro="DDLList#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#addCP">
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlListName" value="List Name" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldText">
+			<var name="ddlRecordFieldData" value="Text Data" />
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLNavigator#gotoListRecords">
+			<var name="ddlListName" value="List Name" />
+		</execute>
+
+		<execute macro="DDLRecord#viewViaAnchorLink">
+			<var name="ddlRecordFieldData" value="Text Data" />
+			<var name="fieldFieldLabel" value="Text" />
+		</execute>
+	</command>
+
+	<command name="ViewNoDuplicatesInOriginalAfterCopy" priority="3">
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#addCP">
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+		</execute>
+
+		<execute macro="DynamicDataMapping#addField">
+			<var name="field" value="Text" />
+			<var name="fieldFieldLabel" value="Text" />
+			<var name="fieldName" value="Text" />
+		</execute>
+
+		<execute macro="DDLDataDefinition#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLTemplate#addFormTemplateCP">
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
+			<var name="ddlFormTemplateName" value="Data Definition Form Template Name" />
 		</execute>
 
 		<execute macro="DDLTemplate#saveFormTemplateCP" />
@@ -4650,10 +4391,10 @@
 		</execute>
 
 		<execute macro="DDLTemplate#addDisplayTemplateCP">
-			<var name="ddlDataDefinitionDescription" value="${ddlDataDefinitionDescription}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionDescription" value="Data Definition Description" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 			<var name="ddlDisplayTemplateLanguage" value="FreeMarker (.ftl)" />
-			<var name="ddlDisplayTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDisplayTemplateName" value="Data Definition Display Template Name" />
 			<var name="ddlDisplayTemplateTextFieldScript" value="Text" />
 		</execute>
 
@@ -4666,8 +4407,8 @@
 		<execute macro="DDLDataDefinition#copyCP">
 			<var name="copyDisplayTemplates" value="true" />
 			<var name="copyFormTemplates" value="true" />
-			<var name="ddlDataDefinitionCopyName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionName}" />
+			<var name="ddlDataDefinitionCopyName" value="Data Definition Copy" />
+			<var name="ddlDataDefinitionName" value="Data Definition" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4677,8 +4418,8 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewNoDuplicateTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlDisplayTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Display Template Name" />
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -4688,8 +4429,56 @@
 		</execute>
 
 		<execute macro="DDLTemplate#viewNoDuplicateTemplateCP">
-			<var name="ddlDataDefinitionName" value="${ddlDataDefinitionCopyName}" />
-			<var name="ddlTemplateName" value="${ddlFormTemplateName}" />
+			<var name="ddlDataDefinitionName" value="Data Definition Copy" />
+			<var name="ddlTemplateName" value="Data Definition Form Template Name" />
 		</execute>
+	</command>
+
+	<command name="ViewRecordInfoSidebar" priority="3">
+		<description message="This is a use case for LPS-66384." />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLList#addCP" />
+
+		<execute macro="DDLDataDefinition#selectCP">
+			<var name="ddlDataDefinitionName" value="To Do" />
+		</execute>
+
+		<execute macro="DDLList#save" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLRecord#addCP">
+			<var name="ddlDataDefinitionName" value="To Do" />
+		</execute>
+
+		<execute macro="DDLRecord#populateFieldText">
+			<var name="ddlRecordFieldData" value="Test Test" />
+			<var name="fieldFieldLabel" value="Assigned To" />
+			<var name="fieldName" value="assignedTo" />
+		</execute>
+
+		<execute macro="PortletEntry#publish" />
+
+		<execute macro="Navigator#openURL" />
+
+		<execute macro="ProductMenu#gotoSitesContent">
+			<var name="portlet" value="Dynamic Data Lists" />
+		</execute>
+
+		<execute macro="DDLNavigator#gotoListRecords" />
+
+		<execute macro="DDLNavigator#gotoEdit" />
+
+		<execute macro="DDLRecord#expandInfo" />
 	</command>
 </definition>

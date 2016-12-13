@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -2009,7 +2008,7 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDMStorageLinkModelImpl)ddmStorageLink);
+		clearUniqueFindersCache((DDMStorageLinkModelImpl)ddmStorageLink, true);
 	}
 
 	@Override
@@ -2021,45 +2020,35 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 			entityCache.removeResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStorageLinkImpl.class, ddmStorageLink.getPrimaryKey());
 
-			clearUniqueFindersCache((DDMStorageLinkModelImpl)ddmStorageLink);
+			clearUniqueFindersCache((DDMStorageLinkModelImpl)ddmStorageLink,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDMStorageLinkModelImpl ddmStorageLinkModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] { ddmStorageLinkModelImpl.getClassPK() };
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_CLASSPK, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK, args,
-				ddmStorageLinkModelImpl);
-		}
-		else {
-			if ((ddmStorageLinkModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_CLASSPK.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmStorageLinkModelImpl.getClassPK()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_CLASSPK, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK, args,
-					ddmStorageLinkModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDMStorageLinkModelImpl ddmStorageLinkModelImpl) {
 		Object[] args = new Object[] { ddmStorageLinkModelImpl.getClassPK() };
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_CLASSPK, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_CLASSPK, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_CLASSPK, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_CLASSPK, args,
+			ddmStorageLinkModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDMStorageLinkModelImpl ddmStorageLinkModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] { ddmStorageLinkModelImpl.getClassPK() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_CLASSPK, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_CLASSPK, args);
+		}
 
 		if ((ddmStorageLinkModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_CLASSPK.getColumnBitmask()) != 0) {
-			args = new Object[] { ddmStorageLinkModelImpl.getOriginalClassPK() };
+			Object[] args = new Object[] {
+					ddmStorageLinkModelImpl.getOriginalClassPK()
+				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_CLASSPK, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_CLASSPK, args);
@@ -2275,8 +2264,8 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 			DDMStorageLinkImpl.class, ddmStorageLink.getPrimaryKey(),
 			ddmStorageLink, false);
 
-		clearUniqueFindersCache(ddmStorageLinkModelImpl);
-		cacheUniqueFindersCache(ddmStorageLinkModelImpl, isNew);
+		clearUniqueFindersCache(ddmStorageLinkModelImpl, false);
+		cacheUniqueFindersCache(ddmStorageLinkModelImpl);
 
 		ddmStorageLink.resetOriginalValues();
 
@@ -2348,12 +2337,14 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 	 */
 	@Override
 	public DDMStorageLink fetchByPrimaryKey(Serializable primaryKey) {
-		DDMStorageLink ddmStorageLink = (DDMStorageLink)entityCache.getResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStorageLinkImpl.class, primaryKey);
 
-		if (ddmStorageLink == _nullDDMStorageLink) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDMStorageLink ddmStorageLink = (DDMStorageLink)serializable;
 
 		if (ddmStorageLink == null) {
 			Session session = null;
@@ -2369,8 +2360,7 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 				}
 				else {
 					entityCache.putResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
-						DDMStorageLinkImpl.class, primaryKey,
-						_nullDDMStorageLink);
+						DDMStorageLinkImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -2424,18 +2414,20 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDMStorageLink ddmStorageLink = (DDMStorageLink)entityCache.getResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
 					DDMStorageLinkImpl.class, primaryKey);
 
-			if (ddmStorageLink == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddmStorageLink);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDMStorageLink)serializable);
+				}
 			}
 		}
 
@@ -2477,7 +2469,7 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDMStorageLinkModelImpl.ENTITY_CACHE_ENABLED,
-					DDMStorageLinkImpl.class, primaryKey, _nullDDMStorageLink);
+					DDMStorageLinkImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2722,23 +2714,4 @@ public class DDMStorageLinkPersistenceImpl extends BasePersistenceImpl<DDMStorag
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final DDMStorageLink _nullDDMStorageLink = new DDMStorageLinkImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDMStorageLink> toCacheModel() {
-				return _nullDDMStorageLinkCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDMStorageLink> _nullDDMStorageLinkCacheModel =
-		new CacheModel<DDMStorageLink>() {
-			@Override
-			public DDMStorageLink toEntityModel() {
-				return _nullDDMStorageLink;
-			}
-		};
 }

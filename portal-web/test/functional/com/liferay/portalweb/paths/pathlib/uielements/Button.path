@@ -24,6 +24,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ADD_ANNOUNCEMENT</td>
+	<td>//span[contains(.,'Add Announcement')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ADD_CATEGORY</td>
 	<td>//span[contains(.,'Add Category')]</td>
 	<td></td>
@@ -129,6 +134,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ADVANCED_REPLY</td>
+	<td>//button/span[contains(.,'Advanced Reply')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>APPLY_EFFECTS</td>
 	<td>//div[contains(@class,'controls-container') and contains(@class,'open')]//button[contains(@class,'btn') and contains(.,'Apply')]</td>
 	<td></td>
@@ -160,7 +170,7 @@
 </tr>
 <tr>
 	<td>CANCEL</td>
-	<td>//a[contains(@class,'cancel') and contains(@class,'btn')] | //button[contains(.,'Cancel')]</td>
+	<td>//a[contains(@class,'cancel') and contains(@class,'btn')] | //button[contains(.,'Cancel')] | //a[contains(@class,'btn') and contains(.,'Cancel')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -235,7 +245,7 @@
 </tr>
 <tr>
 	<td>CLOSE_MODAL</td>
-	<td>//button[contains(.,'×')]</td>
+	<td>//h3[contains(@class,'modal-title') and contains(.,'${key_modalTitle}')]/../div/button[contains(@class,'close')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -369,6 +379,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>GENERATE</td>
+	<td>//button[contains(.,'Generate')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>I_AGREE</td>
 	<td>//button[contains(.,'I Agree')]</td>
 	<td></td>
@@ -480,7 +495,7 @@
 </tr>
 <tr>
 	<td>POST</td>
-	<td>//button[contains(.,'Post') and not(contains(@class,'disabled'))]</td>
+	<td>//div[@class='button-holder']/button[contains(@id,'MicroblogsPortlet')]/span[contains(.,'Post')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -506,6 +521,11 @@
 <tr>
 	<td>PUBLISH_TO_LIVE</td>
 	<td>//button[contains(.,'Publish to Live')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PUBLISH_REPLY</td>
+	<td>//div[@class='card list-group-card panel']//button[span[contains(.,'Publish')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -641,6 +661,11 @@
 <tr>
 	<td>SELECT_SCOPE</td>
 	<td>//div[contains(@class,'btn-group')]/a[@title='Default']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_VOCABULARY</td>
+	<td>//button[contains(@title,'Select Vocabulary')]</td>
 	<td></td>
 </tr>
 <tr>

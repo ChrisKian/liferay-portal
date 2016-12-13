@@ -105,6 +105,20 @@ AUI.add(
 						instance._syncDescriptionEditorUI();
 					},
 
+					updateFriendlyURL: function(title) {
+						var instance = this;
+
+						var urlTitleInput = instance.one('#urlTitle');
+
+						var friendlyURLEmpty = !urlTitleInput.val();
+
+						if (instance._automaticURL() && (friendlyURLEmpty || instance._originalFriendlyURLChanged)) {
+							urlTitleInput.val(Liferay.Util.normalizeFriendlyURL(title));
+						}
+
+						instance._originalFriendlyURLChanged = true;
+					},
+
 					_bindUI: function() {
 						var instance = this;
 
@@ -138,6 +152,12 @@ AUI.add(
 								customAbstractOptions.delegate(STR_CHANGE, instance._configureAbstract, 'input[type="radio"]', instance)
 							);
 						}
+
+						var urlOptions = instance.one('#urlOptions');
+
+						eventHandles.push(
+							urlOptions.delegate(STR_CHANGE, instance._onChangeURLOptions, 'input[type="radio"]', instance)
+						);
 
 						instance._eventHandles = eventHandles;
 					},
@@ -222,6 +242,27 @@ AUI.add(
 						instance._oldTitle = entry ? entry.title : STR_BLANK;
 					},
 
+					_onChangeURLOptions: function() {
+						var instance = this;
+
+						var urlTitleInput = instance.one('#urlTitle');
+
+						if (instance._automaticURL()) {
+							instance._lastCustomURL = urlTitleInput.val();
+
+							var title = window[instance.ns('titleEditor')].getText();
+
+							instance.updateFriendlyURL(title);
+
+							urlTitleInput.setAttribute('disabled', true);
+						}
+						else {
+							urlTitleInput.val(instance._lastCustomURL || urlTitleInput.val());
+
+							urlTitleInput.removeAttribute('disabled');
+						}
+					},
+
 					_removeCaption: function() {
 						var instance = this;
 
@@ -243,12 +284,13 @@ AUI.add(
 						var coverImageCaption = window[instance.ns('coverImageCaptionEditor')].getHTML();
 						var description = window[instance.ns('descriptionEditor')].getHTML();
 						var subtitle = window[instance.ns('subtitleEditor')].getHTML();
-						var title = window[instance.ns('titleEditor')].getHTML();
+						var title = window[instance.ns('titleEditor')].getText();
+						var urlTitle = instance.one('#urlTitle').val();
 
 						var form = instance._getPrincipalForm();
 
 						if (draft && ajax) {
-							var hasData = content !== STR_BLANK && title !== STR_BLANK;
+							var hasData = content !== STR_BLANK && (draft || (title !== STR_BLANK));
 
 							var hasChanged = instance._oldContent !== content || instance._oldSubtitle !== subtitle || instance._oldTitle !== title;
 
@@ -280,6 +322,7 @@ AUI.add(
 										'referringPortletResource': instance.one('#referringPortletResource').val(),
 										'subtitle': subtitle,
 										'title': title,
+										'urlTitle': urlTitle,
 										'workflowAction': constants.ACTION_SAVE_DRAFT
 									}
 								);
@@ -317,10 +360,6 @@ AUI.add(
 													instance.one('#coverImageFileEntryId').val(message.coverImageFileEntryId);
 
 													instance.one('#entryId').val(message.entryId);
-
-													if (message.updateRedirect) {
-														instance.one('#redirect').val(message.redirect);
-													}
 
 													if (message.blogsEntryAttachmentReferences) {
 														instance._updateImages(message.blogsEntryAttachmentReferences);
@@ -398,6 +437,10 @@ AUI.add(
 						}
 
 						return text;
+					},
+
+					_automaticURL: function() {
+						return this.one('#urlOptions').one("input:checked").val() === 'true';
 					},
 
 					_showCaption: function() {

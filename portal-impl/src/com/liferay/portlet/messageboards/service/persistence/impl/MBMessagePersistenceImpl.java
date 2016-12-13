@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -18964,7 +18963,7 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((MBMessageModelImpl)mbMessage);
+		clearUniqueFindersCache((MBMessageModelImpl)mbMessage, true);
 	}
 
 	@Override
@@ -18976,51 +18975,37 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 			entityCache.removeResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
 				MBMessageImpl.class, mbMessage.getPrimaryKey());
 
-			clearUniqueFindersCache((MBMessageModelImpl)mbMessage);
+			clearUniqueFindersCache((MBMessageModelImpl)mbMessage, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		MBMessageModelImpl mbMessageModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					mbMessageModelImpl.getUuid(),
-					mbMessageModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				mbMessageModelImpl);
-		}
-		else {
-			if ((mbMessageModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						mbMessageModelImpl.getUuid(),
-						mbMessageModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					mbMessageModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		MBMessageModelImpl mbMessageModelImpl) {
 		Object[] args = new Object[] {
 				mbMessageModelImpl.getUuid(), mbMessageModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			mbMessageModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		MBMessageModelImpl mbMessageModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					mbMessageModelImpl.getUuid(),
+					mbMessageModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((mbMessageModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					mbMessageModelImpl.getOriginalUuid(),
 					mbMessageModelImpl.getOriginalGroupId()
 				};
@@ -19776,8 +19761,8 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 		entityCache.putResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
 			MBMessageImpl.class, mbMessage.getPrimaryKey(), mbMessage, false);
 
-		clearUniqueFindersCache(mbMessageModelImpl);
-		cacheUniqueFindersCache(mbMessageModelImpl, isNew);
+		clearUniqueFindersCache(mbMessageModelImpl, false);
+		cacheUniqueFindersCache(mbMessageModelImpl);
 
 		mbMessage.resetOriginalValues();
 
@@ -19869,12 +19854,14 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 	 */
 	@Override
 	public MBMessage fetchByPrimaryKey(Serializable primaryKey) {
-		MBMessage mbMessage = (MBMessage)entityCache.getResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
 				MBMessageImpl.class, primaryKey);
 
-		if (mbMessage == _nullMBMessage) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		MBMessage mbMessage = (MBMessage)serializable;
 
 		if (mbMessage == null) {
 			Session session = null;
@@ -19890,7 +19877,7 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 				}
 				else {
 					entityCache.putResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
-						MBMessageImpl.class, primaryKey, _nullMBMessage);
+						MBMessageImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -19944,18 +19931,20 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			MBMessage mbMessage = (MBMessage)entityCache.getResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
 					MBMessageImpl.class, primaryKey);
 
-			if (mbMessage == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, mbMessage);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (MBMessage)serializable);
+				}
 			}
 		}
 
@@ -19997,7 +19986,7 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(MBMessageModelImpl.ENTITY_CACHE_ENABLED,
-					MBMessageImpl.class, primaryKey, _nullMBMessage);
+					MBMessageImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -20250,22 +20239,4 @@ public class MBMessagePersistenceImpl extends BasePersistenceImpl<MBMessage>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final MBMessage _nullMBMessage = new MBMessageImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<MBMessage> toCacheModel() {
-				return _nullMBMessageCacheModel;
-			}
-		};
-
-	private static final CacheModel<MBMessage> _nullMBMessageCacheModel = new CacheModel<MBMessage>() {
-			@Override
-			public MBMessage toEntityModel() {
-				return _nullMBMessage;
-			}
-		};
 }

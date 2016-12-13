@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.Team;
+import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
@@ -642,18 +643,20 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 			Set<Long> roleIdsSet = SetUtil.fromArray(userBag.getRoleIds());
 
-			List<Role> userGroupRoles = RoleLocalServiceUtil.getUserGroupRoles(
-				userId, groupId);
+			List<UserGroupRole> userGroupRoles =
+				UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+					userId, groupId);
 
-			for (Role userGroupRole : userGroupRoles) {
+			for (UserGroupRole userGroupRole : userGroupRoles) {
 				roleIdsSet.add(userGroupRole.getRoleId());
 			}
 
 			if (parentGroupId > 0) {
-				userGroupRoles = RoleLocalServiceUtil.getUserGroupRoles(
-					userId, parentGroupId);
+				userGroupRoles =
+					UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+						userId, parentGroupId);
 
-				for (Role userGroupRole : userGroupRoles) {
+				for (UserGroupRole userGroupRole : userGroupRoles) {
 					roleIdsSet.add(userGroupRole.getRoleId());
 				}
 			}
@@ -747,8 +750,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 			if (_log.isDebugEnabled()) {
 				String message =
-					"Using defaults because custom permissions for " +
-						"portlet resource " + name + " are not defined";
+					"Using defaults because custom permissions for portlet " +
+						"resource " + name + " are not defined";
 
 				_log.debug(message, new IllegalArgumentException(message));
 			}
@@ -764,16 +767,16 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 			if (_log.isDebugEnabled()) {
 				String message =
-					"Using defaults because custom permissions for " +
-						"root model resource " + name + " are not defined";
+					"Using defaults because custom permissions for root " +
+						"model resource " + name + " are not defined";
 
 				_log.debug(message, new IllegalArgumentException(message));
 			}
 		}
 
 		else if (primKey.equals("0") ||
-				 primKey.equals(String.valueOf(ResourceConstants.PRIMKEY_DNE))
-					 ||
+				 primKey.equals(
+					 String.valueOf(ResourceConstants.PRIMKEY_DNE)) ||
 				 (primKey.equals(String.valueOf(companyId)) &&
 				  !name.equals(Company.class.getName()))) {
 

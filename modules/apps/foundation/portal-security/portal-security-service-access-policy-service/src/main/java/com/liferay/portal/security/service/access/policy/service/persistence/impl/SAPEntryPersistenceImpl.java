@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -3941,11 +3940,15 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 						list);
 				}
 				else {
-					if ((list.size() > 1) && _log.isWarnEnabled()) {
-						_log.warn(
-							"SAPEntryPersistenceImpl.fetchByC_N(long, String, boolean) with parameters (" +
-							StringUtil.merge(finderArgs) +
-							") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"SAPEntryPersistenceImpl.fetchByC_N(long, String, boolean) with parameters (" +
+								StringUtil.merge(finderArgs) +
+								") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
 					}
 
 					SAPEntry sapEntry = list.get(0);
@@ -4140,7 +4143,7 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((SAPEntryModelImpl)sapEntry);
+		clearUniqueFindersCache((SAPEntryModelImpl)sapEntry, true);
 	}
 
 	@Override
@@ -4152,50 +4155,36 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 			entityCache.removeResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
 				SAPEntryImpl.class, sapEntry.getPrimaryKey());
 
-			clearUniqueFindersCache((SAPEntryModelImpl)sapEntry);
+			clearUniqueFindersCache((SAPEntryModelImpl)sapEntry, true);
 		}
 	}
 
-	protected void cacheUniqueFindersCache(
-		SAPEntryModelImpl sapEntryModelImpl, boolean isNew) {
-		if (isNew) {
+	protected void cacheUniqueFindersCache(SAPEntryModelImpl sapEntryModelImpl) {
+		Object[] args = new Object[] {
+				sapEntryModelImpl.getCompanyId(), sapEntryModelImpl.getName()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_C_N, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_C_N, args,
+			sapEntryModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		SAPEntryModelImpl sapEntryModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
 			Object[] args = new Object[] {
 					sapEntryModelImpl.getCompanyId(),
 					sapEntryModelImpl.getName()
 				};
 
-			finderCache.putResult(FINDER_PATH_COUNT_BY_C_N, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_C_N, args,
-				sapEntryModelImpl);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_C_N, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_C_N, args);
 		}
-		else {
-			if ((sapEntryModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_C_N.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						sapEntryModelImpl.getCompanyId(),
-						sapEntryModelImpl.getName()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_C_N, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_C_N, args,
-					sapEntryModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(SAPEntryModelImpl sapEntryModelImpl) {
-		Object[] args = new Object[] {
-				sapEntryModelImpl.getCompanyId(), sapEntryModelImpl.getName()
-			};
-
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_C_N, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_C_N, args);
 
 		if ((sapEntryModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_C_N.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					sapEntryModelImpl.getOriginalCompanyId(),
 					sapEntryModelImpl.getOriginalName()
 				};
@@ -4452,8 +4441,8 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 		entityCache.putResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
 			SAPEntryImpl.class, sapEntry.getPrimaryKey(), sapEntry, false);
 
-		clearUniqueFindersCache(sapEntryModelImpl);
-		cacheUniqueFindersCache(sapEntryModelImpl, isNew);
+		clearUniqueFindersCache(sapEntryModelImpl, false);
+		cacheUniqueFindersCache(sapEntryModelImpl);
 
 		sapEntry.resetOriginalValues();
 
@@ -4531,12 +4520,14 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 	 */
 	@Override
 	public SAPEntry fetchByPrimaryKey(Serializable primaryKey) {
-		SAPEntry sapEntry = (SAPEntry)entityCache.getResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
 				SAPEntryImpl.class, primaryKey);
 
-		if (sapEntry == _nullSAPEntry) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		SAPEntry sapEntry = (SAPEntry)serializable;
 
 		if (sapEntry == null) {
 			Session session = null;
@@ -4551,7 +4542,7 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 				}
 				else {
 					entityCache.putResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
-						SAPEntryImpl.class, primaryKey, _nullSAPEntry);
+						SAPEntryImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -4605,18 +4596,20 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			SAPEntry sapEntry = (SAPEntry)entityCache.getResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
 					SAPEntryImpl.class, primaryKey);
 
-			if (sapEntry == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, sapEntry);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (SAPEntry)serializable);
+				}
 			}
 		}
 
@@ -4658,7 +4651,7 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(SAPEntryModelImpl.ENTITY_CACHE_ENABLED,
-					SAPEntryImpl.class, primaryKey, _nullSAPEntry);
+					SAPEntryImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -4912,22 +4905,4 @@ public class SAPEntryPersistenceImpl extends BasePersistenceImpl<SAPEntry>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final SAPEntry _nullSAPEntry = new SAPEntryImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<SAPEntry> toCacheModel() {
-				return _nullSAPEntryCacheModel;
-			}
-		};
-
-	private static final CacheModel<SAPEntry> _nullSAPEntryCacheModel = new CacheModel<SAPEntry>() {
-			@Override
-			public SAPEntry toEntityModel() {
-				return _nullSAPEntry;
-			}
-		};
 }

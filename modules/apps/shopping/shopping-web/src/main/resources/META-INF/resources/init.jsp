@@ -19,7 +19,6 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
-taglib uri="http://liferay.com/tld/ddm" prefix="liferay-ddm" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/security" prefix="liferay-security" %><%@
@@ -71,6 +70,7 @@ page import="com.liferay.portal.kernel.webserver.WebServerServletTokenUtil" %><%
 page import="com.liferay.portal.service.*" %><%@
 page import="com.liferay.portal.util.PrefsPropsUtil" %><%@
 page import="com.liferay.portal.util.PropsValues" %><%@
+page import="com.liferay.shopping.configuration.ShoppingFileUploadsConfiguration" %><%@
 page import="com.liferay.shopping.configuration.ShoppingGroupServiceOverriddenConfiguration" %><%@
 page import="com.liferay.shopping.constants.ShoppingConstants" %><%@
 page import="com.liferay.shopping.exception.BillingCityException" %><%@
@@ -155,12 +155,12 @@ page import="com.liferay.shopping.util.ShoppingUtil" %><%@
 page import="com.liferay.shopping.util.StateUtil" %><%@
 page import="com.liferay.shopping.util.comparator.CategoryItemNameComparator" %><%@
 page import="com.liferay.shopping.util.comparator.ItemNameComparator" %><%@
-page import="com.liferay.shopping.web.dao.search.ShoppingResultRowSplitter" %><%@
-page import="com.liferay.shopping.web.search.CouponDisplayTerms" %><%@
-page import="com.liferay.shopping.web.search.CouponSearch" %><%@
-page import="com.liferay.shopping.web.search.OrderDisplayTerms" %><%@
-page import="com.liferay.shopping.web.search.OrderSearch" %><%@
-page import="com.liferay.shopping.web.search.OrderSearchTerms" %><%@
+page import="com.liferay.shopping.web.internal.dao.search.ShoppingResultRowSplitter" %><%@
+page import="com.liferay.shopping.web.internal.search.CouponDisplayTerms" %><%@
+page import="com.liferay.shopping.web.internal.search.CouponSearch" %><%@
+page import="com.liferay.shopping.web.internal.search.OrderDisplayTerms" %><%@
+page import="com.liferay.shopping.web.internal.search.OrderSearch" %><%@
+page import="com.liferay.shopping.web.internal.search.OrderSearchTerms" %><%@
 page import="com.liferay.taglib.search.ResultRow" %>
 
 <%@ page import="java.text.Format" %><%@

@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MatchAllQuery;
 import com.liferay.portal.kernel.search.hits.HitsProcessorRegistryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CountryServiceUtil;
@@ -98,6 +99,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
@@ -528,7 +530,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 				reindex(element);
 			}
 			catch (SearchException se) {
-				_log.error("Unable to index object: " + element);
+				_log.error("Unable to index object: " + element, se);
 			}
 		}
 	}
@@ -559,11 +561,19 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 
 	@Override
 	public void reindex(String[] ids) throws SearchException {
+		long companyThreadLocalCompanyId = CompanyThreadLocal.getCompanyId();
+
 		try {
 			if (IndexWriterHelperUtil.isIndexReadOnly() ||
 				!isIndexerEnabled()) {
 
 				return;
+			}
+
+			if (ids.length > 0) {
+				long companyId = GetterUtil.getLong(ids[0]);
+
+				CompanyThreadLocal.setCompanyId(companyId);
 			}
 
 			doReindex(ids);
@@ -573,6 +583,9 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		}
 		catch (Exception e) {
 			throw new SearchException(e);
+		}
+		finally {
+			CompanyThreadLocal.setCompanyId(companyThreadLocalCompanyId);
 		}
 	}
 
@@ -883,6 +896,25 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 			new String[selectedFieldNameSet.size()]);
 
 		queryConfig.setSelectedFieldNames(selectedFieldNames);
+	}
+
+	protected void addLocalizedField(
+		Document document, String field, Locale siteDefaultLocale,
+		Map<Locale, String> map) {
+
+		for (Entry<Locale, String> entry : map.entrySet()) {
+			Locale locale = entry.getKey();
+
+			if (locale.equals(siteDefaultLocale)) {
+				document.addText(field, entry.getValue());
+			}
+
+			String languageId = LocaleUtil.toLanguageId(locale);
+
+			document.addText(
+				LocalizationUtil.getLocalizedName(field, languageId),
+				entry.getValue());
+		}
 	}
 
 	protected void addSearchAssetCategoryIds(
@@ -1262,7 +1294,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		}
 		catch (PortalException pe) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to get trash entry for " + trashedModel);
+				_log.debug("Unable to get trash entry for " + trashedModel, pe);
 			}
 		}
 
@@ -1323,7 +1355,8 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Unable to get trash renderer for " +
-						trashEntry.getClassName());
+						trashEntry.getClassName(),
+					pe);
 			}
 		}
 	}
@@ -1692,7 +1725,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0 replaced by {@link #getClassName}
+	 * @deprecated As of 7.0.0, replaced by {@link #getClassName}
 	 */
 	@Deprecated
 	protected String getPortletId(SearchContext searchContext) {

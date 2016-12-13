@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -901,7 +900,7 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((ShoppingCouponModelImpl)shoppingCoupon);
+		clearUniqueFindersCache((ShoppingCouponModelImpl)shoppingCoupon, true);
 	}
 
 	@Override
@@ -913,43 +912,35 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 			entityCache.removeResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
 				ShoppingCouponImpl.class, shoppingCoupon.getPrimaryKey());
 
-			clearUniqueFindersCache((ShoppingCouponModelImpl)shoppingCoupon);
+			clearUniqueFindersCache((ShoppingCouponModelImpl)shoppingCoupon,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		ShoppingCouponModelImpl shoppingCouponModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] { shoppingCouponModelImpl.getCode() };
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_CODE, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_CODE, args,
-				shoppingCouponModelImpl);
-		}
-		else {
-			if ((shoppingCouponModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_CODE.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] { shoppingCouponModelImpl.getCode() };
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_CODE, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_CODE, args,
-					shoppingCouponModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		ShoppingCouponModelImpl shoppingCouponModelImpl) {
 		Object[] args = new Object[] { shoppingCouponModelImpl.getCode() };
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_CODE, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_CODE, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_CODE, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_CODE, args,
+			shoppingCouponModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		ShoppingCouponModelImpl shoppingCouponModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] { shoppingCouponModelImpl.getCode() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_CODE, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_CODE, args);
+		}
 
 		if ((shoppingCouponModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_CODE.getColumnBitmask()) != 0) {
-			args = new Object[] { shoppingCouponModelImpl.getOriginalCode() };
+			Object[] args = new Object[] {
+					shoppingCouponModelImpl.getOriginalCode()
+				};
 
 			finderCache.removeResult(FINDER_PATH_COUNT_BY_CODE, args);
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_CODE, args);
@@ -1139,8 +1130,8 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 			ShoppingCouponImpl.class, shoppingCoupon.getPrimaryKey(),
 			shoppingCoupon, false);
 
-		clearUniqueFindersCache(shoppingCouponModelImpl);
-		cacheUniqueFindersCache(shoppingCouponModelImpl, isNew);
+		clearUniqueFindersCache(shoppingCouponModelImpl, false);
+		cacheUniqueFindersCache(shoppingCouponModelImpl);
 
 		shoppingCoupon.resetOriginalValues();
 
@@ -1224,12 +1215,14 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 	 */
 	@Override
 	public ShoppingCoupon fetchByPrimaryKey(Serializable primaryKey) {
-		ShoppingCoupon shoppingCoupon = (ShoppingCoupon)entityCache.getResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
 				ShoppingCouponImpl.class, primaryKey);
 
-		if (shoppingCoupon == _nullShoppingCoupon) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		ShoppingCoupon shoppingCoupon = (ShoppingCoupon)serializable;
 
 		if (shoppingCoupon == null) {
 			Session session = null;
@@ -1245,8 +1238,7 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 				}
 				else {
 					entityCache.putResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
-						ShoppingCouponImpl.class, primaryKey,
-						_nullShoppingCoupon);
+						ShoppingCouponImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1300,18 +1292,20 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			ShoppingCoupon shoppingCoupon = (ShoppingCoupon)entityCache.getResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
 					ShoppingCouponImpl.class, primaryKey);
 
-			if (shoppingCoupon == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, shoppingCoupon);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (ShoppingCoupon)serializable);
+				}
 			}
 		}
 
@@ -1353,7 +1347,7 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(ShoppingCouponModelImpl.ENTITY_CACHE_ENABLED,
-					ShoppingCouponImpl.class, primaryKey, _nullShoppingCoupon);
+					ShoppingCouponImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -1598,23 +1592,4 @@ public class ShoppingCouponPersistenceImpl extends BasePersistenceImpl<ShoppingC
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"code", "active"
 			});
-	private static final ShoppingCoupon _nullShoppingCoupon = new ShoppingCouponImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<ShoppingCoupon> toCacheModel() {
-				return _nullShoppingCouponCacheModel;
-			}
-		};
-
-	private static final CacheModel<ShoppingCoupon> _nullShoppingCouponCacheModel =
-		new CacheModel<ShoppingCoupon>() {
-			@Override
-			public ShoppingCoupon toEntityModel() {
-				return _nullShoppingCoupon;
-			}
-		};
 }

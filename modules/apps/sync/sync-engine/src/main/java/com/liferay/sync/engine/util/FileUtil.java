@@ -14,7 +14,7 @@
 
 package com.liferay.sync.engine.util;
 
-import com.liferay.sync.engine.documentlibrary.util.FileEventUtil;
+import com.liferay.sync.engine.document.library.util.FileEventUtil;
 import com.liferay.sync.engine.model.SyncAccount;
 import com.liferay.sync.engine.model.SyncFile;
 import com.liferay.sync.engine.service.SyncAccountService;
@@ -97,9 +97,7 @@ public class FileUtil {
 	}
 
 	public static boolean checksumsEqual(String checksum1, String checksum2) {
-		if ((checksum1 == null) || (checksum2 == null) ||
-			checksum1.isEmpty() || checksum2.isEmpty()) {
-
+		if (Validator.isBlank(checksum1) || Validator.isBlank(checksum2)) {
 			return false;
 		}
 
@@ -117,7 +115,7 @@ public class FileUtil {
 	public static void deleteFile(final Path filePath, boolean retry)
 		throws IOException {
 
-		if ((filePath == null) || Files.notExists(filePath)) {
+		if ((filePath == null) || notExists(filePath)) {
 			return;
 		}
 
@@ -149,20 +147,7 @@ public class FileUtil {
 	}
 
 	public static boolean exists(Path filePath) {
-		try {
-			Path realFilePath = filePath.toRealPath();
-
-			String realFilePathString = realFilePath.toString();
-
-			if (!realFilePathString.equals(filePath.toString())) {
-				return false;
-			}
-
-			return Files.exists(filePath);
-		}
-		catch (Exception e) {
-			return false;
-		}
+		return Files.exists(filePath, LinkOption.NOFOLLOW_LINKS);
 	}
 
 	public static void fireDeleteEvents(Path filePath) throws IOException {
@@ -220,9 +205,7 @@ public class FileUtil {
 			filePath.toString(), startTime);
 
 		for (SyncFile deletedSyncFile : deletedSyncFiles) {
-			if (!Files.notExists(
-					Paths.get(deletedSyncFile.getFilePathName()))) {
-
+			if (!notExists(Paths.get(deletedSyncFile.getFilePathName()))) {
 				continue;
 			}
 
@@ -243,19 +226,26 @@ public class FileUtil {
 		}
 	}
 
-	public static String getChecksum(Path filePath) throws IOException {
-		if (!isValidChecksum(filePath)) {
-			return "";
-		}
-
+	public static String getChecksum(Path filePath) {
 		InputStream fileInputStream = null;
 
 		try {
+			if (!isValidChecksum(filePath)) {
+				return "";
+			}
+
 			fileInputStream = Files.newInputStream(filePath);
 
 			byte[] bytes = DigestUtils.sha1(fileInputStream);
 
 			return Base64.encodeBase64String(bytes);
+		}
+		catch (IOException ioe) {
+			if (_logger.isDebugEnabled()) {
+				_logger.debug(ioe.getMessage(), ioe);
+			}
+
+			return "";
 		}
 		finally {
 			StreamUtil.cleanUp(fileInputStream);
@@ -286,7 +276,7 @@ public class FileUtil {
 	}
 
 	public static long getLastModifiedTime(Path filePath) throws IOException {
-		if (!Files.exists(filePath)) {
+		if (!exists(filePath)) {
 			return 0;
 		}
 
@@ -319,13 +309,13 @@ public class FileUtil {
 				sb.append(extension);
 			}
 
-			String tempFilePathName = FileUtil.getFilePathName(
+			String tempFilePathName = getFilePathName(
 				parentFilePath.toString(), sb.toString());
 
 			if (SyncFileService.fetchSyncFile(tempFilePathName) == null) {
 				Path tempFilePath = Paths.get(tempFilePathName);
 
-				if (!Files.exists(tempFilePath)) {
+				if (!exists(tempFilePath)) {
 					return tempFilePathName;
 				}
 			}
@@ -352,7 +342,7 @@ public class FileUtil {
 			}
 		}
 
-		if ((extension != null) && !extension.isEmpty()) {
+		if (!Validator.isBlank(extension)) {
 			int x = fileName.lastIndexOf(".");
 
 			if ((x == -1) ||
@@ -365,7 +355,7 @@ public class FileUtil {
 		if (fileName.length() > 255) {
 			int x = fileName.length() - 1;
 
-			if ((extension != null) && !extension.isEmpty()) {
+			if (!Validator.isBlank(extension)) {
 				x = fileName.lastIndexOf(".");
 			}
 
@@ -391,7 +381,7 @@ public class FileUtil {
 	}
 
 	public static boolean isHidden(Path filePath) {
-		if (!PropsValues.SYNC_FILE_IGNORE_HIDDEN || !Files.exists(filePath)) {
+		if (!PropsValues.SYNC_FILE_IGNORE_HIDDEN || !exists(filePath)) {
 			return false;
 		}
 
@@ -437,7 +427,7 @@ public class FileUtil {
 	}
 
 	public static boolean isModified(SyncFile syncFile, Path filePath) {
-		if ((filePath == null) || Files.notExists(filePath)) {
+		if ((filePath == null) || notExists(filePath)) {
 			return true;
 		}
 
@@ -493,17 +483,19 @@ public class FileUtil {
 			}
 		}
 
+		return !checksumsEqual(getChecksum(filePath), syncFile.getChecksum());
+	}
+
+	public static boolean isRealFilePath(Path filePath) {
 		try {
-			String checksum = getChecksum(filePath);
+			Path realFilePath = filePath.toRealPath(LinkOption.NOFOLLOW_LINKS);
 
-			return !checksumsEqual(checksum, syncFile.getChecksum());
+			String realFilePathString = realFilePath.toString();
+
+			return realFilePathString.equals(filePath.toString());
 		}
-		catch (IOException ioe) {
-			if (_logger.isDebugEnabled()) {
-				_logger.debug(ioe.getMessage(), ioe);
-			}
-
-			return true;
+		catch (Exception e) {
+			return false;
 		}
 	}
 
@@ -540,7 +532,7 @@ public class FileUtil {
 	}
 
 	public static boolean isValidChecksum(Path filePath) throws IOException {
-		if (Files.notExists(filePath) ||
+		if (notExists(filePath) ||
 			(Files.size(filePath) >
 				PropsValues.SYNC_FILE_CHECKSUM_THRESHOLD_SIZE)) {
 
@@ -706,6 +698,10 @@ public class FileUtil {
 		}
 	}
 
+	public static boolean notExists(Path filePath) {
+		return Files.notExists(filePath, LinkOption.NOFOLLOW_LINKS);
+	}
+
 	public static void releaseFileLock(FileLock fileLock) {
 		try {
 			if (fileLock != null) {
@@ -722,7 +718,7 @@ public class FileUtil {
 	public static void setModifiedTime(Path filePath, long modifiedTime)
 		throws IOException {
 
-		if (!Files.exists(filePath)) {
+		if (!exists(filePath)) {
 			return;
 		}
 

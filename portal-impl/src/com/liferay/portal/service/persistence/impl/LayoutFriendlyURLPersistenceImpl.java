@@ -29,9 +29,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchLayoutFriendlyURLException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
-import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -4931,7 +4929,8 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((LayoutFriendlyURLModelImpl)layoutFriendlyURL);
+		clearUniqueFindersCache((LayoutFriendlyURLModelImpl)layoutFriendlyURL,
+			true);
 	}
 
 	@Override
@@ -4943,128 +4942,32 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 			entityCache.removeResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
 				LayoutFriendlyURLImpl.class, layoutFriendlyURL.getPrimaryKey());
 
-			clearUniqueFindersCache((LayoutFriendlyURLModelImpl)layoutFriendlyURL);
+			clearUniqueFindersCache((LayoutFriendlyURLModelImpl)layoutFriendlyURL,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		LayoutFriendlyURLModelImpl layoutFriendlyURLModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					layoutFriendlyURLModelImpl.getUuid(),
-					layoutFriendlyURLModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				layoutFriendlyURLModelImpl);
-
-			args = new Object[] {
-					layoutFriendlyURLModelImpl.getPlid(),
-					layoutFriendlyURLModelImpl.getLanguageId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_P_L, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_P_L, args,
-				layoutFriendlyURLModelImpl);
-
-			args = new Object[] {
-					layoutFriendlyURLModelImpl.getGroupId(),
-					layoutFriendlyURLModelImpl.getPrivateLayout(),
-					layoutFriendlyURLModelImpl.getFriendlyURL(),
-					layoutFriendlyURLModelImpl.getLanguageId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_F_L, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_F_L, args,
-				layoutFriendlyURLModelImpl);
-		}
-		else {
-			if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						layoutFriendlyURLModelImpl.getUuid(),
-						layoutFriendlyURLModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					layoutFriendlyURLModelImpl);
-			}
-
-			if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_P_L.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						layoutFriendlyURLModelImpl.getPlid(),
-						layoutFriendlyURLModelImpl.getLanguageId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_P_L, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_P_L, args,
-					layoutFriendlyURLModelImpl);
-			}
-
-			if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_P_F_L.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						layoutFriendlyURLModelImpl.getGroupId(),
-						layoutFriendlyURLModelImpl.getPrivateLayout(),
-						layoutFriendlyURLModelImpl.getFriendlyURL(),
-						layoutFriendlyURLModelImpl.getLanguageId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_F_L, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_F_L, args,
-					layoutFriendlyURLModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		LayoutFriendlyURLModelImpl layoutFriendlyURLModelImpl) {
 		Object[] args = new Object[] {
 				layoutFriendlyURLModelImpl.getUuid(),
 				layoutFriendlyURLModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
-
-		if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
-					layoutFriendlyURLModelImpl.getOriginalUuid(),
-					layoutFriendlyURLModelImpl.getOriginalGroupId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
-		}
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			layoutFriendlyURLModelImpl, false);
 
 		args = new Object[] {
 				layoutFriendlyURLModelImpl.getPlid(),
 				layoutFriendlyURLModelImpl.getLanguageId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_P_L, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_P_L, args);
-
-		if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
-				FINDER_PATH_FETCH_BY_P_L.getColumnBitmask()) != 0) {
-			args = new Object[] {
-					layoutFriendlyURLModelImpl.getOriginalPlid(),
-					layoutFriendlyURLModelImpl.getOriginalLanguageId()
-				};
-
-			finderCache.removeResult(FINDER_PATH_COUNT_BY_P_L, args);
-			finderCache.removeResult(FINDER_PATH_FETCH_BY_P_L, args);
-		}
+		finderCache.putResult(FINDER_PATH_COUNT_BY_P_L, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_P_L, args,
+			layoutFriendlyURLModelImpl, false);
 
 		args = new Object[] {
 				layoutFriendlyURLModelImpl.getGroupId(),
@@ -5073,12 +4976,72 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 				layoutFriendlyURLModelImpl.getLanguageId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_F_L, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_F_L, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_P_F_L, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_P_F_L, args,
+			layoutFriendlyURLModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		LayoutFriendlyURLModelImpl layoutFriendlyURLModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					layoutFriendlyURLModelImpl.getUuid(),
+					layoutFriendlyURLModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					layoutFriendlyURLModelImpl.getOriginalUuid(),
+					layoutFriendlyURLModelImpl.getOriginalGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					layoutFriendlyURLModelImpl.getPlid(),
+					layoutFriendlyURLModelImpl.getLanguageId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_P_L, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_P_L, args);
+		}
+
+		if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
+				FINDER_PATH_FETCH_BY_P_L.getColumnBitmask()) != 0) {
+			Object[] args = new Object[] {
+					layoutFriendlyURLModelImpl.getOriginalPlid(),
+					layoutFriendlyURLModelImpl.getOriginalLanguageId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_P_L, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_P_L, args);
+		}
+
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					layoutFriendlyURLModelImpl.getGroupId(),
+					layoutFriendlyURLModelImpl.getPrivateLayout(),
+					layoutFriendlyURLModelImpl.getFriendlyURL(),
+					layoutFriendlyURLModelImpl.getLanguageId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_P_F_L, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_P_F_L, args);
+		}
 
 		if ((layoutFriendlyURLModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_P_F_L.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					layoutFriendlyURLModelImpl.getOriginalGroupId(),
 					layoutFriendlyURLModelImpl.getOriginalPrivateLayout(),
 					layoutFriendlyURLModelImpl.getOriginalFriendlyURL(),
@@ -5401,8 +5364,8 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 			LayoutFriendlyURLImpl.class, layoutFriendlyURL.getPrimaryKey(),
 			layoutFriendlyURL, false);
 
-		clearUniqueFindersCache(layoutFriendlyURLModelImpl);
-		cacheUniqueFindersCache(layoutFriendlyURLModelImpl, isNew);
+		clearUniqueFindersCache(layoutFriendlyURLModelImpl, false);
+		cacheUniqueFindersCache(layoutFriendlyURLModelImpl);
 
 		layoutFriendlyURL.resetOriginalValues();
 
@@ -5483,12 +5446,14 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public LayoutFriendlyURL fetchByPrimaryKey(Serializable primaryKey) {
-		LayoutFriendlyURL layoutFriendlyURL = (LayoutFriendlyURL)entityCache.getResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
 				LayoutFriendlyURLImpl.class, primaryKey);
 
-		if (layoutFriendlyURL == _nullLayoutFriendlyURL) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		LayoutFriendlyURL layoutFriendlyURL = (LayoutFriendlyURL)serializable;
 
 		if (layoutFriendlyURL == null) {
 			Session session = null;
@@ -5504,8 +5469,7 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 				}
 				else {
 					entityCache.putResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
-						LayoutFriendlyURLImpl.class, primaryKey,
-						_nullLayoutFriendlyURL);
+						LayoutFriendlyURLImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -5559,18 +5523,20 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			LayoutFriendlyURL layoutFriendlyURL = (LayoutFriendlyURL)entityCache.getResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
 					LayoutFriendlyURLImpl.class, primaryKey);
 
-			if (layoutFriendlyURL == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, layoutFriendlyURL);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (LayoutFriendlyURL)serializable);
+				}
 			}
 		}
 
@@ -5612,8 +5578,7 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(LayoutFriendlyURLModelImpl.ENTITY_CACHE_ENABLED,
-					LayoutFriendlyURLImpl.class, primaryKey,
-					_nullLayoutFriendlyURL);
+					LayoutFriendlyURLImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -5856,35 +5821,4 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final LayoutFriendlyURL _nullLayoutFriendlyURL = new LayoutFriendlyURLImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<LayoutFriendlyURL> toCacheModel() {
-				return _nullLayoutFriendlyURLCacheModel;
-			}
-		};
-
-	private static final CacheModel<LayoutFriendlyURL> _nullLayoutFriendlyURLCacheModel =
-		new NullCacheModel();
-
-	private static class NullCacheModel implements CacheModel<LayoutFriendlyURL>,
-		MVCCModel {
-		@Override
-		public long getMvccVersion() {
-			return -1;
-		}
-
-		@Override
-		public void setMvccVersion(long mvccVersion) {
-		}
-
-		@Override
-		public LayoutFriendlyURL toEntityModel() {
-			return _nullLayoutFriendlyURL;
-		}
-	}
 }

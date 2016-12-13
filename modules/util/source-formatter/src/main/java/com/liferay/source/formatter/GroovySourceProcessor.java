@@ -16,6 +16,7 @@ package com.liferay.source.formatter;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,21 +36,15 @@ public class GroovySourceProcessor extends JavaSourceProcessor {
 	}
 
 	@Override
-	protected void checkMissingAuthor(
-		String content, String fileName, String className) {
-
-		if (Character.isUpperCase(className.charAt(0))) {
-			super.checkMissingAuthor(content, fileName, className);
-		}
-	}
-
-	@Override
-	protected void checkPackagePath(
-		String content, String fileName, String packagePath) {
+	protected void checkPackagePath(String fileName, String packagePath) {
 	}
 
 	@Override
 	protected List<String> doGetFileNames() throws Exception {
+		if (!portalSource) {
+			return new ArrayList<>();
+		}
+
 		return getFileNames(new String[0], getIncludes());
 	}
 
@@ -65,6 +60,10 @@ public class GroovySourceProcessor extends JavaSourceProcessor {
 		}
 
 		return content;
+	}
+
+	@Override
+	protected void postFormat() throws Exception {
 	}
 
 	private static final String[] _INCLUDES = new String[] {"**/*.groovy"};

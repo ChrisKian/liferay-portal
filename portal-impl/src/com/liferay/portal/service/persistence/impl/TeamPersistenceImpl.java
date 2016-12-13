@@ -30,8 +30,6 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchTeamException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
-import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -2651,7 +2649,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((TeamModelImpl)team);
+		clearUniqueFindersCache((TeamModelImpl)team, true);
 	}
 
 	@Override
@@ -2663,68 +2661,42 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 			entityCache.removeResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
 				TeamImpl.class, team.getPrimaryKey());
 
-			clearUniqueFindersCache((TeamModelImpl)team);
+			clearUniqueFindersCache((TeamModelImpl)team, true);
 		}
 	}
 
-	protected void cacheUniqueFindersCache(TeamModelImpl teamModelImpl,
-		boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					teamModelImpl.getUuid(), teamModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				teamModelImpl);
-
-			args = new Object[] {
-					teamModelImpl.getGroupId(), teamModelImpl.getName()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_N, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_N, args, teamModelImpl);
-		}
-		else {
-			if ((teamModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						teamModelImpl.getUuid(), teamModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					teamModelImpl);
-			}
-
-			if ((teamModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_N.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						teamModelImpl.getGroupId(), teamModelImpl.getName()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_N, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_N, args,
-					teamModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(TeamModelImpl teamModelImpl) {
+	protected void cacheUniqueFindersCache(TeamModelImpl teamModelImpl) {
 		Object[] args = new Object[] {
 				teamModelImpl.getUuid(), teamModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args, teamModelImpl,
+			false);
+
+		args = new Object[] { teamModelImpl.getGroupId(), teamModelImpl.getName() };
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_N, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_N, args, teamModelImpl,
+			false);
+	}
+
+	protected void clearUniqueFindersCache(TeamModelImpl teamModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					teamModelImpl.getUuid(), teamModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((teamModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					teamModelImpl.getOriginalUuid(),
 					teamModelImpl.getOriginalGroupId()
 				};
@@ -2733,14 +2705,18 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
-		args = new Object[] { teamModelImpl.getGroupId(), teamModelImpl.getName() };
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					teamModelImpl.getGroupId(), teamModelImpl.getName()
+				};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_N, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_N, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_N, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_N, args);
+		}
 
 		if ((teamModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_N.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					teamModelImpl.getOriginalGroupId(),
 					teamModelImpl.getOriginalName()
 				};
@@ -2975,8 +2951,8 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		entityCache.putResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
 			TeamImpl.class, team.getPrimaryKey(), team, false);
 
-		clearUniqueFindersCache(teamModelImpl);
-		cacheUniqueFindersCache(teamModelImpl, isNew);
+		clearUniqueFindersCache(teamModelImpl, false);
+		cacheUniqueFindersCache(teamModelImpl);
 
 		team.resetOriginalValues();
 
@@ -3053,12 +3029,14 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	 */
 	@Override
 	public Team fetchByPrimaryKey(Serializable primaryKey) {
-		Team team = (Team)entityCache.getResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
 				TeamImpl.class, primaryKey);
 
-		if (team == _nullTeam) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		Team team = (Team)serializable;
 
 		if (team == null) {
 			Session session = null;
@@ -3073,7 +3051,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 				}
 				else {
 					entityCache.putResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
-						TeamImpl.class, primaryKey, _nullTeam);
+						TeamImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -3127,18 +3105,20 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			Team team = (Team)entityCache.getResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
 					TeamImpl.class, primaryKey);
 
-			if (team == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, team);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (Team)serializable);
+				}
 			}
 		}
 
@@ -3180,7 +3160,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(TeamModelImpl.ENTITY_CACHE_ENABLED,
-					TeamImpl.class, primaryKey, _nullTeam);
+					TeamImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -4046,33 +4026,4 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid"
 			});
-	private static final Team _nullTeam = new TeamImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<Team> toCacheModel() {
-				return _nullTeamCacheModel;
-			}
-		};
-
-	private static final CacheModel<Team> _nullTeamCacheModel = new NullCacheModel();
-
-	private static class NullCacheModel implements CacheModel<Team>, MVCCModel {
-		@Override
-		public long getMvccVersion() {
-			return -1;
-		}
-
-		@Override
-		public void setMvccVersion(long mvccVersion) {
-		}
-
-		@Override
-		public Team toEntityModel() {
-			return _nullTeam;
-		}
-	}
 }

@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -8705,8 +8704,8 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 	private static final String _FINDER_COLUMN_G_N_D_GROUPID_2 = "ddmStructure.groupId = ? AND ";
 	private static final String _FINDER_COLUMN_G_N_D_NAME_1 = "ddmStructure.name IS NULL AND ";
-	private static final String _FINDER_COLUMN_G_N_D_NAME_2 = "ddmStructure.name = ? AND ";
-	private static final String _FINDER_COLUMN_G_N_D_NAME_3 = "(ddmStructure.name IS NULL OR ddmStructure.name = '') AND ";
+	private static final String _FINDER_COLUMN_G_N_D_NAME_2 = "CAST_CLOB_TEXT(ddmStructure.name) = ? AND ";
+	private static final String _FINDER_COLUMN_G_N_D_NAME_3 = "(ddmStructure.name IS NULL OR CAST_CLOB_TEXT(ddmStructure.name) = '') AND ";
 	private static final String _FINDER_COLUMN_G_N_D_DESCRIPTION_1 = "ddmStructure.description IS NULL";
 	private static final String _FINDER_COLUMN_G_N_D_DESCRIPTION_2 = "CAST_CLOB_TEXT(ddmStructure.description) = ?";
 	private static final String _FINDER_COLUMN_G_N_D_DESCRIPTION_3 = "(ddmStructure.description IS NULL OR CAST_CLOB_TEXT(ddmStructure.description) = '')";
@@ -8788,7 +8787,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDMStructureModelImpl)ddmStructure);
+		clearUniqueFindersCache((DDMStructureModelImpl)ddmStructure, true);
 	}
 
 	@Override
@@ -8800,77 +8799,49 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			entityCache.removeResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStructureImpl.class, ddmStructure.getPrimaryKey());
 
-			clearUniqueFindersCache((DDMStructureModelImpl)ddmStructure);
+			clearUniqueFindersCache((DDMStructureModelImpl)ddmStructure, true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDMStructureModelImpl ddmStructureModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddmStructureModelImpl.getUuid(),
-					ddmStructureModelImpl.getGroupId()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-				ddmStructureModelImpl);
-
-			args = new Object[] {
-					ddmStructureModelImpl.getGroupId(),
-					ddmStructureModelImpl.getClassNameId(),
-					ddmStructureModelImpl.getStructureKey()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_G_C_S, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_G_C_S, args,
-				ddmStructureModelImpl);
-		}
-		else {
-			if ((ddmStructureModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmStructureModelImpl.getUuid(),
-						ddmStructureModelImpl.getGroupId()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
-					ddmStructureModelImpl);
-			}
-
-			if ((ddmStructureModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_G_C_S.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmStructureModelImpl.getGroupId(),
-						ddmStructureModelImpl.getClassNameId(),
-						ddmStructureModelImpl.getStructureKey()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_G_C_S, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_G_C_S, args,
-					ddmStructureModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDMStructureModelImpl ddmStructureModelImpl) {
 		Object[] args = new Object[] {
 				ddmStructureModelImpl.getUuid(),
 				ddmStructureModelImpl.getGroupId()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			ddmStructureModelImpl, false);
+
+		args = new Object[] {
+				ddmStructureModelImpl.getGroupId(),
+				ddmStructureModelImpl.getClassNameId(),
+				ddmStructureModelImpl.getStructureKey()
+			};
+
+		finderCache.putResult(FINDER_PATH_COUNT_BY_G_C_S, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_G_C_S, args,
+			ddmStructureModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDMStructureModelImpl ddmStructureModelImpl, boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmStructureModelImpl.getUuid(),
+					ddmStructureModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
+		}
 
 		if ((ddmStructureModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmStructureModelImpl.getOriginalUuid(),
 					ddmStructureModelImpl.getOriginalGroupId()
 				};
@@ -8879,18 +8850,20 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
-		args = new Object[] {
-				ddmStructureModelImpl.getGroupId(),
-				ddmStructureModelImpl.getClassNameId(),
-				ddmStructureModelImpl.getStructureKey()
-			};
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmStructureModelImpl.getGroupId(),
+					ddmStructureModelImpl.getClassNameId(),
+					ddmStructureModelImpl.getStructureKey()
+				};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_G_C_S, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_G_C_S, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_C_S, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_G_C_S, args);
+		}
 
 		if ((ddmStructureModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_G_C_S.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmStructureModelImpl.getOriginalGroupId(),
 					ddmStructureModelImpl.getOriginalClassNameId(),
 					ddmStructureModelImpl.getOriginalStructureKey()
@@ -9271,8 +9244,8 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			DDMStructureImpl.class, ddmStructure.getPrimaryKey(), ddmStructure,
 			false);
 
-		clearUniqueFindersCache(ddmStructureModelImpl);
-		cacheUniqueFindersCache(ddmStructureModelImpl, isNew);
+		clearUniqueFindersCache(ddmStructureModelImpl, false);
+		cacheUniqueFindersCache(ddmStructureModelImpl);
 
 		ddmStructure.resetOriginalValues();
 
@@ -9358,12 +9331,14 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 	 */
 	@Override
 	public DDMStructure fetchByPrimaryKey(Serializable primaryKey) {
-		DDMStructure ddmStructure = (DDMStructure)entityCache.getResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStructureImpl.class, primaryKey);
 
-		if (ddmStructure == _nullDDMStructure) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDMStructure ddmStructure = (DDMStructure)serializable;
 
 		if (ddmStructure == null) {
 			Session session = null;
@@ -9379,7 +9354,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 				}
 				else {
 					entityCache.putResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
-						DDMStructureImpl.class, primaryKey, _nullDDMStructure);
+						DDMStructureImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -9433,18 +9408,20 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDMStructure ddmStructure = (DDMStructure)entityCache.getResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
 					DDMStructureImpl.class, primaryKey);
 
-			if (ddmStructure == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddmStructure);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDMStructure)serializable);
+				}
 			}
 		}
 
@@ -9486,7 +9463,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDMStructureModelImpl.ENTITY_CACHE_ENABLED,
-					DDMStructureImpl.class, primaryKey, _nullDDMStructure);
+					DDMStructureImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -9741,22 +9718,4 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"uuid", "type"
 			});
-	private static final DDMStructure _nullDDMStructure = new DDMStructureImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDMStructure> toCacheModel() {
-				return _nullDDMStructureCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDMStructure> _nullDDMStructureCacheModel = new CacheModel<DDMStructure>() {
-			@Override
-			public DDMStructure toEntityModel() {
-				return _nullDDMStructure;
-			}
-		};
 }

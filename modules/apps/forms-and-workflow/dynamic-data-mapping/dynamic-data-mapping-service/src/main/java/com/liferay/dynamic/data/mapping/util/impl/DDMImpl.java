@@ -74,6 +74,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.UnicodeFormatter;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -214,6 +215,7 @@ public class DDMImpl implements DDM {
 		return _ddmFormJSONSerializer.serialize(ddmForm);
 	}
 
+	@Override
 	public DDMFormValues getDDMFormValues(
 			DDMForm ddmForm, String serializedJSONDDMFormValues)
 		throws PortalException {
@@ -249,6 +251,7 @@ public class DDMImpl implements DDM {
 		Locale defaultLocale = ddmForm.getDefaultLocale();
 
 		ddmFormLayout.setDefaultLocale(defaultLocale);
+
 		ddmFormLayout.setPaginationMode(DDMFormLayout.SINGLE_PAGE_MODE);
 
 		DDMFormLayoutPage ddmFormLayoutPage = new DDMFormLayoutPage();
@@ -654,6 +657,7 @@ public class DDMImpl implements DDM {
 
 			optionJSONObject.put("id", name);
 			optionJSONObject.put("name", name);
+
 			optionJSONObject.put("type", "option");
 			optionJSONObject.put("value", optionValue);
 
@@ -1006,7 +1010,8 @@ public class DDMImpl implements DDM {
 						serviceContext.getAttribute(fieldNameValue + "Year"));
 
 					fieldValueDate = PortalUtil.getDate(
-						fieldValueMonth, fieldValueDay, fieldValueYear);
+						fieldValueMonth, fieldValueDay, fieldValueYear,
+						TimeZoneUtil.getTimeZone("UTC"), null);
 				}
 				else {
 					try {

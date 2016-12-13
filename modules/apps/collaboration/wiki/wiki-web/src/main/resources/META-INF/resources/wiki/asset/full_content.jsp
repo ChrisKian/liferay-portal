@@ -19,14 +19,14 @@
 <%
 WikiPage wikiPage = (WikiPage)request.getAttribute(WikiWebKeys.WIKI_PAGE);
 
-PortletURL viewPageURL = new PortletURLImpl(request, WikiPortletKeys.WIKI, plid, PortletRequest.ACTION_PHASE);
+PortletURL viewPageURL = PortletURLFactoryUtil.create(request, WikiPortletKeys.WIKI, PortletRequest.ACTION_PHASE);
 
 viewPageURL.setParameter(ActionRequest.ACTION_NAME, "/wiki/view");
 viewPageURL.setParameter("nodeId", String.valueOf(wikiPage.getNodeId()));
 viewPageURL.setPortletMode(PortletMode.VIEW);
 viewPageURL.setWindowState(WindowState.MAXIMIZED);
 
-PortletURL editPageURL = new PortletURLImpl(request, WikiPortletKeys.WIKI, plid, PortletRequest.ACTION_PHASE);
+PortletURL editPageURL = PortletURLFactoryUtil.create(request, WikiPortletKeys.WIKI, PortletRequest.ACTION_PHASE);
 
 editPageURL.setParameter(ActionRequest.ACTION_NAME, "/wiki/edit_page");
 editPageURL.setParameter("redirect", currentURL);
@@ -41,11 +41,11 @@ WikiPageDisplay pageDisplay = WikiPageLocalServiceUtil.getPageDisplay(wikiPage, 
 
 <%= pageDisplay.getFormattedContent() %>
 
-<liferay-ui:custom-attributes-available className="<%= WikiPage.class.getName() %>">
-	<liferay-ui:custom-attribute-list
+<liferay-expando:custom-attributes-available className="<%= WikiPage.class.getName() %>">
+	<liferay-expando:custom-attribute-list
 		className="<%= WikiPage.class.getName() %>"
 		classPK="<%= (wikiPage != null) ? wikiPage.getPrimaryKey() : 0 %>"
 		editable="<%= false %>"
 		label="<%= true %>"
 	/>
-</liferay-ui:custom-attributes-available>
+</liferay-expando:custom-attributes-available>

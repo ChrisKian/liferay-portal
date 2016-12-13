@@ -103,6 +103,21 @@ public class KBFolderLocalServiceWrapper implements KBFolderLocalService,
 	}
 
 	@Override
+	public com.liferay.knowledge.base.model.KBFolder fetchFirstChildKBFolder(
+		long groupId, long kbFolderId,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.knowledge.base.model.KBFolder> obc)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _kbFolderLocalService.fetchFirstChildKBFolder(groupId,
+			kbFolderId, obc);
+	}
+
+	@Override
+	public com.liferay.knowledge.base.model.KBFolder fetchKBFolder(
+		java.lang.String uuid, long groupId) {
+		return _kbFolderLocalService.fetchKBFolder(uuid, groupId);
+	}
+
+	@Override
 	public com.liferay.knowledge.base.model.KBFolder fetchKBFolder(
 		long kbFolderId) {
 		return _kbFolderLocalService.fetchKBFolder(kbFolderId);
@@ -178,6 +193,12 @@ public class KBFolderLocalServiceWrapper implements KBFolderLocalService,
 		return _kbFolderLocalService.updateKBFolder(kbFolder);
 	}
 
+	/**
+	* @deprecated As of 1.1.0, replaced by {@link
+	#updateKBFolder(long, long, long, String, String,
+	ServiceContext)}
+	*/
+	@Deprecated
 	@Override
 	public com.liferay.knowledge.base.model.KBFolder updateKBFolder(
 		long parentResourceClassNameId, long parentResourcePrimKey,
@@ -185,6 +206,16 @@ public class KBFolderLocalServiceWrapper implements KBFolderLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _kbFolderLocalService.updateKBFolder(parentResourceClassNameId,
 			parentResourcePrimKey, kbFolderId, name, description);
+	}
+
+	@Override
+	public com.liferay.knowledge.base.model.KBFolder updateKBFolder(
+		long parentResourceClassNameId, long parentResourcePrimKey,
+		long kbFolderId, java.lang.String name, java.lang.String description,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _kbFolderLocalService.updateKBFolder(parentResourceClassNameId,
+			parentResourcePrimKey, kbFolderId, name, description, serviceContext);
 	}
 
 	@Override
@@ -223,6 +254,13 @@ public class KBFolderLocalServiceWrapper implements KBFolderLocalService,
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _kbFolderLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public int getKBFoldersAndKBArticlesCount(long groupId,
+		long parentResourcePrimKey, int status) {
+		return _kbFolderLocalService.getKBFoldersAndKBArticlesCount(groupId,
+			parentResourcePrimKey, status);
 	}
 
 	/**
@@ -327,6 +365,15 @@ public class KBFolderLocalServiceWrapper implements KBFolderLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _kbFolderLocalService.getKBFolders(groupId, parentKBFolderId,
 			start, end);
+	}
+
+	@Override
+	public java.util.List<java.lang.Object> getKBFoldersAndKBArticles(
+		long groupId, long parentResourcePrimKey, int status, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<?> orderByComparator) {
+		return _kbFolderLocalService.getKBFoldersAndKBArticles(groupId,
+			parentResourcePrimKey, status, start, end, orderByComparator);
 	}
 
 	/**

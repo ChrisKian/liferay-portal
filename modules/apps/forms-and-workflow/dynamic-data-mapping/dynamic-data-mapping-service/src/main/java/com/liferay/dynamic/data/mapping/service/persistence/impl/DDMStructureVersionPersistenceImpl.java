@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
@@ -1481,7 +1480,8 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
-		clearUniqueFindersCache((DDMStructureVersionModelImpl)ddmStructureVersion);
+		clearUniqueFindersCache((DDMStructureVersionModelImpl)ddmStructureVersion,
+			true);
 	}
 
 	@Override
@@ -1494,52 +1494,40 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 				DDMStructureVersionImpl.class,
 				ddmStructureVersion.getPrimaryKey());
 
-			clearUniqueFindersCache((DDMStructureVersionModelImpl)ddmStructureVersion);
+			clearUniqueFindersCache((DDMStructureVersionModelImpl)ddmStructureVersion,
+				true);
 		}
 	}
 
 	protected void cacheUniqueFindersCache(
-		DDMStructureVersionModelImpl ddmStructureVersionModelImpl, boolean isNew) {
-		if (isNew) {
-			Object[] args = new Object[] {
-					ddmStructureVersionModelImpl.getStructureId(),
-					ddmStructureVersionModelImpl.getVersion()
-				};
-
-			finderCache.putResult(FINDER_PATH_COUNT_BY_S_V, args,
-				Long.valueOf(1));
-			finderCache.putResult(FINDER_PATH_FETCH_BY_S_V, args,
-				ddmStructureVersionModelImpl);
-		}
-		else {
-			if ((ddmStructureVersionModelImpl.getColumnBitmask() &
-					FINDER_PATH_FETCH_BY_S_V.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						ddmStructureVersionModelImpl.getStructureId(),
-						ddmStructureVersionModelImpl.getVersion()
-					};
-
-				finderCache.putResult(FINDER_PATH_COUNT_BY_S_V, args,
-					Long.valueOf(1));
-				finderCache.putResult(FINDER_PATH_FETCH_BY_S_V, args,
-					ddmStructureVersionModelImpl);
-			}
-		}
-	}
-
-	protected void clearUniqueFindersCache(
 		DDMStructureVersionModelImpl ddmStructureVersionModelImpl) {
 		Object[] args = new Object[] {
 				ddmStructureVersionModelImpl.getStructureId(),
 				ddmStructureVersionModelImpl.getVersion()
 			};
 
-		finderCache.removeResult(FINDER_PATH_COUNT_BY_S_V, args);
-		finderCache.removeResult(FINDER_PATH_FETCH_BY_S_V, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_S_V, args, Long.valueOf(1),
+			false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_S_V, args,
+			ddmStructureVersionModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(
+		DDMStructureVersionModelImpl ddmStructureVersionModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					ddmStructureVersionModelImpl.getStructureId(),
+					ddmStructureVersionModelImpl.getVersion()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_S_V, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_S_V, args);
+		}
 
 		if ((ddmStructureVersionModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_S_V.getColumnBitmask()) != 0) {
-			args = new Object[] {
+			Object[] args = new Object[] {
 					ddmStructureVersionModelImpl.getOriginalStructureId(),
 					ddmStructureVersionModelImpl.getOriginalVersion()
 				};
@@ -1735,8 +1723,8 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 			DDMStructureVersionImpl.class, ddmStructureVersion.getPrimaryKey(),
 			ddmStructureVersion, false);
 
-		clearUniqueFindersCache(ddmStructureVersionModelImpl);
-		cacheUniqueFindersCache(ddmStructureVersionModelImpl, isNew);
+		clearUniqueFindersCache(ddmStructureVersionModelImpl, false);
+		cacheUniqueFindersCache(ddmStructureVersionModelImpl);
 
 		ddmStructureVersion.resetOriginalValues();
 
@@ -1821,12 +1809,14 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 	 */
 	@Override
 	public DDMStructureVersion fetchByPrimaryKey(Serializable primaryKey) {
-		DDMStructureVersion ddmStructureVersion = (DDMStructureVersion)entityCache.getResult(DDMStructureVersionModelImpl.ENTITY_CACHE_ENABLED,
+		Serializable serializable = entityCache.getResult(DDMStructureVersionModelImpl.ENTITY_CACHE_ENABLED,
 				DDMStructureVersionImpl.class, primaryKey);
 
-		if (ddmStructureVersion == _nullDDMStructureVersion) {
+		if (serializable == nullModel) {
 			return null;
 		}
+
+		DDMStructureVersion ddmStructureVersion = (DDMStructureVersion)serializable;
 
 		if (ddmStructureVersion == null) {
 			Session session = null;
@@ -1842,8 +1832,7 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 				}
 				else {
 					entityCache.putResult(DDMStructureVersionModelImpl.ENTITY_CACHE_ENABLED,
-						DDMStructureVersionImpl.class, primaryKey,
-						_nullDDMStructureVersion);
+						DDMStructureVersionImpl.class, primaryKey, nullModel);
 				}
 			}
 			catch (Exception e) {
@@ -1897,18 +1886,20 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			DDMStructureVersion ddmStructureVersion = (DDMStructureVersion)entityCache.getResult(DDMStructureVersionModelImpl.ENTITY_CACHE_ENABLED,
+			Serializable serializable = entityCache.getResult(DDMStructureVersionModelImpl.ENTITY_CACHE_ENABLED,
 					DDMStructureVersionImpl.class, primaryKey);
 
-			if (ddmStructureVersion == null) {
-				if (uncachedPrimaryKeys == null) {
-					uncachedPrimaryKeys = new HashSet<Serializable>();
-				}
+			if (serializable != nullModel) {
+				if (serializable == null) {
+					if (uncachedPrimaryKeys == null) {
+						uncachedPrimaryKeys = new HashSet<Serializable>();
+					}
 
-				uncachedPrimaryKeys.add(primaryKey);
-			}
-			else {
-				map.put(primaryKey, ddmStructureVersion);
+					uncachedPrimaryKeys.add(primaryKey);
+				}
+				else {
+					map.put(primaryKey, (DDMStructureVersion)serializable);
+				}
 			}
 		}
 
@@ -1951,8 +1942,7 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
 				entityCache.putResult(DDMStructureVersionModelImpl.ENTITY_CACHE_ENABLED,
-					DDMStructureVersionImpl.class, primaryKey,
-					_nullDDMStructureVersion);
+					DDMStructureVersionImpl.class, primaryKey, nullModel);
 			}
 		}
 		catch (Exception e) {
@@ -2197,23 +2187,4 @@ public class DDMStructureVersionPersistenceImpl extends BasePersistenceImpl<DDMS
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
 				"type"
 			});
-	private static final DDMStructureVersion _nullDDMStructureVersion = new DDMStructureVersionImpl() {
-			@Override
-			public Object clone() {
-				return this;
-			}
-
-			@Override
-			public CacheModel<DDMStructureVersion> toCacheModel() {
-				return _nullDDMStructureVersionCacheModel;
-			}
-		};
-
-	private static final CacheModel<DDMStructureVersion> _nullDDMStructureVersionCacheModel =
-		new CacheModel<DDMStructureVersion>() {
-			@Override
-			public DDMStructureVersion toEntityModel() {
-				return _nullDDMStructureVersion;
-			}
-		};
 }

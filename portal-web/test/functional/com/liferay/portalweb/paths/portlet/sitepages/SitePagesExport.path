@@ -91,18 +91,25 @@
 </tr>
 <!--CONTENT-->
 <tr>
-	<td>CONTENT_ALL_CONTENT</td>
-	<td>//option[contains(@id,'allContent')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>CONTENT_CHOOSE_CONTENT</td>
-	<td>//option[contains(@id,'chooseContent')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>CONTENT_CHOOSE_CONTENT_CONTENT_CHECKBOX</td>
 	<td>//ul[@class='portlet-list']//label[contains(.,'${key_contentName}')]/input</td>
+	<td></td>
+</tr>
+<!--CURRENT-->
+<tr>
+	<td>CURRENT_STATUS</td>
+	<td>//div[normalize-space(text()='Current')]//*[@data-qa-id='row']//h6</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+<!--PREVIOUS-->
+<tr>
+	<td>PREVIOUS_STATUS</td>
+	<td>//div[normalize-space(text()='Previous')]//*[@data-qa-id='row']//h6</td>
 	<td></td>
 </tr>
 <tr>
