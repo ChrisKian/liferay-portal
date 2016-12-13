@@ -262,7 +262,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 	}
 
 	@Test
-	public void testIsEnabledBypass() throws Exception {
+	public void testIsEnabledSiteAdmin() throws Exception {
 		User user = UserTestUtil.addUser();
 
 		_addRole(user, _groupOne, RoleConstants.SITE_ADMINISTRATOR);
@@ -275,25 +275,17 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
 		Assert.assertFalse(isEnabled(_groupOne.getGroupId()));
+		Assert.assertTrue(isEnabled(_groupTwo.getGroupId()));
+	}
 
-		user = UserTestUtil.addUser();
-
-		_addRole(user, _groupOne, RoleConstants.SITE_ADMINISTRATOR);
-		_addRole(user, _groupTwo, RoleConstants.SITE_ADMINISTRATOR);
-
-		_users.add(user);
-
-		permissionChecker = PermissionCheckerFactoryUtil.create(user);
-
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
-
-		Assert.assertFalse(isEnabled(_groupIds));
-
-		user = UserTestUtil.addOmniAdminUser();
+	@Test
+	public void testIsNotEnabledForOmniAdmin() throws Exception {
+		User user = UserTestUtil.addOmniAdminUser();
 
 		_users.add(user);
 
-		permissionChecker = PermissionCheckerFactoryUtil.create(user);
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(user);
 
 		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
