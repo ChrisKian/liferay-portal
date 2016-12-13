@@ -86,8 +86,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@Test
 	public void testAllGroupsMember() throws Exception {
-		_addRole(_groupOne, RoleConstants.SITE_MEMBER);
-		_addRole(_groupTwo, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
 
 		String sql = _replacePermissionCheckJoin(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
@@ -105,8 +105,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@Test
 	public void testClauseOrdering() throws Exception {
-		_addRole(_groupOne, RoleConstants.SITE_MEMBER);
-		_addRole(_groupTwo, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
 
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_user);
@@ -163,7 +163,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		_roles.add(role);
 
-		_addRole(_groupOne, "scopeGroupRole");
+		_addGroupRole(_groupOne, "scopeGroupRole");
 
 		ResourcePermissionLocalServiceUtil.addResourcePermission(
 			CompanyThreadLocal.getCompanyId(), _CLASS_NAME,
@@ -192,7 +192,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		_roles.add(role);
 
-		_addRole(_groupOne, "scopeGroupTemplateRole");
+		_addGroupRole(_groupOne, "scopeGroupTemplateRole");
 
 		ResourcePermissionLocalServiceUtil.addResourcePermission(
 			CompanyThreadLocal.getCompanyId(), _CLASS_NAME,
@@ -224,9 +224,9 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		GroupLocalServiceUtil.updateGroup(group);
 
-		_addRole(group, RoleConstants.SITE_MEMBER);
+		_addGroupRole(group, RoleConstants.SITE_MEMBER);
 
-		_addRole(_groupOne, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
 
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_user);
@@ -243,7 +243,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@Test
 	public void testIsEnabledSiteAdmin() throws Exception {
-		_addRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
+		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
 
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(_user);
@@ -271,8 +271,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@Test
 	public void testOneGroupAdminOneGroupMember() throws Exception {
-		_addRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
-		_addRole(_groupTwo, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
+		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
 
 		String sql = _replacePermissionCheckJoin(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
@@ -298,7 +298,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@Test
 	public void testOneGroupMember() throws Exception {
-		_addRole(_groupOne, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
 
 		String sql = _replacePermissionCheckJoin(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
@@ -315,8 +315,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@Test
 	public void testSQLComposition() throws Exception {
-		_addRole(_groupOne, RoleConstants.SITE_MEMBER);
-		_addRole(_groupTwo, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
+		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
 
 		String sql = _replacePermissionCheckJoin(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
@@ -359,7 +359,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		_assertValidSql(sql);
 	}
 
-	private void _addRole(Group group, String roleName)
+	private void _addGroupRole(Group group, String roleName)
 		throws Exception {
 
 		Role role = RoleLocalServiceUtil.getRole(
