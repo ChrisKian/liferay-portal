@@ -338,7 +338,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		long[] roleIds = getRoleIds(groupIds);
 
 		if (roleIds.length > 0) {
-			sb.append("ResourcePermission.roleId IN (");
+			sb.append("(ResourcePermission.roleId IN (");
 			sb.append(StringUtil.merge(roleIds));
 			sb.append(")");
 		}
@@ -347,8 +347,9 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			if (sb.index() > 0) {
 				sb.append(" OR ");
 			}
-
-			sb.append("(");
+			else {
+				sb.append("(");
+			}
 
 			long userId = permissionChecker.getUserId();
 
@@ -362,6 +363,9 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 				sb.append(userId);
 			}
 
+			sb.append(")");
+		}
+		else if (sb.index() > 0) {
 			sb.append(")");
 		}
 
