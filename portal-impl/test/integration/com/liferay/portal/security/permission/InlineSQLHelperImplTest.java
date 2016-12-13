@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -49,6 +48,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -71,6 +71,14 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		_groupTwo = GroupTestUtil.addGroup();
 
 		_groupIds = new long[] {_groupOne.getGroupId(), _groupTwo.getGroupId()};
+
+		_originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+	}
+
+	@After
+	public void tearDown() {
+		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 	}
 
 	@Test
@@ -106,30 +114,22 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		_users.add(user);
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
-
-			_assertClauseOrdering(_SQL_PLAIN + _SQL_WHERE, _WHERE_CLAUSE);
-			_assertClauseOrdering(_SQL_PLAIN + _SQL_GROUP_BY, _GROUP_BY_CLAUSE);
-			_assertClauseOrdering(_SQL_PLAIN + _SQL_ORDER_BY, _ORDER_BY_CLAUSE);
-			_assertClauseOrdering(
-				_SQL_PLAIN + _SQL_WHERE + _SQL_GROUP_BY, _GROUP_BY_CLAUSE);
-			_assertClauseOrdering(
-				_SQL_PLAIN + _SQL_WHERE + _SQL_ORDER_BY, _ORDER_BY_CLAUSE);
-			_assertClauseOrdering(
-				_SQL_PLAIN + _SQL_GROUP_BY + _SQL_ORDER_BY, _ORDER_BY_CLAUSE);
-			_assertClauseOrdering(
-				_SQL_PLAIN + _SQL_WHERE + _SQL_GROUP_BY + _SQL_ORDER_BY,
-				_ORDER_BY_CLAUSE);
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		_assertClauseOrdering(_SQL_PLAIN + _SQL_WHERE, _WHERE_CLAUSE);
+		_assertClauseOrdering(_SQL_PLAIN + _SQL_GROUP_BY, _GROUP_BY_CLAUSE);
+		_assertClauseOrdering(_SQL_PLAIN + _SQL_ORDER_BY, _ORDER_BY_CLAUSE);
+		_assertClauseOrdering(
+			_SQL_PLAIN + _SQL_WHERE + _SQL_GROUP_BY, _GROUP_BY_CLAUSE);
+		_assertClauseOrdering(
+			_SQL_PLAIN + _SQL_WHERE + _SQL_ORDER_BY, _ORDER_BY_CLAUSE);
+		_assertClauseOrdering(
+			_SQL_PLAIN + _SQL_GROUP_BY + _SQL_ORDER_BY, _ORDER_BY_CLAUSE);
+		_assertClauseOrdering(
+			_SQL_PLAIN + _SQL_WHERE + _SQL_GROUP_BY + _SQL_ORDER_BY,
+			_ORDER_BY_CLAUSE);
 	}
 
 	@Test
@@ -152,25 +152,17 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			ActionKeys.VIEW);
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
+		String sql = replacePermissionCheckJoin(
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
+			_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, null);
 
-			String sql = replacePermissionCheckJoin(
-				_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-				_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, null);
+		Assert.assertSame(_SQL_PLAIN, sql);
 
-			Assert.assertSame(_SQL_PLAIN, sql);
-
-			Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
 	}
 
 	@Test
@@ -193,25 +185,17 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			ActionKeys.VIEW);
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
+		String sql = replacePermissionCheck(
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
+			_GROUP_ID_FIELD, new long[]{_groupOne.getGroupId()}, null);
 
-			String sql = replacePermissionCheck(
-				_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-				_GROUP_ID_FIELD, new long[]{_groupOne.getGroupId()}, null);
+		Assert.assertSame(_SQL_PLAIN, sql);
 
-			Assert.assertSame(_SQL_PLAIN, sql);
-
-			Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
 	}
 
 	@Test
@@ -234,25 +218,17 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			role.getRoleId(), ActionKeys.VIEW);
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
+		String sql = replacePermissionCheckJoin(
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
+			_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, null);
 
-			String sql = replacePermissionCheckJoin(
-				_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-				_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, null);
+		Assert.assertSame(_SQL_PLAIN, sql);
 
-			Assert.assertSame(_SQL_PLAIN, sql);
-
-			Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -273,28 +249,16 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		_users.add(user);
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
-
-			replacePermissionCheck(
-				_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-				_GROUP_ID_FIELD, new long[]{
-					_groupOne.getGroupId(), group.getGroupId()
-				},
-				null);
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-
-			GroupLocalServiceUtil.deleteGroup(group);
-
-			CompanyLocalServiceUtil.deleteCompany(company);
-		}
+		replacePermissionCheck(
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
+			_GROUP_ID_FIELD, new long[]{
+				_groupOne.getGroupId(), group.getGroupId()
+			},
+			null);
 	}
 
 	@Test
@@ -306,42 +270,34 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		_users.add(user);
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
+		Assert.assertFalse(isEnabled(_groupOne.getGroupId()));
 
-			Assert.assertFalse(isEnabled(_groupOne.getGroupId()));
+		user = UserTestUtil.addUser();
 
-			user = UserTestUtil.addUser();
+		_addRole(user, _groupOne, RoleConstants.SITE_ADMINISTRATOR);
+		_addRole(user, _groupTwo, RoleConstants.SITE_ADMINISTRATOR);
 
-			_addRole(user, _groupOne, RoleConstants.SITE_ADMINISTRATOR);
-			_addRole(user, _groupTwo, RoleConstants.SITE_ADMINISTRATOR);
+		_users.add(user);
 
-			_users.add(user);
+		permissionChecker = PermissionCheckerFactoryUtil.create(user);
 
-			tempPermissionChecker = PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
+		Assert.assertFalse(isEnabled(_groupIds));
 
-			Assert.assertFalse(isEnabled(_groupIds));
+		user = UserTestUtil.addOmniAdminUser();
 
-			user = UserTestUtil.addOmniAdminUser();
+		_users.add(user);
 
-			_users.add(user);
+		permissionChecker = PermissionCheckerFactoryUtil.create(user);
 
-			tempPermissionChecker = PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
-
-			Assert.assertFalse(isEnabled(_groupIds));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		Assert.assertFalse(isEnabled(_groupIds));
 	}
 
 	@Test
@@ -479,8 +435,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		throws Exception {
 
 		String actualSql = replacePermissionCheckJoin(
-			sql, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, _groupIds, null);
+			sql, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD, _GROUP_ID_FIELD,
+			_groupIds, null);
 
 		int wherePos = actualSql.lastIndexOf(_WHERE_CLAUSE);
 		int groupByPos = actualSql.indexOf(_GROUP_BY_CLAUSE);
@@ -527,21 +483,13 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		throws Exception {
 
 		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			PermissionCheckerFactoryUtil.create(user);
 
-		try {
-			PermissionChecker tempPermissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-			PermissionThreadLocal.setPermissionChecker(tempPermissionChecker);
-
-			return replacePermissionCheckJoin(
-				sql, className, classPKField, userIdField, groupIdField,
-				groupIds, null);
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		return replacePermissionCheckJoin(
+			sql, className, classPKField, userIdField, groupIdField, groupIds,
+			null);
 	}
 
 	private static final String _CLASS_NAME =
@@ -583,6 +531,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 	@DeleteAfterTestRun
 	private Group _groupTwo;
+
+	private PermissionChecker _originalPermissionChecker;
 
 	@DeleteAfterTestRun
 	private final List<Role> _roles = new ArrayList<>();
