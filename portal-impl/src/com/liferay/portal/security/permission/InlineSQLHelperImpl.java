@@ -90,16 +90,6 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 				return false;
 			}
 		}
-		else if (companyId > 0) {
-			if (permissionChecker.isCompanyAdmin(companyId)) {
-				return false;
-			}
-		}
-		else {
-			if (permissionChecker.isOmniadmin()) {
-				return false;
-			}
-		}
 
 		return true;
 	}
@@ -355,21 +345,21 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 		if (permissionChecker.isSignedIn()) {
 			sb.append(" OR ");
+			sb.append("(");
 
 			long userId = permissionChecker.getUserId();
 
 			if (Validator.isNotNull(userIdField)) {
-				sb.append(StringPool.OPEN_PARENTHESIS);
 				sb.append(userIdField);
 				sb.append(" = ");
 				sb.append(userId);
-				sb.append(StringPool.CLOSE_PARENTHESIS);
 			}
 			else {
-				sb.append("(ResourcePermission.ownerId = ");
+				sb.append("ResourcePermission.ownerId = ");
 				sb.append(userId);
-				sb.append(StringPool.CLOSE_PARENTHESIS);
 			}
+
+			sb.append(")");
 		}
 
 		return sb.toString();
@@ -560,12 +550,8 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 								companyId, className,
 								ResourceConstants.SCOPE_GROUP,
 								String.valueOf(groupId), roleIds,
-								ActionKeys.VIEW)) {
-
-						return sql;
-					}
-
-					if (ResourcePermissionLocalServiceUtil.
+								ActionKeys.VIEW) ||
+						ResourcePermissionLocalServiceUtil.
 							hasResourcePermission(
 								companyId, className,
 								ResourceConstants.SCOPE_GROUP_TEMPLATE,
@@ -630,13 +616,15 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			}
 		}
 
-		String permissionJoin = StringPool.BLANK;
+		String permissionJoin = null;
 
 		if (Validator.isNotNull(bridgeJoin)) {
-			permissionJoin = bridgeJoin;
+			permissionJoin = bridgeJoin.concat(
+				CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION));
 		}
-
-		permissionJoin += CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION);
+		else {
+			permissionJoin = CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION);
+		}
 
 		StringBundler primKeysSQL = new StringBundler(
 			2 + (2 * groupIds.length));
