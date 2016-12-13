@@ -93,14 +93,14 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
 			_GROUP_ID_FIELD, _groupIds, _user);
 
-		StringBundler groupPrimKeySB = new StringBundler(4);
+		StringBundler sb = new StringBundler(4);
 
-		groupPrimKeySB.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		groupPrimKeySB.append(" IN (");
-		groupPrimKeySB.append(StringUtil.merge(_groupIds));
-		groupPrimKeySB.append(")");
+		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
+		sb.append(" IN (");
+		sb.append(StringUtil.merge(_groupIds));
+		sb.append(")");
 
-		_assertContains(groupPrimKeySB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	@Test
@@ -278,22 +278,22 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
 			_GROUP_ID_FIELD, _groupIds, _user);
 
-		StringBundler groupPrimKeySB = new StringBundler(4);
+		StringBundler sb = new StringBundler(4);
 
-		groupPrimKeySB.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		groupPrimKeySB.append(" IN (");
-		groupPrimKeySB.append(StringUtil.merge(_groupIds));
-		groupPrimKeySB.append(")");
+		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
+		sb.append(" IN (");
+		sb.append(StringUtil.merge(_groupIds));
+		sb.append(")");
 
-		_assertContains(groupPrimKeySB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 
-		StringBundler adminPrimKeySB = new StringBundler(3);
+		sb = new StringBundler(3);
 
-		adminPrimKeySB.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		adminPrimKeySB.append(" = ");
-		adminPrimKeySB.append(_groupOne.getGroupId());
+		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
+		sb.append(" = ");
+		sb.append(_groupOne.getGroupId());
 
-		_assertContains(adminPrimKeySB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	@Test
@@ -304,13 +304,13 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
 			_GROUP_ID_FIELD, new long[]{_groupOne.getGroupId()}, _user);
 
-		StringBundler groupPrimKeySB = new StringBundler(3);
+		StringBundler sb = new StringBundler(3);
 
-		groupPrimKeySB.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		groupPrimKeySB.append(" = ");
-		groupPrimKeySB.append(_groupOne.getGroupId());
+		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
+		sb.append(" = ");
+		sb.append(_groupOne.getGroupId());
 
-		_assertContains(groupPrimKeySB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	@Test
@@ -324,30 +324,30 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		_assertAndOrWhereClause(sql, _CLASS_PK_FIELD, false);
 
-		StringBundler classNameSB = new StringBundler(4);
+		StringBundler sb = new StringBundler(4);
 
-		classNameSB.append(_RESOURCE_PERMISSION);
-		classNameSB.append(".name = '");
-		classNameSB.append(_CLASS_NAME);
-		classNameSB.append("'");
+		sb.append(_RESOURCE_PERMISSION);
+		sb.append(".name = '");
+		sb.append(_CLASS_NAME);
+		sb.append("'");
 
-		_assertContains(classNameSB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 
-		StringBundler companySB = new StringBundler(3);
+		sb = new StringBundler(3);
 
-		companySB.append(_RESOURCE_PERMISSION);
-		companySB.append(".companyId = ");
-		companySB.append(CompanyThreadLocal.getCompanyId());
+		sb.append(_RESOURCE_PERMISSION);
+		sb.append(".companyId = ");
+		sb.append(CompanyThreadLocal.getCompanyId());
 
-		_assertContains(companySB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 
-		StringBundler ownerSB = new StringBundler(3);
+		sb = new StringBundler(3);
 
-		ownerSB.append(_USER_ID_FIELD);
-		ownerSB.append(" = ");
-		ownerSB.append(_user.getUserId());
+		sb.append(_USER_ID_FIELD);
+		sb.append(" = ");
+		sb.append(_user.getUserId());
 
-		_assertContains(ownerSB.toString(), sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 
 		_assertValidSql(sql);
 
@@ -374,18 +374,20 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 			String sql, String classPK, Boolean hasExistingWhereClause)
 		throws Exception {
 
-		String clause;
+		StringBundler sb = new StringBundler(4);
 
 		if (hasExistingWhereClause) {
-			clause = " AND ";
+			sb.append(" AND ");
 		}
 		else {
-			clause = _WHERE_CLAUSE;
+			sb.append(_WHERE_CLAUSE);
 		}
 
-		String expectedSQL = clause + "(" + classPK + " IN (";
+		sb.append("(");
+		sb.append(classPK);
+		sb.append(" IN (");
 
-		_assertContains(expectedSQL, sql);
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	private void _assertClauseOrdering(String sql, String endingClause)
@@ -399,31 +401,19 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		int groupByPos = actualSql.indexOf(_GROUP_BY_CLAUSE);
 		int orderByPos = actualSql.indexOf(_ORDER_BY_CLAUSE);
 
-		Assert.assertNotEquals(wherePos, -1);
+		Assert.assertNotEquals(actualSql, wherePos, -1);
 
 		if (endingClause.equals(_WHERE_CLAUSE)) {
-			Assert.assertEquals(groupByPos, -1);
-			Assert.assertEquals(orderByPos, -1);
+			Assert.assertEquals(actualSql, groupByPos, -1);
+			Assert.assertEquals(actualSql, orderByPos, -1);
 		}
 		else if (endingClause.equals(_GROUP_BY_CLAUSE)) {
-			Assert.assertTrue(wherePos < groupByPos);
-			Assert.assertEquals(orderByPos, -1);
+			Assert.assertTrue(actualSql, wherePos < groupByPos);
+			Assert.assertEquals(actualSql, orderByPos, -1);
 		}
 		else {
-			Assert.assertTrue(wherePos < orderByPos);
+			Assert.assertTrue(actualSql, wherePos < orderByPos);
 		}
-	}
-
-	private void _assertContains(String containee, String container) {
-		StringBundler msg = new StringBundler(5);
-
-		msg.append("Assertion Failed: The following String:<[");
-		msg.append(containee);
-		msg.append("]> was not contained within:<[");
-		msg.append(container);
-		msg.append("]>");
-
-		Assert.assertTrue(msg.toString(), container.contains(containee));
 	}
 
 	private void _assertValidSql(String sql) throws Exception {
