@@ -235,10 +235,8 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		replacePermissionCheck(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, new long[] {
-				_groupOne.getGroupId(), group.getGroupId()
-			},
-			null);
+			_GROUP_ID_FIELD,
+			new long[] {_groupOne.getGroupId(), group.getGroupId()}, null);
 	}
 
 	@Test
@@ -302,7 +300,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		String sql = _replacePermissionCheckJoin(
 			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, new long[]{_groupOne.getGroupId()}, _user);
+			_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, _user);
 
 		StringBundler sb = new StringBundler(3);
 
@@ -359,9 +357,7 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		_assertValidSql(sql);
 	}
 
-	private void _addGroupRole(Group group, String roleName)
-		throws Exception {
-
+	private void _addGroupRole(Group group, String roleName) throws Exception {
 		Role role = RoleLocalServiceUtil.getRole(
 			TestPropsValues.getCompanyId(), roleName);
 
