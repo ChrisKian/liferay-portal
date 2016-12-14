@@ -638,7 +638,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		StringBundler groupAdminResourcePermissionSB = null;
 
 		if ((groupIds.length > 0) && Validator.isNotNull(groupIdField)) {
-			if(!roleIdsOrOwnerIdSQL.isEmpty()) {
+			if (!roleIdsOrOwnerIdSQL.isEmpty()) {
 				primKeysSQL.append(" AND ");
 			}
 
