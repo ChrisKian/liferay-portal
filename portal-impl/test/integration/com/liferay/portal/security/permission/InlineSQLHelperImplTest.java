@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -82,25 +83,6 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 	@After
 	public void tearDown() {
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
-	}
-
-	@Test
-	public void testAllGroupsMember() throws Exception {
-		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
-		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
-
-		String sql = _replacePermissionCheckJoin(
-			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, _groupIds, _user);
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		sb.append(" IN (");
-		sb.append(StringUtil.merge(_groupIds));
-		sb.append(")");
-
-		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	@Test
@@ -154,6 +136,77 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 		Assert.assertSame(_SQL_PLAIN, sql);
 
 		Assert.assertTrue(isEnabled(_groupOne.getGroupId()));
+	}
+
+	@Test
+	public void testGetRoles() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		try {
+			Role role = RoleTestUtil.addRole(
+				"testRole", RoleConstants.TYPE_SITE);
+
+			_roles.add(role);
+
+			_addGroupRole(group, "testRole");
+
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(_user);
+
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+			long[] roleIds = getRoleIds(group.getGroupId());
+
+			Role guestRole =
+				RoleLocalServiceUtil.getRole(
+					group.getCompanyId(), RoleConstants.GUEST);
+
+			Role siteMemberRole =
+				RoleLocalServiceUtil.getRole(
+					group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+			Role userRole =
+				RoleLocalServiceUtil.getRole(
+					group.getCompanyId(), RoleConstants.USER);
+
+			String msg = StringUtil.merge(roleIds);
+
+			Assert.assertTrue(
+				msg, ArrayUtil.contains(roleIds, role.getRoleId()));
+
+			Assert.assertTrue(
+				msg, ArrayUtil.contains(roleIds, guestRole.getRoleId()));
+
+			Assert.assertTrue(
+				msg, ArrayUtil.contains(roleIds, siteMemberRole.getRoleId()));
+
+			Assert.assertTrue(
+				msg, ArrayUtil.contains(roleIds, userRole.getRoleId()));
+		}
+		finally {
+			GroupLocalServiceUtil.deleteGroup(group);
+		}
+	}
+
+	@Test
+	public void testGroupAdminResourcePermission() throws Exception {
+		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
+		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
+
+		String sql = _replacePermissionCheckJoin(
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
+			_GROUP_ID_FIELD, _groupIds, _user);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_user);
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(" OR ((ResourcePermission.primKeyId = 0) AND ");
+		sb.append("(ResourcePermission.roleId = ");
+		sb.append(permissionChecker.getOwnerRoleId());
+
+		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	@Test
@@ -265,50 +318,6 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 		Assert.assertFalse(isEnabled(_groupOne.getGroupId()));
 		Assert.assertTrue(isEnabled(_groupTwo.getGroupId()));
-	}
-
-	@Test
-	public void testOneGroupAdminOneGroupMember() throws Exception {
-		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
-		_addGroupRole(_groupTwo, RoleConstants.SITE_MEMBER);
-
-		String sql = _replacePermissionCheckJoin(
-			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, _groupIds, _user);
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		sb.append(" IN (");
-		sb.append(StringUtil.merge(_groupIds));
-		sb.append(")");
-
-		Assert.assertTrue(sql, sql.contains(sb.toString()));
-
-		sb = new StringBundler(3);
-
-		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		sb.append(" = ");
-		sb.append(_groupOne.getGroupId());
-
-		Assert.assertTrue(sql, sql.contains(sb.toString()));
-	}
-
-	@Test
-	public void testOneGroupMember() throws Exception {
-		_addGroupRole(_groupOne, RoleConstants.SITE_MEMBER);
-
-		String sql = _replacePermissionCheckJoin(
-			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, _user);
-
-		StringBundler sb = new StringBundler(3);
-
-		sb.append(_RESOURCE_PERMISSION_PRIM_KEY);
-		sb.append(" = ");
-		sb.append(_groupOne.getGroupId());
-
-		Assert.assertTrue(sql, sql.contains(sb.toString()));
 	}
 
 	@Test
