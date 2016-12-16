@@ -674,7 +674,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			},
 			new String[] {
 				className, String.valueOf(companyId), groupAdminSQL,
-				 String.valueOf(scope), roleIdsOrOwnerIdSQL
+				String.valueOf(scope), roleIdsOrOwnerIdSQL
 			});
 
 		StringBundler permissionQuerySB = new StringBundler(5);
