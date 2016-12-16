@@ -157,17 +157,14 @@ public class InlineSQLHelperImplTest extends InlineSQLHelperImpl {
 
 			long[] roleIds = getRoleIds(group.getGroupId());
 
-			Role guestRole =
-				RoleLocalServiceUtil.getRole(
-					group.getCompanyId(), RoleConstants.GUEST);
+			Role guestRole = RoleLocalServiceUtil.getRole(
+				group.getCompanyId(), RoleConstants.GUEST);
 
-			Role siteMemberRole =
-				RoleLocalServiceUtil.getRole(
-					group.getCompanyId(), RoleConstants.SITE_MEMBER);
+			Role siteMemberRole = RoleLocalServiceUtil.getRole(
+				group.getCompanyId(), RoleConstants.SITE_MEMBER);
 
-			Role userRole =
-				RoleLocalServiceUtil.getRole(
-					group.getCompanyId(), RoleConstants.USER);
+			Role userRole = RoleLocalServiceUtil.getRole(
+				group.getCompanyId(), RoleConstants.USER);
 
 			String msg = StringUtil.merge(roleIds);
 
