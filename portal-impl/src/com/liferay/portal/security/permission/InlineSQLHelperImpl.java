@@ -730,8 +730,6 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 	private static final long _NO_RESOURCE_BLOCKS_ID = -1;
 
-	private static final long[] _NO_ROLE_IDS = {0};
-
 	private static final String _ORDER_BY_CLAUSE = " ORDER BY ";
 
 	private static final String _WHERE_CLAUSE = " WHERE ";
