@@ -222,7 +222,16 @@ public int countBy${finder.name}(
 		<#if entity.isPermissionedModel()>
 			<#include "persistence_impl_count_by_query.ftl">
 
-			String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
+			String classPKField;
+
+			if (!getDB().isSupportsInlineDistinct()) {
+				classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+			}
+			else {
+				classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+			}
+
+			String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
 
 			Session session = null;
 
@@ -256,7 +265,16 @@ public int countBy${finder.name}(
 
 			<#assign sqlQuery = false />
 
-			String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
+			String classPKField;
+
+			if (!getDB().isSupportsInlineDistinct()) {
+				classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+			}
+			else {
+				classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+			}
+
+			String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField<#if finder.hasColumn("groupId")>, groupId</#if>);
 
 			Session session = null;
 
@@ -369,7 +387,16 @@ public int countBy${finder.name}(
 			<#if entity.isPermissionedModel()>
 				<#include "persistence_impl_count_by_arrayable_query.ftl">
 
-				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN
+				String classPKField;
+
+				if (!getDB().isSupportsInlineDistinct()) {
+					classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+				}
+				else {
+					classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+				}
+
+				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN
 
 				<#if finder.hasColumn("groupId")>,
 					<#if finder.getColumn("groupId").hasArrayableOperator()>
@@ -415,7 +442,16 @@ public int countBy${finder.name}(
 
 				<#assign sqlQuery = false />
 
-				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN
+				String classPKField;
+
+				if (!getDB().isSupportsInlineDistinct()) {
+					classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+				}
+				else {
+					classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+				}
+
+				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField
 
 				<#if finder.hasColumn("groupId")>,
 					<#if finder.getColumn("groupId").hasArrayableOperator()>

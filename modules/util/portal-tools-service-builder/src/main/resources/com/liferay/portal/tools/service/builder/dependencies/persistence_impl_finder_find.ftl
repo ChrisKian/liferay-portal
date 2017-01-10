@@ -679,7 +679,16 @@ that may or may not be enforced with a unique index at the database level. Case
 			<#if entity.isPermissionedModel()>
 				<#include "persistence_impl_find_by_query.ftl">
 
-				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
+				String classPKField;
+
+				if (!getDB().isSupportsInlineDistinct()) {
+					classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+				}
+				else {
+					classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+				}
+
+				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
 
 				Session session = null;
 
@@ -723,8 +732,15 @@ that may or may not be enforced with a unique index at the database level. Case
 
 				<#assign sqlQuery = false />
 
+				String classPKField;
+
 				if (!getDB().isSupportsInlineDistinct()) {
 					query.append(_FILTER_SQL_SELECT_${entity.alias?upper_case}_NO_INLINE_DISTINCT_WHERE_2);
+
+					classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+				}
+				else {
+					classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 				}
 
 				if (orderByComparator != null) {
@@ -744,7 +760,7 @@ that may or may not be enforced with a unique index at the database level. Case
 					}
 				}
 
-				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
+				String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField<#if finder.hasColumn("groupId")>, groupId</#if>);
 
 				Session session = null;
 
@@ -865,7 +881,16 @@ that may or may not be enforced with a unique index at the database level. Case
 				<#if entity.isPermissionedModel()>
 					<#include "persistence_impl_get_by_prev_and_next_query.ftl">
 
-					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
+					String classPKField;
+
+					if (!getDB().isSupportsInlineDistinct()) {
+						classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+					}
+					else {
+						classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+					}
+
+					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
 
 					Query q = session.createQuery(sql);
 
@@ -915,8 +940,15 @@ that may or may not be enforced with a unique index at the database level. Case
 
 					<#assign sqlQuery = false />
 
+					String classPKField;
+
 					if (!getDB().isSupportsInlineDistinct()) {
 						query.append(_FILTER_SQL_SELECT_${entity.alias?upper_case}_NO_INLINE_DISTINCT_WHERE_2);
+
+						classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+					}
+					else {
+						classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 					}
 
 					if (orderByComparator != null) {
@@ -995,7 +1027,7 @@ that may or may not be enforced with a unique index at the database level. Case
 						}
 					}
 
-					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN<#if finder.hasColumn("groupId")>, groupId</#if>);
+					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField<#if finder.hasColumn("groupId")>, groupId</#if>);
 
 					SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1201,7 +1233,16 @@ that may or may not be enforced with a unique index at the database level. Case
 				<#if entity.isPermissionedModel()>
 					<#include "persistence_impl_find_by_arrayable_query.ftl">
 
-					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN
+					String classPKField;
+
+					if (!getDB().isSupportsInlineDistinct()) {
+						classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+					}
+					else {
+						classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+					}
+
+					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField, _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN
 
 					<#if finder.hasColumn("groupId")>,
 						<#if finder.getColumn("groupId").hasArrayableOperator()>
@@ -1250,8 +1291,15 @@ that may or may not be enforced with a unique index at the database level. Case
 
 					<#assign sqlQuery = false />
 
+					String classPKField;
+
 					if (!getDB().isSupportsInlineDistinct()) {
 						query.append(_FILTER_SQL_SELECT_${entity.alias?upper_case}_NO_INLINE_DISTINCT_WHERE_2);
+
+						classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+					}
+					else {
+						classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 					}
 
 					if (orderByComparator != null) {
@@ -1271,7 +1319,7 @@ that may or may not be enforced with a unique index at the database level. Case
 						}
 					}
 
-					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN
+					String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(), ${entity.name}.class.getName(), classPKField
 
 					<#if finder.hasColumn("groupId")>,
 						<#if finder.getColumn("groupId").hasArrayableOperator()>

@@ -1783,7 +1783,9 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 	</#if>
 
 	<#if entity.isPermissionCheckEnabled()>
-		private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "${entity.alias}.${entity.filterPKColumn.DBName}";
+		private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "${entity.alias}.${entity.filterPKColumn.DBName}";
+
+		private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "${entity.table}.${entity.filterPKColumn.DBName}";
 
 		<#if entity.isPermissionedModel()>
 			<#if entity.hasColumn("userId")>
