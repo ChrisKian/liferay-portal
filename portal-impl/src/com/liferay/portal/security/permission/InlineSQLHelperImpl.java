@@ -623,10 +623,10 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			}
 		}
 
-		String permissionJoin = CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION);
+		String permissionQuery = CustomSQLUtil.get(JOIN_RESOURCE_PERMISSION);
 
 		if (Validator.isNotNull(bridgeJoin)) {
-			permissionJoin = bridgeJoin.concat(permissionJoin);
+			permissionQuery = bridgeJoin.concat(permissionQuery);
 		}
 
 		String roleIdsOrOwnerIdSQL = getRoleIdsOrOwnerIdSQL(
@@ -665,8 +665,8 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			groupAdminSQL = groupAdminResourcePermissionSB.toString();
 		}
 
-		permissionJoin = StringUtil.replace(
-			permissionJoin,
+		permissionQuery = StringUtil.replace(
+			permissionQuery,
 			new String[] {
 				"[$CLASS_NAME$]", "[$COMPANY_ID$]",
 				"[$GROUP_ADMIN_RESOURCE_PERMISSION$]",
@@ -682,7 +682,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		permissionQuerySB.append("(");
 		permissionQuerySB.append(classPKField);
 		permissionQuerySB.append(" IN (");
-		permissionQuerySB.append(permissionJoin);
+		permissionQuerySB.append(permissionQuery);
 		permissionQuerySB.append(")) ");
 
 		StringBundler sb = new StringBundler(9);
