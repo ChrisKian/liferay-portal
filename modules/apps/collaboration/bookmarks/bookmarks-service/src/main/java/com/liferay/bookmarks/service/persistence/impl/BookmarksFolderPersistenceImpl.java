@@ -2520,9 +2520,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -2669,9 +2677,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Query q = session.createQuery(sql);
@@ -2783,9 +2799,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -3876,9 +3900,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -4031,9 +4063,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Query q = session.createQuery(sql);
@@ -4156,9 +4196,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 
 		query.append(_FINDER_COLUMN_G_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -5314,9 +5362,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -5475,9 +5531,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Query q = session.createQuery(sql);
@@ -5612,9 +5676,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 
 		query.append(_FINDER_COLUMN_G_P_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -6227,9 +6299,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -6390,9 +6470,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 			query.append(BookmarksFolderModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Query q = session.createQuery(sql);
@@ -6528,9 +6616,17 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 
 		query.append(_FINDER_COLUMN_G_P_NOTS_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				BookmarksFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				BookmarksFolder.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -7908,7 +8004,8 @@ public class BookmarksFolderPersistenceImpl extends BasePersistenceImpl<Bookmark
 	private static final String _SQL_SELECT_BOOKMARKSFOLDER_WHERE = "SELECT bookmarksFolder FROM BookmarksFolder bookmarksFolder WHERE ";
 	private static final String _SQL_COUNT_BOOKMARKSFOLDER = "SELECT COUNT(bookmarksFolder) FROM BookmarksFolder bookmarksFolder";
 	private static final String _SQL_COUNT_BOOKMARKSFOLDER_WHERE = "SELECT COUNT(bookmarksFolder) FROM BookmarksFolder bookmarksFolder WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "bookmarksFolder.folderId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "bookmarksFolder.folderId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "BookmarksFolder.folderId";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN = "bookmarksFolder.userId";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "bookmarksFolder.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No BookmarksFolder exists with the primary key ";

@@ -643,8 +643,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -667,8 +674,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -783,8 +789,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -864,8 +877,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1011,9 +1023,17 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1640,8 +1660,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1664,8 +1691,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1787,8 +1813,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1868,8 +1901,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2026,9 +2058,17 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2582,8 +2622,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2606,8 +2653,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2708,8 +2754,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2789,8 +2842,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2908,9 +2960,17 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3489,8 +3549,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_C_A_ACTIVE_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3513,8 +3580,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3620,8 +3686,15 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_C_A_ACTIVE_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3701,8 +3774,7 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3831,9 +3903,17 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 
 		query.append(_FINDER_COLUMN_C_A_ACTIVE_2_SQL);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				LayoutSetPrototype.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				LayoutSetPrototype.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4649,7 +4729,8 @@ public class LayoutSetPrototypePersistenceImpl extends BasePersistenceImpl<Layou
 	private static final String _SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE = "SELECT layoutSetPrototype FROM LayoutSetPrototype layoutSetPrototype WHERE ";
 	private static final String _SQL_COUNT_LAYOUTSETPROTOTYPE = "SELECT COUNT(layoutSetPrototype) FROM LayoutSetPrototype layoutSetPrototype";
 	private static final String _SQL_COUNT_LAYOUTSETPROTOTYPE_WHERE = "SELECT COUNT(layoutSetPrototype) FROM LayoutSetPrototype layoutSetPrototype WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "layoutSetPrototype.layoutSetPrototypeId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "layoutSetPrototype.layoutSetPrototypeId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "LayoutSetPrototype.layoutSetPrototypeId";
 	private static final String _FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_WHERE = "SELECT DISTINCT {layoutSetPrototype.*} FROM LayoutSetPrototype layoutSetPrototype WHERE ";
 	private static final String _FILTER_SQL_SELECT_LAYOUTSETPROTOTYPE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {LayoutSetPrototype.*} FROM (SELECT DISTINCT layoutSetPrototype.layoutSetPrototypeId FROM LayoutSetPrototype layoutSetPrototype WHERE ";

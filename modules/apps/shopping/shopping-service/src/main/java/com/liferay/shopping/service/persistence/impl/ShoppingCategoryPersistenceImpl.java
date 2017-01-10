@@ -603,8 +603,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -627,8 +634,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				ShoppingCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -727,8 +733,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -808,8 +821,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				ShoppingCategory.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -927,9 +939,17 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				ShoppingCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -1513,8 +1533,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1537,8 +1564,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				ShoppingCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -1643,8 +1669,15 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1724,8 +1757,7 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				ShoppingCategory.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1854,9 +1886,17 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				ShoppingCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				ShoppingCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2932,7 +2972,8 @@ public class ShoppingCategoryPersistenceImpl extends BasePersistenceImpl<Shoppin
 	private static final String _SQL_SELECT_SHOPPINGCATEGORY_WHERE = "SELECT shoppingCategory FROM ShoppingCategory shoppingCategory WHERE ";
 	private static final String _SQL_COUNT_SHOPPINGCATEGORY = "SELECT COUNT(shoppingCategory) FROM ShoppingCategory shoppingCategory";
 	private static final String _SQL_COUNT_SHOPPINGCATEGORY_WHERE = "SELECT COUNT(shoppingCategory) FROM ShoppingCategory shoppingCategory WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "shoppingCategory.categoryId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "shoppingCategory.categoryId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "ShoppingCategory.categoryId";
 	private static final String _FILTER_SQL_SELECT_SHOPPINGCATEGORY_WHERE = "SELECT DISTINCT {shoppingCategory.*} FROM ShoppingCategory shoppingCategory WHERE ";
 	private static final String _FILTER_SQL_SELECT_SHOPPINGCATEGORY_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {ShoppingCategory.*} FROM (SELECT DISTINCT shoppingCategory.categoryId FROM ShoppingCategory shoppingCategory WHERE ";

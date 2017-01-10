@@ -2008,8 +2008,15 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFILEENTRYTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2032,8 +2039,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFileEntryType.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2133,8 +2139,15 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFILEENTRYTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2214,8 +2227,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFileEntryType.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2334,8 +2346,15 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFILEENTRYTYPE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2358,8 +2377,7 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DLFileEntryType.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -2726,9 +2744,17 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFileEntryType.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2796,9 +2822,17 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFileEntryType.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DLFileEntryType.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -4238,7 +4272,8 @@ public class DLFileEntryTypePersistenceImpl extends BasePersistenceImpl<DLFileEn
 	private static final String _SQL_SELECT_DLFILEENTRYTYPE_WHERE = "SELECT dlFileEntryType FROM DLFileEntryType dlFileEntryType WHERE ";
 	private static final String _SQL_COUNT_DLFILEENTRYTYPE = "SELECT COUNT(dlFileEntryType) FROM DLFileEntryType dlFileEntryType";
 	private static final String _SQL_COUNT_DLFILEENTRYTYPE_WHERE = "SELECT COUNT(dlFileEntryType) FROM DLFileEntryType dlFileEntryType WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "dlFileEntryType.fileEntryTypeId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "dlFileEntryType.fileEntryTypeId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "DLFileEntryType.fileEntryTypeId";
 	private static final String _FILTER_SQL_SELECT_DLFILEENTRYTYPE_WHERE = "SELECT DISTINCT {dlFileEntryType.*} FROM DLFileEntryType dlFileEntryType WHERE ";
 	private static final String _FILTER_SQL_SELECT_DLFILEENTRYTYPE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {DLFileEntryType.*} FROM (SELECT DISTINCT dlFileEntryType.fileEntryTypeId FROM DLFileEntryType dlFileEntryType WHERE ";

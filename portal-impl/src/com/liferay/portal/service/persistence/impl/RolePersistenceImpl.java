@@ -637,8 +637,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -661,7 +668,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -770,8 +777,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -851,7 +865,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -997,8 +1011,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1613,8 +1636,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1637,7 +1667,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1754,8 +1784,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1835,7 +1872,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1992,8 +2029,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2534,8 +2580,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2558,7 +2611,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2656,8 +2709,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2737,7 +2797,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2855,8 +2915,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3420,8 +3489,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_NAME_NAME_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3444,7 +3520,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3553,8 +3629,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_NAME_NAME_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3634,7 +3717,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3780,8 +3863,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_NAME_NAME_2);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4310,8 +4402,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_TYPE_TYPE_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4334,7 +4433,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4429,8 +4528,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_TYPE_TYPE_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4510,7 +4616,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -4628,8 +4734,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_TYPE_TYPE_2_SQL);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -5199,8 +5314,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_SUBTYPE_SUBTYPE_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5223,7 +5345,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -5333,8 +5455,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_SUBTYPE_SUBTYPE_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5414,7 +5543,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -5560,8 +5689,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_SUBTYPE_SUBTYPE_2);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -6387,8 +6525,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_C_T_TYPE_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6411,7 +6556,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -6514,8 +6659,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_C_T_TYPE_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6595,7 +6747,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -6721,8 +6873,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6745,7 +6904,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -7140,8 +7299,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 
 		query.append(_FINDER_COLUMN_C_T_TYPE_2_SQL);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -7214,8 +7382,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -7823,8 +8000,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_T_S_SUBTYPE_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -7847,7 +8031,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -7964,8 +8148,15 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_T_S_SUBTYPE_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -8045,7 +8236,7 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -8202,8 +8393,17 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 			query.append(_FINDER_COLUMN_T_S_SUBTYPE_2);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Role.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Role.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -10013,7 +10213,8 @@ public class RolePersistenceImpl extends BasePersistenceImpl<Role>
 	private static final String _SQL_SELECT_ROLE_WHERE = "SELECT role FROM Role role WHERE ";
 	private static final String _SQL_COUNT_ROLE = "SELECT COUNT(role) FROM Role role";
 	private static final String _SQL_COUNT_ROLE_WHERE = "SELECT COUNT(role) FROM Role role WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "role.roleId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "role.roleId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "Role_.roleId";
 	private static final String _FILTER_SQL_SELECT_ROLE_WHERE = "SELECT DISTINCT {role.*} FROM Role_ role WHERE ";
 	private static final String _FILTER_SQL_SELECT_ROLE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {Role_.*} FROM (SELECT DISTINCT role.roleId FROM Role_ role WHERE ";

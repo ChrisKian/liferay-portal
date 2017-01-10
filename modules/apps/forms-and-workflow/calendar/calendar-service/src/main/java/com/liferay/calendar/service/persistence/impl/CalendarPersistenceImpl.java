@@ -2536,9 +2536,17 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			query.append(CalendarModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Calendar.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				Calendar.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -2690,9 +2698,17 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			query.append(CalendarModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Calendar.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				Calendar.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Query q = session.createQuery(sql);
@@ -2815,9 +2831,17 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 		query.append(_FINDER_COLUMN_G_C_CALENDARRESOURCEID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Calendar.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				Calendar.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -3443,9 +3467,17 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			query.append(CalendarModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Calendar.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				Calendar.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -3604,9 +3636,17 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 			query.append(CalendarModelImpl.ORDER_BY_JPQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Calendar.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				Calendar.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Query q = session.createQuery(sql);
@@ -3745,9 +3785,17 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 
 		query.append(_FINDER_COLUMN_G_C_D_DEFAULTCALENDAR_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Calendar.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				Calendar.class.getName(), classPKField,
 				_FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN, groupId);
 
 		Session session = null;
@@ -4626,7 +4674,8 @@ public class CalendarPersistenceImpl extends BasePersistenceImpl<Calendar>
 	private static final String _SQL_SELECT_CALENDAR_WHERE = "SELECT calendar FROM Calendar calendar WHERE ";
 	private static final String _SQL_COUNT_CALENDAR = "SELECT COUNT(calendar) FROM Calendar calendar";
 	private static final String _SQL_COUNT_CALENDAR_WHERE = "SELECT COUNT(calendar) FROM Calendar calendar WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "calendar.calendarId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "calendar.calendarId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "Calendar.calendarId";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_USERID_COLUMN = "calendar.userId";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "calendar.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Calendar exists with the primary key ";

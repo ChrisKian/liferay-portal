@@ -2022,8 +2022,15 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMDATAPROVIDERINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2046,8 +2053,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMDataProviderInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMDataProviderInstance.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2151,8 +2157,15 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMDATAPROVIDERINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2232,8 +2245,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMDataProviderInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMDataProviderInstance.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2353,8 +2365,15 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMDATAPROVIDERINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2377,8 +2396,7 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMDataProviderInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DDMDataProviderInstance.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -2749,9 +2767,17 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMDataProviderInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMDataProviderInstance.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2819,9 +2845,17 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMDataProviderInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DDMDataProviderInstance.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -4206,7 +4240,8 @@ public class DDMDataProviderInstancePersistenceImpl extends BasePersistenceImpl<
 	private static final String _SQL_SELECT_DDMDATAPROVIDERINSTANCE_WHERE = "SELECT ddmDataProviderInstance FROM DDMDataProviderInstance ddmDataProviderInstance WHERE ";
 	private static final String _SQL_COUNT_DDMDATAPROVIDERINSTANCE = "SELECT COUNT(ddmDataProviderInstance) FROM DDMDataProviderInstance ddmDataProviderInstance";
 	private static final String _SQL_COUNT_DDMDATAPROVIDERINSTANCE_WHERE = "SELECT COUNT(ddmDataProviderInstance) FROM DDMDataProviderInstance ddmDataProviderInstance WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "ddmDataProviderInstance.dataProviderInstanceId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "ddmDataProviderInstance.dataProviderInstanceId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "DDMDataProviderInstance.dataProviderInstanceId";
 	private static final String _FILTER_SQL_SELECT_DDMDATAPROVIDERINSTANCE_WHERE =
 		"SELECT DISTINCT {ddmDataProviderInstance.*} FROM DDMDataProviderInstance ddmDataProviderInstance WHERE ";
 	private static final String _FILTER_SQL_SELECT_DDMDATAPROVIDERINSTANCE_NO_INLINE_DISTINCT_WHERE_1 =

@@ -643,8 +643,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -667,7 +674,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -778,8 +785,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -859,7 +873,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1005,8 +1019,17 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1626,8 +1649,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1650,7 +1680,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1768,8 +1798,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1849,7 +1886,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2006,8 +2043,17 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2555,8 +2601,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2579,7 +2632,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2677,8 +2730,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2758,7 +2818,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2876,8 +2936,17 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3453,8 +3522,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_C_P_PARENTUSERGROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3477,7 +3553,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3581,8 +3657,15 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_C_P_PARENTUSERGROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3662,7 +3745,7 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3791,8 +3874,17 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 
 		query.append(_FINDER_COLUMN_C_P_PARENTUSERGROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				UserGroup.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				UserGroup.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -5819,7 +5911,8 @@ public class UserGroupPersistenceImpl extends BasePersistenceImpl<UserGroup>
 	private static final String _SQL_SELECT_USERGROUP_WHERE = "SELECT userGroup FROM UserGroup userGroup WHERE ";
 	private static final String _SQL_COUNT_USERGROUP = "SELECT COUNT(userGroup) FROM UserGroup userGroup";
 	private static final String _SQL_COUNT_USERGROUP_WHERE = "SELECT COUNT(userGroup) FROM UserGroup userGroup WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "userGroup.userGroupId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "userGroup.userGroupId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "UserGroup.userGroupId";
 	private static final String _FILTER_SQL_SELECT_USERGROUP_WHERE = "SELECT DISTINCT {userGroup.*} FROM UserGroup userGroup WHERE ";
 	private static final String _FILTER_SQL_SELECT_USERGROUP_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {UserGroup.*} FROM (SELECT DISTINCT userGroup.userGroupId FROM UserGroup userGroup WHERE ";

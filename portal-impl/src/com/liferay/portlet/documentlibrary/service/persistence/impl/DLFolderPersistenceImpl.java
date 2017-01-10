@@ -1991,8 +1991,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2015,8 +2022,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2114,8 +2120,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2195,8 +2208,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2314,9 +2326,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3906,8 +3926,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3930,8 +3957,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4034,8 +4060,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4115,8 +4148,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -4245,9 +4277,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6756,8 +6796,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6780,8 +6827,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6891,8 +6937,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6972,8 +7025,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -7116,9 +7168,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_PARENTFOLDERID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -8507,8 +8567,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_H_HIDDEN_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -8531,8 +8598,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -8649,8 +8715,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_H_HIDDEN_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -8730,8 +8803,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -8888,9 +8960,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_H_HIDDEN_2_SQL);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -9576,8 +9656,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_T_H_HIDDEN_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -9600,8 +9687,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -9732,8 +9818,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_T_H_HIDDEN_2_SQL);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -9813,8 +9906,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -9996,9 +10088,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_T_H_HIDDEN_2_SQL);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -10666,8 +10766,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_P_H_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -10690,8 +10797,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -10808,8 +10914,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_P_H_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -10889,8 +11002,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -11046,9 +11158,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_P_H_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -11753,8 +11873,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_H_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -11777,8 +11904,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -11900,8 +12026,15 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_H_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -11981,8 +12114,7 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -12151,9 +12283,17 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 
 		query.append(_FINDER_COLUMN_G_M_P_H_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DLFolder.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DLFolder.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -13587,7 +13727,8 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	private static final String _SQL_SELECT_DLFOLDER_WHERE = "SELECT dlFolder FROM DLFolder dlFolder WHERE ";
 	private static final String _SQL_COUNT_DLFOLDER = "SELECT COUNT(dlFolder) FROM DLFolder dlFolder";
 	private static final String _SQL_COUNT_DLFOLDER_WHERE = "SELECT COUNT(dlFolder) FROM DLFolder dlFolder WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "dlFolder.folderId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "dlFolder.folderId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "DLFolder.folderId";
 	private static final String _FILTER_SQL_SELECT_DLFOLDER_WHERE = "SELECT DISTINCT {dlFolder.*} FROM DLFolder dlFolder WHERE ";
 	private static final String _FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {DLFolder.*} FROM (SELECT DISTINCT dlFolder.folderId FROM DLFolder dlFolder WHERE ";

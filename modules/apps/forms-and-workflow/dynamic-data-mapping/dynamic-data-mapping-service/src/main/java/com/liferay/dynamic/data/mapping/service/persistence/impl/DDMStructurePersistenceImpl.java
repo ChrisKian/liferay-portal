@@ -1988,8 +1988,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2012,8 +2019,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2112,8 +2118,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2193,8 +2206,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2313,8 +2325,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2337,8 +2356,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DDMStructure.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -2703,9 +2721,17 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2773,9 +2799,17 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DDMStructure.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -4924,8 +4958,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_G_P_PARENTSTRUCTUREID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4948,8 +4989,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -5054,8 +5094,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_G_P_PARENTSTRUCTUREID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5135,8 +5182,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -5265,9 +5311,17 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_G_P_PARENTSTRUCTUREID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -5846,8 +5900,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_G_C_CLASSNAMEID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5870,8 +5931,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -5976,8 +6036,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_G_C_CLASSNAMEID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6057,8 +6124,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -6188,8 +6254,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6212,8 +6285,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DDMStructure.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -6618,9 +6690,17 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 
 		query.append(_FINDER_COLUMN_G_C_CLASSNAMEID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6695,9 +6775,17 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupIds);
+				DDMStructure.class.getName(), classPKField, groupIds);
 
 		Session session = null;
 
@@ -8222,8 +8310,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			query.append(_FINDER_COLUMN_G_N_D_DESCRIPTION_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -8246,8 +8341,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -8386,8 +8480,15 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			query.append(_FINDER_COLUMN_G_N_D_DESCRIPTION_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -8467,8 +8568,7 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -8664,9 +8764,17 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			query.append(_FINDER_COLUMN_G_N_D_DESCRIPTION_2);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				DDMStructure.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				DDMStructure.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -9701,7 +9809,8 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 	private static final String _SQL_SELECT_DDMSTRUCTURE_WHERE = "SELECT ddmStructure FROM DDMStructure ddmStructure WHERE ";
 	private static final String _SQL_COUNT_DDMSTRUCTURE = "SELECT COUNT(ddmStructure) FROM DDMStructure ddmStructure";
 	private static final String _SQL_COUNT_DDMSTRUCTURE_WHERE = "SELECT COUNT(ddmStructure) FROM DDMStructure ddmStructure WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "ddmStructure.structureId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "ddmStructure.structureId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "DDMStructure.structureId";
 	private static final String _FILTER_SQL_SELECT_DDMSTRUCTURE_WHERE = "SELECT DISTINCT {ddmStructure.*} FROM DDMStructure ddmStructure WHERE ";
 	private static final String _FILTER_SQL_SELECT_DDMSTRUCTURE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {DDMStructure.*} FROM (SELECT DISTINCT ddmStructure.structureId FROM DDMStructure ddmStructure WHERE ";

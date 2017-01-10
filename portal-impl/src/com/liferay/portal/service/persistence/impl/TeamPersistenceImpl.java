@@ -1972,8 +1972,15 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_TEAM_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1996,8 +2003,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Team.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				groupId);
+				Team.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2093,8 +2099,15 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_TEAM_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2174,8 +2187,7 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Team.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				groupId);
+				Team.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2293,9 +2305,17 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Team.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
-				groupId);
+				Team.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4009,7 +4029,8 @@ public class TeamPersistenceImpl extends BasePersistenceImpl<Team>
 	private static final String _SQL_SELECT_TEAM_WHERE = "SELECT team FROM Team team WHERE ";
 	private static final String _SQL_COUNT_TEAM = "SELECT COUNT(team) FROM Team team";
 	private static final String _SQL_COUNT_TEAM_WHERE = "SELECT COUNT(team) FROM Team team WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "team.teamId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "team.teamId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "Team.teamId";
 	private static final String _FILTER_SQL_SELECT_TEAM_WHERE = "SELECT DISTINCT {team.*} FROM Team team WHERE ";
 	private static final String _FILTER_SQL_SELECT_TEAM_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {Team.*} FROM (SELECT DISTINCT team.teamId FROM Team team WHERE ";

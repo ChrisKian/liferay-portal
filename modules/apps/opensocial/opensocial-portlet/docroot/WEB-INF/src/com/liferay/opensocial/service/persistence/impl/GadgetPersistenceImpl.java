@@ -634,8 +634,15 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -658,7 +665,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -769,8 +776,15 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -850,7 +864,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -996,8 +1010,17 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1615,8 +1638,15 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1639,7 +1669,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1756,8 +1786,15 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1837,7 +1874,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1994,8 +2031,17 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2539,8 +2585,15 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2563,7 +2616,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2661,8 +2714,15 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2742,7 +2802,7 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2860,8 +2920,17 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Gadget.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Gadget.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3930,7 +3999,8 @@ public class GadgetPersistenceImpl extends BasePersistenceImpl<Gadget>
 	private static final String _SQL_SELECT_GADGET_WHERE = "SELECT gadget FROM Gadget gadget WHERE ";
 	private static final String _SQL_COUNT_GADGET = "SELECT COUNT(gadget) FROM Gadget gadget";
 	private static final String _SQL_COUNT_GADGET_WHERE = "SELECT COUNT(gadget) FROM Gadget gadget WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "gadget.gadgetId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "gadget.gadgetId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "OpenSocial_Gadget.gadgetId";
 	private static final String _FILTER_SQL_SELECT_GADGET_WHERE = "SELECT DISTINCT {gadget.*} FROM OpenSocial_Gadget gadget WHERE ";
 	private static final String _FILTER_SQL_SELECT_GADGET_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {OpenSocial_Gadget.*} FROM (SELECT DISTINCT gadget.gadgetId FROM OpenSocial_Gadget gadget WHERE ";

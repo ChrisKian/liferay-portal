@@ -643,8 +643,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -667,8 +674,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -781,8 +787,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -862,8 +875,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1009,9 +1021,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1632,8 +1652,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1656,8 +1683,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1776,8 +1802,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1857,8 +1890,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2015,9 +2047,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2566,8 +2606,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2590,8 +2637,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2691,8 +2737,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2772,8 +2825,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2891,9 +2943,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3432,8 +3492,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_LOCATIONS_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3456,8 +3523,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3557,8 +3623,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_LOCATIONS_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3638,8 +3711,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3757,9 +3829,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_LOCATIONS_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4343,8 +4423,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_C_P_PARENTORGANIZATIONID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4367,8 +4454,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4473,8 +4559,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_C_P_PARENTORGANIZATIONID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4554,8 +4647,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -4684,9 +4776,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_C_P_PARENTORGANIZATIONID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -5291,8 +5391,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 			query.append(_FINDER_COLUMN_C_T_TREEPATH_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5315,8 +5422,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -5435,8 +5541,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 			query.append(_FINDER_COLUMN_C_T_TREEPATH_2);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5516,8 +5629,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -5674,9 +5786,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 			query.append(_FINDER_COLUMN_C_T_TREEPATH_2);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -6382,8 +6502,15 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_O_C_P_PARENTORGANIZATIONID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6406,8 +6533,7 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -6547,9 +6673,17 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 
 		query.append(_FINDER_COLUMN_O_C_P_PARENTORGANIZATIONID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				Organization.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				Organization.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -8047,7 +8181,8 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	private static final String _SQL_SELECT_ORGANIZATION_WHERE = "SELECT organization FROM Organization organization WHERE ";
 	private static final String _SQL_COUNT_ORGANIZATION = "SELECT COUNT(organization) FROM Organization organization";
 	private static final String _SQL_COUNT_ORGANIZATION_WHERE = "SELECT COUNT(organization) FROM Organization organization WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "organization.organizationId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "organization.organizationId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "Organization_.organizationId";
 	private static final String _FILTER_SQL_SELECT_ORGANIZATION_WHERE = "SELECT DISTINCT {organization.*} FROM Organization_ organization WHERE ";
 	private static final String _FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {Organization_.*} FROM (SELECT DISTINCT organization.organizationId FROM Organization_ organization WHERE ";

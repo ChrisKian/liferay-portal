@@ -1981,8 +1981,15 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_KBTEMPLATE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2005,8 +2012,7 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				KBTemplate.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				KBTemplate.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2104,8 +2110,15 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_KBTEMPLATE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2185,8 +2198,7 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				KBTemplate.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				KBTemplate.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2304,9 +2316,17 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				KBTemplate.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				KBTemplate.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3136,7 +3156,8 @@ public class KBTemplatePersistenceImpl extends BasePersistenceImpl<KBTemplate>
 	private static final String _SQL_SELECT_KBTEMPLATE_WHERE = "SELECT kbTemplate FROM KBTemplate kbTemplate WHERE ";
 	private static final String _SQL_COUNT_KBTEMPLATE = "SELECT COUNT(kbTemplate) FROM KBTemplate kbTemplate";
 	private static final String _SQL_COUNT_KBTEMPLATE_WHERE = "SELECT COUNT(kbTemplate) FROM KBTemplate kbTemplate WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "kbTemplate.kbTemplateId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "kbTemplate.kbTemplateId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "KBTemplate.kbTemplateId";
 	private static final String _FILTER_SQL_SELECT_KBTEMPLATE_WHERE = "SELECT DISTINCT {kbTemplate.*} FROM KBTemplate kbTemplate WHERE ";
 	private static final String _FILTER_SQL_SELECT_KBTEMPLATE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {KBTemplate.*} FROM (SELECT DISTINCT kbTemplate.kbTemplateId FROM KBTemplate kbTemplate WHERE ";

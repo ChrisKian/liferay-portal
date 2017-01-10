@@ -653,8 +653,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -677,8 +684,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -791,8 +797,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -872,8 +885,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1019,9 +1031,17 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1650,8 +1670,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1674,8 +1701,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1797,8 +1823,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1878,8 +1911,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2036,9 +2068,17 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2589,8 +2629,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_USERID_USERID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2613,8 +2660,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2713,8 +2759,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_USERID_USERID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2794,8 +2847,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2913,9 +2965,17 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_USERID_USERID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3497,8 +3557,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_C_C_CLASSPK_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3521,8 +3588,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -3628,8 +3694,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_C_C_CLASSPK_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3709,8 +3782,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3839,9 +3911,17 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_C_C_CLASSPK_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4466,8 +4546,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_C_C_A_ALERT_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4490,8 +4577,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4604,8 +4690,15 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_C_C_A_ALERT_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4685,8 +4778,7 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -4826,9 +4918,17 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 
 		query.append(_FINDER_COLUMN_C_C_A_ALERT_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				AnnouncementsEntry.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				AnnouncementsEntry.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -5698,7 +5798,8 @@ public class AnnouncementsEntryPersistenceImpl extends BasePersistenceImpl<Annou
 	private static final String _SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE = "SELECT announcementsEntry FROM AnnouncementsEntry announcementsEntry WHERE ";
 	private static final String _SQL_COUNT_ANNOUNCEMENTSENTRY = "SELECT COUNT(announcementsEntry) FROM AnnouncementsEntry announcementsEntry";
 	private static final String _SQL_COUNT_ANNOUNCEMENTSENTRY_WHERE = "SELECT COUNT(announcementsEntry) FROM AnnouncementsEntry announcementsEntry WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "announcementsEntry.entryId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "announcementsEntry.entryId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "AnnouncementsEntry.entryId";
 	private static final String _FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_WHERE = "SELECT DISTINCT {announcementsEntry.*} FROM AnnouncementsEntry announcementsEntry WHERE ";
 	private static final String _FILTER_SQL_SELECT_ANNOUNCEMENTSENTRY_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {AnnouncementsEntry.*} FROM (SELECT DISTINCT announcementsEntry.entryId FROM AnnouncementsEntry announcementsEntry WHERE ";

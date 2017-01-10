@@ -1989,8 +1989,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2013,8 +2020,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2112,8 +2118,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2193,8 +2206,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2312,9 +2324,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3400,8 +3420,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3424,8 +3451,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3529,8 +3555,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3610,8 +3643,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3740,8 +3772,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3764,8 +3803,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4168,9 +4206,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4243,9 +4289,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4820,8 +4874,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4844,8 +4905,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4949,8 +5009,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -5030,8 +5097,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -5160,9 +5226,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6149,8 +6223,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_NOTC_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6173,8 +6254,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6326,8 +6406,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -6350,8 +6437,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6827,9 +6913,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_NOTC_G_P_PARENTCATEGORYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -6929,9 +7023,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -7560,8 +7662,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_P_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -7584,8 +7693,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -7694,8 +7802,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_P_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -7775,8 +7890,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -7915,8 +8029,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -7939,8 +8060,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -8376,9 +8496,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_G_P_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -8459,9 +8587,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -8940,8 +9076,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_NOTC_G_P_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -8964,8 +9107,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -9126,8 +9268,15 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -9150,8 +9299,7 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -9660,9 +9808,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 
 		query.append(_FINDER_COLUMN_NOTC_G_P_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -9770,9 +9926,17 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 		query.setStringAt(removeConjunction(query.stringAt(query.index() - 1)),
 			query.index() - 1);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MBCategory.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MBCategory.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -10719,7 +10883,8 @@ public class MBCategoryPersistenceImpl extends BasePersistenceImpl<MBCategory>
 	private static final String _SQL_SELECT_MBCATEGORY_WHERE = "SELECT mbCategory FROM MBCategory mbCategory WHERE ";
 	private static final String _SQL_COUNT_MBCATEGORY = "SELECT COUNT(mbCategory) FROM MBCategory mbCategory";
 	private static final String _SQL_COUNT_MBCATEGORY_WHERE = "SELECT COUNT(mbCategory) FROM MBCategory mbCategory WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "mbCategory.categoryId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "mbCategory.categoryId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "MBCategory.categoryId";
 	private static final String _FILTER_SQL_SELECT_MBCATEGORY_WHERE = "SELECT DISTINCT {mbCategory.*} FROM MBCategory mbCategory WHERE ";
 	private static final String _FILTER_SQL_SELECT_MBCATEGORY_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {MBCategory.*} FROM (SELECT DISTINCT mbCategory.categoryId FROM MBCategory mbCategory WHERE ";

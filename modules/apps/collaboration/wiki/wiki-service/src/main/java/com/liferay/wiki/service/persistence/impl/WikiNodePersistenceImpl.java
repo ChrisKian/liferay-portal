@@ -1978,8 +1978,15 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_WIKINODE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2002,8 +2009,7 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				WikiNode.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				WikiNode.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2100,8 +2106,15 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_WIKINODE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2181,8 +2194,7 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				WikiNode.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				WikiNode.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2300,9 +2312,17 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				WikiNode.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				WikiNode.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3626,8 +3646,15 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 
 		query.append(_FINDER_COLUMN_G_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_WIKINODE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3650,8 +3677,7 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				WikiNode.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				WikiNode.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3754,8 +3780,15 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 
 		query.append(_FINDER_COLUMN_G_S_STATUS_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_WIKINODE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -3835,8 +3868,7 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				WikiNode.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				WikiNode.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -3965,9 +3997,17 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 
 		query.append(_FINDER_COLUMN_G_S_STATUS_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				WikiNode.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				WikiNode.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -5426,7 +5466,8 @@ public class WikiNodePersistenceImpl extends BasePersistenceImpl<WikiNode>
 	private static final String _SQL_SELECT_WIKINODE_WHERE = "SELECT wikiNode FROM WikiNode wikiNode WHERE ";
 	private static final String _SQL_COUNT_WIKINODE = "SELECT COUNT(wikiNode) FROM WikiNode wikiNode";
 	private static final String _SQL_COUNT_WIKINODE_WHERE = "SELECT COUNT(wikiNode) FROM WikiNode wikiNode WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "wikiNode.nodeId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "wikiNode.nodeId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "WikiNode.nodeId";
 	private static final String _FILTER_SQL_SELECT_WIKINODE_WHERE = "SELECT DISTINCT {wikiNode.*} FROM WikiNode wikiNode WHERE ";
 	private static final String _FILTER_SQL_SELECT_WIKINODE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {WikiNode.*} FROM (SELECT DISTINCT wikiNode.nodeId FROM WikiNode wikiNode WHERE ";

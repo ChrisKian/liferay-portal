@@ -1991,8 +1991,15 @@ public class PollsQuestionPersistenceImpl extends BasePersistenceImpl<PollsQuest
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_POLLSQUESTION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2015,8 +2022,7 @@ public class PollsQuestionPersistenceImpl extends BasePersistenceImpl<PollsQuest
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PollsQuestion.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				PollsQuestion.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2115,8 +2121,15 @@ public class PollsQuestionPersistenceImpl extends BasePersistenceImpl<PollsQuest
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_POLLSQUESTION_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2196,8 +2209,7 @@ public class PollsQuestionPersistenceImpl extends BasePersistenceImpl<PollsQuest
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PollsQuestion.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				PollsQuestion.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2315,9 +2327,17 @@ public class PollsQuestionPersistenceImpl extends BasePersistenceImpl<PollsQuest
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PollsQuestion.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				PollsQuestion.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -3153,7 +3173,8 @@ public class PollsQuestionPersistenceImpl extends BasePersistenceImpl<PollsQuest
 	private static final String _SQL_SELECT_POLLSQUESTION_WHERE = "SELECT pollsQuestion FROM PollsQuestion pollsQuestion WHERE ";
 	private static final String _SQL_COUNT_POLLSQUESTION = "SELECT COUNT(pollsQuestion) FROM PollsQuestion pollsQuestion";
 	private static final String _SQL_COUNT_POLLSQUESTION_WHERE = "SELECT COUNT(pollsQuestion) FROM PollsQuestion pollsQuestion WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "pollsQuestion.questionId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "pollsQuestion.questionId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "PollsQuestion.questionId";
 	private static final String _FILTER_SQL_SELECT_POLLSQUESTION_WHERE = "SELECT DISTINCT {pollsQuestion.*} FROM PollsQuestion pollsQuestion WHERE ";
 	private static final String _FILTER_SQL_SELECT_POLLSQUESTION_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {PollsQuestion.*} FROM (SELECT DISTINCT pollsQuestion.questionId FROM PollsQuestion pollsQuestion WHERE ";

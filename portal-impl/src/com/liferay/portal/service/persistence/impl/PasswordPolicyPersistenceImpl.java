@@ -640,8 +640,15 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -664,8 +671,7 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -779,8 +785,15 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -860,8 +873,7 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -1007,9 +1019,17 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 			query.append(_FINDER_COLUMN_UUID_UUID_2_SQL);
 		}
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1632,8 +1652,15 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1656,8 +1683,7 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -1776,8 +1802,15 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -1857,8 +1890,7 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2015,9 +2047,17 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2568,8 +2608,15 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2592,8 +2639,7 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -2693,8 +2739,15 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2774,8 +2827,7 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2893,9 +2945,17 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 
 		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				PasswordPolicy.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+				PasswordPolicy.class.getName(), classPKField);
 
 		Session session = null;
 
@@ -4277,7 +4337,8 @@ public class PasswordPolicyPersistenceImpl extends BasePersistenceImpl<PasswordP
 	private static final String _SQL_SELECT_PASSWORDPOLICY_WHERE = "SELECT passwordPolicy FROM PasswordPolicy passwordPolicy WHERE ";
 	private static final String _SQL_COUNT_PASSWORDPOLICY = "SELECT COUNT(passwordPolicy) FROM PasswordPolicy passwordPolicy";
 	private static final String _SQL_COUNT_PASSWORDPOLICY_WHERE = "SELECT COUNT(passwordPolicy) FROM PasswordPolicy passwordPolicy WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "passwordPolicy.passwordPolicyId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "passwordPolicy.passwordPolicyId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "PasswordPolicy.passwordPolicyId";
 	private static final String _FILTER_SQL_SELECT_PASSWORDPOLICY_WHERE = "SELECT DISTINCT {passwordPolicy.*} FROM PasswordPolicy passwordPolicy WHERE ";
 	private static final String _FILTER_SQL_SELECT_PASSWORDPOLICY_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {PasswordPolicy.*} FROM (SELECT DISTINCT passwordPolicy.passwordPolicyId FROM PasswordPolicy passwordPolicy WHERE ";

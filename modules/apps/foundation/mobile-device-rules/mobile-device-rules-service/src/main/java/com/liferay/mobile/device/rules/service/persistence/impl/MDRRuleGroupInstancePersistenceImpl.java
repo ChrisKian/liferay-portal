@@ -2004,8 +2004,15 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MDRRULEGROUPINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2028,8 +2035,7 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MDRRuleGroupInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MDRRuleGroupInstance.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -2131,8 +2137,15 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MDRRULEGROUPINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -2212,8 +2225,7 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MDRRuleGroupInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MDRRuleGroupInstance.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -2331,9 +2343,17 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 
 		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MDRRuleGroupInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MDRRuleGroupInstance.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4016,8 +4036,15 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 
 		query.append(_FINDER_COLUMN_G_C_C_CLASSPK_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MDRRULEGROUPINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4040,8 +4067,7 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MDRRuleGroupInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MDRRuleGroupInstance.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -4155,8 +4181,15 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 
 		query.append(_FINDER_COLUMN_G_C_C_CLASSPK_2);
 
+		String classPKField;
+
 		if (!getDB().isSupportsInlineDistinct()) {
 			query.append(_FILTER_SQL_SELECT_MDRRULEGROUPINSTANCE_NO_INLINE_DISTINCT_WHERE_2);
+
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
 		}
 
 		if (orderByComparator != null) {
@@ -4236,8 +4269,7 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 		}
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MDRRuleGroupInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MDRRuleGroupInstance.class.getName(), classPKField, groupId);
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
@@ -4377,9 +4409,17 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 
 		query.append(_FINDER_COLUMN_G_C_C_CLASSPK_2);
 
+		String classPKField;
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			classPKField = _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN;
+		}
+		else {
+			classPKField = _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN;
+		}
+
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
-				MDRRuleGroupInstance.class.getName(),
-				_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN, groupId);
+				MDRRuleGroupInstance.class.getName(), classPKField, groupId);
 
 		Session session = null;
 
@@ -5589,7 +5629,8 @@ public class MDRRuleGroupInstancePersistenceImpl extends BasePersistenceImpl<MDR
 	private static final String _SQL_SELECT_MDRRULEGROUPINSTANCE_WHERE = "SELECT mdrRuleGroupInstance FROM MDRRuleGroupInstance mdrRuleGroupInstance WHERE ";
 	private static final String _SQL_COUNT_MDRRULEGROUPINSTANCE = "SELECT COUNT(mdrRuleGroupInstance) FROM MDRRuleGroupInstance mdrRuleGroupInstance";
 	private static final String _SQL_COUNT_MDRRULEGROUPINSTANCE_WHERE = "SELECT COUNT(mdrRuleGroupInstance) FROM MDRRuleGroupInstance mdrRuleGroupInstance WHERE ";
-	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "mdrRuleGroupInstance.ruleGroupInstanceId";
+	private static final String _FILTER_ENTITY_ALIAS_FILTER_PK_COLUMN = "mdrRuleGroupInstance.ruleGroupInstanceId";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "MDRRuleGroupInstance.ruleGroupInstanceId";
 	private static final String _FILTER_SQL_SELECT_MDRRULEGROUPINSTANCE_WHERE = "SELECT DISTINCT {mdrRuleGroupInstance.*} FROM MDRRuleGroupInstance mdrRuleGroupInstance WHERE ";
 	private static final String _FILTER_SQL_SELECT_MDRRULEGROUPINSTANCE_NO_INLINE_DISTINCT_WHERE_1 =
 		"SELECT {MDRRuleGroupInstance.*} FROM (SELECT DISTINCT mdrRuleGroupInstance.ruleGroupInstanceId FROM MDRRuleGroupInstance mdrRuleGroupInstance WHERE ";
