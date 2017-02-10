@@ -14,6 +14,7 @@ task buildSystemPackagesExtraManifest
 task copySystemPackagesExtraLibs(type: Copy)
 task copySystemPackagesExtraManifest(type: Copy)
 
+String buildProfile = System.properties["build.profile"]
 File systemPackagesExtraBndFile = file("system.packages.extra.bnd")
 File systemPackagesExtraManifestFile = file("system.packages.extra.mf")
 
@@ -28,13 +29,20 @@ buildSystemPackagesExtraManifest {
 
 		Map<String, String> properties = liferayOSGi.bundleDefaultInstructions
 
+		properties["-check"] = "imports"
+		properties["-fixupmessages"] = '"Classpath is empty. Private-Package ...";is:=ignore'
 		properties["-include"] = relativePath(systemPackagesExtraBndFile)
 
 		jarBuilder.withClasspath new File[0]
+		jarBuilder.withFailOnError true
 		jarBuilder.withName "system.packages.extra"
 		jarBuilder.withProperties properties
 		jarBuilder.withResources new File[0]
-		jarBuilder.withSourcepath sourceSets.main.allSource.srcDirs
+
+		jarBuilder.withSourcepath sourceSets.main.allSource.srcDirs.findAll {
+			it.directory
+		}
+
 		jarBuilder.withTrace false
 		jarBuilder.withVersion project.version
 
@@ -59,7 +67,7 @@ copySystemPackagesExtraLibs {
 }
 
 copySystemPackagesExtraManifest {
-	if (!FileUtil.isUpToDate(project, systemPackagesExtraBndFile, systemPackagesExtraManifestFile)) {
+	if ((buildProfile == "slim") || !FileUtil.isUpToDate(project, systemPackagesExtraBndFile, systemPackagesExtraManifestFile)) {
 		dependsOn buildSystemPackagesExtraManifest
 	}
 
@@ -73,6 +81,7 @@ copySystemPackagesExtraManifest {
 
 dependencies {
 	provided group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	provided group: "com.liferay", name: "com.liferay.osgi.felix.util", version: "1.0.0"
 	provided group: "com.liferay", name: "com.liferay.osgi.service.tracker.collections", version: "2.0.0"
 	provided group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	provided group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -82,12 +91,16 @@ dependencies {
 	provided group: "org.springframework", name: "spring-context", version: "4.1.9.RELEASE"
 	provided group: "org.springframework", name: "spring-core", version: "4.1.9.RELEASE"
 	provided project(":core:jaxws-osgi-bridge")
-	provided project(":core:osgi-felix-util")
 	provided project(":core:portal-app-license-api")
-	provided project(":core:portal-impl-compat")
-	provided project(":core:portal-kernel-compat")
 	provided project(":core:registry-api")
 	provided project(":core:registry-impl")
+}
+
+if (buildProfile != "slim") {
+	dependencies {
+		provided project(":core:portal-compat:blogs:portal-impl-blogs-compat")
+		provided project(":core:portal-compat:blogs:portal-kernel-blogs-compat")
+	}
 }
 
 jar {

@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -64,7 +63,7 @@ public class FriendlyURLServletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropsValues.LOCALES_ENABLED = new String[] {"en_US", "hu_HU", "en_GB"};
+		PropsValues.LOCALES_ENABLED = new String[] {"en_US", "hu_HU", "de_DE"};
 		PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE = true;
 
 		LanguageUtil.init();
@@ -79,7 +78,7 @@ public class FriendlyURLServletTest {
 		_layout = LayoutTestUtil.addLayout(_group);
 
 		List<Locale> availableLocales = Arrays.asList(
-			LocaleUtil.US, LocaleUtil.UK, LocaleUtil.HUNGARY);
+			LocaleUtil.US, LocaleUtil.GERMANY, LocaleUtil.HUNGARY);
 
 		GroupTestUtil.updateDisplaySettings(
 			_group.getGroupId(), availableLocales, LocaleUtil.US);
@@ -106,7 +105,7 @@ public class FriendlyURLServletTest {
 
 		testGetRedirect(
 			mockHttpServletRequest, getPath(_group, _layout), Portal.PATH_MAIN,
-			new Object[] {getURL(_layout), false});
+			new FriendlyURLServlet.Redirect(getURL(_layout)));
 	}
 
 	@Test
@@ -114,7 +113,7 @@ public class FriendlyURLServletTest {
 		testGetI18nRedirect("/fr", "/en");
 		testGetI18nRedirect("/hu", "/hu");
 		testGetI18nRedirect("/en", "/en");
-		testGetI18nRedirect("/en_GB", "/en_GB");
+		testGetI18nRedirect("/de_DE", "/de_DE");
 		testGetI18nRedirect("/en_US", "/en_US");
 	}
 
@@ -161,36 +160,34 @@ public class FriendlyURLServletTest {
 
 		mockHttpServletRequest.setRequestURI(requestURI);
 
-		Object[] expectedRedirectArray = null;
+		FriendlyURLServlet.Redirect expectedRedirect = null;
 
 		if (!Objects.equals(i18nPath, expectedI18nPath)) {
-			expectedRedirectArray =
-				new Object[] {expectedI18nPath + requestURI, true};
+			expectedRedirect = new FriendlyURLServlet.Redirect(
+				expectedI18nPath + requestURI, true, true);
 		}
 		else {
-			expectedRedirectArray = new Object[] {getURL(_layout), false};
+			expectedRedirect = new FriendlyURLServlet.Redirect(getURL(_layout));
 		}
 
 		testGetRedirect(
 			mockHttpServletRequest, _group.getFriendlyURL(), Portal.PATH_MAIN,
-			expectedRedirectArray);
+			expectedRedirect);
 
 		testGetRedirect(
 			mockHttpServletRequest, getPath(_group, _layout), Portal.PATH_MAIN,
-			expectedRedirectArray);
+			expectedRedirect);
 	}
 
 	protected void testGetRedirect(
 			HttpServletRequest request, String path, String mainPath,
-			Object[] expectedRedirectArray)
+			FriendlyURLServlet.Redirect expectedRedirect)
 		throws Exception {
 
-		Object[] actualRedirectArray = ReflectionTestUtil.invoke(
-			_friendlyURLServlet, "_getRedirect",
-			new Class<?>[] {HttpServletRequest.class, String.class}, request,
-			path);
+		FriendlyURLServlet.Redirect actualRedirect =
+			_friendlyURLServlet.getRedirect(request, path);
 
-		Assert.assertArrayEquals(expectedRedirectArray, actualRedirectArray);
+		Assert.assertEquals(expectedRedirect, actualRedirect);
 	}
 
 	private final FriendlyURLServlet _friendlyURLServlet =

@@ -1,5 +1,6 @@
 <definition component-name="portal-wcm">
 	<property name="portal.release" value="true" />
+	<property name="portal.upstream" value="true" />
 	<property name="testray.main.component.name" value="Content and Application Templates" />
 	<property name="custom.properties" value="default.layout.template.id=1_column" />
 
@@ -91,7 +92,7 @@
 
 		<execute macro="RSS#waitForRSSLoad" />
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="RSS" />
 		</execute>
 
@@ -146,7 +147,7 @@
 			<var name="siteName" value="Test Site Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="RSS" />
 		</execute>
 
@@ -197,7 +198,7 @@
 			<var name="siteName" value="Test Site Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="RSS" />
 		</execute>
 
@@ -264,7 +265,7 @@
 			<var name="assetTitle" value="WC Title" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Asset Publisher" />
 		</execute>
 
@@ -368,7 +369,7 @@
 			<var name="vocabularyName" value="Vocabulary Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Categories Navigation" />
 		</execute>
 
@@ -466,7 +467,7 @@
 
 		<execute macro="MGPortlet#viewShowAllPG" />
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Documents and Media" />
 		</execute>
 
@@ -552,7 +553,7 @@
 			<var name="siteName" value="Test Site Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Site Map" />
 		</execute>
 
@@ -627,7 +628,7 @@
 			<var name="vocabularyName" value="Vocabulary Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Categories Navigation" />
 		</execute>
 
@@ -743,7 +744,7 @@
 			<var name="siteName" value="Test Site Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Tags Navigation" />
 		</execute>
 
@@ -830,7 +831,7 @@
 			<var name="siteName" value="Test Site Name" />
 		</execute>
 
-		<execute macro="ApplicationDisplayTemplates#addADTviaPortletPG">
+		<execute macro="ApplicationDisplayTemplates#selectPortletADT">
 			<var name="adtType" value="Wiki" />
 			<var name="portletName" value="Wiki" />
 		</execute>

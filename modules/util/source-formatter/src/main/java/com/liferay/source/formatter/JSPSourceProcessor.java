@@ -58,11 +58,6 @@ import org.dom4j.Element;
  */
 public class JSPSourceProcessor extends BaseSourceProcessor {
 
-	@Override
-	public String[] getIncludes() {
-		return _INCLUDES;
-	}
-
 	protected void addImportCounts(String content) {
 		Matcher matcher = _importsPattern.matcher(content);
 
@@ -194,7 +189,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				defineObject[2], "portlet");
 		}
 
-		if (!portalSource) {
+		if (!portalSource && !subrepository) {
 			return;
 		}
 
@@ -404,7 +399,8 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 			}
 		}
 
-		if (portalSource && content.contains("page import=") &&
+		if ((portalSource || subrepository) &&
+			content.contains("page import=") &&
 			!fileName.contains("init.jsp") &&
 			!fileName.contains("init-ext.jsp") &&
 			!fileName.contains("/taglib/aui/") &&
@@ -482,7 +478,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 
 		// LPS-62989
 
-		if (portalSource && isModulesFile(absolutePath) &&
+		if ((portalSource || subrepository) && isModulesFile(absolutePath) &&
 			newContent.contains("import=\"com.liferay.registry.Registry")) {
 
 			processMessage(
@@ -493,7 +489,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 
 		// LPS-64335
 
-		if (portalSource && isModulesFile(absolutePath) &&
+		if ((portalSource || subrepository) && isModulesFile(absolutePath) &&
 			newContent.contains("import=\"com.liferay.util.ContentUtil")) {
 
 			processMessage(
@@ -566,6 +562,11 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		}
 
 		return fileNames;
+	}
+
+	@Override
+	protected String[] doGetIncludes() {
+		return _INCLUDES;
 	}
 
 	protected String fixEmptyJavaSourceTag(String content) {
@@ -747,7 +748,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 					line, fileName, absolutePath, lineCount, javaSource);
 
 				if (javaSource) {
-					if (portalSource &&
+					if ((portalSource || subrepository) &&
 						!isExcludedPath(
 							_UNUSED_VARIABLES_EXCLUDES, absolutePath,
 							lineCount) &&
@@ -1180,7 +1181,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				line, attributeAndValue, newAttributeAndValue);
 		}
 
-		if (!portalSource) {
+		if (!portalSource && !subrepository) {
 			return line;
 		}
 
@@ -1851,7 +1852,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		String fileName, String content,
 		Set<String> checkedForIncludesFileNames, Set<String> includeFileNames) {
 
-		if (!portalSource) {
+		if (!portalSource && !subrepository) {
 			return content;
 		}
 
@@ -2123,11 +2124,6 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 			"PortletResponse", "resourceResponse",
 			"(PortletResponse)request.getAttribute(JavaConstants." +
 				"JAVAX_PORTLET_RESPONSE)"
-		},
-		new String[] {
-			"SearchContainerReference", "searchContainerReference",
-			"(SearchContainerReference)request.getAttribute(WebKeys." +
-				"SEARCH_CONTAINER_REFERENCE)"
 		}
 	};
 

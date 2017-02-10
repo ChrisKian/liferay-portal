@@ -35,11 +35,6 @@ import java.util.regex.Pattern;
  */
 public class FTLSourceProcessor extends BaseSourceProcessor {
 
-	@Override
-	public String[] getIncludes() {
-		return _INCLUDES;
-	}
-
 	protected void checkIfStatement(
 		String line, String fileName, int lineCount) {
 
@@ -143,6 +138,8 @@ public class FTLSourceProcessor extends BaseSourceProcessor {
 			}
 		}
 
+		content = formatStringRelationalOperations(content);
+
 		content = formatAssignTags(content);
 
 		ImportsFormatter importsFormatter = new FTLImportsFormatter();
@@ -166,6 +163,11 @@ public class FTLSourceProcessor extends BaseSourceProcessor {
 		};
 
 		return getFileNames(excludes, getIncludes());
+	}
+
+	@Override
+	protected String[] doGetIncludes() {
+		return _INCLUDES;
 	}
 
 	protected String formatAssignTags(String content) {
@@ -250,6 +252,58 @@ public class FTLSourceProcessor extends BaseSourceProcessor {
 		return newContent;
 	}
 
+	protected String formatStringRelationalOperations(String content) {
+		Matcher matcher = _stringRelationalOperationPattern.matcher(content);
+
+		if (!matcher.find()) {
+			return content;
+		}
+
+		String match = matcher.group();
+
+		String firstChar = matcher.group(1);
+		String lastChar = matcher.group(5);
+
+		if (!firstChar.equals(StringPool.OPEN_PARENTHESIS) ||
+			!lastChar.equals(StringPool.CLOSE_PARENTHESIS)) {
+
+			match = content.substring(matcher.end(1), matcher.start(5));
+		}
+
+		String operator = matcher.group(3);
+		String quotedString = matcher.group(4);
+		String variableName = matcher.group(2);
+
+		String replacement = null;
+
+		if (Validator.isNull(quotedString)) {
+			if (operator.equals("==")) {
+				replacement = "validator.isNull(" + variableName + ")";
+			}
+			else {
+				replacement = "validator.isNotNull(" + variableName + ")";
+			}
+		}
+		else {
+			StringBundler sb = new StringBundler();
+
+			if (operator.equals("!=")) {
+				sb.append(StringPool.EXCLAMATION);
+			}
+
+			sb.append("stringUtil.equals(");
+			sb.append(variableName);
+			sb.append(", \"");
+			sb.append(quotedString);
+			sb.append("\")");
+
+			replacement = sb.toString();
+		}
+
+		return StringUtil.replaceFirst(
+			content, match, replacement, matcher.start());
+	}
+
 	protected String sortLiferayVariables(String content) {
 		Matcher matcher = _liferayVariablesPattern.matcher(content);
 
@@ -295,5 +349,7 @@ public class FTLSourceProcessor extends BaseSourceProcessor {
 		"\n(\t*)<@.+=.+=.+/>");
 	private final Pattern _singleParameterTagPattern = Pattern.compile(
 		"(<@[\\w\\.]+ \\w+)( )?=([^=]+?)/>");
+	private final Pattern _stringRelationalOperationPattern = Pattern.compile(
+		"(\\W)([\\w.]+) ([!=]=) \"(\\w*)\"(.)");
 
 }

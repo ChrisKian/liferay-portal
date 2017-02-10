@@ -144,7 +144,7 @@ RenderRequestImpl renderRequestImpl = RenderRequestFactory.create(request, portl
 
 BufferCacheServletResponse bufferCacheServletResponse = new BufferCacheServletResponse(response);
 
-RenderResponseImpl renderResponseImpl = RenderResponseFactory.create(renderRequestImpl, bufferCacheServletResponse, portletId, company.getCompanyId(), plid);
+RenderResponseImpl renderResponseImpl = RenderResponseFactory.create(renderRequestImpl, bufferCacheServletResponse);
 
 if (stateMin) {
 	renderResponseImpl.setUseDefaultTemplate(true);
@@ -623,7 +623,7 @@ if (!portletDisplay.isRestoreCurrentView()) {
 	lifecycle = PortletRequest.ACTION_PHASE;
 }
 
-PortletURLImpl urlMax = (PortletURLImpl)PortletURLFactoryUtil.create(request, portletDisplay.getId(), lifecycle);
+LiferayPortletURL urlMax = PortletURLFactoryUtil.create(request, portletDisplay.getId(), lifecycle);
 
 if (portletDisplay.isStateMax()) {
 	urlMax.setWindowState(WindowState.NORMAL);
@@ -632,7 +632,12 @@ else {
 	urlMax.setWindowState(WindowState.MAXIMIZED);
 }
 
-urlMax.setWindowStateRestoreCurrentView(true);
+try {
+	BeanPropertiesUtil.setProperty(urlMax, "windowStateRestoreCurrentView", true);
+}
+catch (Exception e) {
+	_log.error(ClassUtil.getClassName(urlMax) + " must implement the method setWindowStateRestoreCurrentView(boolean)", e);
+}
 
 urlMax.setEscapeXml(false);
 
@@ -1001,14 +1006,14 @@ Boolean renderPortletBoundary = GetterUtil.getBoolean(request.getAttribute(WebKe
 
 				<liferay-util:include page="<%= templatePath %>" />
 
-		<%
+			<%
 			}
 			else {
 				if (useDefaultTemplate || !portlet.isActive()) {
 					renderRequestImpl.setAttribute(WebKeys.PORTLET_CONTENT, bufferCacheServletResponse.getString());
 
 					request.setAttribute(WebKeys.PORTLET_CONTENT_JSP, StringPool.BLANK);
-		%>
+			%>
 
 					<liferay-util:include page='<%= StrutsUtil.TEXT_HTML_DIR + "/common/themes/portlet.jsp" %>' />
 
@@ -1126,13 +1131,13 @@ if (themeDisplay.isStatePopUp()) {
 			}
 		</aui:script>
 
-<%
+	<%
 	}
 
 	String closeRedirect = null;
 
 	if ((closeRedirect = (String)SessionMessages.get(renderRequestImpl, portletId + SessionMessages.KEY_SUFFIX_CLOSE_REDIRECT)) != null) {
-%>
+	%>
 
 		<aui:script use="aui-base">
 			var dialog = Liferay.Util.getWindow();
@@ -1169,14 +1174,14 @@ if (themeDisplay.isStatePopUp()) {
 			);
 		</aui:script>
 
-<%
+	<%
 	}
 
 	String closeRefreshPortletId = null;
 
 	if ((closeRefreshPortletId = (String)SessionMessages.get(renderRequestImpl, portletId + SessionMessages.KEY_SUFFIX_CLOSE_REFRESH_PORTLET)) != null) {
 		Map<String, String> refreshPortletData = (Map<String, String>)SessionMessages.get(renderRequestImpl, portletId + SessionMessages.KEY_SUFFIX_REFRESH_PORTLET_DATA);
-%>
+	%>
 
 		<aui:script use="aui-base">
 			var dialog = Liferay.Util.getWindow();

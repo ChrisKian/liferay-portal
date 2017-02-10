@@ -322,6 +322,7 @@ svn://svn.liferay.com/repos/public/alloy/trunk/sandbox/taglibs.
 
 		<gradle-execute dir="../modules" task="buildService">
 			<arg value="-DbuildService.skipReadOnly=${build.services.skip.read.only}" />
+			<arg value="-Pcom.liferay.portal.tools.service.builder.ignore.local=false" />
 		</gradle-execute>
 	</target>
 
@@ -563,6 +564,7 @@ svn://svn.liferay.com/repos/public/alloy/trunk/sandbox/taglibs.
 			classname="com.liferay.source.formatter.SourceFormatter"
 			classpathref="source.formatter.classpath"
 			dir="${source.formatter.dir}"
+			failonerror="${source.fail.on.error}"
 			fork="true"
 			newenvironment="true"
 		>
@@ -581,6 +583,7 @@ svn://svn.liferay.com/repos/public/alloy/trunk/sandbox/taglibs.
 			<arg value="source.auto.fix=${source.auto.fix}" />
 			<arg value="source.base.dir=${source.base.dir}" />
 			<arg value="source.copyright.file=${source.copyright.file}" />
+			<arg value="source.file.extensions=${source.file.extensions}" />
 			<arg value="source.files=${source.files}" />
 			<arg value="source.print.errors=${source.print.errors}" />
 			<arg value="source.throw.exception=${source.throw.exception}" />
@@ -588,6 +591,12 @@ svn://svn.liferay.com/repos/public/alloy/trunk/sandbox/taglibs.
 		</java>
 
 		<delete file="ServiceBuilder.temp" />
+	</target>
+
+	<target name="format-source-bnd">
+		<antcall target="format-source">
+			<param name="source.file.extensions" value="bnd,gradle" />
+		</antcall>
 	</target>
 
 	<target name="format-source-current-branch">

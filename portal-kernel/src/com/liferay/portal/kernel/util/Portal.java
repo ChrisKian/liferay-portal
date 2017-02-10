@@ -830,9 +830,8 @@ public interface Portal {
 	public Locale getLocale(PortletRequest portletRequest);
 
 	public String getLocalizedFriendlyURL(
-			HttpServletRequest request, Layout layout, Locale locale,
-			Locale originalLocale)
-		throws Exception;
+		HttpServletRequest request, Layout layout, Locale locale,
+		Locale originalLocale);
 
 	public String getMailId(String mx, String popPortletPrefix, Object... ids);
 
@@ -1056,6 +1055,10 @@ public interface Portal {
 	public PortletURL getSiteAdministrationURL(
 		PortletResponse portletResponse, ThemeDisplay themeDisplay,
 		String portletName);
+
+	public String getSiteAdminURL(
+			Group group, String ppid, Map<String, String[]> params)
+		throws PortalException;
 
 	/**
 	 * @deprecated As of 7.0.0, replaced by {@link

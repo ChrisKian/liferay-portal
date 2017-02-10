@@ -1249,9 +1249,8 @@ public class PortalUtil {
 	}
 
 	public static String getLocalizedFriendlyURL(
-			HttpServletRequest request, Layout layout, Locale locale,
-			Locale originalLocale)
-		throws Exception {
+		HttpServletRequest request, Layout layout, Locale locale,
+		Locale originalLocale) {
 
 		return getPortal().getLocalizedFriendlyURL(
 			request, layout, locale, originalLocale);
@@ -1712,6 +1711,13 @@ public class PortalUtil {
 
 		return getPortal().getSiteAdministrationURL(
 			portletResponse, themeDisplay, portletName);
+	}
+
+	public static String getSiteAdminURL(
+			Group group, String ppid, Map<String, String[]> params)
+		throws PortalException {
+
+		return getPortal().getSiteAdminURL(group, ppid, params);
 	}
 
 	/**
