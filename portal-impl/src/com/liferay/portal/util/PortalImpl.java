@@ -72,7 +72,6 @@ import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.model.PortletConstants;
 import com.liferay.portal.kernel.model.PublicRenderParameter;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
@@ -92,6 +91,7 @@ import com.liferay.portal.kernel.portlet.FriendlyURLMapperThreadLocal;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.InvokerPortlet;
+import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayPortletMode;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -101,6 +101,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletQNameUtil;
@@ -308,6 +309,7 @@ import org.apache.struts.Globals;
  * @author Wesley Gong
  * @author Hugo Huijser
  * @author Juan Fernández
+ * @author Marco Leo
  */
 @DoPrivileged
 public class PortalImpl implements Portal {
@@ -1374,6 +1376,19 @@ public class PortalImpl implements Portal {
 		groupFriendlyURL = getGroupFriendlyURL(
 			layout.getLayoutSet(), themeDisplay, true,
 			layout.isTypeControlPanel());
+
+		if (PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE == 2) {
+			StringBundler sb = new StringBundler();
+
+			sb.append(groupFriendlyURL);
+			sb.append(
+				_buildI18NPath(
+					siteDefaultLocale.getLanguage(), siteDefaultLocale));
+			sb.append(canonicalLayoutFriendlyURL);
+			sb.append(parametersURL);
+
+			return sb.toString();
+		}
 
 		return groupFriendlyURL.concat(canonicalLayoutFriendlyURL).concat(
 			parametersURL);
@@ -2802,13 +2817,37 @@ public class PortalImpl implements Portal {
 			themeDisplay.getLayoutFriendlyURL(layout));
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #getLayoutFriendlyURLSeparatorComposite(long, boolean,
+	 *             String, Map<String, String[]>, Map<String, Object>)}
+	 */
+	@Deprecated
 	@Override
 	public LayoutFriendlyURLComposite getLayoutFriendlyURLComposite(
 			long groupId, boolean privateLayout, String friendlyURL,
 			Map<String, String[]> params, Map<String, Object> requestContext)
 		throws PortalException {
 
-		LayoutFriendlyURLComposite layoutFriendlyURLComposite = null;
+		LayoutFriendlyURLSeparatorComposite
+			layoutFriendlyURLSeparatorComposite =
+				getLayoutFriendlyURLSeparatorComposite(
+					groupId, privateLayout, friendlyURL, params,
+					requestContext);
+
+		return (LayoutFriendlyURLComposite)layoutFriendlyURLSeparatorComposite;
+	}
+
+	@Override
+	public LayoutFriendlyURLSeparatorComposite
+			getLayoutFriendlyURLSeparatorComposite(
+				long groupId, boolean privateLayout, String friendlyURL,
+				Map<String, String[]> params,
+				Map<String, Object> requestContext)
+		throws PortalException {
+
+		LayoutFriendlyURLSeparatorComposite
+			layoutFriendlyURLSeparatorComposite = null;
 
 		if (friendlyURL != null) {
 			HttpServletRequest request = (HttpServletRequest)requestContext.get(
@@ -2830,10 +2869,11 @@ public class PortalImpl implements Portal {
 				}
 
 				try {
-					layoutFriendlyURLComposite =
-						friendlyURLResolver.getLayoutFriendlyURLComposite(
-							companyId, groupId, privateLayout, friendlyURL,
-							params, requestContext);
+					layoutFriendlyURLSeparatorComposite =
+						friendlyURLResolver.
+							getLayoutFriendlyURLSeparatorComposite(
+								companyId, groupId, privateLayout, friendlyURL,
+								params, requestContext);
 
 					break;
 				}
@@ -2843,17 +2883,18 @@ public class PortalImpl implements Portal {
 			}
 		}
 
-		if (layoutFriendlyURLComposite != null) {
-			return layoutFriendlyURLComposite;
+		if (layoutFriendlyURLSeparatorComposite != null) {
+			return layoutFriendlyURLSeparatorComposite;
 		}
 
 		LayoutQueryStringComposite layoutQueryStringComposite =
 			getActualLayoutQueryStringComposite(
 				groupId, privateLayout, friendlyURL, params, requestContext);
 
-		return new LayoutFriendlyURLComposite(
+		return new LayoutFriendlyURLSeparatorComposite(
 			layoutQueryStringComposite.getLayout(),
-			layoutQueryStringComposite.getFriendlyURL());
+			layoutQueryStringComposite.getFriendlyURL(),
+			FRIENDLY_URL_SEPARATOR);
 	}
 
 	@Override
@@ -4482,8 +4523,7 @@ public class PortalImpl implements Portal {
 		}
 
 		return _getPortletTitle(
-			PortletConstants.getRootPortletId(portletId), portletConfig,
-			locale);
+			PortletIdCodec.decodePortletName(portletId), portletConfig, locale);
 	}
 
 	@Override
@@ -4506,7 +4546,7 @@ public class PortalImpl implements Portal {
 	public String getPortletTitle(
 		String portletId, ResourceBundle resourceBundle) {
 
-		portletId = PortletConstants.getRootPortletId(portletId);
+		portletId = PortletIdCodec.decodePortletName(portletId);
 
 		String portletTitle = LanguageUtil.get(
 			resourceBundle,
@@ -4917,7 +4957,7 @@ public class PortalImpl implements Portal {
 		String portletName) {
 
 		LiferayPortletResponse liferayPortletResponse =
-			(LiferayPortletResponse)portletResponse;
+			getLiferayPortletResponse(portletResponse);
 
 		LiferayPortletURL siteAdministrationURL =
 			liferayPortletResponse.createRenderURL(portletName);
@@ -4974,8 +5014,8 @@ public class PortalImpl implements Portal {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #getSiteAdminURL(Company, Group, String, Map)}
+	 * @deprecated As of 7.0.0, replaced by {@link #getSiteAdminURL(Company,
+	 *             Group, String, Map)}
 	 */
 	@Deprecated
 	@Override
@@ -7297,8 +7337,8 @@ public class PortalImpl implements Portal {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #addRootModelResource(long, long, String)}
+	 * @deprecated As of 7.0.0, replaced by {@link #addRootModelResource(long,
+	 *             long, String)}
 	 */
 	@Deprecated
 	protected void addRootModelResource(
@@ -8235,6 +8275,14 @@ public class PortalImpl implements Portal {
 		String canonicalURLPrefix = canonicalURL.substring(0, pos);
 		String canonicalURLSuffix = canonicalURL.substring(pos);
 
+		if (PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE == 2) {
+			String defaultLocalePath = _buildI18NPath(
+				siteDefaultLocale.getLanguage(), siteDefaultLocale);
+
+			canonicalURLSuffix = canonicalURL.substring(
+				pos + defaultLocalePath.length());
+		}
+
 		for (Locale locale : availableLocales) {
 			String languageId = LocaleUtil.toLanguageId(locale);
 
@@ -8362,16 +8410,9 @@ public class PortalImpl implements Portal {
 				}
 			}
 			else {
-				LayoutSet curLayoutSet = layoutSet;
-
-				if (layoutSet.getGroupId() != themeDisplay.getSiteGroupId()) {
-					curLayoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
-						themeDisplay.getSiteGroupId(), privateLayoutSet);
-				}
-
 				if (canonicalURL ||
-					((layoutSet.getLayoutSetId() !=
-						curLayoutSet.getLayoutSetId()) &&
+					((layoutSet.getGroupId() !=
+						themeDisplay.getSiteGroupId()) &&
 					 (group.getClassPK() != themeDisplay.getUserId()))) {
 
 					if (group.isControlPanel()) {
@@ -8380,6 +8421,11 @@ public class PortalImpl implements Portal {
 						if (Validator.isNull(virtualHostname) ||
 							StringUtil.equalsIgnoreCase(
 								virtualHostname, _LOCALHOST)) {
+
+							LayoutSet curLayoutSet =
+								LayoutSetLocalServiceUtil.getLayoutSet(
+									themeDisplay.getSiteGroupId(),
+									privateLayoutSet);
 
 							virtualHostname = curLayoutSet.getVirtualHostname();
 						}

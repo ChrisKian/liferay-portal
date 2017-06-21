@@ -1567,23 +1567,25 @@ public class ServiceBuilder {
 	public String getTypeGenericsName(Type type) {
 		StringBundler sb = new StringBundler();
 
-		sb.append(type.getValue());
-
 		Type[] actualTypeArguments = type.getActualTypeArguments();
 
-		if (actualTypeArguments != null) {
-			sb.append(StringPool.LESS_THAN);
-
-			for (Type actualTypeArgument : actualTypeArguments) {
-				sb.append(getTypeGenericsName(actualTypeArgument));
-
-				sb.append(StringPool.COMMA_AND_SPACE);
-			}
-
-			sb.setIndex(sb.index() - 1);
-
-			sb.append(StringPool.GREATER_THAN);
+		if (actualTypeArguments == null) {
+			return type.getGenericValue();
 		}
+
+		sb.append(type.getValue());
+
+		sb.append(StringPool.LESS_THAN);
+
+		for (Type actualTypeArgument : actualTypeArguments) {
+			sb.append(getTypeGenericsName(actualTypeArgument));
+
+			sb.append(StringPool.COMMA_AND_SPACE);
+		}
+
+		sb.setIndex(sb.index() - 1);
+
+		sb.append(StringPool.GREATER_THAN);
 
 		sb.append(getDimensions(type.getDimensions()));
 
@@ -5228,6 +5230,12 @@ public class ServiceBuilder {
 			}
 		}
 
+		if (uuid && pkList.isEmpty()) {
+			throw new ServiceBuilderException(
+				"Unable to create entity \"" + ejbName +
+					"\" with a UUID without a primary key");
+		}
+
 		EntityOrder order = null;
 
 		Element orderElement = entityElement.element("order");
@@ -5522,7 +5530,7 @@ public class ServiceBuilder {
 		for (EntityColumn entityColumn : entity.getColumnList()) {
 			if (entityColumn.isLocalized()) {
 				throw new IllegalArgumentException(
-					"Cannot use localized entity with localized column " +
+					"Unable to use localized entity with localized column " +
 						entityColumn.getName() + " in " + entity.getName());
 			}
 		}
@@ -5583,7 +5591,7 @@ public class ServiceBuilder {
 
 		if (pkList.size() > 1) {
 			throw new IllegalArgumentException(
-				"Cannot use localized entity with compound primary key");
+				"Unable to use localized entity with compound primary key");
 		}
 
 		EntityColumn pkColumn = pkList.get(0);
@@ -5607,7 +5615,8 @@ public class ServiceBuilder {
 
 		if (localizedColumnElements.isEmpty()) {
 			throw new IllegalArgumentException(
-				"Cannot use localized entity table without localized columns");
+				"Unable to use localized entity table without localized " +
+					"columns");
 		}
 
 		List<EntityColumn> localizedColumns = new ArrayList<>(
@@ -5687,7 +5696,7 @@ public class ServiceBuilder {
 
 			if (localized != null) {
 				throw new IllegalArgumentException(
-					"Cannot have localized columns in localized table for " +
+					"Unable to have localized columns in localized table for " +
 						"entity " + entity.getName());
 			}
 

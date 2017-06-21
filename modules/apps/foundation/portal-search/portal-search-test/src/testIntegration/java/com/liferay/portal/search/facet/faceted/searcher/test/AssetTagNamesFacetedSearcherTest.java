@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
-import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.search.facet.tag.AssetTagNamesFacetFactory;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.registry.Registry;
@@ -67,11 +66,9 @@ public class AssetTagNamesFacetedSearcherTest
 
 	@Test
 	public void testSearchByFacet() throws Exception {
-		Group group = userSearchFixture.addGroup();
-
 		String tag = "enterprise. open-source for life";
 
-		userSearchFixture.addUser(group, tag);
+		addUser(tag);
 
 		SearchContext searchContext = getSearchContext(tag);
 
@@ -88,12 +85,9 @@ public class AssetTagNamesFacetedSearcherTest
 
 	@Test
 	public void testSearchQuoted() throws Exception {
-		Group group = userSearchFixture.addGroup();
+		String[] assetTagNames = {"Enterprise", "Open Source", "For   Life"};
 
-		String[] assetTagNames =
-			new String[] {"Enterprise", "Open Source", "For   Life"};
-
-		User user = userSearchFixture.addUser(group, assetTagNames);
+		User user = addUser(assetTagNames);
 
 		Map<String, String> expected = userSearchFixture.toMap(
 			user, assetTagNames);
@@ -105,6 +99,12 @@ public class AssetTagNamesFacetedSearcherTest
 		assertTags("\"For   Life\"", expected);
 	}
 
+	protected User addUser(String... assetTagNames) throws Exception {
+		Group group = userSearchFixture.addGroup();
+
+		return userSearchFixture.addUser(group, assetTagNames);
+	}
+
 	protected void assertTags(String keywords, Map<String, String> expected)
 		throws Exception {
 
@@ -113,14 +113,6 @@ public class AssetTagNamesFacetedSearcherTest
 		Hits hits = search(searchContext);
 
 		assertTags(keywords, hits, expected);
-	}
-
-	protected SearchContext getSearchContext(String keywords) throws Exception {
-		SearchContext searchContext = SearchContextTestUtil.getSearchContext();
-
-		searchContext.setKeywords(keywords);
-
-		return searchContext;
 	}
 
 	private AssetTagNamesFacetFactory _assetTagNamesFacetFactory;

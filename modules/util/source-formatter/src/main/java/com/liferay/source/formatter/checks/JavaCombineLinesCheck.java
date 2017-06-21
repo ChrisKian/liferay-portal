@@ -517,7 +517,7 @@ public class JavaCombineLinesCheck extends BaseFileCheck {
 
 		if ((trimmedLine.length() + previousLineLength) <= getMaxLineLength()) {
 			if (previousLine.endsWith(StringPool.OPEN_PARENTHESIS) &&
-				line.endsWith(") {") && (getLevel(line) < 0)) {
+				line.matches(".*\\)( \\{)?") && (getLevel(line) < 0)) {
 
 				return _getCombinedLinesContent(
 					content, line, trimmedLine, lineLength, lineCount,
@@ -530,6 +530,14 @@ public class JavaCombineLinesCheck extends BaseFileCheck {
 				  previousLine.endsWith(StringPool.OPEN_PARENTHESIS)) &&
 				 !trimmedPreviousLine.startsWith(").") &&
 				 line.endsWith(StringPool.SEMICOLON))) {
+
+				return _getCombinedLinesContent(
+					content, line, trimmedLine, lineLength, lineCount,
+					previousLine, null, false, false, 0);
+			}
+
+			if (previousLine.endsWith(StringPool.OPEN_PARENTHESIS) &&
+				trimmedLine.equals(");")) {
 
 				return _getCombinedLinesContent(
 					content, line, trimmedLine, lineLength, lineCount,
@@ -656,6 +664,7 @@ public class JavaCombineLinesCheck extends BaseFileCheck {
 
 		if (previousLine.endsWith(StringPool.COMMA) &&
 			(previousLineTabCount == lineTabCount) &&
+			!line.matches(".*[\\^\\|\\&]") &&
 			!trimmedPreviousLine.equals("},")) {
 
 			String nextLine = getLine(content, lineCount + 1);
@@ -835,20 +844,6 @@ public class JavaCombineLinesCheck extends BaseFileCheck {
 			(line.matches(".*[|&^]") || line.endsWith(StringPool.COMMA) ||
 			 (trimmedPreviousLine.startsWith("new ") &&
 			  line.endsWith(") {")))) {
-
-			return _getCombinedLinesContent(
-				content, line, trimmedLine, lineLength, lineCount, previousLine,
-				null, false, false, 0);
-		}
-
-		if (((line.endsWith(StringPool.OPEN_CURLY_BRACE) &&
-			  !trimmedLine.startsWith("new ")) ||
-			 line.endsWith(StringPool.CLOSE_PARENTHESIS)) &&
-			(trimmedPreviousLine.startsWith("else ") ||
-			 trimmedPreviousLine.startsWith("if ") ||
-			 trimmedPreviousLine.startsWith("private ") ||
-			 trimmedPreviousLine.startsWith("protected ") ||
-			 trimmedPreviousLine.startsWith("public "))) {
 
 			return _getCombinedLinesContent(
 				content, line, trimmedLine, lineLength, lineCount, previousLine,

@@ -29,18 +29,23 @@ public class ArrayCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
-		_checkAddAllArraysAsList(fileName, content);
+		_checkInefficientAddAllCalls(
+			fileName, content, _addAllArraysAsListPattern);
+		_checkInefficientAddAllCalls(
+			fileName, content, _addAllListUtilFromArrayPattern);
 
 		return _formatEmptyArray(content);
 	}
 
-	private void _checkAddAllArraysAsList(String fileName, String content) {
-		Matcher matcher = _addAllArraysAsListPattern.matcher(content);
+	private void _checkInefficientAddAllCalls(
+		String fileName, String content, Pattern pattern) {
+
+		Matcher matcher = pattern.matcher(content);
 
 		while (matcher.find()) {
 			if (!ToolsUtil.isInsideQuotes(content, matcher.start())) {
 				addMessage(
-					fileName, "Use Collections.addAll, see LPS-72429",
+					fileName, "Use Collections.addAll", "collections.markdown",
 					getLineCount(content, matcher.start()));
 			}
 		}
@@ -66,6 +71,8 @@ public class ArrayCheck extends BaseFileCheck {
 
 	private final Pattern _addAllArraysAsListPattern = Pattern.compile(
 		"\\.addAll\\(\\s*Arrays\\.asList\\(");
+	private final Pattern _addAllListUtilFromArrayPattern = Pattern.compile(
+		"\\.addAll\\(\\s*ListUtil\\.fromArray\\(");
 	private final Pattern _emptyArrayPattern = Pattern.compile(
 		"((\\[\\])+) \\{\\}");
 

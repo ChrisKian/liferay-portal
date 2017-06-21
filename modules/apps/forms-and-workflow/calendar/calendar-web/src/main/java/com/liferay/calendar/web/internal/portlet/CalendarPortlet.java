@@ -14,6 +14,8 @@
 
 package com.liferay.calendar.web.internal.portlet;
 
+import com.liferay.asset.kernel.exception.AssetCategoryException;
+import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.calendar.constants.CalendarPortletKeys;
 import com.liferay.calendar.exception.CalendarBookingDurationException;
 import com.liferay.calendar.exception.CalendarBookingRecurrenceException;
@@ -350,6 +352,10 @@ public class CalendarPortlet extends MVCPortlet {
 			}
 			else if (resourceID.equals("exportCalendar")) {
 				serveExportCalendar(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("hasExclusiveCalendarBooking")) {
+				serveHasExclusiveCalendarBooking(
+					resourceRequest, resourceResponse);
 			}
 			else if (resourceID.equals("resourceCalendars")) {
 				serveResourceCalendars(resourceRequest, resourceResponse);
@@ -1078,7 +1084,9 @@ public class CalendarPortlet extends MVCPortlet {
 
 	@Override
 	protected boolean isSessionErrorException(Throwable cause) {
-		if (cause instanceof CalendarBookingDurationException ||
+		if (cause instanceof AssetCategoryException ||
+			cause instanceof AssetTagException ||
+			cause instanceof CalendarBookingDurationException ||
 			cause instanceof CalendarBookingRecurrenceException ||
 			cause instanceof CalendarNameException ||
 			cause instanceof CalendarResourceCodeException ||
@@ -1437,6 +1445,32 @@ public class CalendarPortlet extends MVCPortlet {
 			contentType);
 	}
 
+	protected void serveHasExclusiveCalendarBooking(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws Exception {
+
+		long calendarId = ParamUtil.getLong(resourceRequest, "calendarId");
+
+		Calendar calendar = _calendarService.getCalendar(calendarId);
+
+		java.util.Calendar endTimeJCalendar = getJCalendar(
+			resourceRequest, "endTime");
+
+		java.util.Calendar startTimeJCalendar = getJCalendar(
+			resourceRequest, "startTime");
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		boolean result =
+			_calendarBookingLocalService.hasExclusiveCalendarBooking(
+				calendar, startTimeJCalendar.getTimeInMillis(),
+				endTimeJCalendar.getTimeInMillis());
+
+		jsonObject.put("hasExclusiveCalendarBooking", result);
+
+		writeJSON(resourceRequest, resourceResponse, jsonObject);
+	}
+
 	protected void serveResourceCalendars(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
@@ -1538,8 +1572,8 @@ public class CalendarPortlet extends MVCPortlet {
 
 		CalendarDisplayContext calendarDisplayContext =
 			new CalendarDisplayContext(
-				_groupLocalService, _calendarService, _calendarLocalService,
-				themeDisplay);
+				_groupLocalService, _calendarBookingLocalService,
+				_calendarService, _calendarLocalService, themeDisplay);
 
 		renderRequest.setAttribute(
 			CalendarWebKeys.CALENDAR_DISPLAY_CONTEXT, calendarDisplayContext);
@@ -1594,21 +1628,24 @@ public class CalendarPortlet extends MVCPortlet {
 							calendarBookingId, instanceIndex,
 							calendar.getCalendarId(), childCalendarIds,
 							titleMap, descriptionMap, location, startTime,
-							endTime, allDay,
-							RecurrenceSerializer.serialize(recurrence),
-							allFollowing, reminders[0], remindersType[0],
-							reminders[1], remindersType[1], serviceContext);
+							endTime, allDay, allFollowing, reminders[0],
+							remindersType[0], reminders[1], remindersType[1],
+							serviceContext);
 				}
 				else {
 					calendarBooking =
 						_calendarBookingService.updateRecurringCalendarBooking(
 							calendarBookingId, calendar.getCalendarId(),
 							childCalendarIds, titleMap, descriptionMap,
-							location, startTime, endTime, allDay,
-							RecurrenceSerializer.serialize(recurrence),
-							reminders[0], remindersType[0], reminders[1],
-							remindersType[1], serviceContext);
+							location, startTime, endTime, allDay, reminders[0],
+							remindersType[0], reminders[1], remindersType[1],
+							serviceContext);
 				}
+
+				_calendarBookingService.
+					updateLastInstanceCalendarBookingRecurrence(
+						calendarBooking.getCalendarBookingId(),
+						RecurrenceSerializer.serialize(recurrence));
 			}
 			else {
 				calendarBooking =

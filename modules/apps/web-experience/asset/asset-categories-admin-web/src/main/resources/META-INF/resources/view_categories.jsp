@@ -182,15 +182,16 @@ AssetCategoryUtil.addPortletBreadcrumbEntry(assetCategoriesDisplayContext.getVoc
 						<c:when test="<%= assetCategoriesDisplayContext.isFlattenedNavigationAllowed() %>">
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-content"
-								name="path"
-								value="<%= HtmlUtil.escape(curCategory.getPath(locale, true)) %>"
+								name="category"
+								value="<%= HtmlUtil.escape(curCategory.getTitle(locale)) %>"
 							/>
 
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-content"
-								name="category"
-								value="<%= HtmlUtil.escape(curCategory.getTitle(locale)) %>"
-							/>
+								name="path"
+							>
+								<%= HtmlUtil.escape(curCategory.getPath(locale, true)) %> > <strong><%= HtmlUtil.escape(curCategory.getTitle(locale)) %></strong>
+							</liferay-ui:search-container-column-text>
 						</c:when>
 						<c:otherwise>
 							<liferay-ui:search-container-column-text
@@ -242,7 +243,7 @@ AssetCategoryUtil.addPortletBreadcrumbEntry(assetCategoriesDisplayContext.getVoc
 	</portlet:renderURL>
 
 	<liferay-frontend:add-menu>
-		<liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, "add-category") %>' url="<%= addCategoryURL.toString() %>" />
+		<liferay-frontend:add-menu-item title='<%= LanguageUtil.get(request, (assetCategoriesDisplayContext.getCategoryId() > 0) ? "add-subcategory" : "add-category") %>' url="<%= addCategoryURL.toString() %>" />
 	</liferay-frontend:add-menu>
 </c:if>
 

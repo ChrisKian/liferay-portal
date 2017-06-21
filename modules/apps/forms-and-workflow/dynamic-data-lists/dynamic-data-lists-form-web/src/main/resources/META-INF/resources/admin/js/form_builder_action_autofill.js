@@ -100,19 +100,11 @@ AUI.add(
 					},
 
 					_afterDataProviderChange: function(event) {
+						if (!event.newVal || !event.newVal[0]) {
+							return;
+						}
+
 						var instance = this;
-
-						var dataProviderSelectField = event.newVal;
-
-						if (!dataProviderSelectField) {
-							return;
-						}
-
-						var ddmDataProviderInstanceId = dataProviderSelectField.getValue()[0];
-
-						if (!ddmDataProviderInstanceId) {
-							return;
-						}
 
 						var boundingBox = instance.get('boundingBox');
 
@@ -123,7 +115,7 @@ AUI.add(
 						A.io.request(
 							Settings.getDataProviderParametersSettingsURL,
 							{
-								data: instance._getDataProviderPayload(ddmDataProviderInstanceId),
+								data: instance._getDataProviderPayload(event.newVal[0]),
 								method: 'GET',
 								on: {
 									success: function(event, id, xhr) {
@@ -185,7 +177,6 @@ AUI.add(
 
 							inputParameterField = instance.createSelectField(
 								{
-									bubbleTargets: [instance],
 									fieldName: instance.get('index') + '-action',
 									options: instance.getFieldsByType(inputParameters[i].type),
 									showLabel: false,
@@ -209,7 +200,6 @@ AUI.add(
 
 						instance._dataProvidersList = instance.createSelectField(
 							{
-								bubbleTargets: [instance],
 								fieldName: instance.get('index') + '-action',
 								options: [],
 								showLabel: false,
@@ -269,12 +259,10 @@ AUI.add(
 
 							outputParameterField = instance.createSelectField(
 								{
-									bubbleTargets: [instance],
 									fieldName: instance.get('index') + '-action',
 									label: outputParameters[i],
 									options: instance.getFieldsByType(outputParameters[i].type),
 									showLabel: false,
-									value: value,
 									visible: true
 								}
 							).render(outputParametersContainer.one('.container-input-field-' + i));
@@ -285,6 +273,8 @@ AUI.add(
 									parameter: name
 								}
 							);
+
+							outputParameterField.setValue(value);
 						}
 					},
 

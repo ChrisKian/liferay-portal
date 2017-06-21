@@ -31,6 +31,7 @@ import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
+import com.liferay.portal.kernel.bean.BeanParamUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
@@ -255,13 +256,28 @@ public class AssetCategoriesDisplayContext {
 		long scopeGroupId = themeDisplay.getScopeGroupId();
 
 		if (Validator.isNotNull(getKeywords())) {
-			Sort sort = new Sort("createDate", Sort.LONG_TYPE, orderByAsc);
+			AssetCategoryDisplay assetCategoryDisplay = null;
 
-			AssetCategoryDisplay assetCategoryDisplay =
-				AssetCategoryServiceUtil.searchCategoriesDisplay(
-					scopeGroupId, getKeywords(), getVocabularyId(),
-					getCategoryId(), categoriesSearchContainer.getStart(),
-					categoriesSearchContainer.getEnd(), sort);
+			if (isFlattenedNavigationAllowed()) {
+				Sort sort = new Sort(
+					"leftCategoryId", Sort.INT_TYPE, orderByAsc);
+
+				assetCategoryDisplay =
+					AssetCategoryServiceUtil.searchCategoriesDisplay(
+						new long[] {scopeGroupId}, getKeywords(),
+						new long[] {getVocabularyId()}, new long[0],
+						categoriesSearchContainer.getStart(),
+						categoriesSearchContainer.getEnd(), sort);
+			}
+			else {
+				Sort sort = new Sort("createDate", Sort.LONG_TYPE, orderByAsc);
+
+				assetCategoryDisplay =
+					AssetCategoryServiceUtil.searchCategoriesDisplay(
+						scopeGroupId, getKeywords(), getVocabularyId(),
+						getCategoryId(), categoriesSearchContainer.getStart(),
+						categoriesSearchContainer.getEnd(), sort);
+			}
 
 			categoriesCount = assetCategoryDisplay.getTotal();
 
@@ -277,7 +293,7 @@ public class AssetCategoriesDisplayContext {
 			categories = AssetCategoryServiceUtil.getVocabularyCategories(
 				getVocabularyId(), categoriesSearchContainer.getStart(),
 				categoriesSearchContainer.getEnd(),
-				new AssetCategoryLeftCategoryIdComparator(true));
+				new AssetCategoryLeftCategoryIdComparator(orderByAsc));
 
 			categoriesSearchContainer.setTotal(categoriesCount);
 		}
@@ -373,13 +389,8 @@ public class AssetCategoriesDisplayContext {
 	public String getEditCategoryRedirect() throws PortalException {
 		PortletURL backURL = _renderResponse.createRenderURL();
 
-		AssetCategory category = getCategory();
-
-		long parentCategoryId = 0;
-
-		if (category != null) {
-			parentCategoryId = category.getParentCategoryId();
-		}
+		long parentCategoryId = BeanParamUtil.getLong(
+			getCategory(), _request, "parentCategoryId");
 
 		backURL.setParameter("mvcPath", "/view_categories.jsp");
 

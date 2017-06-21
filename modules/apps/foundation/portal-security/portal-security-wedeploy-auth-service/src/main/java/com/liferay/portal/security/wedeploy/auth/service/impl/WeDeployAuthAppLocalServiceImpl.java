@@ -74,4 +74,11 @@ public class WeDeployAuthAppLocalServiceImpl
 		return weDeployAuthApp;
 	}
 
+	@Override
+	public WeDeployAuthApp fetchWeDeployAuthApp(
+		String redirectURI, String clientId) {
+
+		return weDeployAuthAppPersistence.fetchByRU_CI(redirectURI, clientId);
+	}
+
 }

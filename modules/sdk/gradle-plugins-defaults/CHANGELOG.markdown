@@ -1530,6 +1530,66 @@ version 1.1.7.
 ### Changed
 - [LPS-72705]: Update the [Liferay Gradle Plugins] dependency to version 3.3.21.
 
+## 3.7.0 - 2017-05-30
+
+### Added
+- [LPS-72830]: Add the `checkOSGiBundleState` task to fail the build if the
+deployed OSGi bundle's state is not `ACTIVE`.
+
+### Changed
+- [LPS-69661]: Update the [Liferay Gradle Plugins] dependency to version 3.3.22.
+
+## 3.7.1 - 2017-05-31
+
+### Changed
+- [LPS-72851]: Update the [Liferay Gradle Plugins] dependency to version 3.3.23.
+
+## 3.7.2 - 2017-06-04
+
+### Changed
+- [LPS-72868]: Update the [Liferay Gradle Plugins] dependency to version 3.3.24.
+
+### Fixed
+- [LPS-72465]: Avoid caching the following system property values when using the
+Gradle Daemon:
+	- `maven.local.ignore`
+	- `repository.private.password`
+	- `repository.private.url`
+	- `repository.private.username`
+	- `repository.url`
+
+## 3.7.3 - 2017-06-08
+
+### Changed
+- [LPS-72914]: Update the [Liferay Gradle Plugins] dependency to version 3.3.25.
+
+### Fixed
+- [LPS-72989]: Fix [Find Security Bugs] custom configuration loading on Windows.
+
+## 3.7.4 - 2017-06-13
+
+### Changed
+- [LPS-72705]: Update the [Liferay Gradle Plugins] dependency to version 3.3.26.
+
+### Fixed
+- [LPS-71201]: Allow to publish projects with a `.lfrbuild-releng-ignore` marker
+file from the master branch.
+
+## 3.7.5 - 2017-06-13
+
+### Changed
+- [LPS-73058]: Update the [Liferay Gradle Plugins] dependency to version 3.3.27.
+
+## 3.7.6 - 2017-06-15
+
+### Changed
+- [LPS-72705]: Update the [Liferay Gradle Plugins] dependency to version 3.3.28.
+
+## 3.7.7 - 2017-06-16
+
+### Changed
+- [LPS-73147]: Update the [Liferay Gradle Plugins] dependency to version 3.3.29.
+
 [Find Security Bugs]: https://github.com/liferay/liferay-portal/tree/master/modules/third-party/com-h3xstream-findsecbugs
 [Liferay CDN]: https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public
 [Liferay Gradle Plugins]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins
@@ -1613,6 +1673,7 @@ version 1.1.7.
 [LPS-69518]: https://issues.liferay.com/browse/LPS-69518
 [LPS-69606]: https://issues.liferay.com/browse/LPS-69606
 [LPS-69618]: https://issues.liferay.com/browse/LPS-69618
+[LPS-69661]: https://issues.liferay.com/browse/LPS-69661
 [LPS-69677]: https://issues.liferay.com/browse/LPS-69677
 [LPS-69706]: https://issues.liferay.com/browse/LPS-69706
 [LPS-69719]: https://issues.liferay.com/browse/LPS-69719
@@ -1682,6 +1743,7 @@ version 1.1.7.
 [LPS-72252]: https://issues.liferay.com/browse/LPS-72252
 [LPS-72340]: https://issues.liferay.com/browse/LPS-72340
 [LPS-72456]: https://issues.liferay.com/browse/LPS-72456
+[LPS-72465]: https://issues.liferay.com/browse/LPS-72465
 [LPS-72514]: https://issues.liferay.com/browse/LPS-72514
 [LPS-72562]: https://issues.liferay.com/browse/LPS-72562
 [LPS-72572]: https://issues.liferay.com/browse/LPS-72572
@@ -1689,6 +1751,13 @@ version 1.1.7.
 [LPS-72705]: https://issues.liferay.com/browse/LPS-72705
 [LPS-72723]: https://issues.liferay.com/browse/LPS-72723
 [LPS-72750]: https://issues.liferay.com/browse/LPS-72750
+[LPS-72830]: https://issues.liferay.com/browse/LPS-72830
+[LPS-72851]: https://issues.liferay.com/browse/LPS-72851
+[LPS-72868]: https://issues.liferay.com/browse/LPS-72868
+[LPS-72914]: https://issues.liferay.com/browse/LPS-72914
+[LPS-72989]: https://issues.liferay.com/browse/LPS-72989
+[LPS-73058]: https://issues.liferay.com/browse/LPS-73058
+[LPS-73147]: https://issues.liferay.com/browse/LPS-73147
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
 [LRDOCS-2981]: https://issues.liferay.com/browse/LRDOCS-2981
