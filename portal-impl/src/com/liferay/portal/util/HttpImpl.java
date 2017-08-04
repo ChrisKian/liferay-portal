@@ -261,8 +261,12 @@ public class HttpImpl implements Http {
 
 		String result = sb.toString();
 
-		if (result.length() > URL_MAXIMUM_LENGTH) {
-			result = shortenURL(result, 2);
+		for (int i = 2; result.length() > URL_MAXIMUM_LENGTH; i--) {
+			result = shortenURL(result, i);
+
+			if (i == 0) {
+				break;
+			}
 		}
 
 		return result;
