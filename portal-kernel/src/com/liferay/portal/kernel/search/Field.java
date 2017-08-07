@@ -156,7 +156,7 @@ public class Field implements Serializable {
 
 	public static final String SNIPPET = "snippet";
 
-	public static final String SORTABLE_FIELD_SUFFIX = "sortable";
+	public static final String SORTABLE_FIELD_SUFFIX = "sortable_field";
 
 	public static final String SPELL_CHECK_WORD = "spellCheckWord";
 
