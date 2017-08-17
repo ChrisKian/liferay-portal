@@ -69,8 +69,8 @@ buildLexicon {
 				}
 				else if (line == "// INSERT CUSTOM VARS") {
 					line = """\
-@import \"../../aui_variables\";
-@import \"fonts/alloy-font-awesome/scss/font-awesome\";"""
+@import url(font-awesome.css);
+@import \"../../aui_variables\";"""
 				}
 
 				return line
