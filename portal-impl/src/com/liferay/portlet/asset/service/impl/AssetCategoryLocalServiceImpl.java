@@ -89,7 +89,7 @@ public class AssetCategoryLocalServiceImpl
 
 		// Category
 
-		User user = userPersistence.findByPrimaryKey(userId);
+		User user = userLocalService.getUser(userId);
 
 		String name = titleMap.get(LocaleUtil.getSiteDefault());
 
@@ -468,6 +468,11 @@ public class AssetCategoryLocalServiceImpl
 	public int getChildCategoriesCount(long parentCategoryId) {
 		return assetCategoryPersistence.countByParentCategoryId(
 			parentCategoryId);
+	}
+
+	@Override
+	public List<AssetCategory> getDescendantCategories(AssetCategory category) {
+		return assetCategoryPersistence.getDescendants(category);
 	}
 
 	@Override
@@ -880,8 +885,10 @@ public class AssetCategoryLocalServiceImpl
 			sb.append("}");
 
 			throw new AssetCategoryNameException(
-				"Category name cannot be null for category " + categoryId +
-					" and vocabulary " + vocabularyId);
+				StringBundler.concat(
+					"Category name cannot be null for category ",
+					String.valueOf(categoryId), " and vocabulary ",
+					String.valueOf(vocabularyId)));
 		}
 
 		AssetCategory category = assetCategoryPersistence.fetchByP_N_V(

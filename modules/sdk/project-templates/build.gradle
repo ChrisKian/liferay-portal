@@ -25,7 +25,7 @@ configurations {
 }
 
 dependencies {
-	compileInclude group: "com.beust", name: "jcommander", version: "1.48"
+	compileInclude group: "com.beust", name: "jcommander", version: "1.72"
 
 	mavenDistribution classifier: "bin", ext: "zip", group: "org.apache.maven", name: "apache-maven", version: mavenDistributionVersion
 
@@ -70,7 +70,7 @@ dependencies {
 	provided group: "org.apache.maven.archetype", name: "archetype-common", version: "2.4"
 
 	testCompile gradleTestKit()
-	testCompile group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "3.5.0"
+	testCompile group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "3.2.0"
 	testCompile group: "com.googlecode.java-diff-utils", name: "diffutils", version: "1.3.0"
 	testCompile group: "junit", name: "junit", version: "4.12"
 	testCompile group: "net.diibadaaba.zipdiff", name: "zipdiff", version: "1.0"

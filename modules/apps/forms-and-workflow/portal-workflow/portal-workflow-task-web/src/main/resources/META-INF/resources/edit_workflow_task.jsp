@@ -23,6 +23,12 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 String backURL = ParamUtil.getString(request, "backURL", redirect);
 
+if (Validator.isNull(backURL)) {
+	PortletURL renderURL = renderResponse.createRenderURL();
+
+	backURL = renderURL.toString();
+}
+
 WorkflowTask workflowTask = workflowTaskDisplayContext.getWorkflowTask();
 
 long classPK = workflowTaskDisplayContext.getWorkflowContextEntryClassPK(workflowTask);
@@ -179,7 +185,7 @@ renderResponse.setTitle(headerTitle);
 							/>
 						</h3>
 
-						<liferay-ui:asset-display
+						<liferay-asset:asset-display
 							assetRenderer="<%= assetRenderer %>"
 							template="<%= AssetRenderer.TEMPLATE_ABSTRACT %>"
 						/>

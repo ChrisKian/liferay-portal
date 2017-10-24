@@ -14,16 +14,16 @@
 
 package com.liferay.portal.kernel.dao.orm;
 
-import com.liferay.portal.kernel.concurrent.ThreadPoolExecutor;
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.executor.PortalExecutorManagerUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
+import com.liferay.portal.kernel.util.ServiceProxyFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
@@ -292,7 +293,7 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 
 					for (final Object object : objects) {
 						futures.add(
-							_threadPoolExecutor.submit(
+							_executorService.submit(
 								new Callable<Void>() {
 
 									@Override
@@ -405,6 +406,11 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 		}
 	}
 
+	private static volatile PortalExecutorManager _portalExecutorManager =
+		ServiceProxyFactory.newServiceTrackedInstance(
+			PortalExecutorManager.class, DefaultActionableDynamicQuery.class,
+			"_portalExecutorManager", true);
+
 	private AddCriteriaMethod _addCriteriaMethod;
 	private AddOrderCriteriaMethod _addOrderCriteriaMethod;
 	private BaseLocalService _baseLocalService;
@@ -412,6 +418,9 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 	private long _companyId;
 	private Method _dynamicQueryCountMethod;
 	private Method _dynamicQueryMethod;
+	private final ExecutorService _executorService =
+		_portalExecutorManager.getPortalExecutor(
+			DefaultActionableDynamicQuery.class.getName());
 	private long _groupId;
 	private String _groupIdPropertyName = "groupId";
 	private int _interval = Indexer.DEFAULT_INTERVAL;
@@ -424,9 +433,6 @@ public class DefaultActionableDynamicQuery implements ActionableDynamicQuery {
 
 	private PerformCountMethod _performCountMethod;
 	private String _primaryKeyPropertyName;
-	private final ThreadPoolExecutor _threadPoolExecutor =
-		PortalExecutorManagerUtil.getPortalExecutor(
-			DefaultActionableDynamicQuery.class.getName());
 	private TransactionConfig _transactionConfig;
 
 }

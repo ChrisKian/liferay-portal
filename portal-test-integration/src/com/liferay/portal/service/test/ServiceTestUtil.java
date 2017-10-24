@@ -14,9 +14,8 @@
 
 package com.liferay.portal.service.test;
 
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.portal.kernel.concurrent.ThreadPoolExecutor;
-import com.liferay.portal.kernel.executor.PortalExecutorManager;
-import com.liferay.portal.kernel.executor.PortalExecutorManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseDestination;
@@ -46,6 +45,7 @@ import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.ReflectionUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.portal.repository.liferayrepository.LiferayRepository;
 import com.liferay.portal.tools.DBUpgrader;
@@ -66,8 +66,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
 import org.osgi.framework.Constants;
 
@@ -238,13 +240,6 @@ public class ServiceTestUtil {
 			PortalExecutorManager.class, _portalExecutorManagerWrapper,
 			portalExecutorManagerProperties);
 
-		if (PortalExecutorManagerUtil.getPortalExecutorManager() !=
-				_portalExecutorManagerWrapper) {
-
-			throw new IllegalStateException(
-				"PortalExecutorManager should be set");
-		}
-
 		// Class names
 
 		_checkClassNames();
@@ -325,8 +320,9 @@ public class ServiceTestUtil {
 		Registry registry = RegistryUtil.getRegistry();
 
 		return registry.getFilter(
-			"(&(destination.name=" + destinationName + ")(objectClass=" +
-				Destination.class.getName() + "))");
+			StringBundler.concat(
+				"(&(destination.name=", destinationName, ")(objectClass=",
+				Destination.class.getName(), "))"));
 	}
 
 	private static void _replaceWithSynchronousDestination(String name) {
@@ -340,18 +336,21 @@ public class ServiceTestUtil {
 
 		messageBus.replace(baseDestination, false);
 
-		ThreadPoolExecutor threadPoolExecutor =
-			PortalExecutorManagerUtil.getPortalExecutor(
-				oldDestination.getName(), false);
+		Registry registry = RegistryUtil.getRegistry();
 
-		if (threadPoolExecutor == null) {
+		ExecutorService executorService = registry.callService(
+			PortalExecutorManager.class,
+			portalExecutorManager -> portalExecutorManager.getPortalExecutor(
+				oldDestination.getName(), false));
+
+		if (executorService == null) {
 			return;
 		}
 
-		threadPoolExecutor.shutdown();
+		executorService.shutdown();
 
 		try {
-			if (!threadPoolExecutor.awaitTermination(
+			if (!executorService.awaitTermination(
 					TestPropsValues.CI_TEST_TIMEOUT_TIME,
 					TimeUnit.MILLISECONDS)) {
 
@@ -408,51 +407,57 @@ public class ServiceTestUtil {
 		(PortalExecutorManager)ProxyUtil.newProxyInstance(
 			PortalExecutorManager.class.getClassLoader(),
 			new Class<?>[] {PortalExecutorManager.class},
-			new InvocationHandler() {
+			new PortalExecutorManagerInvocationHandler());
 
-				@Override
-				public Object invoke(Object proxy, Method method, Object[] args)
-					throws Throwable {
+	private static class PortalExecutorManagerInvocationHandler
+		implements InvocationHandler {
 
-					if (!"shutdown".equals(method.getName()) ||
-						(args.length != 1)) {
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args)
+			throws Throwable {
 
-						return method.invoke(_portalExecutorManager, args);
+			if (!"shutdown".equals(method.getName()) || (args.length != 1)) {
+				return method.invoke(_portalExecutorManager, args);
+			}
+
+			Map<String, ThreadPoolExecutor> threadPoolExecutors =
+				ReflectionTestUtil.getFieldValue(
+					_portalExecutorManager, "_executorServices");
+
+			for (Map.Entry<String, ThreadPoolExecutor> entry :
+					threadPoolExecutors.entrySet()) {
+
+				ThreadPoolExecutor threadPoolExecutor = entry.getValue();
+
+				threadPoolExecutor.shutdown();
+
+				try {
+					if (!threadPoolExecutor.awaitTermination(
+							TestPropsValues.CI_TEST_TIMEOUT_TIME,
+							TimeUnit.MILLISECONDS)) {
+
+						throw new TimeoutException(
+							"Thread pool executor " + entry.getKey() +
+								" termination waiting timeout");
 					}
-
-					Map<String, ThreadPoolExecutor> threadPoolExecutors =
-						ReflectionTestUtil.getFieldValue(
-							_portalExecutorManager, "_threadPoolExecutors");
-
-					for (Map.Entry<String, ThreadPoolExecutor> entry :
-							threadPoolExecutors.entrySet()) {
-
-						ThreadPoolExecutor threadPoolExecutor =
-							entry.getValue();
-
-						threadPoolExecutor.shutdown();
-
-						try {
-							if (!threadPoolExecutor.awaitTermination(
-									TestPropsValues.CI_TEST_TIMEOUT_TIME,
-									TimeUnit.MILLISECONDS)) {
-
-								throw new TimeoutException(
-									"Thread pool executor " + entry.getKey() +
-										" termination waiting timeout");
-							}
-						}
-						catch (InterruptedException ie) {
-							ReflectionUtil.throwException(ie);
-						}
-					}
-
-					return null;
 				}
+				catch (InterruptedException ie) {
+					ReflectionUtil.throwException(ie);
+				}
+			}
 
-				private final PortalExecutorManager _portalExecutorManager =
-					PortalExecutorManagerUtil.getPortalExecutorManager();
+			return null;
+		}
 
-			});
+		private PortalExecutorManagerInvocationHandler() {
+			Registry registry = RegistryUtil.getRegistry();
+
+			_portalExecutorManager = registry.callService(
+				PortalExecutorManager.class, Function.identity());
+		}
+
+		private final PortalExecutorManager _portalExecutorManager;
+
+	}
 
 }

@@ -16,14 +16,16 @@
 
 <%@ include file="/init.jsp" %>
 
-<c:choose>
-	<c:when test="<%= workflowDefinitionTabVisible && tab.equals(WorkflowWebKeys.WORKFLOW_TAB_DEFINITION) %>">
-		<liferay-util:include page="/definition/view.jsp" servletContext="<%= application %>" />
-	</c:when>
-	<c:when test="<%= workflowDefinitionLinkTabVisible && tab.equals(WorkflowWebKeys.WORKFLOW_TAB_DEFINITION_LINK) %>">
-		<liferay-util:include page="/definition_link/view.jsp" servletContext="<%= application %>" />
-	</c:when>
-	<c:when test="<%= workflowInstanceTabVisible && tab.equals(WorkflowWebKeys.WORKFLOW_TAB_INSTANCE) %>">
-		<liferay-util:include page="/instance/view.jsp" servletContext="<%= application %>" />
-	</c:when>
-</c:choose>
+<liferay-util:include page="/navigation.jsp" servletContext="<%= application %>">
+	<liferay-util:param name="searchPage" value="<%= dynamicInclude.getSearchJspPath() %>" />
+
+	<%
+	PortletURL searchURL = dynamicInclude.getSearchURL(renderRequest, renderResponse);
+	%>
+
+	<liferay-util:param name="searchURL" value="<%= searchURL.toString() %>" />
+</liferay-util:include>
+
+<%
+dynamicInclude.include(request, PipingServletResponse.createPipingServletResponse(pageContext), null);
+%>

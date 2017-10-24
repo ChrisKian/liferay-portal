@@ -20,8 +20,10 @@ import com.liferay.portal.kernel.security.pacl.permission.PortalRuntimePermissio
 import com.liferay.portal.kernel.util.ServiceProxyFactory;
 
 /**
- * @author Shuyang Zhou
+ * @author     Shuyang Zhou
+ * @deprecated As of 7.0.0, with no direct replacement
  */
+@Deprecated
 public class PortalExecutorManagerUtil {
 
 	public static ThreadPoolExecutor getPortalExecutor(String name) {

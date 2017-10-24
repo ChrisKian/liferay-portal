@@ -88,33 +88,6 @@
 	margin-top: (($navbar-height - $element-height) / 2);
 }
 
-// BS3 Panel Variant mixin
-
-@mixin panel-variant($border, $heading-text-color, $heading-bg-color, $heading-border) {
-	border-color: $border;
-
-	& > .panel-heading {
-		background-color: $heading-bg-color;
-		border-color: $heading-border;
-		color: $heading-text-color;
-
-		+ .panel-collapse > .panel-body {
-			border-top-color: $border;
-		}
-
-		.badge {
-			background-color: $heading-text-color;
-			color: $heading-bg-color;
-		}
-	}
-
-	& > .panel-footer {
-		+ .panel-collapse > .panel-body {
-			border-bottom-color: $border;
-		}
-	}
-}
-
 // Progress bars
 
 @mixin progress-bar-variant($color) {
@@ -239,16 +212,6 @@
 	-webkit-backface-visibility: $visibility;
 	-moz-backface-visibility: $visibility;
 	backface-visibility: $visibility;
-}
-
-// Drop shadows
-//
-// Note: Deprecated `.box-shadow()` as of v3.1.0 since all of Bootstrap's
-// supported browsers that have box shadow capabilities now support it.
-
-@mixin box-shadow($shadow...) {
-	-webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
-	box-shadow: $shadow;
 }
 
 // Box sizing
