@@ -312,25 +312,14 @@ public class AssetBrowserDisplayContext {
 		List<Group> groups = GroupLocalServiceUtil.getGroups(selectedGroupIds);
 
 		for (Group curGroup : groups) {
-			if ((curGroup == null) && (curGroup.getGroupId() > 0)) {
-				continue;
-			}
-
 			boolean active = false;
 
 			if (getGroupId() == curGroup.getGroupId()) {
 				active = true;
 			}
 
-			label = StringPool.BLANK;
-
-			if (curGroup != null) {
-				label = HtmlUtil.escape(
-					curGroup.getDescriptiveName(themeDisplay.getLocale()));
-			}
-			else {
-				label = LanguageUtil.get(_request, "all");
-			}
+			label = HtmlUtil.escape(
+				curGroup.getDescriptiveName(themeDisplay.getLocale()));
 
 			groupURL.setParameter(
 				"groupId", String.valueOf(curGroup.getGroupId()));
