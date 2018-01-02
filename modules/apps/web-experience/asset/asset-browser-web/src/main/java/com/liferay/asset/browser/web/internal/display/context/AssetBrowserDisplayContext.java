@@ -298,16 +298,16 @@ public class AssetBrowserDisplayContext {
 			themeDisplay.getCompanyId(), selectedGroupId,
 			themeDisplay.getUserId());
 
-		for (long curGroupId : selectedGroupIds) {
-			Group curGroup = GroupLocalServiceUtil.fetchGroup(curGroupId);
+		List<Group> groups = GroupLocalServiceUtil.getGroups(selectedGroupIds);
 
-			if ((curGroup == null) && (curGroupId > 0)) {
+		for (Group curGroup : groups) {
+			if ((curGroup == null) && (curGroup.getGroupId() > 0)) {
 				continue;
 			}
 
 			boolean active = false;
 
-			if (getGroupId() == curGroupId) {
+			if (getGroupId() == curGroup.getGroupId()) {
 				active = true;
 			}
 
@@ -323,7 +323,8 @@ public class AssetBrowserDisplayContext {
 
 			PortletURL groupURL = getPortletURL();
 
-			groupURL.setParameter("groupId", String.valueOf(curGroupId));
+			groupURL.setParameter(
+				"groupId", String.valueOf(curGroup.getGroupId()));
 
 			ManagementBarFilterItem managementBarFilterItem =
 				new ManagementBarFilterItem(active, label, groupURL.toString());
