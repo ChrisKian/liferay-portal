@@ -292,6 +292,8 @@ public class AssetBrowserDisplayContext {
 		List<ManagementBarFilterItem> managementBarFilterItems =
 			new ArrayList<>();
 
+		PortletURL groupURL = getPortletURL();
+
 		long selectedGroupId = ParamUtil.getLong(_request, "selectedGroupId");
 
 		long[] selectedGroupIds = PortalUtil.getSharedContentSiteGroupIds(
@@ -320,8 +322,6 @@ public class AssetBrowserDisplayContext {
 			else {
 				label = LanguageUtil.get(_request, "all");
 			}
-
-			PortletURL groupURL = getPortletURL();
 
 			groupURL.setParameter(
 				"groupId", String.valueOf(curGroup.getGroupId()));
