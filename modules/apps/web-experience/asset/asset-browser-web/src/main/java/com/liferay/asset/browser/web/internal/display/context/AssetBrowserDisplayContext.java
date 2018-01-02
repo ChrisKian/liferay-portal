@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -293,8 +292,11 @@ public class AssetBrowserDisplayContext {
 		List<ManagementBarFilterItem> managementBarFilterItems =
 			new ArrayList<>();
 
-		long[] selectedGroupIds = ArrayUtil.append(
-			new long[] {0}, getSelectedGroupIds());
+		long selectedGroupId = ParamUtil.getLong(_request, "selectedGroupId");
+
+		long[] selectedGroupIds = PortalUtil.getSharedContentSiteGroupIds(
+			themeDisplay.getCompanyId(), selectedGroupId,
+			themeDisplay.getUserId());
 
 		for (long curGroupId : selectedGroupIds) {
 			Group curGroup = GroupLocalServiceUtil.fetchGroup(curGroupId);
