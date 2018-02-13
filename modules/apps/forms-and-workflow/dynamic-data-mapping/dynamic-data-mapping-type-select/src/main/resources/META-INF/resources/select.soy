@@ -235,8 +235,8 @@
 	{@param? multiple: bool}
 
 	<ul class="dropdown-menu dropdown-visible results-chosen">
-		{if not $fixedOptions or (length($fixedOptions) < 1)}
-			{if length($options) < 1}
+		{if not $fixedOptions or (length($fixedOptions) == 0)}
+			{if length($options) == 0}
 				<li class="no-results-list">
 					<span>
 						{$strings.emptyList}
