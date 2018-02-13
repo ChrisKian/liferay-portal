@@ -8252,6 +8252,31 @@ public class PortalImpl implements Portal {
 		return StringPool.SLASH.concat(languageId);
 	}
 
+	private String _buildI18NPath(
+		String languageId, Locale locale, Group group) {
+
+		if (Validator.isNull(languageId)) {
+			return null;
+		}
+
+		Locale siteDefaultLocale = null;
+
+		try {
+			siteDefaultLocale = getSiteDefaultLocale(group);
+		}
+		catch (Exception e) {
+		}
+
+		String siteDefaultLanguageId = LanguageUtil.getLanguageId(
+			siteDefaultLocale);
+
+		if (siteDefaultLanguageId.startsWith(languageId)) {
+			languageId = siteDefaultLocale.getLanguage();
+		}
+
+		return StringPool.SLASH.concat(languageId);
+	}
+
 	private Map<Locale, String> _getAlternateURLs(
 			String canonicalURL, ThemeDisplay themeDisplay, Layout layout,
 			Set<Locale> availableLocales)
