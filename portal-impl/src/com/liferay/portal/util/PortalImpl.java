@@ -7460,6 +7460,10 @@ public class PortalImpl implements Portal {
 			companyId, groupId, 0, name, primaryKey, false, true, true);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	protected String buildI18NPath(Locale locale) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
