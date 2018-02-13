@@ -8263,6 +8263,11 @@ public class PortalImpl implements Portal {
 
 		try {
 			siteDefaultLocale = getSiteDefaultLocale(group);
+
+			if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
+				siteDefaultLocale = LanguageUtil.getLocale(
+					group.getGroupId(), locale.getLanguage());
+			}
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -8272,6 +8277,11 @@ public class PortalImpl implements Portal {
 			}
 
 			siteDefaultLocale = LocaleUtil.getDefault();
+
+			if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
+				siteDefaultLocale = LanguageUtil.getLocale(
+					locale.getLanguage());
+			}
 		}
 
 		String siteDefaultLanguageId = LanguageUtil.getLanguageId(
