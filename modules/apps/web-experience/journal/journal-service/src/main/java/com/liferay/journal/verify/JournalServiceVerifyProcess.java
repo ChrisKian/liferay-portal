@@ -32,9 +32,6 @@ import com.liferay.journal.service.JournalContentSearchLocalService;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -59,7 +56,6 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.upgrade.AutoBatchPreparedStatementUtil;
-import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.verify.VerifyLayout;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.VerifyResourcePermissions;
@@ -88,10 +84,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class JournalServiceVerifyProcess extends VerifyLayout {
 
-	public static final long DEFAULT_GROUP_ID = 14;
-
-	public static final int NUM_OF_ARTICLES = 5;
-
 	@Override
 	protected void doVerify() throws Exception {
 		verifyArticleAssets();
@@ -101,10 +93,8 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		verifyArticleStructures();
 		verifyContentSearch();
 		verifyFolderAssets();
-		verifyOracleNewLine();
 		verifyPermissions();
 		verifyResourcedModels();
-		verifyTree();
 		verifyURLTitle();
 		verifyUUIDModels();
 
@@ -671,64 +661,6 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 	}
 
-	protected void verifyOracleNewLine() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			DB db = DBManagerUtil.getDB();
-
-			if (db.getDBType() != DBType.ORACLE) {
-				return;
-			}
-
-			// This is a workaround for a limitation in Oracle sqlldr's
-			// inability insert new line characters for long varchar columns.
-			// See http://forums.liferay.com/index.php?showtopic=2761&hl=oracle
-			// for more information. Check several articles because some
-			// articles may not have new lines.
-
-			boolean checkNewLine = false;
-
-			List<JournalArticle> articles =
-				_journalArticleLocalService.getArticles(
-					DEFAULT_GROUP_ID, 0, NUM_OF_ARTICLES);
-
-			for (JournalArticle article : articles) {
-				String content = article.getContent();
-
-				if ((content != null) && content.contains("\\n")) {
-					articles = _journalArticleLocalService.getArticles(
-						DEFAULT_GROUP_ID);
-
-					for (int j = 0; j < articles.size(); j++) {
-						article = articles.get(j);
-
-						_journalArticleLocalService.checkNewLine(
-							article.getGroupId(), article.getArticleId(),
-							article.getVersion());
-					}
-
-					checkNewLine = true;
-
-					break;
-				}
-			}
-
-			// Only process this once
-
-			if (!checkNewLine) {
-				if (_log.isInfoEnabled()) {
-					_log.info("Do not fix oracle new line");
-				}
-
-				return;
-			}
-			else {
-				if (_log.isInfoEnabled()) {
-					_log.info("Fix oracle new line");
-				}
-			}
-		}
-	}
-
 	protected void verifyPermissions() throws PortalException {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			List<JournalArticle> articles =
@@ -748,16 +680,6 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 			_verifyResourcePermissions.verify(
 				new JournalArticleVerifiableModel());
 			_verifyResourcePermissions.verify(new JournalFeedVerifiableModel());
-		}
-	}
-
-	protected void verifyTree() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			long[] companyIds = PortalInstances.getCompanyIdsBySQL();
-
-			for (long companyId : companyIds) {
-				_journalFolderLocalService.rebuildTree(companyId);
-			}
 		}
 	}
 

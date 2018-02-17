@@ -45,7 +45,6 @@
 			<property name="allowedExportPackageDirName" value="modules/apps/forms-and-workflow/dynamic-data-lists/dynamic-data-lists-service" />
 			<property name="allowedExportPackageDirName" value="modules/apps/foundation/alloy/alloy-mvc" />
 			<property name="allowedExportPackageDirName" value="modules/apps/foundation/frontend-editor/frontend-editor-lang" />
-			<property name="allowedExportPackageDirName" value="modules/apps/foundation/frontend-js/frontend-js-loader-modules-extender" />
 			<property name="allowedExportPackageDirName" value="modules/apps/foundation/mobile-device-rules/mobile-device-rules-service" />
 			<property name="allowedExportPackageDirName" value="modules/apps/foundation/petra/petra-content" />
 			<property name="allowedExportPackageDirName" value="modules/apps/foundation/petra/petra-doulos" />
@@ -380,6 +379,7 @@
 	<source-processor name="PropertiesSourceProcessor">
 		<check name="PropertiesDefinitionKeysCheck" />
 		<check name="PropertiesDependenciesFileCheck" />
+		<check name="PropertiesImportedFilesContentCheck" />
 		<check name="PropertiesLanguageKeysCheck" />
 		<check name="PropertiesLiferayPluginPackageFileCheck" />
 		<check name="PropertiesLongLinesCheck" />

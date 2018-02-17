@@ -14,11 +14,14 @@
 
 package com.liferay.source.formatter.checkstyle.checks;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.source.formatter.checkstyle.util.DetailASTUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -65,6 +68,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 	private void _checkMissingEmptyLineAfterReferencingVariable(
 		DetailAST detailAST, String name, int endLine) {
 
+		DetailAST previousDetailAST = detailAST;
 		boolean referenced = false;
 
 		DetailAST nextSibling = detailAST.getNextSibling();
@@ -104,19 +108,32 @@ public class MissingEmptyLineCheck extends BaseCheck {
 						nextSibling);
 
 					if ((endLine + 1) == startLineNextExpression) {
-						log(
-							startLineNextExpression,
-							_MSG_MISSING_EMPTY_LINE_AFTER_VARIABLE_REFERENCE,
-							startLineNextExpression, name);
+						String newSub = StringUtil.trim(
+							_getFirstLine(nextSibling));
+						String oldSub = StringUtil.trim(
+							_getFirstLine(previousDetailAST));
+
+						String prefix = newSub.replaceAll(
+							"(\\S*\\.set).*", "$1");
+
+						if (!_containsChildToken(
+								previousDetailAST, TokenTypes.ASSIGN) &&
+							(prefix.isEmpty() || !oldSub.startsWith(prefix))) {
+
+							log(
+								startLineNextExpression,
+								_MSG_MISSING_EMPTY_LINE_AFTER_VARIABLE_REFERENCE,
+								startLineNextExpression, name);
+						}
 					}
 				}
 
 				return;
 			}
 
-			referenced = true;
-
 			endLine = DetailASTUtil.getEndLine(nextSibling);
+			previousDetailAST = nextSibling;
+			referenced = true;
 
 			nextSibling = nextSibling.getNextSibling();
 		}
@@ -161,6 +178,31 @@ public class MissingEmptyLineCheck extends BaseCheck {
 					_MSG_MISSING_EMPTY_LINE_BEFORE_VARIABLE_USE, name);
 			}
 		}
+	}
+
+	private boolean _containsChildToken(DetailAST detailAST, int tokenType) {
+		List<DetailAST> detailASTs = Collections.emptyList();
+
+		if (detailAST != null) {
+			detailASTs = DetailASTUtil.getAllChildTokens(
+				detailAST, true, tokenType);
+		}
+
+		if (!detailASTs.isEmpty()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private String _getFirstLine(DetailAST detailAST) {
+		int startLine = DetailASTUtil.getStartLine(detailAST);
+
+		if (startLine < 1) {
+			return StringPool.BLANK;
+		}
+
+		return getLine(startLine - 1);
 	}
 
 	private boolean _isExpressionAssignsVariable(

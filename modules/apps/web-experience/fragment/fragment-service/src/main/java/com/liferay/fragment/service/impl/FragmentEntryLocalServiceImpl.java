@@ -14,7 +14,6 @@
 
 package com.liferay.fragment.service.impl;
 
-import com.liferay.fragment.exception.DuplicateFragmentEntryException;
 import com.liferay.fragment.exception.FragmentEntryNameException;
 import com.liferay.fragment.exception.RequiredFragmentEntryException;
 import com.liferay.fragment.model.FragmentEntry;
@@ -28,6 +27,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -35,6 +35,10 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 /**
  * @author Jürgen Kappler
@@ -52,7 +56,7 @@ public class FragmentEntryLocalServiceImpl
 
 		User user = userLocalService.getUser(userId);
 
-		validate(groupId, fragmentCollectionId, 0, name);
+		validate(name);
 
 		long fragmentEntryId = counterLocalService.increment();
 
@@ -67,6 +71,7 @@ public class FragmentEntryLocalServiceImpl
 		fragmentEntry.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
 		fragmentEntry.setFragmentCollectionId(fragmentCollectionId);
+		fragmentEntry.setFragmentEntryKey(String.valueOf(fragmentEntryId));
 		fragmentEntry.setName(name);
 		fragmentEntry.setStatus(status);
 		fragmentEntry.setStatusByUserId(userId);
@@ -93,10 +98,12 @@ public class FragmentEntryLocalServiceImpl
 
 		User user = userLocalService.getUser(userId);
 
-		validate(groupId, fragmentCollectionId, 0, name);
+		validate(name);
 
 		if (WorkflowConstants.STATUS_APPROVED == status) {
 			validateContent(html);
+
+			html = _parseHTMLContent(html);
 		}
 
 		long fragmentEntryId = counterLocalService.increment();
@@ -112,6 +119,7 @@ public class FragmentEntryLocalServiceImpl
 		fragmentEntry.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
 		fragmentEntry.setFragmentCollectionId(fragmentCollectionId);
+		fragmentEntry.setFragmentEntryKey(String.valueOf(fragmentEntryId));
 		fragmentEntry.setName(name);
 		fragmentEntry.setCss(css);
 		fragmentEntry.setHtml(html);
@@ -142,11 +150,10 @@ public class FragmentEntryLocalServiceImpl
 
 		// Fragment entry
 
-		long fragmentEntryInstanceLinkCount =
-			fragmentEntryInstanceLinkPersistence.countByG_F(
-				fragmentEntry.getGroupId(), fragmentEntry.getFragmentEntryId());
+		long fragmentEntryLinkCount = fragmentEntryLinkPersistence.countByG_F(
+			fragmentEntry.getGroupId(), fragmentEntry.getFragmentEntryId());
 
-		if (fragmentEntryInstanceLinkCount > 0) {
+		if (fragmentEntryLinkCount > 0) {
 			throw new RequiredFragmentEntryException();
 		}
 
@@ -181,6 +188,13 @@ public class FragmentEntryLocalServiceImpl
 	@Override
 	public FragmentEntry fetchFragmentEntry(long fragmentEntryId) {
 		return fragmentEntryPersistence.fetchByPrimaryKey(fragmentEntryId);
+	}
+
+	@Override
+	public FragmentEntry fetchFragmentEntry(
+		long groupId, String fragmentEntryKey) {
+
+		return fragmentEntryPersistence.fetchByG_FEK(groupId, fragmentEntryKey);
 	}
 
 	@Override
@@ -245,12 +259,12 @@ public class FragmentEntryLocalServiceImpl
 		FragmentEntry fragmentEntry = fragmentEntryPersistence.findByPrimaryKey(
 			fragmentEntryId);
 
-		validate(
-			fragmentEntry.getGroupId(), fragmentEntry.getFragmentCollectionId(),
-			fragmentEntryId, name);
+		validate(name);
 
 		if (WorkflowConstants.STATUS_APPROVED == status) {
 			validateContent(html);
+
+			html = _parseHTMLContent(html);
 		}
 
 		User user = userLocalService.getUser(userId);
@@ -287,37 +301,49 @@ public class FragmentEntryLocalServiceImpl
 			return fragmentEntry;
 		}
 
-		validate(
-			fragmentEntry.getGroupId(), fragmentEntry.getFragmentCollectionId(),
-			fragmentEntryId, name);
+		validate(name);
 
 		fragmentEntry.setName(name);
 
 		return fragmentEntryPersistence.update(fragmentEntry);
 	}
 
-	protected void validate(
-			long groupId, long fragmentCollectionId, long fragmentEntryId,
-			String name)
-		throws PortalException {
-
+	protected void validate(String name) throws PortalException {
 		if (Validator.isNull(name)) {
-			throw new FragmentEntryNameException(
-				"Name must not be null for group " + groupId);
-		}
-
-		FragmentEntry fragmentEntry = fragmentEntryPersistence.fetchByG_FCI_N(
-			groupId, fragmentCollectionId, name);
-
-		if ((fragmentEntry != null) &&
-			(fragmentEntry.getFragmentEntryId() != fragmentEntryId)) {
-
-			throw new DuplicateFragmentEntryException(name);
+			throw new FragmentEntryNameException("Name must not be null");
 		}
 	}
 
 	protected void validateContent(String html) throws PortalException {
 		_fragmentEntryProcessorRegistry.validateFragmentEntryHTML(html);
+	}
+
+	private String _getContent(FragmentEntry fragmentEntry) {
+		StringBundler sb = new StringBundler(7);
+
+		sb.append("<html><head><style>");
+		sb.append(fragmentEntry.getCss());
+		sb.append("</style><script>");
+		sb.append(fragmentEntry.getJs());
+		sb.append("</script></head><body>");
+		sb.append(fragmentEntry.getHtml());
+		sb.append("</body></html>");
+
+		return sb.toString();
+	}
+
+	private String _parseHTMLContent(String html) {
+		Document document = Jsoup.parse(html);
+
+		Document.OutputSettings outputSettings = new Document.OutputSettings();
+
+		outputSettings.prettyPrint(false);
+
+		document.outputSettings(outputSettings);
+
+		Element bodyElement = document.body();
+
+		return bodyElement.html();
 	}
 
 	private HtmlPreviewEntry _updateHtmlPreviewEntry(
@@ -338,7 +364,7 @@ public class FragmentEntryLocalServiceImpl
 		return _htmlPreviewEntryLocalService.addHtmlPreviewEntry(
 			fragmentEntry.getUserId(), fragmentEntry.getGroupId(),
 			classNameLocalService.getClassNameId(FragmentEntry.class),
-			fragmentEntry.getFragmentEntryId(), fragmentEntry.getContent(),
+			fragmentEntry.getFragmentEntryId(), _getContent(fragmentEntry),
 			ContentTypes.IMAGE_PNG, serviceContext);
 	}
 

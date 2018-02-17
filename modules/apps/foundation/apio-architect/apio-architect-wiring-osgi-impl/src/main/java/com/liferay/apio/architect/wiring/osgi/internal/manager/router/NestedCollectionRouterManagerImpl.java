@@ -14,20 +14,22 @@
 
 package com.liferay.apio.architect.wiring.osgi.internal.manager.router;
 
-import static com.liferay.apio.architect.wiring.osgi.internal.manager.resource.ResourceClass.PARENT_IDENTIFIER_CLASS;
-import static com.liferay.apio.architect.wiring.osgi.internal.manager.resource.ResourceClass.PARENT_MODEL_CLASS;
+import static com.liferay.apio.architect.alias.ProvideFunction.curry;
+import static com.liferay.apio.architect.unsafe.Unsafe.unsafeCast;
+import static com.liferay.apio.architect.wiring.osgi.internal.manager.TypeArgumentProperties.KEY_PARENT_IDENTIFIER_CLASS;
 import static com.liferay.apio.architect.wiring.osgi.internal.manager.util.ManagerUtil.getGenericClassFromPropertyOrElse;
+import static com.liferay.apio.architect.wiring.osgi.internal.manager.util.ManagerUtil.getNameOrFail;
 import static com.liferay.apio.architect.wiring.osgi.internal.manager.util.ManagerUtil.getTypeParamOrFail;
 
-import com.liferay.apio.architect.alias.ProvideFunction;
-import com.liferay.apio.architect.error.ApioDeveloperError.MustHaveValidGenericType;
+import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.router.NestedCollectionRouter;
 import com.liferay.apio.architect.routes.NestedCollectionRoutes;
 import com.liferay.apio.architect.routes.NestedCollectionRoutes.Builder;
+import com.liferay.apio.architect.unsafe.Unsafe;
 import com.liferay.apio.architect.wiring.osgi.internal.manager.base.BaseManager;
 import com.liferay.apio.architect.wiring.osgi.internal.service.reference.mapper.CustomServiceReferenceMapper;
 import com.liferay.apio.architect.wiring.osgi.manager.ProviderManager;
-import com.liferay.apio.architect.wiring.osgi.manager.representable.ModelClassManager;
+import com.liferay.apio.architect.wiring.osgi.manager.representable.IdentifierClassManager;
 import com.liferay.apio.architect.wiring.osgi.manager.representable.NameManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.NestedCollectionRouterManager;
 import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper.Emitter;
@@ -54,28 +56,27 @@ public class NestedCollectionRouterManagerImpl
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T> Optional<NestedCollectionRoutes<T>>
+	public <T, S> Optional<NestedCollectionRoutes<T, S>>
 		getNestedCollectionRoutesOptional(String name, String nestedName) {
 
-		Optional<Class<T>> nameOptional =
-			_modelClassManager.getModelClassOptional(name);
+		Optional<Class<Identifier>> optional1 =
+			_identifierClassManager.getIdentifierClassOptional(name);
 
-		Optional<Class<T>> nestedNameOptional =
-			_modelClassManager.getModelClassOptional(nestedName);
+		Optional<Class<Identifier>> optional2 =
+			_identifierClassManager.getIdentifierClassOptional(nestedName);
 
-		return nameOptional.map(
+		return optional1.map(
 			Class::getName
 		).flatMap(
-			parentClassName -> nestedNameOptional.map(
+			className1 -> optional2.map(
 				Class::getName
 			).map(
-				modelClassName -> modelClassName + "-" + parentClassName
+				className2 -> className1 + "-" + className2
 			).flatMap(
 				this::getServiceOptional
 			)
 		).map(
-			routes -> (NestedCollectionRoutes<T>)routes
+			Unsafe::unsafeCast
 		);
 	}
 
@@ -91,62 +92,52 @@ public class NestedCollectionRouterManagerImpl
 
 		CustomServiceReferenceMapper<NestedCollectionRouter>
 			customServiceReferenceMapper = new CustomServiceReferenceMapper<>(
-				bundleContext, NestedCollectionRouter.class);
+				bundleContext, NestedCollectionRouter.class, 1);
 
 		NestedCollectionRouter nestedCollectionRouter =
 			bundleContext.getService(serviceReference);
 
-		Class<?> genericClass = getGenericClassFromPropertyOrElse(
-			serviceReference, PARENT_MODEL_CLASS,
+		Class<?> clazz = getGenericClassFromPropertyOrElse(
+			serviceReference, KEY_PARENT_IDENTIFIER_CLASS,
 			() -> getTypeParamOrFail(
-				nestedCollectionRouter, NestedCollectionRouter.class, 1));
+				nestedCollectionRouter, NestedCollectionRouter.class, 3));
 
 		customServiceReferenceMapper.map(
-			serviceReference,
-			key -> emitter.emit(key + "-" + genericClass.getName()));
+			serviceReference, key -> emitter.emit(clazz.getName() + "-" + key));
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected NestedCollectionRoutes map(
 		NestedCollectionRouter nestedCollectionRouter,
 		ServiceReference<NestedCollectionRouter> serviceReference,
-		Class<?> modelClass) {
+		Class<?> clazz) {
 
-		Class<?> parentClass = getGenericClassFromPropertyOrElse(
-			serviceReference, PARENT_MODEL_CLASS,
+		Class<?> parentIdentifierClass = getGenericClassFromPropertyOrElse(
+			serviceReference, KEY_PARENT_IDENTIFIER_CLASS,
 			() -> getTypeParamOrFail(
-				nestedCollectionRouter, NestedCollectionRouter.class, 1));
+				nestedCollectionRouter, NestedCollectionRouter.class, 3));
 
-		Class<?> identifierClass = getGenericClassFromPropertyOrElse(
-			serviceReference, PARENT_IDENTIFIER_CLASS,
-			() -> getTypeParamOrFail(
-				nestedCollectionRouter, NestedCollectionRouter.class, 2));
+		String name = getNameOrFail(parentIdentifierClass, _nameManager);
 
-		ProvideFunction provideFunction =
-			httpServletRequest -> clazz -> _providerManager.provideOptional(
-				clazz, httpServletRequest);
+		String nestedName = getNameOrFail(clazz, _nameManager);
 
-		Optional<String> nameOptional = _nameManager.getNameOptional(
-			modelClass.getName());
+		return _getNestedCollectionRoutes(
+			unsafeCast(nestedCollectionRouter), name, nestedName);
+	}
 
-		String name = nameOptional.orElseThrow(
-			() -> new MustHaveValidGenericType(modelClass));
+	private <T, S, U extends Identifier<S>> NestedCollectionRoutes<T, S>
+		_getNestedCollectionRoutes(
+			NestedCollectionRouter<T, ?, S, U> nestedCollectionRouter,
+			String name, String nestedName) {
 
-		Optional<String> nestedNameOptional = _nameManager.getNameOptional(
-			parentClass.getName());
-
-		String nestedName = nestedNameOptional.orElseThrow(
-			() -> new MustHaveValidGenericType(modelClass));
-
-		Builder builder = new Builder<>(
-			modelClass, name, nestedName, identifierClass, provideFunction);
+		Builder<T, S> builder = new Builder<>(
+			name, nestedName, curry(_providerManager::provideOptional));
 
 		return nestedCollectionRouter.collectionRoutes(builder);
 	}
 
 	@Reference
-	private ModelClassManager _modelClassManager;
+	private IdentifierClassManager _identifierClassManager;
 
 	@Reference
 	private NameManager _nameManager;

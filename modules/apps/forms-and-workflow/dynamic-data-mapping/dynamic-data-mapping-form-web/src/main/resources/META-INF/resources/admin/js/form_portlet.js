@@ -456,10 +456,10 @@ AUI.add(
 									{
 										after: {
 											success: function(event, id, xhr) {
-												var requestURL = this.get('uri');
-												var responseURL = xhr.responseURL;
+												var requestURL = new A.Url(this.get('uri'));
+												var responseURL = new A.Url(xhr.responseURL);
 
-												if (requestURL !== responseURL) {
+												if (requestURL.getRelative() !== responseURL.getRelative()) {
 													window.location.reload();
 												}
 												else {
@@ -569,13 +569,19 @@ AUI.add(
 						return formString;
 					},
 
+					_getFormInstanceId: function() {
+						var instance = this;
+
+						return instance.byId('formInstanceId').val();
+					},
+
 					_getLocalizedName: function() {
 						var instance = this;
 
 						var defaultLanguageId = instance.get('defaultLanguageId');
 						var localizedName = instance.get('localizedName');
 
-						if (!localizedName[defaultLanguageId]) {
+						if (!localizedName[defaultLanguageId].trim()) {
 							localizedName[defaultLanguageId] = instance._isFormView() ? STR_UNTITLED_FORM : STR_UNTITLED_ELEMENT_SET;
 						}
 
@@ -594,12 +600,6 @@ AUI.add(
 						var instance = this;
 
 						return window[instance.ns('nameEditor')];
-					},
-
-					_getFormInstanceId: function() {
-						var instance = this;
-
-						return instance.byId('formInstanceId').val();
 					},
 
 					_handlePublishAction: function() {
@@ -713,6 +713,8 @@ AUI.add(
 						instance._hideRuleBuilder();
 
 						instance._showFormBuilder();
+
+						instance._toogleAddFieldButton();
 					},
 
 					_onNameEditorChange: function(event) {
@@ -744,6 +746,7 @@ AUI.add(
 						instance._autosave(
 							function() {
 								var publishedValue = instance.get('published');
+
 								var newPublishedValue = !publishedValue;
 
 								var payload = instance.ns(
@@ -814,6 +817,8 @@ AUI.add(
 						instance._hideFormBuilder();
 
 						instance._showRuleBuilder();
+
+						instance._toogleAddFieldButton();
 					},
 
 					_onSaveButtonClick: function(event) {
@@ -962,6 +967,19 @@ AUI.add(
 						localizedName[editingLanguageId] = name;
 
 						instance._setName(name);
+					},
+
+					_toogleAddFieldButton: function() {
+						var instance = this;
+
+						var addButton = A.one('.lfr-ddm-add-field');
+
+						if (addButton && !addButton.hasClass('hide')) {
+							addButton.addClass('hide');
+						}
+						else {
+							addButton.removeClass('hide');
+						}
 					}
 				}
 			}

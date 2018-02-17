@@ -52,7 +52,6 @@ import com.liferay.calendar.service.CalendarService;
 import com.liferay.calendar.util.CalendarResourceUtil;
 import com.liferay.calendar.util.CalendarUtil;
 import com.liferay.calendar.util.JCalendarUtil;
-import com.liferay.calendar.util.RSSUtil;
 import com.liferay.calendar.util.RecurrenceUtil;
 import com.liferay.calendar.util.comparator.CalendarBookingStartTimeComparator;
 import com.liferay.calendar.web.internal.constants.CalendarWebKeys;
@@ -105,6 +104,7 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.RSSUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -326,54 +326,6 @@ public class CalendarPortlet extends MVCPortlet {
 		}
 
 		super.render(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void serveResource(
-			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
-		throws PortletException {
-
-		try {
-			String resourceID = resourceRequest.getResourceID();
-
-			if (resourceID.equals("calendar")) {
-				serveCalendar(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("calendarBookingInvitees")) {
-				serveCalendarBookingInvitees(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("calendarBookings")) {
-				serveCalendarBookings(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("calendarBookingsRSS")) {
-				serveCalendarBookingsRSS(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("calendarRenderingRules")) {
-				serveCalendarRenderingRules(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("calendarResources")) {
-				serveCalendarResources(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("currentTime")) {
-				serveCurrentTime(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("exportCalendar")) {
-				serveExportCalendar(resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("hasExclusiveCalendarBooking")) {
-				serveHasExclusiveCalendarBooking(
-					resourceRequest, resourceResponse);
-			}
-			else if (resourceID.equals("resourceCalendars")) {
-				serveResourceCalendars(resourceRequest, resourceResponse);
-			}
-			else {
-				serveUnknownResource(resourceRequest, resourceResponse);
-			}
-		}
-		catch (Exception e) {
-			throw new PortletException(e);
-		}
 	}
 
 	public void updateCalendar(
@@ -694,6 +646,58 @@ public class CalendarPortlet extends MVCPortlet {
 			}
 
 			calendarsSet.add(calendar);
+		}
+	}
+
+	@Override
+	protected boolean callResourceMethod(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws PortletException {
+
+		try {
+			String resourceID = resourceRequest.getResourceID();
+
+			if (resourceID.equals("calendar")) {
+				serveCalendar(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("calendarBookingInvitees")) {
+				serveCalendarBookingInvitees(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("calendarBookings")) {
+				serveCalendarBookings(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("calendarBookingsRSS")) {
+				serveCalendarBookingsRSS(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("calendarRenderingRules")) {
+				serveCalendarRenderingRules(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("calendarResources")) {
+				serveCalendarResources(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("currentTime")) {
+				serveCurrentTime(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("exportCalendar")) {
+				serveExportCalendar(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("hasExclusiveCalendarBooking")) {
+				serveHasExclusiveCalendarBooking(
+					resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("resourceCalendars")) {
+				serveResourceCalendars(resourceRequest, resourceResponse);
+			}
+			else if (!super.callResourceMethod(
+						resourceRequest, resourceResponse)) {
+
+				serveUnknownResource(resourceRequest, resourceResponse);
+			}
+
+			return true;
+		}
+		catch (Exception e) {
+			throw new PortletException(e);
 		}
 	}
 
@@ -1354,7 +1358,7 @@ public class CalendarPortlet extends MVCPortlet {
 
 		long timeInterval = GetterUtil.getLong(
 			portletPreferences.getValue("rssTimeInterval", StringPool.BLANK),
-			RSSUtil.TIME_INTERVAL_DEFAULT);
+			Time.WEEK);
 
 		long startTime = System.currentTimeMillis();
 

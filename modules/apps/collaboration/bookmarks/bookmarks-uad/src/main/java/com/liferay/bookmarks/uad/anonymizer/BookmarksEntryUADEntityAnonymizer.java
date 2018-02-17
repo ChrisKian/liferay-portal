@@ -81,13 +81,13 @@ public class BookmarksEntryUADEntityAnonymizer extends BaseUADEntityAnonymizer {
 	}
 
 	@Override
-	public List<String> getEntityNonAnonymizableFieldNames() {
+	public List<String> getEntityNonanonymizableFieldNames() {
 		return null;
 	}
 
 	@Override
-	protected List<UADEntity> getUADEntities(long userId) {
-		return _uadEntityAggregator.getUADEntities(userId);
+	protected List<UADEntity> getUADEntities(long userId, int start, int end) {
+		return _uadEntityAggregator.getUADEntities(userId, start, end);
 	}
 
 	private void _autoAnonymize(BookmarksEntry bookmarksEntry, long userId)
