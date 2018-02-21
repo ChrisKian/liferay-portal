@@ -14,6 +14,7 @@
 
 package com.liferay.portal.kernel.upgrade;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
@@ -33,7 +34,6 @@ import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.IOException;
@@ -80,6 +80,8 @@ public abstract class UpgradeProcess
 	public void upgrade() throws UpgradeException {
 		long start = System.currentTimeMillis();
 
+		String message = "Completed upgrade process ";
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Upgrading " + ClassUtil.getClassName(this));
 		}
@@ -89,8 +91,10 @@ public abstract class UpgradeProcess
 
 			doUpgrade();
 		}
-		catch (Exception e) {
-			throw new UpgradeException(e);
+		catch (Throwable t) {
+			message = "Failed upgrade process ";
+
+			throw new UpgradeException(t);
 		}
 		finally {
 			connection = null;
@@ -98,8 +102,7 @@ public abstract class UpgradeProcess
 			if (_log.isInfoEnabled()) {
 				_log.info(
 					StringBundler.concat(
-						"Completed upgrade process ",
-						ClassUtil.getClassName(this), " in ",
+						message, ClassUtil.getClassName(this), " in ",
 						String.valueOf(System.currentTimeMillis() - start),
 						"ms"));
 			}

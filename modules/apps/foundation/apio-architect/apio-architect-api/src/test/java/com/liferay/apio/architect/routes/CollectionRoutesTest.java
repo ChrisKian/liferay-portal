@@ -14,11 +14,14 @@
 
 package com.liferay.apio.architect.routes;
 
+import static com.liferay.apio.architect.operation.Method.POST;
+import static com.liferay.apio.architect.routes.RoutesTestUtil.COLLECTION_PERMISSION_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.FORM_BUILDER_FUNCTION;
 import static com.liferay.apio.architect.routes.RoutesTestUtil.PAGINATION;
-import static com.liferay.apio.architect.routes.RoutesTestUtil.PROVIDE_FUNCTION;
+import static com.liferay.apio.architect.routes.RoutesTestUtil.REQUEST_PROVIDE_FUNCTION;
 
 import static com.spotify.hamcrest.optional.OptionalMatchers.emptyOptional;
+import static com.spotify.hamcrest.optional.OptionalMatchers.optionalWithValue;
 
 import static java.util.Collections.singletonMap;
 
@@ -29,7 +32,7 @@ import static org.hamcrest.core.Is.is;
 
 import com.liferay.apio.architect.alias.routes.CreateItemFunction;
 import com.liferay.apio.architect.alias.routes.GetPageFunction;
-import com.liferay.apio.architect.form.Form;
+import com.liferay.apio.architect.operation.Operation;
 import com.liferay.apio.architect.pagination.Page;
 import com.liferay.apio.architect.pagination.PageItems;
 import com.liferay.apio.architect.pagination.Pagination;
@@ -37,6 +40,7 @@ import com.liferay.apio.architect.routes.CollectionRoutes.Builder;
 import com.liferay.apio.architect.single.model.SingleModel;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,7 +54,7 @@ public class CollectionRoutesTest {
 	@Test
 	public void testEmptyBuilderBuildsEmptyRoutes() {
 		Builder<String> builder = new Builder<>(
-			String.class, "name", PROVIDE_FUNCTION);
+			"name", REQUEST_PROVIDE_FUNCTION);
 
 		CollectionRoutes<String> collectionRoutes = builder.build();
 
@@ -68,11 +72,12 @@ public class CollectionRoutesTest {
 	@Test
 	public void testFiveParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String> builder = new Builder<>(
-			String.class, "name", PROVIDE_FUNCTION);
+			"name", REQUEST_PROVIDE_FUNCTION);
 
 		CollectionRoutes<String> collectionRoutes = builder.addCreator(
 			this::_testAndReturnFourParameterCreatorRoute, String.class,
-			Long.class, Boolean.class, Integer.class, FORM_BUILDER_FUNCTION
+			Long.class, Boolean.class, Integer.class,
+			COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnFourParameterGetterRoute, String.class,
 			Long.class, Boolean.class, Integer.class
@@ -84,11 +89,12 @@ public class CollectionRoutesTest {
 	@Test
 	public void testFourParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String> builder = new Builder<>(
-			String.class, "name", PROVIDE_FUNCTION);
+			"name", REQUEST_PROVIDE_FUNCTION);
 
 		CollectionRoutes<String> collectionRoutes = builder.addCreator(
 			this::_testAndReturnThreeParameterCreatorRoute, String.class,
-			Long.class, Boolean.class, FORM_BUILDER_FUNCTION
+			Long.class, Boolean.class, COLLECTION_PERMISSION_FUNCTION,
+			FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnThreeParameterGetterRoute, String.class,
 			Long.class, Boolean.class
@@ -100,10 +106,11 @@ public class CollectionRoutesTest {
 	@Test
 	public void testOneParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String> builder = new Builder<>(
-			String.class, "name", PROVIDE_FUNCTION);
+			"name", REQUEST_PROVIDE_FUNCTION);
 
 		CollectionRoutes<String> collectionRoutes = builder.addCreator(
-			this::_testAndReturnNoParameterCreatorRoute, FORM_BUILDER_FUNCTION
+			this::_testAndReturnNoParameterCreatorRoute,
+			COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnNoParameterGetterRoute
 		).build();
@@ -114,11 +121,11 @@ public class CollectionRoutesTest {
 	@Test
 	public void testThreeParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String> builder = new Builder<>(
-			String.class, "name", PROVIDE_FUNCTION);
+			"name", REQUEST_PROVIDE_FUNCTION);
 
 		CollectionRoutes<String> collectionRoutes = builder.addCreator(
 			this::_testAndReturnTwoParameterCreatorRoute, String.class,
-			Long.class, FORM_BUILDER_FUNCTION
+			Long.class, COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnTwoParameterGetterRoute, String.class,
 			Long.class
@@ -130,11 +137,11 @@ public class CollectionRoutesTest {
 	@Test
 	public void testTwoParameterBuilderMethodsCreatesValidRoutes() {
 		Builder<String> builder = new Builder<>(
-			String.class, "name", PROVIDE_FUNCTION);
+			"name", REQUEST_PROVIDE_FUNCTION);
 
 		CollectionRoutes<String> collectionRoutes = builder.addCreator(
 			this::_testAndReturnOneParameterCreatorRoute, String.class,
-			FORM_BUILDER_FUNCTION
+			COLLECTION_PERMISSION_FUNCTION, FORM_BUILDER_FUNCTION
 		).addGetter(
 			this::_testAndReturnOneParameterGetterRoute, String.class
 		).build();
@@ -229,41 +236,53 @@ public class CollectionRoutesTest {
 	private void _testCollectionRoutes(
 		CollectionRoutes<String> collectionRoutes) {
 
-		Optional<Form> optional = collectionRoutes.getForm();
+		Optional<CollectionRoutes<String>> optional = Optional.of(
+			collectionRoutes);
 
-		Form form = optional.get();
+		Map body = optional.flatMap(
+			CollectionRoutes::getFormOptional
+		).map(
+			form -> {
+				assertThat(form.id, is("c/name"));
 
-		assertThat(form.id, is("c/name"));
-
-		Map body = (Map)form.get(_body);
+				return (Map)form.get(_body);
+			}
+		).get();
 
 		assertThat(body, is(_body));
 
-		Optional<CreateItemFunction<String>> createItemFunctionOptional =
-			collectionRoutes.getCreateItemFunctionOptional();
-
-		CreateItemFunction<String> createItemFunction =
-			createItemFunctionOptional.get();
-
-		SingleModel<String> singleModel = createItemFunction.apply(
+		SingleModel<String> singleModel = optional.flatMap(
+			CollectionRoutes::getCreateItemFunctionOptional
+		).get(
+		).apply(
 			null
 		).apply(
 			_body
 		);
 
-		assertThat(singleModel.getModelClass(), is(String.class));
+		assertThat(singleModel.getResourceName(), is("name"));
 		assertThat(singleModel.getModel(), is("Apio"));
 
-		Optional<GetPageFunction<String>> getPageFunctionOptional =
-			collectionRoutes.getGetPageFunctionOptional();
-
-		GetPageFunction<String> getPageFunction = getPageFunctionOptional.get();
-
-		Page<String> page = getPageFunction.apply(null);
+		Page<String> page = optional.flatMap(
+			CollectionRoutes::getGetPageFunctionOptional
+		).get(
+		).apply(
+			null
+		);
 
 		assertThat(page.getItems(), hasSize(1));
 		assertThat(page.getItems(), hasItem("Apio"));
 		assertThat(page.getTotalCount(), is(1));
+
+		List<Operation> operations = page.getOperations();
+
+		assertThat(operations, hasSize(1));
+
+		Operation operation = operations.get(0);
+
+		assertThat(operation.getFormOptional(), is(optionalWithValue()));
+		assertThat(operation.method, is(POST));
+		assertThat(operation.name, is("name/create"));
 	}
 
 	private final Map<String, Object> _body = singletonMap("key", "value");
