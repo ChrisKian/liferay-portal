@@ -83,13 +83,13 @@ public class AnnouncementsFlagUADEntityAnonymizer
 	}
 
 	@Override
-	public List<String> getEntityNonAnonymizableFieldNames() {
+	public List<String> getEntityNonanonymizableFieldNames() {
 		return null;
 	}
 
 	@Override
-	protected List<UADEntity> getUADEntities(long userId) {
-		return _uadEntityAggregator.getUADEntities(userId);
+	protected List<UADEntity> getUADEntities(long userId, int start, int end) {
+		return _uadEntityAggregator.getUADEntities(userId, start, end);
 	}
 
 	private void _autoAnonymize(AnnouncementsFlag announcementsFlag)
@@ -102,8 +102,8 @@ public class AnnouncementsFlagUADEntityAnonymizer
 	}
 
 	private ActionableDynamicQuery _getActionableDynamicQuery(long userId) {
-		return _uadDynamicQueryHelper.getActionableDynamicQuery(
-			_announcementsFlagLocalService::getActionableDynamicQuery,
+		return _uadDynamicQueryHelper.addActionableDynamicQueryCriteria(
+			_announcementsFlagLocalService.getActionableDynamicQuery(),
 			AnnouncementsUADConstants.USER_ID_FIELD_NAMES_ANNOUNCEMENTS_FLAG,
 			userId);
 	}

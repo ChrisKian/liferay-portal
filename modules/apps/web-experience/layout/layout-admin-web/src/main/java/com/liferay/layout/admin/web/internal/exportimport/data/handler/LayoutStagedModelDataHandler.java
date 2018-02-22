@@ -39,7 +39,6 @@ import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManager;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.exportimport.kernel.staging.Staging;
-import com.liferay.exportimport.lar.LayoutCache;
 import com.liferay.exportimport.lar.PermissionImporter;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
@@ -351,16 +350,35 @@ public class LayoutStagedModelDataHandler
 		long layoutId = GetterUtil.getLong(
 			referenceElement.attributeValue("layout-id"));
 
-		layouts.put(layoutId, existingLayout);
+		Layout layout = layouts.get(layoutId);
+		boolean collision = false;
 
-		Map<Long, Long> layoutPlids =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				Layout.class);
+		if (layout != null) {
+			Group layoutGroup = layout.getGroup();
+			LayoutSet layoutSet = layout.getLayoutSet();
 
-		long plid = GetterUtil.getLong(
-			referenceElement.attributeValue("class-pk"));
+			Group existingLayoutGroup = existingLayout.getGroup();
+			LayoutSet existingLayoutSet = existingLayout.getLayoutSet();
 
-		layoutPlids.put(plid, existingLayout.getPlid());
+			if (!existingLayoutGroup.equals(layoutGroup) &&
+				!existingLayoutSet.equals(layoutSet)) {
+
+				collision = true;
+			}
+		}
+
+		if (!collision) {
+			layouts.put(layoutId, existingLayout);
+
+			Map<Long, Long> layoutPlids =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					Layout.class);
+
+			long plid = GetterUtil.getLong(
+				referenceElement.attributeValue("class-pk"));
+
+			layoutPlids.put(plid, existingLayout.getPlid());
+		}
 	}
 
 	@Override
@@ -1228,7 +1246,7 @@ public class LayoutStagedModelDataHandler
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		LayoutCache layoutCache = new LayoutCache();
+		_permissionImporter.clearCache();
 
 		Element portletsElement = layoutElement.element("portlets");
 
@@ -1344,7 +1362,7 @@ public class LayoutStagedModelDataHandler
 
 			if (permissions) {
 				_permissionImporter.importPortletPermissions(
-					layoutCache, portletDataContext.getCompanyId(),
+					portletDataContext.getCompanyId(),
 					portletDataContext.getGroupId(), serviceContext.getUserId(),
 					layout, portletElement, portletId);
 			}
@@ -1761,8 +1779,9 @@ public class LayoutStagedModelDataHandler
 	private LayoutPrototypeLocalService _layoutPrototypeLocalService;
 	private LayoutSetLocalService _layoutSetLocalService;
 	private LayoutTemplateLocalService _layoutTemplateLocalService;
-	private final PermissionImporter _permissionImporter =
-		PermissionImporter.getInstance();
+
+	@Reference
+	private PermissionImporter _permissionImporter;
 
 	@Reference
 	private PortletDataContextFactory _portletDataContextFactory;

@@ -85,19 +85,19 @@ public class AnnouncementsEntryUADEntityAnonymizer
 	}
 
 	@Override
-	public List<String> getEntityNonAnonymizableFieldNames() {
-		if (_nonAnonymizableFieldNames.isEmpty()) {
-			_nonAnonymizableFieldNames.add("title");
-			_nonAnonymizableFieldNames.add("content");
-			_nonAnonymizableFieldNames.add("url");
+	public List<String> getEntityNonanonymizableFieldNames() {
+		if (_nonanonymizableFieldNames.isEmpty()) {
+			_nonanonymizableFieldNames.add("title");
+			_nonanonymizableFieldNames.add("content");
+			_nonanonymizableFieldNames.add("url");
 		}
 
-		return _nonAnonymizableFieldNames;
+		return _nonanonymizableFieldNames;
 	}
 
 	@Override
-	protected List<UADEntity> getUADEntities(long userId) {
-		return _uadEntityAggregator.getUADEntities(userId);
+	protected List<UADEntity> getUADEntities(long userId, int start, int end) {
+		return _uadEntityAggregator.getUADEntities(userId, start, end);
 	}
 
 	private void _autoAnonymize(AnnouncementsEntry announcementsEntry)
@@ -113,8 +113,8 @@ public class AnnouncementsEntryUADEntityAnonymizer
 	}
 
 	private ActionableDynamicQuery _getActionableDynamicQuery(long userId) {
-		return _uadDynamicQueryHelper.getActionableDynamicQuery(
-			_announcementsEntryLocalService::getActionableDynamicQuery,
+		return _uadDynamicQueryHelper.addActionableDynamicQueryCriteria(
+			_announcementsEntryLocalService.getActionableDynamicQuery(),
 			AnnouncementsUADConstants.USER_ID_FIELD_NAMES_ANNOUNCEMENTS_ENTRY,
 			userId);
 	}
@@ -139,7 +139,7 @@ public class AnnouncementsEntryUADEntityAnonymizer
 	@Reference
 	private AnnouncementsEntryLocalService _announcementsEntryLocalService;
 
-	private final List<String> _nonAnonymizableFieldNames = new ArrayList<>();
+	private final List<String> _nonanonymizableFieldNames = new ArrayList<>();
 
 	@Reference
 	private UADAnonymizerHelper _uadAnonymizerHelper;
