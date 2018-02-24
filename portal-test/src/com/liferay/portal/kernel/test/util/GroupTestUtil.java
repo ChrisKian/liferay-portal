@@ -20,6 +20,7 @@ import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.thread.local.Lifecycle;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -190,6 +192,44 @@ public class GroupTestUtil {
 
 		StagingLocalServiceUtil.enableLocalStaging(
 			userId, group, false, false, serviceContext);
+	}
+
+	public static void resetGroupLocales(
+			long groupId, Collection<Locale> locales, Locale defaultLocale)
+		throws Exception {
+
+		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+		String languageIds = StringUtil.merge(
+			LocaleUtil.toLanguageIds(locales));
+
+		resetGroupLocales(groupId, languageIds, defaultLanguageId);
+	}
+
+	public static void resetGroupLocales(
+			long groupId, String languageIds, String defaultLanguageId)
+		throws Exception {
+
+		// Reset group default locale
+
+		Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+		UnicodeProperties typeSettingsProperties =
+			group.getTypeSettingsProperties();
+
+		typeSettingsProperties.put(PropsKeys.LOCALES, languageIds);
+		typeSettingsProperties.put("languageId", defaultLanguageId);
+
+		GroupLocalServiceUtil.updateGroup(group);
+
+		// Reset group locales cache
+
+		LanguageUtil.resetAvailableGroupLocales(groupId);
+
+		// Reset thread locals
+
+		GroupThreadLocal.setGroupId(groupId);
+		System.out.println("reset GroupThreadLocal!");
 	}
 
 	public static Group updateDisplaySettings(
