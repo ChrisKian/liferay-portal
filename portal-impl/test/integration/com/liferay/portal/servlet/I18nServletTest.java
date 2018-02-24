@@ -114,6 +114,35 @@ public class I18nServletTest {
 	}
 
 	@Test
+	public void testDefaultCompanyI18nData() throws Exception {
+		//Default Locale
+		testI18nData(null, LocaleUtil.US, LocaleUtil.US);
+
+		//First-found Locales
+		testI18nData(null, LocaleUtil.CANADA_FRENCH, LocaleUtil.CANADA_FRENCH);
+		testI18nData(null, LocaleUtil.SPAIN, LocaleUtil.SPAIN);
+
+		//Duplicate Language
+		testI18nData(null, LocaleUtil.UK, LocaleUtil.US);
+	}
+
+	@Test
+	public void testDefaultGroupI18nData() throws Exception {
+		LanguageUtil.resetAvailableGroupLocales(_group.getGroupId());
+
+		//Default Locale
+		testI18nData(_group, LocaleUtil.US, LocaleUtil.US);
+
+		//First-found Locales
+		testI18nData(
+			_group, LocaleUtil.CANADA_FRENCH, LocaleUtil.CANADA_FRENCH);
+		testI18nData(_group, LocaleUtil.SPAIN, LocaleUtil.SPAIN);
+
+		//Duplicate Language
+		testI18nData(_group, LocaleUtil.UK, LocaleUtil.US);
+	}
+
+	@Test
 	public void testI18nNotUseDefaultExistentLocale() throws Exception {
 		PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE = false;
 
@@ -156,6 +185,27 @@ public class I18nServletTest {
 		Locale expectedLocale = LocaleUtil.CHINA;
 
 		testGetI18nData(expectedLocale, getI18nData(expectedLocale));
+	}
+
+	@Test
+	public void testModifiedGroupI18nData() throws Exception {
+		GroupTestUtil.resetGroupLocales(
+			_group.getGroupId(),
+			Arrays.asList(
+				LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.UK,
+				LocaleUtil.US),
+			LocaleUtil.SPAIN);
+
+		//Default Locale
+		testI18nData(_group, LocaleUtil.SPAIN, LocaleUtil.SPAIN);
+
+		//First-found Locales
+		testI18nData(
+			_group, LocaleUtil.CANADA_FRENCH, LocaleUtil.CANADA_FRENCH);
+		testI18nData(_group, LocaleUtil.UK, LocaleUtil.UK);
+
+		//Duplicate Language
+		testI18nData(_group, LocaleUtil.US, LocaleUtil.UK);
 	}
 
 	protected I18nServlet.I18nData getI18nData(Locale locale) {
