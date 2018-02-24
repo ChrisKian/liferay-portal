@@ -52,6 +52,7 @@ public class I18nServletTest {
 	public static void setUpClass() throws Exception {
 		_availableLocales = LanguageUtil.getAvailableLocales();
 		_defaultLocale = LocaleUtil.getDefault();
+		_localesEnabled = PropsValues.LOCALES_ENABLED;
 
 		LanguageUtil.init();
 
@@ -61,6 +62,13 @@ public class I18nServletTest {
 				LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.UK,
 				LocaleUtil.US),
 			LocaleUtil.US);
+
+		PropsValues.LOCALES_ENABLED = new String[] {
+			LanguageUtil.getLanguageId(LocaleUtil.CANADA_FRENCH),
+			LanguageUtil.getLanguageId(LocaleUtil.SPAIN),
+			LanguageUtil.getLanguageId(LocaleUtil.UK),
+			LanguageUtil.getLanguageId(LocaleUtil.US)
+		};
 	}
 
 	@AfterClass
@@ -70,6 +78,8 @@ public class I18nServletTest {
 		CompanyTestUtil.resetCompanyLocales(
 			PortalUtil.getDefaultCompanyId(), _availableLocales,
 			_defaultLocale);
+
+		PropsValues.LOCALES_ENABLED = _localesEnabled;
 	}
 
 	@Before
@@ -152,6 +162,8 @@ public class I18nServletTest {
 
 	private static Set<Locale> _availableLocales;
 	private static Locale _defaultLocale;
+
+	private static String[] _localesEnabled;
 
 	private final I18nServlet _i18nServlet = new I18nServlet();
 	private boolean _originalLocaleUseDefaultIfNotAvailable;
