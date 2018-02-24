@@ -8265,6 +8265,13 @@ public class PortalImpl implements Portal {
 			siteDefaultLocale = getSiteDefaultLocale(group);
 		}
 		catch (Exception e) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get default locale from group: " +
+						group.getGroupId() + ".  Using portal defaults.");
+			}
+
+			siteDefaultLocale = LocaleUtil.getDefault();
 		}
 
 		String siteDefaultLanguageId = LanguageUtil.getLanguageId(

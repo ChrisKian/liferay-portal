@@ -177,6 +177,7 @@ public class I18nServlet extends HttpServlet {
 			siteDefaultLocale = PortalUtil.getSiteDefaultLocale(siteGroup);
 		}
 		catch (Exception e) {
+			siteDefaultLocale = LocaleUtil.getDefault();
 		}
 
 		String siteDefaultLanguageId = LanguageUtil.getLanguageId(
