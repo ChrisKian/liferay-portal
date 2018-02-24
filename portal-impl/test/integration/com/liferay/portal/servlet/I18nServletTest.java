@@ -16,10 +16,16 @@ package com.liferay.portal.servlet;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
@@ -83,9 +89,21 @@ public class I18nServletTest {
 	}
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		_originalLocaleUseDefaultIfNotAvailable =
 			PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE;
+
+		_group = GroupTestUtil.addGroup();
+
+		UnicodeProperties typeSettingsProperties =
+			_group.getTypeSettingsProperties();
+
+		typeSettingsProperties.put(
+			GroupConstants.TYPE_SETTINGS_KEY_INHERIT_LOCALES, "false");
+
+		_group.setTypeSettingsProperties(typeSettingsProperties);
+
+		GroupLocalServiceUtil.updateGroup(_group);
 	}
 
 	@After
@@ -162,6 +180,9 @@ public class I18nServletTest {
 
 	private static Set<Locale> _availableLocales;
 	private static Locale _defaultLocale;
+
+	@DeleteAfterTestRun
+	private static Group _group;
 
 	private static String[] _localesEnabled;
 
