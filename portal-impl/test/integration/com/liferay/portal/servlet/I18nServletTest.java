@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.util.PropsValues;
 
@@ -176,6 +177,57 @@ public class I18nServletTest {
 			mockHttpServletRequest);
 
 		Assert.assertEquals(expectedI18nData, actualI18nData);
+	}
+
+	protected void testI18nData(
+		Group group, Locale locale, Locale expectedDefaultLocale) {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createMockHttpServletRequest(group, locale.getLanguage());
+
+		I18nServlet.I18nData languageOnlyPath = _i18nServlet.getI18nData(
+			mockHttpServletRequest);
+
+		mockHttpServletRequest = _createMockHttpServletRequest(
+			group, LocaleUtil.toLanguageId(locale));
+
+		I18nServlet.I18nData languageAndLocalePath = _i18nServlet.getI18nData(
+			mockHttpServletRequest);
+
+		Assert.assertEquals(
+			languageAndLocalePath.getLanguageId(),
+			LocaleUtil.toLanguageId(locale));
+
+		if (expectedDefaultLocale.equals(locale)) {
+			Assert.assertEquals(languageOnlyPath, languageAndLocalePath);
+		}
+		else {
+			Assert.assertEquals(
+				languageOnlyPath.getLanguageId(),
+				LocaleUtil.toLanguageId(expectedDefaultLocale));
+
+			Assert.assertNotEquals(languageOnlyPath, languageAndLocalePath);
+		}
+	}
+
+	private MockHttpServletRequest _createMockHttpServletRequest(
+		Group group, String path) {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		if (group != null) {
+			mockHttpServletRequest.setAttribute(
+				WebKeys.COMPANY_ID, group.getCompanyId());
+
+			mockHttpServletRequest.setPathInfo(
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
+					group.getFriendlyURL());
+		}
+
+		mockHttpServletRequest.setServletPath(StringPool.SLASH + path);
+
+		return mockHttpServletRequest;
 	}
 
 	private static Set<Locale> _availableLocales;
