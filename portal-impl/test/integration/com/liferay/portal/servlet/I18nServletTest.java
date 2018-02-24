@@ -53,15 +53,20 @@ public class I18nServletTest {
 		_availableLocales = LanguageUtil.getAvailableLocales();
 		_defaultLocale = LocaleUtil.getDefault();
 
+		LanguageUtil.init();
+
 		CompanyTestUtil.resetCompanyLocales(
 			PortalUtil.getDefaultCompanyId(),
 			Arrays.asList(
-				LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.US),
+				LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.UK,
+				LocaleUtil.US),
 			LocaleUtil.US);
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
+		LanguageUtil.init();
+
 		CompanyTestUtil.resetCompanyLocales(
 			PortalUtil.getDefaultCompanyId(), _availableLocales,
 			_defaultLocale);
