@@ -24,13 +24,15 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.junit.AfterClass;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -48,144 +50,129 @@ public class OrganizationModelListenerTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_organization = OrganizationTestUtil.addOrganization();
-
 		_indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
-
-		_user = UserTestUtil.addUser();
-		_user2 = UserTestUtil.addUser();
-		_user3 = UserTestUtil.addUser();
-
-		_indexer.reindex(_user);
-		_indexer.reindex(_user2);
-		_indexer.reindex(_user3);
-
-		_suborganization = OrganizationTestUtil.addOrganization();
-
-		UserLocalServiceUtil.addOrganizationUser(
-			_suborganization.getOrganizationId(), _user.getUserId());
-
-		_suborganization2 = OrganizationTestUtil.addOrganization();
-
-		UserLocalServiceUtil.addOrganizationUser(
-			_suborganization2.getOrganizationId(), _user2.getUserId());
-
-		_suborganization3 = OrganizationTestUtil.addOrganization();
-
-		UserLocalServiceUtil.addOrganizationUser(
-			_suborganization3.getOrganizationId(), _user3.getUserId());
 	}
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		UserLocalServiceUtil.deleteUser(_user);
-		UserLocalServiceUtil.deleteUser(_user2);
-		UserLocalServiceUtil.deleteUser(_user3);
+	@Before
+	public void setUp() throws Exception {
+		_childOrganization = OrganizationTestUtil.addOrganization();
+		_grandparentOrganization = OrganizationTestUtil.addOrganization();
+		_parentOrganization = OrganizationTestUtil.addOrganization();
 
-		OrganizationLocalServiceUtil.deleteOrganization(_suborganization3);
-		OrganizationLocalServiceUtil.deleteOrganization(_suborganization2);
-		OrganizationLocalServiceUtil.deleteOrganization(_suborganization);
-		OrganizationLocalServiceUtil.deleteOrganization(_organization);
+		_user = UserTestUtil.addUser();
+
+		_indexer.reindex(_user);
 	}
 
 	@Test
 	public void testAddMultipleParentOrganizations() throws Exception {
-		_suborganization.setParentOrganizationId(
-			_organization.getOrganizationId());
+		UserLocalServiceUtil.addOrganizationUser(
+			_childOrganization.getOrganizationId(), _user);
 
-		_updateOrganization(_suborganization);
+		_parentOrganization.setParentOrganizationId(
+			_grandparentOrganization.getOrganizationId());
 
-		Assert.assertEquals(
-			_organization.getOrganizationId(),
-			_suborganization.getParentOrganizationId());
-
-		_suborganization2.setParentOrganizationId(
-			_suborganization.getOrganizationId());
-
-		_updateOrganization(_suborganization2);
+		_parentOrganization = _updateOrganization(_parentOrganization);
 
 		Assert.assertEquals(
-			_suborganization.getOrganizationId(),
-			_suborganization2.getParentOrganizationId());
+			_grandparentOrganization.getOrganizationId(),
+			_parentOrganization.getParentOrganizationId());
 
-		long suborganizationParentId =
-			_suborganization.getParentOrganizationId();
-		long suborganization2ParentId =
-			_suborganization2.getParentOrganizationId();
+		_childOrganization.setParentOrganizationId(
+			_parentOrganization.getOrganizationId());
 
-		//user2 should have access to suborg and org stuff
-		Document document = _indexer.getDocument(_user2);
+		_childOrganization = _updateOrganization(_childOrganization);
+
+		Assert.assertEquals(
+			_parentOrganization.getOrganizationId(),
+			_childOrganization.getParentOrganizationId());
+
+		long parentOrganizationParentId =
+			_parentOrganization.getParentOrganizationId();
+		long childOrganizationParentId =
+			_childOrganization.getParentOrganizationId();
+
+		Document document = _indexer.getDocument(_user);
+
 		String[] indexedParentOrganizationIds = document.getValues(
 			"ancestorOrganizationIds");
 
-		Assert.assertTrue(ArrayUtils.contains(
-			indexedParentOrganizationIds,
-			String.valueOf(suborganizationParentId)));
-		Assert.assertTrue(ArrayUtils.contains(
-			indexedParentOrganizationIds,
-			String.valueOf(suborganization2ParentId)));
+		Assert.assertTrue(
+			ArrayUtils.contains(
+				indexedParentOrganizationIds,
+				String.valueOf(parentOrganizationParentId)));
+
+		Assert.assertTrue(
+			ArrayUtils.contains(
+				indexedParentOrganizationIds,
+				String.valueOf(childOrganizationParentId)));
 	}
 
 	@Test
 	public void testAddParentOrganization() throws Exception {
-		_suborganization.setParentOrganizationId(
-			_organization.getOrganizationId());
+		UserLocalServiceUtil.addOrganizationUser(
+			_childOrganization.getOrganizationId(), _user);
 
-		_updateOrganization(_suborganization);
+		_childOrganization.setParentOrganizationId(
+			_parentOrganization.getOrganizationId());
+
+		_childOrganization = _updateOrganization(_childOrganization);
 
 		Assert.assertEquals(
-			_organization.getOrganizationId(),
-			_suborganization.getParentOrganizationId());
+			_parentOrganization.getOrganizationId(),
+			_childOrganization.getParentOrganizationId());
 
 		String[] expectedParentOrganizationIds = new String[1];
 
 		expectedParentOrganizationIds[0] = String.valueOf(
-			_suborganization.getParentOrganizationId());
+			_childOrganization.getParentOrganizationId());
 
 		Document document = _indexer.getDocument(_user);
+
 		String[] indexedParentOrganizationIds = document.getValues(
 			"ancestorOrganizationIds");
 
 		Assert.assertArrayEquals(
-			expectedParentOrganizationIds,indexedParentOrganizationIds);
+			expectedParentOrganizationIds, indexedParentOrganizationIds);
 	}
 
 	@Test
 	public void testRemoveParentOrganization() throws Exception {
-		//check setup
-		_suborganization3.setParentOrganizationId(
-			_organization.getOrganizationId());
+		UserLocalServiceUtil.addOrganizationUser(
+			_childOrganization.getOrganizationId(), _user);
 
-		_updateOrganization(_suborganization3);
+		_childOrganization.setParentOrganizationId(
+			_parentOrganization.getOrganizationId());
+
+		_childOrganization = _updateOrganization(_childOrganization);
 
 		Assert.assertEquals(
-			_organization.getOrganizationId(),
-			_suborganization3.getParentOrganizationId());
+			_parentOrganization.getOrganizationId(),
+			_childOrganization.getParentOrganizationId());
 
-		//now remove
-
-		_suborganization3.setParentOrganizationId(
+		_childOrganization.setParentOrganizationId(
 			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
 
-		_updateOrganization(_suborganization3);
+		_childOrganization = _updateOrganization(_childOrganization);
 
-		//user should no longer have access to parent stuff
 		Assert.assertEquals(
-			_suborganization3.getParentOrganizationId(),
+			_childOrganization.getParentOrganizationId(),
 			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
 
-		Document document = _indexer.getDocument(_user3);
+		Document document = _indexer.getDocument(_user);
+
 		String[] indexedParentOrganizationIds = document.getValues(
 			"ancestorOrganizationIds");
 
 		String[] expectedParentOrganizationIds = new String[0];
+
 		Assert.assertArrayEquals(
-			expectedParentOrganizationIds,indexedParentOrganizationIds);
+			expectedParentOrganizationIds, indexedParentOrganizationIds);
 	}
 
 	private Organization _updateOrganization(Organization organization)
 		throws Exception {
-		
+
 		Group organizationGroup = organization.getGroup();
 
 		return OrganizationLocalServiceUtil.updateOrganization(
@@ -197,13 +184,18 @@ public class OrganizationModelListenerTest {
 			null);
 	}
 
+	@DeleteAfterTestRun
+	private static Organization _childOrganization;
+
+	@DeleteAfterTestRun
+	private static Organization _grandparentOrganization;
+
 	private static Indexer<User> _indexer;
-	private static Organization _organization;
-	private static Organization _suborganization;
-	private static Organization _suborganization2;
-	private static Organization _suborganization3;
+
+	@DeleteAfterTestRun
+	private static Organization _parentOrganization;
+
+	@DeleteAfterTestRun
 	private static User _user;
-	private static User _user2;
-	private static User _user3;
 
 }
