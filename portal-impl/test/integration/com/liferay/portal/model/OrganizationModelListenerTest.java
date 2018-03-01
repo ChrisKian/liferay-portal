@@ -24,13 +24,13 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -62,6 +62,16 @@ public class OrganizationModelListenerTest {
 		_user = UserTestUtil.addUser();
 
 		_indexer.reindex(_user);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		UserLocalServiceUtil.deleteUser(_user);
+
+		OrganizationLocalServiceUtil.deleteOrganization(_childOrganization);
+		OrganizationLocalServiceUtil.deleteOrganization(_parentOrganization);
+		OrganizationLocalServiceUtil.deleteOrganization(
+			_grandparentOrganization);
 	}
 
 	@Test
@@ -106,19 +116,6 @@ public class OrganizationModelListenerTest {
 			ArrayUtils.contains(
 				indexedParentOrganizationIds,
 				String.valueOf(childOrganizationParentId)));
-
-		UserLocalServiceUtil.deleteOrganizationUser(
-			_childOrganization.getOrganizationId(), _user);
-
-		_childOrganization.setParentOrganizationId(
-			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
-
-		_childOrganization = _updateOrganization(_childOrganization);
-
-		_parentOrganization.setParentOrganizationId(
-			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
-
-		_parentOrganization = _updateOrganization(_parentOrganization);
 	}
 
 	@Test
@@ -197,18 +194,10 @@ public class OrganizationModelListenerTest {
 			null);
 	}
 
-	@DeleteAfterTestRun
 	private static Organization _childOrganization;
-
-	@DeleteAfterTestRun
 	private static Organization _grandparentOrganization;
-
 	private static Indexer<User> _indexer;
-
-	@DeleteAfterTestRun
 	private static Organization _parentOrganization;
-
-	@DeleteAfterTestRun
 	private static User _user;
 
 }
