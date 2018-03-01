@@ -66,9 +66,6 @@ public class OrganizationModelListenerTest {
 
 	@Test
 	public void testAddMultipleParentOrganizations() throws Exception {
-		UserLocalServiceUtil.addOrganizationUser(
-			_childOrganization.getOrganizationId(), _user);
-
 		_parentOrganization.setParentOrganizationId(
 			_grandparentOrganization.getOrganizationId());
 
@@ -77,6 +74,9 @@ public class OrganizationModelListenerTest {
 		Assert.assertEquals(
 			_grandparentOrganization.getOrganizationId(),
 			_parentOrganization.getParentOrganizationId());
+
+		UserLocalServiceUtil.addOrganizationUser(
+			_childOrganization.getOrganizationId(), _user);
 
 		_childOrganization.setParentOrganizationId(
 			_parentOrganization.getOrganizationId());
@@ -106,6 +106,19 @@ public class OrganizationModelListenerTest {
 			ArrayUtils.contains(
 				indexedParentOrganizationIds,
 				String.valueOf(childOrganizationParentId)));
+
+		UserLocalServiceUtil.deleteOrganizationUser(
+			_childOrganization.getOrganizationId(), _user);
+
+		_childOrganization.setParentOrganizationId(
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
+
+		_childOrganization = _updateOrganization(_childOrganization);
+
+		_parentOrganization.setParentOrganizationId(
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
+
+		_parentOrganization = _updateOrganization(_parentOrganization);
 	}
 
 	@Test
