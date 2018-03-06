@@ -43,16 +43,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -92,7 +91,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="Test Test" />
-			<var name="replyCount" value="1" />
+			<var name="replyCount" value="0" />
 			<var name="threadBody" value="Message Boards Subject" />
 			<var name="threadSubject" value="Message Boards Subject" />
 		</execute>
@@ -194,9 +193,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
+			<var name="pageName" value="Site Page Name" />
+			<var name="sitePageType" value="Layout" />
+		</execute>
+
+		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="privacy" value="Public" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
@@ -333,16 +338,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -389,16 +393,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -434,7 +437,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="Test Test" />
-			<var name="replyCount" value="2" />
+			<var name="replyCount" value="1" />
 			<var name="threadSubject" value="MB Thread Message Subject" />
 		</execute>
 
@@ -474,16 +477,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -514,7 +516,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="Anonymous" />
-			<var name="replyCount" value="2" />
+			<var name="replyCount" value="1" />
 			<var name="threadBody" value="MB Thread Message Body" />
 			<var name="threadSubject" value="MB Thread Message Subject" />
 		</execute>
@@ -534,16 +536,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -561,16 +562,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page 2" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page 2" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -600,16 +600,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page 3" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page 3" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -667,7 +666,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="Test Test" />
-			<var name="replyCount" value="1" />
+			<var name="replyCount" value="0" />
 			<var name="threadBody" value="MB Root Thread Message Body" />
 			<var name="threadSubject" value="MB Root Thread Message Subject" />
 		</execute>
@@ -1196,16 +1195,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Site Page Name" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoSitePage">
@@ -1347,16 +1345,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1471,16 +1468,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1605,7 +1601,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="userfn2 userln2" />
-			<var name="replyCount" value="3" />
+			<var name="replyCount" value="2" />
 			<var name="threadBody" value="MB Thread Message Body" />
 			<var name="threadSubject" value="MB Thread Message Subject" />
 		</execute>
@@ -1621,7 +1617,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="userfn2 userln2" />
-			<var name="replyCount" value="3" />
+			<var name="replyCount" value="2" />
 			<var name="threadBody" value="MB Thread Message Body" />
 			<var name="threadSubject" value="MB Thread Message Subject" />
 		</execute>
@@ -1661,9 +1657,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
+			<var name="pageName" value="Message Boards Page" />
+			<var name="sitePageType" value="Layout" />
+		</execute>
+
+		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="privacy" value="Public" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1726,16 +1728,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1770,7 +1771,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="Test Test" />
-			<var name="replyCount" value="1" />
+			<var name="replyCount" value="0" />
 			<var name="threadBody" value="MB Thread1 Message Body" />
 			<var name="threadSubject" value="MB Thread1 Message Subject" />
 		</execute>
@@ -1848,16 +1849,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1891,16 +1891,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -1935,16 +1934,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -2048,16 +2046,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
@@ -2096,7 +2093,7 @@
 
 		<execute macro="MessageboardsThread#gotoPG">
 			<var name="lastPostUserName" value="Test Test" />
-			<var name="replyCount" value="2" />
+			<var name="replyCount" value="1" />
 			<var name="threadSubject" value="MB Thread Message Subject" />
 		</execute>
 
@@ -2139,16 +2136,15 @@
 		</execute>
 
 		<execute macro="SitePages#addPublicPage">
-			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Message Boards Page" />
 			<var name="privacy" value="Public" />
-			<var name="sitePageType" value="Empty Page" />
+			<var name="sitePageType" value="Layout" />
 		</execute>
 
 		<execute macro="Navigator#gotoPage">
