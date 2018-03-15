@@ -30,6 +30,7 @@ String searchContainerId = "userNotificationEvents";
 
 if (actionRequired) {
 	searchContainerId = "actionableUserNotificationEvents";
+	navigation = "unread";
 }
 
 notificationsSearchContainer.setId(searchContainerId);
@@ -59,7 +60,7 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 
 		<aui:nav-item
 			href="<%= viewRequestsURL %>"
-			label='<%= LanguageUtil.format(request, "requests-list-x", String.valueOf(UserNotificationEventLocalServiceUtil.getDeliveredUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, true, true))) %>'
+			label='<%= LanguageUtil.format(request, "requests-list-x", String.valueOf(UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, true, false))) %>'
 			selected="<%= actionRequired %>"
 		/>
 	</aui:nav>
@@ -185,6 +186,8 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 									A.io.request(markAsReadURL);
 
 									notificationContainer.remove();
+
+									location.reload(true);
 								}
 							}
 							else {
