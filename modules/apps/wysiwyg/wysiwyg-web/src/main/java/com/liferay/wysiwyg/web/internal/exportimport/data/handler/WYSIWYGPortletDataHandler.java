@@ -1,6 +1,19 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
 package com.liferay.wysiwyg.web.internal.exportimport.data.handler;
 
-import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
@@ -8,26 +21,25 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.wysiwyg.web.internal.constants.WYSIWYGPortletKeys;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import javax.portlet.PortletPreferences;
 
+import org.osgi.service.component.annotations.Component;
+
+/**
+ * @author Lianne Louie
+ */
 @Component(
 	immediate = true,
-	property = {
-		"javax.portlet.name=" + WYSIWYGPortletKeys.WYSIWYG
-	},
-	service = {
-		PortletDataHandler.class
-	}
+	property = {"javax.portlet.name=" + WYSIWYGPortletKeys.WYSIWYG},
+	service = {PortletDataHandler.class}
 )
 public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletPreferences processExportPortletPreferences(
-		PortletDataContext portletDataContext, String portletId,
-		PortletPreferences portletPreferences)
+			PortletDataContext portletDataContext, String portletId,
+			PortletPreferences portletPreferences)
 		throws PortletDataException {
 
 		try {
@@ -44,8 +56,8 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public PortletPreferences processImportPortletPreferences(
-		PortletDataContext portletDataContext, String portletId,
-		PortletPreferences portletPreferences)
+			PortletDataContext portletDataContext, String portletId,
+			PortletPreferences portletPreferences)
 		throws PortletDataException {
 
 		try {
@@ -61,8 +73,8 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	protected PortletPreferences doProcessExportPortletPreferences(
-		PortletDataContext portletDataContext, String portletId,
-		PortletPreferences portletPreferences)
+			PortletDataContext portletDataContext, String portletId,
+			PortletPreferences portletPreferences)
 		throws Exception {
 
 		String message = portletPreferences.getValue(
@@ -71,7 +83,8 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 		if (message.matches("((?s).*)(\"\\/documents\\/(?s).*\")((?s).*)")) {
 			long groupId = portletDataContext.getGroupId();
 
-			StringBundler sb = new StringBundler();
+			StringBundler sb = new StringBundler(2);
+
 			sb.append("/documents/");
 			sb.append(groupId);
 			String newMessage = message.replace(
@@ -84,8 +97,8 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	protected PortletPreferences doProcessImportPortletPreferences(
-		PortletDataContext portletDataContext, String portletId,
-		PortletPreferences portletPreferences)
+			PortletDataContext portletDataContext, String portletId,
+			PortletPreferences portletPreferences)
 		throws Exception {
 
 		String message = portletPreferences.getValue(
@@ -93,7 +106,8 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 
 		if (message.matches("((?s).*)(\"\\/documents\\/(?s).*\")((?s).*)")) {
 			long groupId = portletDataContext.getGroupId();
-			StringBundler sb = new StringBundler();
+			StringBundler sb = new StringBundler(2);
+
 			sb.append("/documents/");
 			sb.append(groupId);
 			String newMessage = message.replace(
@@ -105,7 +119,4 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 		return portletPreferences;
 	}
 
-	@Reference(target = "(content.processor.type=DLReferences)")
-	private ExportImportContentProcessor<String>
-		_dlReferencesExportImportContentProcessor;
 }
