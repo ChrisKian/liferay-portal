@@ -80,18 +80,16 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 		String message = portletPreferences.getValue(
 			"message", StringPool.BLANK);
 
-		if (message.matches("((?s).*)(\"\\/documents\\/(?s).*\")((?s).*)")) {
-			long groupId = portletDataContext.getGroupId();
+		long groupId = portletDataContext.getGroupId();
 
-			StringBundler sb = new StringBundler(2);
+		StringBundler sb = new StringBundler(2);
 
-			sb.append("/documents/");
-			sb.append(groupId);
-			String newMessage = message.replace(
-				sb.toString(), "/documents/[$groupId$]");
+		sb.append("/documents/");
+		sb.append(groupId);
+		String newMessage = message.replace(
+			sb.toString(), "/documents/[$groupId$]");
 
-			portletPreferences.setValue("message", newMessage);
-		}
+		portletPreferences.setValue("message", newMessage);
 
 		return portletPreferences;
 	}
@@ -104,17 +102,15 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 		String message = portletPreferences.getValue(
 			"message", StringPool.BLANK);
 
-		if (message.matches("((?s).*)(\"\\/documents\\/(?s).*\")((?s).*)")) {
-			long groupId = portletDataContext.getGroupId();
-			StringBundler sb = new StringBundler(2);
+		long groupId = portletDataContext.getGroupId();
+		StringBundler sb = new StringBundler(2);
 
-			sb.append("/documents/");
-			sb.append(groupId);
-			String newMessage = message.replace(
-				"/documents/[$groupId$]", sb.toString());
+		sb.append("/documents/");
+		sb.append(groupId);
+		String newMessage = message.replace(
+			"/documents/[$groupId$]", sb.toString());
 
-			portletPreferences.setValue("message", newMessage);
-		}
+		portletPreferences.setValue("message", newMessage);
 
 		return portletPreferences;
 	}
