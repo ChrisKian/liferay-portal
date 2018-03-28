@@ -30,6 +30,7 @@ String searchContainerId = "userNotificationEvents";
 
 if (actionRequired) {
 	searchContainerId = "actionableUserNotificationEvents";
+	navigation = "unread";
 }
 
 notificationsSearchContainer.setId(searchContainerId);
@@ -53,7 +54,7 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 			<liferay-portlet:param name="actionRequired" value="<%= StringPool.TRUE %>" />
 		</liferay-portlet:renderURL>
 
-		<aui:nav-item href="<%= viewRequestsURL %>" label='<%= LanguageUtil.format(request, "requests-list-x", String.valueOf(UserNotificationEventLocalServiceUtil.getDeliveredUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, true, true))) %>' selected="<%= actionRequired %>" />
+		<aui:nav-item href="<%= viewRequestsURL %>" label='<%= LanguageUtil.format(request, "requests-list-x", String.valueOf(UserNotificationEventLocalServiceUtil.getArchivedUserNotificationEventsCount(themeDisplay.getUserId(), UserNotificationDeliveryConstants.TYPE_WEBSITE, true, false))) %>' selected="<%= actionRequired %>" />
 	</aui:nav>
 </aui:nav-bar>
 
@@ -128,6 +129,17 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 					keyProperty="userNotificationEventId"
 					modelVar="userNotificationEvent"
 				>
+
+					<%
+					Map<String, Object> rowData = new HashMap<String, Object>();
+
+					UserNotificationFeedEntry userNotificationFeedEntry = UserNotificationManagerUtil.interpret(StringPool.BLANK, userNotificationEvent, ServiceContextFactory.getInstance(request));
+
+					rowData.put("userNotificationFeedEntry", userNotificationFeedEntry);
+
+					row.setData(rowData);
+					%>
+
 					<%@ include file="/notifications/user_notification_entry.jspf" %>
 				</liferay-ui:search-container-row>
 
@@ -190,9 +202,11 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 								if (notificationContainer) {
 									var markAsReadURL = notificationContainer.one('a').attr('href');
 
-									A.io.request(markAsReadURL);
-
 									notificationContainer.remove();
+
+									form.attr('method', 'post');
+
+									submitForm(form, markAsReadURL);
 								}
 							}
 							else {
