@@ -1069,13 +1069,6 @@ public class MainServlet extends ActionServlet {
 			EventsProcessorUtil.process(
 				PropsKeys.LOGIN_EVENTS_PRE, PropsValues.LOGIN_EVENTS_PRE,
 				request, response);
-
-			if (PropsValues.USERS_UPDATE_LAST_LOGIN ||
-				(user.getLastLoginDate() == null)) {
-
-				user = UserLocalServiceUtil.updateLastLogin(
-					userId, request.getRemoteAddr());
-			}
 		}
 
 		if (request.getAttribute(WebKeys.USER) != null) {

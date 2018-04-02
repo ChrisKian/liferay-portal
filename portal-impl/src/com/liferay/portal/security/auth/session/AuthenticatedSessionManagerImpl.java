@@ -134,6 +134,13 @@ public class AuthenticatedSessionManagerImpl
 
 		User user = _getAuthenticatedUser(request, login, password, authType);
 
+		if (PropsValues.USERS_UPDATE_LAST_LOGIN ||
+			(user.getLastLoginDate() == null)) {
+
+			user = UserLocalServiceUtil.updateLastLogin(
+				user.getUserId(), request.getRemoteAddr());
+		}
+
 		if (!PropsValues.AUTH_SIMULTANEOUS_LOGINS) {
 			signOutSimultaneousLogins(user.getUserId());
 		}
