@@ -104,7 +104,7 @@ RatingsStats ratingsStats = (RatingsStats)request.getAttribute("view_entry_conte
 				</div>
 			</div>
 
-			<div class="widget-content">
+			<div class="widget-content" id="<portlet:namespace /><%= entry.getEntryId() %>">
 
 				<%
 				String coverImageURL = entry.getCoverImageURL(themeDisplay);
@@ -223,6 +223,19 @@ RatingsStats ratingsStats = (RatingsStats)request.getAttribute("view_entry_conte
 			</div>
 
 			<c:if test="<%= blogsPortletInstanceConfiguration.displayStyle().equals(BlogsUtil.DISPLAY_STYLE_FULL_CONTENT) %>">
+				<liferay-asset:asset-tags-available
+					className="<%= BlogsEntry.class.getName() %>"
+					classPK="<%= entry.getEntryId() %>"
+				>
+					<div class="entry-tags">
+						<liferay-asset:asset-tags-summary
+							className="<%= BlogsEntry.class.getName() %>"
+							classPK="<%= entry.getEntryId() %>"
+							portletURL="<%= renderResponse.createRenderURL() %>"
+						/>
+					</div>
+				</liferay-asset:asset-tags-available>
+
 				<c:if test="<%= blogsPortletInstanceConfiguration.enableRelatedAssets() %>">
 					<div class="entry-links">
 						<liferay-asset:asset-links
@@ -245,19 +258,6 @@ RatingsStats ratingsStats = (RatingsStats)request.getAttribute("view_entry_conte
 						/>
 					</div>
 				</liferay-asset:asset-categories-available>
-
-				<liferay-asset:asset-tags-available
-					className="<%= BlogsEntry.class.getName() %>"
-					classPK="<%= entry.getEntryId() %>"
-				>
-					<div class="entry-tags">
-						<liferay-asset:asset-tags-summary
-							className="<%= BlogsEntry.class.getName() %>"
-							classPK="<%= entry.getEntryId() %>"
-							portletURL="<%= renderResponse.createRenderURL() %>"
-						/>
-					</div>
-				</liferay-asset:asset-tags-available>
 			</c:if>
 		</div>
 	</c:when>

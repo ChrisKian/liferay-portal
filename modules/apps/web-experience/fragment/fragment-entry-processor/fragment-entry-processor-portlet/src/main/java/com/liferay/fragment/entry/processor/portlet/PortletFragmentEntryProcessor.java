@@ -63,8 +63,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pavel Savinov
  */
 @Component(
-	immediate = true,
-	property = {"fragment.entry.processor.priority:Integer=3"},
+	immediate = true, property = "fragment.entry.processor.priority:Integer=3",
 	service = FragmentEntryProcessor.class
 )
 public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
@@ -79,12 +78,12 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 		for (Element element : document.select("*")) {
 			String tagName = element.tagName();
 
-			if (!StringUtil.startsWith(tagName, "lfr-app-")) {
+			if (!StringUtil.startsWith(tagName, "lfr-widget-")) {
 				continue;
 			}
 
 			String alias = StringUtil.replace(
-				tagName, "lfr-app-", StringPool.BLANK);
+				tagName, "lfr-widget-", StringPool.BLANK);
 
 			String portletName = _portletRegistry.getPortletName(alias);
 
@@ -159,12 +158,12 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 		for (Element element : document.select("*")) {
 			String htmlTagName = element.tagName();
 
-			if (!StringUtil.startsWith(htmlTagName, "lfr-app-")) {
+			if (!StringUtil.startsWith(htmlTagName, "lfr-widget-")) {
 				continue;
 			}
 
 			String alias = StringUtil.replace(
-				htmlTagName, "lfr-app-", StringPool.BLANK);
+				htmlTagName, "lfr-widget-", StringPool.BLANK);
 
 			if (Validator.isNull(_portletRegistry.getPortletName(alias))) {
 				throw new FragmentEntryContentException(
@@ -245,20 +244,26 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 		menuElement.attr("id", "portlet-topper-toolbar_" + portletId);
 		menuElement.attr("type", "toolbar");
 
-		Element iconElement = new Element("@liferay_ui.icon");
+		Element buttonElement = new Element("button");
 
-		iconElement.attr("icon", "cog");
-		iconElement.attr("markupView", "lexicon");
-		iconElement.attr("url", "javascript:;");
+		buttonElement.attr("class", "btn btn-primary btn-sm");
 
 		try {
-			iconElement.attr("onClick", _getConfigurationURL(portletId));
+			buttonElement.attr("onClick", _getConfigurationURL(portletId));
 		}
 		catch (Exception e) {
 			throw new PortalException(e);
 		}
 
-		menuElement.appendChild(iconElement);
+		buttonElement.attr("url", "javascript:;");
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		buttonElement.text(
+			LanguageUtil.get(serviceContext.getRequest(), "configure"));
+
+		menuElement.appendChild(buttonElement);
 
 		return menuElement;
 	}
