@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.user.associated.data.anonymizer.UADEntityAnonymizer;
+import com.liferay.user.associated.data.anonymizer.UADAnonymizer;
 import com.liferay.user.associated.data.display.UADEntityDisplay;
 import com.liferay.user.associated.data.web.internal.display.UADApplicationSummaryDisplay;
 import com.liferay.user.associated.data.web.internal.registry.UADRegistry;
@@ -97,7 +97,7 @@ public class UADApplicationSummaryHelper {
 		return searchContainer;
 	}
 
-	public List<UADEntityAnonymizer> getApplicationUADEntityAnonymizers(
+	public List<UADAnonymizer> getApplicationUADAnonymizers(
 		String applicationName) {
 
 		Stream<UADEntityDisplay> uadEntityDisplayStream =
@@ -106,7 +106,7 @@ public class UADApplicationSummaryHelper {
 		return uadEntityDisplayStream.map(
 			UADEntityDisplay::getKey
 		).map(
-			key -> _uadRegistry.getUADEntityAnonymizer(key)
+			key -> _uadRegistry.getUADAnonymizer(key)
 		).collect(
 			Collectors.toList()
 		);
@@ -170,9 +170,9 @@ public class UADApplicationSummaryHelper {
 		return uadEntityDisplayStream.map(
 			uadEntityDisplay -> uadEntityDisplay.getKey()
 		).map(
-			key -> _uadRegistry.getUADEntityAggregator(key)
+			key -> _uadRegistry.getUADAggregator(key)
 		).mapToInt(
-			uadEntityAggregator -> (int)uadEntityAggregator.count(userId)
+			uadAggregator -> (int)uadAggregator.count(userId)
 		).sum();
 	}
 

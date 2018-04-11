@@ -29,7 +29,36 @@ public class TestClassGroupFactory {
 		String batchName, GitWorkingDirectory gitWorkingDirectory,
 		String testSuiteName) {
 
-		return new BatchTestClassGroup(
+		if (batchName.startsWith("functional-")) {
+			return new FunctionalBatchTestClassGroup(
+				batchName, gitWorkingDirectory, testSuiteName);
+		}
+
+		if (batchName.startsWith("integration-") ||
+			batchName.startsWith("unit-")) {
+
+			return new JUnitBatchTestClassGroup(
+				batchName, gitWorkingDirectory, testSuiteName);
+		}
+
+		if (batchName.startsWith("modules-integration-") ||
+			batchName.startsWith("modules-unit-")) {
+
+			return new ModulesJUnitBatchTestClassGroup(
+				batchName, gitWorkingDirectory, testSuiteName);
+		}
+
+		if (batchName.startsWith("portal-frontend-js-")) {
+			return new NPMTestBatchTestClassGroup(
+				batchName, gitWorkingDirectory, testSuiteName);
+		}
+
+		if (batchName.startsWith("tck-")) {
+			return new TCKJunitBatchTestClassGroup(
+				batchName, gitWorkingDirectory, testSuiteName);
+		}
+
+		return new DefaultBatchTestClassGroup(
 			batchName, gitWorkingDirectory, testSuiteName);
 	}
 
