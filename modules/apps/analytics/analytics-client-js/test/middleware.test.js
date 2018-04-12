@@ -85,6 +85,8 @@ describe('Analytics MiddleWare Integration', () => {
 				.then(
 					() => {
 						expect(body.context).to.include.all.keys(
+							'canonicalUrl',
+							'contentLanguageId',
 							'description',
 							'keywords',
 							'languageId',
@@ -96,7 +98,7 @@ describe('Analytics MiddleWare Integration', () => {
 
 						done();
 					}
-				);
+				).catch(done);
 		});
 	});
 });

@@ -196,7 +196,7 @@ public class JenkinsResultsParserUtil {
 		return URLDecoder.decode(url, "UTF-8");
 	}
 
-	public static void delete(File file) throws IOException {
+	public static void delete(File file) {
 		if (!file.exists()) {
 			System.out.println(
 				"Unable to delete because file does not exist " +
@@ -235,9 +235,9 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static Process executeBashCommands(
-			boolean exitOnFirstFail, File basedir, long timeout,
+			boolean exitOnFirstFail, File baseDir, long timeout,
 			String... commands)
-		throws InterruptedException, IOException, TimeoutException {
+		throws IOException, TimeoutException {
 
 		System.out.print("Executing commands: ");
 
@@ -270,7 +270,7 @@ public class JenkinsResultsParserUtil {
 
 		ProcessBuilder processBuilder = new ProcessBuilder(bashCommands);
 
-		processBuilder.directory(basedir.getAbsoluteFile());
+		processBuilder.directory(baseDir.getAbsoluteFile());
 
 		Process process = new BufferedProcess(1000000, processBuilder.start());
 
@@ -325,7 +325,7 @@ public class JenkinsResultsParserUtil {
 
 	public static Process executeBashCommands(
 			boolean exitOnFirstFail, String... commands)
-		throws InterruptedException, IOException, TimeoutException {
+		throws IOException, TimeoutException {
 
 		return executeBashCommands(
 			exitOnFirstFail, new File("."), _BASH_COMMAND_TIMEOUT_DEFAULT,
@@ -333,7 +333,7 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static Process executeBashCommands(String... commands)
-		throws InterruptedException, IOException, TimeoutException {
+		throws IOException, TimeoutException {
 
 		return executeBashCommands(
 			true, new File("."), _BASH_COMMAND_TIMEOUT_DEFAULT, commands);
@@ -423,10 +423,10 @@ public class JenkinsResultsParserUtil {
 		return sb.toString();
 	}
 
-	public static List<File> findFiles(File basedir, String regex) {
+	public static List<File> findFiles(File baseDir, String regex) {
 		List<File> files = new ArrayList<>();
 
-		for (File file : basedir.listFiles()) {
+		for (File file : baseDir.listFiles()) {
 			String fileName = file.getName();
 
 			if (file.isDirectory()) {
@@ -525,9 +525,7 @@ public class JenkinsResultsParserUtil {
 		return null;
 	}
 
-	public static String getAxisVariable(JSONObject jsonObject)
-		throws Exception {
-
+	public static String getAxisVariable(JSONObject jsonObject) {
 		JSONArray actionsJSONArray = (JSONArray)jsonObject.get("actions");
 
 		for (int i = 0; i < actionsJSONArray.length(); i++) {
@@ -707,7 +705,7 @@ public class JenkinsResultsParserUtil {
 		return "";
 	}
 
-	public static String getJobVariant(String json) throws Exception {
+	public static String getJobVariant(String json) {
 		return getJobVariant(new JSONObject(json));
 	}
 
@@ -939,7 +937,7 @@ public class JenkinsResultsParserUtil {
 
 	public static String getRegexLiteral(String string) {
 		if (string == null) {
-			throw new NullPointerException("String may not be null");
+			throw new NullPointerException("String is NULL");
 		}
 
 		String specialCharactersString = "\\^$.|?*+()[]{}";
@@ -998,6 +996,30 @@ public class JenkinsResultsParserUtil {
 		throws Exception {
 
 		return getSlaves(getBuildProperties(), jenkinsMasterPatternString);
+	}
+
+	public static boolean isFileInDirectory(File directory, File file) {
+		if (directory == null) {
+			throw new IllegalArgumentException("Directory is NULL");
+		}
+
+		if (file == null) {
+			throw new IllegalArgumentException("File is NULL");
+		}
+
+		if (!directory.isDirectory()) {
+			throw new IllegalArgumentException(
+				directory.getName() + " is not a directory");
+		}
+
+		String directoryAbsolutePath = directory.getAbsolutePath();
+		String fileAbsolutePath = file.getAbsolutePath();
+
+		if (fileAbsolutePath.startsWith(directoryAbsolutePath)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public static String merge(String... strings) {
@@ -1092,7 +1114,7 @@ public class JenkinsResultsParserUtil {
 
 	public static void sendEmail(
 			String body, String from, String subject, String to)
-		throws InterruptedException, IOException, TimeoutException {
+		throws IOException, TimeoutException {
 
 		File file = new File("/tmp/" + body.hashCode() + ".txt");
 
