@@ -184,7 +184,9 @@ public class I18nServlet extends HttpServlet {
 		catch (Exception e) {
 			siteDefaultLocale = LocaleUtil.getDefault();
 
-			if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
+			if ((locale != null) &&
+				!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
+
 				siteDefaultLocale = LanguageUtil.getLocale(
 					locale.getLanguage());
 			}
