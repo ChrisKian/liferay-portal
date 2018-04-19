@@ -500,6 +500,15 @@ AUI.add(
 
 						var editingLanguageId = event.newVal;
 
+						var defaultLanguageId = instance.get('defaultLanguageId');
+
+						if (editingLanguageId !== defaultLanguageId) {
+							instance.one('.lfr-ddm-plus-button').addClass('hide');
+						}
+						else {
+							instance.one('.lfr-ddm-plus-button').removeClass('hide');
+						}
+
 						var formBuilder = instance.get('formBuilder');
 
 						instance.set('editingLanguageId', editingLanguageId);
@@ -622,6 +631,17 @@ AUI.add(
 
 						if (ddmStructureIdNode.val() === '0') {
 							ddmStructureIdNode.val(response.ddmStructureId);
+						}
+					},
+
+					_fillRuleDraft: function() {
+						var instance = this;
+
+						var ruleBuilder = instance.get('ruleBuilder');
+						var ruleDraft = ruleBuilder.get('ruleDraft');
+
+						if ((!ruleBuilder.isRuleDraftEmpty(ruleDraft)) || (typeof ruleDraft == 'undefined')) {
+							ruleBuilder.renderRule();
 						}
 					},
 
@@ -908,6 +928,8 @@ AUI.add(
 						instance._showRuleBuilder();
 
 						instance._addRuleButton();
+
+						instance._fillRuleDraft();
 					},
 
 					_onSaveButtonClick: function(event) {

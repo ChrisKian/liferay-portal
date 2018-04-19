@@ -25,7 +25,6 @@ import com.liferay.source.formatter.ExcludeSyntax;
 import com.liferay.source.formatter.ExcludeSyntaxPattern;
 import com.liferay.source.formatter.SourceFormatterExcludes;
 import com.liferay.source.formatter.checks.util.SourceUtil;
-import com.liferay.source.formatter.checkstyle.util.AlloyMVCCheckstyleUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,21 +67,6 @@ public class SourceFormatterUtil {
 		for (String exclude : excludes) {
 			if (!exclude.contains(StringPool.DOLLAR)) {
 				excludeRegexList.add(_createRegex(exclude));
-			}
-		}
-
-		for (ExcludeSyntaxPattern excludeSyntaxPattern :
-				sourceFormatterExcludes.getDefaultExcludeSyntaxPatterns()) {
-
-			String excludePattern = excludeSyntaxPattern.getExcludePattern();
-			ExcludeSyntax excludeSyntax =
-				excludeSyntaxPattern.getExcludeSyntax();
-
-			if (excludeSyntax.equals(ExcludeSyntax.REGEX)) {
-				excludeRegexList.add(excludePattern);
-			}
-			else if (!excludePattern.contains(StringPool.DOLLAR)) {
-				excludeRegexList.add(_createRegex(excludePattern));
 			}
 		}
 
@@ -335,9 +319,6 @@ public class SourceFormatterUtil {
 
 			suppressionsFiles.add(new File(moduleSuppressionsFileName));
 		}
-
-		suppressionsFiles.addAll(
-			AlloyMVCCheckstyleUtil.getSuppressionsFiles(suppressionsFiles));
 
 		return suppressionsFiles;
 	}

@@ -15,8 +15,10 @@
 package com.liferay.frontend.taglib.clay.servlet.taglib.util;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +28,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CreationMenu extends HashMap {
 
+	public CreationMenu() {
+		this(null);
+	}
+
 	public CreationMenu(HttpServletRequest request) {
 		_request = request;
 
-		put("primaryItems", _primaryDropdownItemList);
+		_favoriteDropdownItems = new DropdownItemList(_request);
+		_primaryDropdownItems = new DropdownItemList(_request);
+		_restDropdownItems = new DropdownItemList(_request);
+
+		put("primaryItems", _primaryDropdownItems);
 	}
 
 	public void addDropdownItem(Consumer<DropdownItem> consumer) {
@@ -37,38 +47,46 @@ public class CreationMenu extends HashMap {
 	}
 
 	public void addFavoriteDropdownItem(Consumer<DropdownItem> consumer) {
-		DropdownItem dropdownItem = new DropdownItem();
+		DropdownItem dropdownItem = new DropdownItem(_request);
 
 		consumer.accept(dropdownItem);
 
-		_favoriteDropdownItemList.add(dropdownItem);
+		_favoriteDropdownItems.add(dropdownItem);
 
-		put("secondaryItems", _buildSecondaryDropdownItemList());
+		put("secondaryItems", _buildSecondaryDropdownItems());
 	}
 
 	public void addPrimaryDropdownItem(Consumer<DropdownItem> consumer) {
-		DropdownItem dropdownItem = new DropdownItem();
+		DropdownItem dropdownItem = new DropdownItem(_request);
 
 		consumer.accept(dropdownItem);
 
-		_primaryDropdownItemList.add(dropdownItem);
+		_primaryDropdownItems.add(dropdownItem);
 	}
 
 	public void addRestDropdownItem(Consumer<DropdownItem> consumer) {
-		DropdownItem dropdownItem = new DropdownItem();
+		DropdownItem dropdownItem = new DropdownItem(_request);
 
 		consumer.accept(dropdownItem);
 
-		_restDropdownItemList.add(dropdownItem);
+		_restDropdownItems.add(dropdownItem);
 
-		put("secondaryItems", _buildSecondaryDropdownItemList());
+		put("secondaryItems", _buildSecondaryDropdownItems());
 	}
 
 	public void setCaption(String caption) {
+		if (Validator.isNotNull(_request)) {
+			caption = LanguageUtil.get(_request, caption);
+		}
+
 		put("caption", caption);
 	}
 
 	public void setHelpText(String helpText) {
+		if (Validator.isNotNull(_request)) {
+			helpText = LanguageUtil.get(_request, helpText);
+		}
+
 		put("helpText", helpText);
 	}
 
@@ -76,37 +94,36 @@ public class CreationMenu extends HashMap {
 		put("viewMoreURL", viewMoreURL);
 	}
 
-	private DropdownItemList _buildSecondaryDropdownItemList() {
-		DropdownItemList secondaryDropdownItemList = new DropdownItemList();
+	private List<DropdownItem> _buildSecondaryDropdownItems() {
+		DropdownItemList secondaryDropdownItemList = new DropdownItemList(
+			_request);
 
-		if (!_favoriteDropdownItemList.isEmpty()) {
+		if (!_favoriteDropdownItems.isEmpty()) {
 			secondaryDropdownItemList.addGroup(
 				dropdownGroupItem -> {
-					dropdownGroupItem.setDropdownItemList(
-						_favoriteDropdownItemList);
+					dropdownGroupItem.setDropdownItems(_favoriteDropdownItems);
 					dropdownGroupItem.setLabel(
 						LanguageUtil.get(_request, "favorites"));
 
-					if (!_restDropdownItemList.isEmpty()) {
+					if (!_restDropdownItems.isEmpty()) {
 						dropdownGroupItem.setSeparator(true);
 					}
 				});
 		}
 
-		if (!_restDropdownItemList.isEmpty()) {
+		if (!_restDropdownItems.isEmpty()) {
 			secondaryDropdownItemList.addGroup(
 				dropdownGroupItem -> {
-					dropdownGroupItem.setDropdownItemList(
-						_restDropdownItemList);
+					dropdownGroupItem.setDropdownItems(_restDropdownItems);
 				});
 		}
 
 		return secondaryDropdownItemList;
 	}
 
-	private DropdownItemList _favoriteDropdownItemList = new DropdownItemList();
-	private DropdownItemList _primaryDropdownItemList = new DropdownItemList();
+	private final List<DropdownItem> _favoriteDropdownItems;
+	private final List<DropdownItem> _primaryDropdownItems;
 	private final HttpServletRequest _request;
-	private DropdownItemList _restDropdownItemList = new DropdownItemList();
+	private final List<DropdownItem> _restDropdownItems;
 
 }
