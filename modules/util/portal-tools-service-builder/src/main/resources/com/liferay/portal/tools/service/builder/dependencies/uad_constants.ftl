@@ -1,18 +1,10 @@
-package ${packagePath}.uad.constants;
+package ${uadPackagePath}.uad.constants;
 
 /**
  * @author ${author}
  * @generated
  */
-public class ${portletShortName}UADConstants {
-
-	public static final String APPLICATION_NAME = "${portletShortName}";
-
-	<#list entities as entity>
-		<#if entity.isUADEnabled()>
-			public static final String CLASS_NAME_${entity.constantName} = "${apiPackagePath}.model.${entity.name}";
-		</#if>
-	</#list>
+public class ${uadApplicationName}UADConstants {
 
 	<#list entities as entity>
 		<#if entity.isUADEnabled()>

@@ -1,3 +1,7 @@
+import {onReady} from '../utils/events.js';
+
+const applicationId = 'Forms';
+
 /**
  * Returns an identifier for a form element.
  * @param {object} form The form DOM element
@@ -5,6 +9,7 @@
  */
 function getFormKey(form) {
 	return (
+		form.dataset.analyticsAssetId ||
 		form.dataset.analyticsFormId ||
 		form.id ||
 		form.getAttribute('name') ||
@@ -39,7 +44,11 @@ function getFormPayload(form) {
  * @return {boolean} True if the form is trackable.
  */
 function isTrackableForm(form) {
-	return 'analytics' in form.dataset && !!getFormKey(form);
+	return (
+		('analyticsAssetId' in form.dataset ||
+			'analyticsFormId' in form.dataset) &&
+		!!getFormKey(form)
+	);
 }
 
 /**
@@ -64,7 +73,7 @@ function trackFieldBlurred(analytics) {
 		const perfData = performance.getEntriesByName('focusDuration').pop();
 		const focusDuration = perfData.duration;
 
-		analytics.send('fieldBlurred', 'forms', {
+		analytics.send('fieldBlurred', applicationId, {
 			...payload,
 			focusDuration,
 		});
@@ -93,7 +102,7 @@ function trackFieldFocused(analytics) {
 		const focusMark = `${payload.formId}${payload.fieldName}focused`;
 		performance.mark(focusMark);
 
-		analytics.send('fieldFocused', 'forms', payload);
+		analytics.send('fieldFocused', applicationId, payload);
 	};
 
 	document.addEventListener('focus', onFocus, true);
@@ -110,7 +119,7 @@ function trackFormSubmitted(analytics) {
 	const onSubmit = ({target}) => {
 		if (!isTrackableForm(target)) return;
 
-		analytics.send('formSubmitted', 'forms', getFormPayload(target));
+		analytics.send('formSubmitted', applicationId, getFormPayload(target));
 	};
 
 	document.addEventListener('submit', onSubmit, true);
@@ -123,33 +132,21 @@ function trackFormSubmitted(analytics) {
  * @param {object} The Analytics client instance
  */
 function trackFormViewed(analytics) {
-	const onLoad = () => {
+	return onReady(() => {
 		Array.prototype.slice
 			.call(document.querySelectorAll('form'))
 			.filter(form => isTrackableForm(form))
 			.forEach(form => {
 				let payload = getFormPayload(form);
-				const title = form.dataset.analyticsTitle;
+				const title = form.dataset.analyticsAssetTitle;
 
 				if (title) {
 					payload = {title, ...payload};
 				}
 
-				analytics.send('formViewed', 'forms', payload);
+				analytics.send('formViewed', applicationId, payload);
 			});
-	};
-
-	if (
-		document.readyState === 'interactive' ||
-		document.readyState === 'complete' ||
-		document.readyState === 'loaded'
-	) {
-		onLoad();
-	} else {
-		document.addEventListener('DOMContentLoaded', () => onLoad());
-	}
-
-	return () => document.removeEventListener('DOMContentLoaded', onLoad);
+	});
 }
 
 /**

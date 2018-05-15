@@ -20,7 +20,7 @@
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -46,7 +46,7 @@
 
 		<execute macro="SystemSettings#gotoConfiguration">
 			<var name="configurationCategory" value="XSL Content" />
-			<var name="configurationName" value="XSL Content" />
+			<var name="configurationName" value="XSL Content Options" />
 			<var name="configurationScope" value="System Scope" />
 		</execute>
 

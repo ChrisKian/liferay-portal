@@ -80,7 +80,7 @@
 
 		<execute function="Pause" locator1="1000" />
 
-		<execute macro="PortletEntry#publish" />
+		<execute macro="Button#clickPublish" />
 	</command>
 
 	<command name="addEntryWithHTML">
@@ -539,7 +539,7 @@
 		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Content" />
+			<var name="category" value="Recycle Bin" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Recycle Bin" />
 		</execute>
@@ -563,9 +563,9 @@
 	</command>
 
 	<command name="viewControlsPG">
-		<var name="key_text" value="New Blog Entry" />
+		<var name="key_text" value="New Entry" />
 
-		<execute function="AssertTextEquals" locator1="Button#ANY" value1="New Blog Entry" />
+		<execute function="AssertTextEquals" locator1="Button#ANY" value1="New Entry" />
 		<execute function="AssertTextEquals" locator1="Blogs#SUBSCRIBE_LINK" value1="Subscribe" />
 
 		<var name="key_text" value="rss RSS" />
@@ -585,7 +585,7 @@
 
 	<command name="viewNoPermissionPG">
 		<execute function="AssertTextEquals" locator1="Portlet#HEADER" value1="Blogs" />
-		<var name="key_text" value="New Blog Entry" />
+		<var name="key_text" value="New Entry" />
 
 		<execute function="AssertElementNotPresent" locator1="Button#ANY" />
 		<execute function="AssertElementNotPresent" locator1="MenuItem#ANY_MENU_ITEM">

@@ -17,7 +17,9 @@ package com.liferay.poshi.runner.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
@@ -38,7 +40,8 @@ public class OnPoshiElement extends PoshiElement {
 		PoshiElement parentPoshiElement, String readableSyntax) {
 
 		if (isElementType(readableSyntax)) {
-			return new OnPoshiElement(_ELEMENT_NAME, readableSyntax);
+			return new OnPoshiElement(
+				_ELEMENT_NAME, parentPoshiElement, readableSyntax);
 		}
 
 		return null;
@@ -69,12 +72,24 @@ public class OnPoshiElement extends PoshiElement {
 	protected OnPoshiElement() {
 	}
 
+	protected OnPoshiElement(List<Attribute> attributes, List<Node> nodes) {
+		this(_ELEMENT_NAME, attributes, nodes);
+	}
+
 	protected OnPoshiElement(String name, Element element) {
 		super(name, element);
 	}
 
-	protected OnPoshiElement(String name, String readableSyntax) {
-		super(name, readableSyntax);
+	protected OnPoshiElement(
+		String elementName, List<Attribute> attributes, List<Node> nodes) {
+
+		super(elementName, attributes, nodes);
+	}
+
+	protected OnPoshiElement(
+		String name, PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(name, parentPoshiElement, readableSyntax);
 	}
 
 	@Override

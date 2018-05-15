@@ -39,11 +39,16 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 
 import java.util.Collections;
 import java.util.Date;
@@ -1224,6 +1229,25 @@ public class OAuth2ApplicationPersistenceImpl extends BasePersistenceImpl<OAuth2
 
 	public OAuth2ApplicationPersistenceImpl() {
 		setModelClass(OAuth2Application.class);
+
+		try {
+			Field field = BasePersistenceImpl.class.getDeclaredField(
+					"_dbColumnNames");
+
+			field.setAccessible(true);
+
+			Map<String, String> dbColumnNames = new HashMap<String, String>();
+
+			dbColumnNames.put("oAuth2ApplicationScopeAliasesId",
+				"oA2AScopeAliasesId");
+
+			field.set(this, dbColumnNames);
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+		}
 	}
 
 	/**
@@ -1426,8 +1450,6 @@ public class OAuth2ApplicationPersistenceImpl extends BasePersistenceImpl<OAuth2
 
 	@Override
 	protected OAuth2Application removeImpl(OAuth2Application oAuth2Application) {
-		oAuth2Application = toUnwrappedModel(oAuth2Application);
-
 		Session session = null;
 
 		try {
@@ -1458,9 +1480,23 @@ public class OAuth2ApplicationPersistenceImpl extends BasePersistenceImpl<OAuth2
 
 	@Override
 	public OAuth2Application updateImpl(OAuth2Application oAuth2Application) {
-		oAuth2Application = toUnwrappedModel(oAuth2Application);
-
 		boolean isNew = oAuth2Application.isNew();
+
+		if (!(oAuth2Application instanceof OAuth2ApplicationModelImpl)) {
+			InvocationHandler invocationHandler = null;
+
+			if (ProxyUtil.isProxyClass(oAuth2Application.getClass())) {
+				invocationHandler = ProxyUtil.getInvocationHandler(oAuth2Application);
+
+				throw new IllegalArgumentException(
+					"Implement ModelWrapper in oAuth2Application proxy " +
+					invocationHandler.getClass());
+			}
+
+			throw new IllegalArgumentException(
+				"Implement ModelWrapper in custom OAuth2Application implementation " +
+				oAuth2Application.getClass());
+		}
 
 		OAuth2ApplicationModelImpl oAuth2ApplicationModelImpl = (OAuth2ApplicationModelImpl)oAuth2Application;
 
@@ -1558,39 +1594,6 @@ public class OAuth2ApplicationPersistenceImpl extends BasePersistenceImpl<OAuth2
 		oAuth2Application.resetOriginalValues();
 
 		return oAuth2Application;
-	}
-
-	protected OAuth2Application toUnwrappedModel(
-		OAuth2Application oAuth2Application) {
-		if (oAuth2Application instanceof OAuth2ApplicationImpl) {
-			return oAuth2Application;
-		}
-
-		OAuth2ApplicationImpl oAuth2ApplicationImpl = new OAuth2ApplicationImpl();
-
-		oAuth2ApplicationImpl.setNew(oAuth2Application.isNew());
-		oAuth2ApplicationImpl.setPrimaryKey(oAuth2Application.getPrimaryKey());
-
-		oAuth2ApplicationImpl.setOAuth2ApplicationId(oAuth2Application.getOAuth2ApplicationId());
-		oAuth2ApplicationImpl.setCompanyId(oAuth2Application.getCompanyId());
-		oAuth2ApplicationImpl.setUserId(oAuth2Application.getUserId());
-		oAuth2ApplicationImpl.setUserName(oAuth2Application.getUserName());
-		oAuth2ApplicationImpl.setCreateDate(oAuth2Application.getCreateDate());
-		oAuth2ApplicationImpl.setModifiedDate(oAuth2Application.getModifiedDate());
-		oAuth2ApplicationImpl.setAllowedGrantTypes(oAuth2Application.getAllowedGrantTypes());
-		oAuth2ApplicationImpl.setClientId(oAuth2Application.getClientId());
-		oAuth2ApplicationImpl.setClientProfile(oAuth2Application.getClientProfile());
-		oAuth2ApplicationImpl.setClientSecret(oAuth2Application.getClientSecret());
-		oAuth2ApplicationImpl.setDescription(oAuth2Application.getDescription());
-		oAuth2ApplicationImpl.setFeatures(oAuth2Application.getFeatures());
-		oAuth2ApplicationImpl.setHomePageURL(oAuth2Application.getHomePageURL());
-		oAuth2ApplicationImpl.setIconFileEntryId(oAuth2Application.getIconFileEntryId());
-		oAuth2ApplicationImpl.setName(oAuth2Application.getName());
-		oAuth2ApplicationImpl.setPrivacyPolicyURL(oAuth2Application.getPrivacyPolicyURL());
-		oAuth2ApplicationImpl.setRedirectURIs(oAuth2Application.getRedirectURIs());
-		oAuth2ApplicationImpl.setScopeAliases(oAuth2Application.getScopeAliases());
-
-		return oAuth2ApplicationImpl;
 	}
 
 	/**
@@ -1975,6 +1978,11 @@ public class OAuth2ApplicationPersistenceImpl extends BasePersistenceImpl<OAuth2
 	}
 
 	@Override
+	public Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
+	@Override
 	protected Map<String, Integer> getTableColumnsMap() {
 		return OAuth2ApplicationModelImpl.TABLE_COLUMNS_MAP;
 	}
@@ -2017,4 +2025,7 @@ public class OAuth2ApplicationPersistenceImpl extends BasePersistenceImpl<OAuth2
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No OAuth2Application exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No OAuth2Application exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(OAuth2ApplicationPersistenceImpl.class);
+	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"oAuth2ApplicationScopeAliasesId"
+			});
 }

@@ -130,14 +130,12 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	public Layout addLayout(long userId, long groupId, boolean privateLayout,
-		long parentLayoutId, Map<Locale, java.lang.String> nameMap,
-		Map<Locale, java.lang.String> titleMap,
-		Map<Locale, java.lang.String> descriptionMap,
-		Map<Locale, java.lang.String> keywordsMap,
-		Map<Locale, java.lang.String> robotsMap, java.lang.String type,
-		java.lang.String typeSettings, boolean hidden,
-		Map<Locale, java.lang.String> friendlyURLMap,
-		ServiceContext serviceContext) throws PortalException;
+		long parentLayoutId, Map<Locale, String> nameMap,
+		Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+		Map<Locale, String> keywordsMap, Map<Locale, String> robotsMap,
+		String type, String typeSettings, boolean hidden,
+		Map<Locale, String> friendlyURLMap, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	* Adds a layout with single entry maps for name, title, and description to
@@ -187,10 +185,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	public Layout addLayout(long userId, long groupId, boolean privateLayout,
-		long parentLayoutId, java.lang.String name, java.lang.String title,
-		java.lang.String description, java.lang.String type, boolean hidden,
-		java.lang.String friendlyURL, ServiceContext serviceContext)
-		throws PortalException;
+		long parentLayoutId, String name, String title, String description,
+		String type, boolean hidden, String friendlyURL,
+		ServiceContext serviceContext) throws PortalException;
 
 	/**
 	* Creates a new layout with the primary key. Does not add the layout to the database.
@@ -198,6 +195,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @param plid the primary key for the new layout
 	* @return the new layout
 	*/
+	@Transactional(enabled = false)
 	public Layout createLayout(long plid);
 
 	/**
@@ -353,10 +351,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public byte[] exportLayouts(long groupId, boolean privateLayout,
-		long[] layoutIds,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
+		long[] layoutIds, Map<String, String[]> parameterMap, Date startDate,
 		Date endDate) throws PortalException;
 
 	/**
@@ -374,10 +371,10 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public byte[] exportLayouts(long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate) throws PortalException;
+		Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -385,7 +382,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#exportLayoutsAsFile(
 	ExportImportConfiguration)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public File exportLayoutsAsFile(
 		ExportImportConfiguration exportImportConfiguration)
 		throws PortalException;
@@ -407,10 +404,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public File exportLayoutsAsFile(long groupId, boolean privateLayout,
-		long[] layoutIds,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
+		long[] layoutIds, Map<String, String[]> parameterMap, Date startDate,
 		Date endDate) throws PortalException;
 
 	/**
@@ -419,7 +415,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#exportLayoutsAsFileInBackground(
 	long, ExportImportConfiguration)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long exportLayoutsAsFileInBackground(long userId,
 		ExportImportConfiguration exportImportConfiguration)
 		throws PortalException;
@@ -430,7 +426,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#exportLayoutsAsFileInBackground(
 	long, long)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long exportLayoutsAsFileInBackground(long userId,
 		long exportImportConfigurationId) throws PortalException;
 
@@ -438,23 +434,21 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long exportLayoutsAsFileInBackground(long userId,
-		java.lang.String taskName, long groupId, boolean privateLayout,
-		long[] layoutIds,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate) throws PortalException;
+	@Deprecated
+	public long exportLayoutsAsFileInBackground(long userId, String taskName,
+		long groupId, boolean privateLayout, long[] layoutIds,
+		Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long exportLayoutsAsFileInBackground(long userId,
-		java.lang.String taskName, long groupId, boolean privateLayout,
-		long[] layoutIds,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate, java.lang.String fileName) throws PortalException;
+	@Deprecated
+	public long exportLayoutsAsFileInBackground(long userId, String taskName,
+		long groupId, boolean privateLayout, long[] layoutIds,
+		Map<String, String[]> parameterMap, Date startDate, Date endDate,
+		String fileName) throws PortalException;
 
 	/**
 	* Exports the portlet information (categories, permissions, ... etc.) as a
@@ -473,20 +467,19 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public byte[] exportPortletInfo(long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate) throws PortalException;
+	@Deprecated
+	public byte[] exportPortletInfo(long plid, long groupId, String portletId,
+		Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public byte[] exportPortletInfo(long companyId, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate) throws PortalException;
+	@Deprecated
+	public byte[] exportPortletInfo(long companyId, String portletId,
+		Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -494,7 +487,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#exportPortletInfoAsFile(
 	ExportImportConfiguration)}}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public File exportPortletInfoAsFile(
 		ExportImportConfiguration exportImportConfiguration)
 		throws PortalException;
@@ -516,21 +509,19 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public File exportPortletInfoAsFile(long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
+		String portletId, Map<String, String[]> parameterMap, Date startDate,
 		Date endDate) throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public File exportPortletInfoAsFile(long companyId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate) throws PortalException;
+	@Deprecated
+	public File exportPortletInfoAsFile(long companyId, String portletId,
+		Map<String, String[]> parameterMap, Date startDate, Date endDate)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -538,7 +529,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#exportPortletInfoAsFileInBackground(
 	long, ExportImportConfiguration)}}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long exportPortletInfoAsFileInBackground(long userId,
 		ExportImportConfiguration exportImportConfiguration)
 		throws PortalException;
@@ -549,7 +540,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#exportPortletInfoAsFileInBackground(
 	long, long)}}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long exportPortletInfoAsFileInBackground(long userId,
 		long exportImportConfigurationId) throws PortalException;
 
@@ -557,22 +548,21 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long exportPortletInfoAsFileInBackground(long userId,
-		java.lang.String taskName, long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate, java.lang.String fileName) throws PortalException;
+		String taskName, long plid, long groupId, String portletId,
+		Map<String, String[]> parameterMap, Date startDate, Date endDate,
+		String fileName) throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long exportPortletInfoAsFileInBackground(long userId,
-		java.lang.String taskName, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, Date startDate,
-		Date endDate, java.lang.String fileName) throws PortalException;
+		String taskName, String portletId, Map<String, String[]> parameterMap,
+		Date startDate, Date endDate, String fileName)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout fetchDefaultLayout(long groupId, boolean privateLayout);
@@ -588,12 +578,11 @@ public interface LayoutLocalService extends BaseLocalService,
 	public Layout fetchLayout(long groupId, boolean privateLayout, long layoutId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Layout fetchLayout(java.lang.String uuid, long groupId,
-		boolean privateLayout);
+	public Layout fetchLayout(String uuid, long groupId, boolean privateLayout);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout fetchLayoutByFriendlyURL(long groupId, boolean privateLayout,
-		java.lang.String friendlyURL);
+		String friendlyURL);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout fetchLayoutByIconImageId(boolean privateLayout,
@@ -608,8 +597,8 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the matching layout, or <code>null</code> if a matching layout could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Layout fetchLayoutByUuidAndGroupId(java.lang.String uuid,
-		long groupId, boolean privateLayout);
+	public Layout fetchLayoutByUuidAndGroupId(String uuid, long groupId,
+		boolean privateLayout);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -647,7 +636,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getDefaultPlid(long groupId, boolean privateLayout,
-		java.lang.String portletId) throws PortalException;
+		String portletId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -664,7 +653,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout getFriendlyURLLayout(long groupId, boolean privateLayout,
-		java.lang.String friendlyURL) throws PortalException;
+		String friendlyURL) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -715,12 +704,12 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a matching layout could not be found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Layout getLayoutByUuidAndGroupId(java.lang.String uuid,
-		long groupId, boolean privateLayout) throws PortalException;
+	public Layout getLayoutByUuidAndGroupId(String uuid, long groupId,
+		boolean privateLayout) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Map<java.lang.Long, List<Layout>> getLayoutChildLayouts(
-		LayoutSet layoutSet, List<Layout> parentLayouts);
+	public Map<Long, List<Layout>> getLayoutChildLayouts(LayoutSet layoutSet,
+		List<Layout> parentLayouts);
 
 	/**
 	* Returns a range of all the layouts.
@@ -858,7 +847,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Layout> getLayouts(long groupId, boolean privateLayout,
-		java.lang.String type);
+		String type);
 
 	/**
 	* Returns the layout references for all the layouts that belong to the
@@ -871,17 +860,15 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the layout references of the matching layouts
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public LayoutReference[] getLayouts(long companyId,
-		java.lang.String portletId, java.lang.String preferencesKey,
-		java.lang.String preferencesValue);
+	public LayoutReference[] getLayouts(long companyId, String portletId,
+		String preferencesKey, String preferencesValue);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Layout> getLayoutsByLayoutPrototypeUuid(
-		java.lang.String layoutPrototypeUuid);
+		String layoutPrototypeUuid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutsByLayoutPrototypeUuidCount(
-		java.lang.String layoutPrototypeUuid);
+	public int getLayoutsByLayoutPrototypeUuidCount(String layoutPrototypeUuid);
 
 	/**
 	* Returns all the layouts matching the UUID and company.
@@ -891,8 +878,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the matching layouts, or an empty list if no matches were found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Layout> getLayoutsByUuidAndCompanyId(java.lang.String uuid,
-		long companyId);
+	public List<Layout> getLayoutsByUuidAndCompanyId(String uuid, long companyId);
 
 	/**
 	* Returns a range of layouts matching the UUID and company.
@@ -905,7 +891,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the range of matching layouts, or an empty list if no matches were found
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Layout> getLayoutsByUuidAndCompanyId(java.lang.String uuid,
+	public List<Layout> getLayoutsByUuidAndCompanyId(String uuid,
 		long companyId, int start, int end,
 		OrderByComparator<Layout> orderByComparator);
 
@@ -958,7 +944,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return all the layouts without resource permissions
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Layout> getNoPermissionLayouts(long roleId);
 
@@ -966,7 +952,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* Returns all the layouts whose friendly URLs are <code>null</code>
 	*
 	* @return all the layouts whose friendly URLs are <code>null</code>
+	* @deprecated As of 7.0.0, with no direct replacement
 	*/
+	@Deprecated
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Layout> getNullFriendlyURLLayouts();
 
@@ -975,7 +963,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	*
 	* @return the OSGi service identifier
 	*/
-	public java.lang.String getOSGiServiceIdentifier();
+	public String getOSGiServiceIdentifier();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Layout getParentLayout(Layout layout) throws PortalException;
@@ -1013,8 +1001,8 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasLayout(java.lang.String uuid, long groupId,
-		boolean privateLayout) throws PortalException;
+	public boolean hasLayout(String uuid, long groupId, boolean privateLayout)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasLayouts(Group group) throws PortalException;
@@ -1051,12 +1039,11 @@ public interface LayoutLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasLayoutSetPrototypeLayout(long layoutSetPrototypeId,
-		java.lang.String layoutUuid) throws PortalException;
+		String layoutUuid) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasLayoutSetPrototypeLayout(
-		java.lang.String layoutSetPrototypeUuid, long companyId,
-		java.lang.String layoutUuid) throws PortalException;
+	public boolean hasLayoutSetPrototypeLayout(String layoutSetPrototypeUuid,
+		long companyId, String layoutUuid) throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -1064,7 +1051,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importLayouts(
 	ExportImportConfiguration, File)}}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importLayouts(
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1075,7 +1062,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importLayouts(
 	ExportImportConfiguration, InputStream)}}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importLayouts(
 		ExportImportConfiguration exportImportConfiguration, InputStream is)
 		throws PortalException;
@@ -1095,9 +1082,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @see com.liferay.exportimport.kernel.lar.LayoutImporter
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importLayouts(long userId, long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, byte[] bytes)
+		Map<String, String[]> parameterMap, byte[] bytes)
 		throws PortalException;
 
 	/**
@@ -1115,9 +1102,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @see com.liferay.exportimport.kernel.lar.LayoutImporter
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importLayouts(long userId, long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+		Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
@@ -1135,9 +1122,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @see com.liferay.exportimport.kernel.lar.LayoutImporter
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importLayouts(long userId, long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, InputStream is)
+		Map<String, String[]> parameterMap, InputStream is)
 		throws PortalException;
 
 	/**
@@ -1146,7 +1133,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importLayoutsDataDeletions(
 	ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importLayoutsDataDeletions(
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1157,7 +1144,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importLayoutsInBackground(
 	long, ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long importLayoutsInBackground(long userId,
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1168,7 +1155,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importLayoutsInBackground(
 	long, long, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long importLayoutsInBackground(long userId,
 		long exportImportConfigurationId, File file) throws PortalException;
 
@@ -1176,20 +1163,20 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long importLayoutsInBackground(long userId,
-		java.lang.String taskName, long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+	@Deprecated
+	public long importLayoutsInBackground(long userId, String taskName,
+		long groupId, boolean privateLayout,
+		Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long importLayoutsInBackground(long userId,
-		java.lang.String taskName, long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, InputStream is)
+	@Deprecated
+	public long importLayoutsInBackground(long userId, String taskName,
+		long groupId, boolean privateLayout,
+		Map<String, String[]> parameterMap, InputStream is)
 		throws PortalException;
 
 	/**
@@ -1198,7 +1185,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importPortletDataDeletions(
 	ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importPortletDataDeletions(
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1209,7 +1196,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importPortletInfo(
 	ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importPortletInfo(
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1220,7 +1207,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importPortletInfo(
 	ExportImportConfiguration, InputStream)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importPortletInfo(
 		ExportImportConfiguration exportImportConfiguration, InputStream is)
 		throws PortalException;
@@ -1241,10 +1228,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importPortletInfo(long userId, long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+		String portletId, Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
@@ -1263,28 +1249,27 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public void importPortletInfo(long userId, long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, InputStream is)
+		String portletId, Map<String, String[]> parameterMap, InputStream is)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public void importPortletInfo(long userId, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+	@Deprecated
+	public void importPortletInfo(long userId, String portletId,
+		Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public void importPortletInfo(long userId, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, InputStream is)
+	@Deprecated
+	public void importPortletInfo(long userId, String portletId,
+		Map<String, String[]> parameterMap, InputStream is)
 		throws PortalException;
 
 	/**
@@ -1293,7 +1278,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importPortletInfoInBackground(
 	long, ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long importPortletInfoInBackground(long userId,
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1304,7 +1289,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#importPortletInfoInBackground(
 	long, long, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public long importPortletInfoInBackground(long userId,
 		long exportImportConfigurationId, File file) throws PortalException;
 
@@ -1312,42 +1297,38 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long importPortletInfoInBackground(long userId,
-		java.lang.String taskName, long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+	@Deprecated
+	public long importPortletInfoInBackground(long userId, String taskName,
+		long plid, long groupId, String portletId,
+		Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long importPortletInfoInBackground(long userId,
-		java.lang.String taskName, long plid, long groupId,
-		java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, InputStream is)
+	@Deprecated
+	public long importPortletInfoInBackground(long userId, String taskName,
+		long plid, long groupId, String portletId,
+		Map<String, String[]> parameterMap, InputStream is)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long importPortletInfoInBackground(long userId,
-		java.lang.String taskName, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+	@Deprecated
+	public long importPortletInfoInBackground(long userId, String taskName,
+		String portletId, Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
-	public long importPortletInfoInBackground(long userId,
-		java.lang.String taskName, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, InputStream is)
+	@Deprecated
+	public long importPortletInfoInBackground(long userId, String taskName,
+		String portletId, Map<String, String[]> parameterMap, InputStream is)
 		throws PortalException;
 
 	/**
@@ -1366,7 +1347,7 @@ public interface LayoutLocalService extends BaseLocalService,
 		throws PortalException;
 
 	public void updateAsset(long userId, Layout layout,
-		long[] assetCategoryIds, java.lang.String[] assetTagNames)
+		long[] assetCategoryIds, String[] assetTagNames)
 		throws PortalException;
 
 	/**
@@ -1379,9 +1360,8 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the updated layout
 	* @throws PortalException if a portal exception occurred
 	*/
-	public Layout updateFriendlyURL(long userId, long plid,
-		java.lang.String friendlyURL, java.lang.String languageId)
-		throws PortalException;
+	public Layout updateFriendlyURL(long userId, long plid, String friendlyURL,
+		String languageId) throws PortalException;
 
 	/**
 	* Updates the friendly URL of the layout.
@@ -1394,9 +1374,9 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @deprecated As of 7.0.0, replaced by {@link #updateFriendlyURL(long,
 	long, String, String)}
 	*/
-	@java.lang.Deprecated
-	public Layout updateFriendlyURL(long plid, java.lang.String friendlyURL,
-		java.lang.String languageId) throws PortalException;
+	@Deprecated
+	public Layout updateFriendlyURL(long plid, String friendlyURL,
+		String languageId) throws PortalException;
 
 	public Layout updateIconImage(long plid, byte[] bytes)
 		throws PortalException;
@@ -1449,13 +1429,10 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	public Layout updateLayout(long groupId, boolean privateLayout,
-		long layoutId, long parentLayoutId,
-		Map<Locale, java.lang.String> nameMap,
-		Map<Locale, java.lang.String> titleMap,
-		Map<Locale, java.lang.String> descriptionMap,
-		Map<Locale, java.lang.String> keywordsMap,
-		Map<Locale, java.lang.String> robotsMap, java.lang.String type,
-		boolean hidden, Map<Locale, java.lang.String> friendlyURLMap,
+		long layoutId, long parentLayoutId, Map<Locale, String> nameMap,
+		Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+		Map<Locale, String> keywordsMap, Map<Locale, String> robotsMap,
+		String type, boolean hidden, Map<Locale, String> friendlyURLMap,
 		boolean iconImage, byte[] iconBytes, ServiceContext serviceContext)
 		throws PortalException;
 
@@ -1471,7 +1448,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	public Layout updateLayout(long groupId, boolean privateLayout,
-		long layoutId, java.lang.String typeSettings) throws PortalException;
+		long layoutId, String typeSettings) throws PortalException;
 
 	/**
 	* Updates the look and feel of the layout.
@@ -1486,8 +1463,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	public Layout updateLookAndFeel(long groupId, boolean privateLayout,
-		long layoutId, java.lang.String themeId,
-		java.lang.String colorSchemeId, java.lang.String css)
+		long layoutId, String themeId, String colorSchemeId, String css)
 		throws PortalException;
 
 	/**
@@ -1500,8 +1476,8 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the updated layout
 	* @throws PortalException if a portal exception occurred
 	*/
-	public Layout updateName(Layout layout, java.lang.String name,
-		java.lang.String languageId) throws PortalException;
+	public Layout updateName(Layout layout, String name, String languageId)
+		throws PortalException;
 
 	/**
 	* Updates the name of the layout matching the group, layout ID, and
@@ -1517,7 +1493,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException if a portal exception occurred
 	*/
 	public Layout updateName(long groupId, boolean privateLayout,
-		long layoutId, java.lang.String name, java.lang.String languageId)
+		long layoutId, String name, String languageId)
 		throws PortalException;
 
 	/**
@@ -1530,8 +1506,8 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @return the updated layout
 	* @throws PortalException if a portal exception occurred
 	*/
-	public Layout updateName(long plid, java.lang.String name,
-		java.lang.String languageId) throws PortalException;
+	public Layout updateName(long plid, String name, String languageId)
+		throws PortalException;
 
 	/**
 	* Updates the parent layout ID of the layout matching the group, layout ID,
@@ -1643,7 +1619,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#validateImportLayoutsFile(
 	ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportLayoutsFile(
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1654,7 +1630,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#validateImportLayoutsFile(
 	ExportImportConfiguration, InputStream)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportLayoutsFile(
 		ExportImportConfiguration exportImportConfiguration,
 		InputStream inputStream) throws PortalException;
@@ -1663,21 +1639,21 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportLayoutsFile(long userId,
 		long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
+		Map<String, String[]> parameterMap, File file)
 		throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportLayoutsFile(long userId,
 		long groupId, boolean privateLayout,
-		Map<java.lang.String, java.lang.String[]> parameterMap,
-		InputStream inputStream) throws PortalException;
+		Map<String, String[]> parameterMap, InputStream inputStream)
+		throws PortalException;
 
 	/**
 	* @throws PortalException
@@ -1685,7 +1661,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#validateImportPortletInfo(
 	ExportImportConfiguration, File)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportPortletInfo(
 		ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException;
@@ -1696,7 +1672,7 @@ public interface LayoutLocalService extends BaseLocalService,
 	com.liferay.exportimport.kernel.service.ExportImportLocalService#validateImportPortletInfo(
 	ExportImportConfiguration, InputStream)}
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportPortletInfo(
 		ExportImportConfiguration exportImportConfiguration,
 		InputStream inputStream) throws PortalException;
@@ -1705,19 +1681,17 @@ public interface LayoutLocalService extends BaseLocalService,
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportPortletInfo(long userId, long plid,
-		long groupId, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap, File file)
-		throws PortalException;
+		long groupId, String portletId, Map<String, String[]> parameterMap,
+		File file) throws PortalException;
 
 	/**
 	* @throws PortalException
 	* @deprecated As of 7.0.0, with no direct replacement
 	*/
-	@java.lang.Deprecated
+	@Deprecated
 	public MissingReferences validateImportPortletInfo(long userId, long plid,
-		long groupId, java.lang.String portletId,
-		Map<java.lang.String, java.lang.String[]> parameterMap,
+		long groupId, String portletId, Map<String, String[]> parameterMap,
 		InputStream inputStream) throws PortalException;
 }

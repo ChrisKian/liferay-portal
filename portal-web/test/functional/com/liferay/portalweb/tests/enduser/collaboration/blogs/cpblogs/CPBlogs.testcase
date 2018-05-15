@@ -202,7 +202,7 @@
 
 		<execute macro="Blogs#addEntry">
 			<var name="entryContent" value="Blogs Entry Content" />
-			<var name="entryTitle">&amp; &lt; &gt; &quot; Escape Characters Entry</var>
+			<var name="entryTitle"><![CDATA[&amp; &lt; &gt; &quot; Escape Characters Entry]]></var>
 		</execute>
 
 		<execute macro="Navigator#openURL" />
@@ -214,12 +214,12 @@
 		</execute>
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
-			<var name="entryTitle">&amp; &lt; &gt; &quot; Escape Characters Entry</var>
+			<var name="entryTitle"><![CDATA[&amp; &lt; &gt; &quot; Escape Characters Entry]]></var>
 		</execute>
 
 		<execute macro="BlogsEntry#viewEntry">
 			<var name="entryContent" value="Blogs Entry Content" />
-			<var name="entryTitle">&amp; &lt; &gt; &quot; Escape Characters Entry</var>
+			<var name="entryTitle"><![CDATA[&amp; &lt; &gt; &quot; Escape Characters Entry]]></var>
 		</execute>
 	</command>
 
@@ -841,7 +841,9 @@
 			<var name="uploadFileName" value="Document_1.jpg" />
 		</execute>
 
-		<execute macro="PortletEntry#publish" />
+		<execute macro="Button#clickPublish" />
+
+		<execute function="Pause" locator1="30000" />
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
 			<var name="entryTitle" value="Blogs Entry Title" />
@@ -879,7 +881,9 @@
 			<var name="uploadFileName" value="Document_1.jpg" />
 		</execute>
 
-		<execute macro="PortletEntry#publish" />
+		<execute macro="Button#clickPublish" />
+
+		<execute function="Pause" locator1="30000" />
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
 			<var name="entryTitle" value="Blogs Entry Title" />
@@ -962,7 +966,9 @@
 			<var name="uploadFileName" value="Document_1.jpg" />
 		</execute>
 
-		<execute macro="PortletEntry#publish" />
+		<execute macro="Button#clickPublish" />
+
+		<execute function="Pause" locator1="30000" />
 
 		<execute macro="BlogsNavigator#gotoEntryCP">
 			<var name="entryTitle" value="Blogs Entry Title" />

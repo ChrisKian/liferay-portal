@@ -14,7 +14,11 @@
 
 package com.liferay.poshi.runner.elements;
 
+import java.util.List;
+
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
@@ -35,7 +39,7 @@ public class ElsePoshiElement extends ThenPoshiElement {
 		PoshiElement parentPoshiElement, String readableSyntax) {
 
 		if (_isElementType(parentPoshiElement, readableSyntax)) {
-			return new ElsePoshiElement(readableSyntax);
+			return new ElsePoshiElement(parentPoshiElement, readableSyntax);
 		}
 
 		return null;
@@ -55,8 +59,14 @@ public class ElsePoshiElement extends ThenPoshiElement {
 		super("else", element);
 	}
 
-	protected ElsePoshiElement(String readableSyntax) {
-		super("else", readableSyntax);
+	protected ElsePoshiElement(List<Attribute> attributes, List<Node> nodes) {
+		super(_ELEMENT_NAME, attributes, nodes);
+	}
+
+	protected ElsePoshiElement(
+		PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super("else", parentPoshiElement, readableSyntax);
 	}
 
 	@Override

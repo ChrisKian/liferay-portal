@@ -155,7 +155,7 @@
 
 	<command name="changeLayoutLogo">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -176,7 +176,7 @@
 
 	<command name="changeLogoViaPageCP">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -195,9 +195,8 @@
 	</command>
 
 	<command name="copyApplicationsFromPageToPage">
-		<execute macro="SitePages#gotoPageMenuItem">
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
 			<var name="menuItem" value="Copy Applications" />
-			<var name="pageName" value="${pageName}" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="Message#INFO" value1="The applications in page ${pageName} will be replaced with the ones in the page you select below." />
@@ -231,7 +230,7 @@
 
 	<command name="deleteLogoPG">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -357,7 +356,7 @@
 
 	<command name="firstPageCanNotBeOfTypeLinkToURL">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -367,12 +366,8 @@
 			<var name="pageName" value="${pageName}" />
 		</execute>
 
-		<execute function="AssertElementPresent" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClickNoError" locator1="MenuItem#ANY_MENU_ITEM" value1="Delete">
-			<var name="key_menuItem" value="Delete" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItemNoError">
+			<var name="menuItem" value="Delete" />
 		</execute>
 
 		<execute function="Confirm" value1="Are you sure you want to delete the selected page?" />
@@ -455,10 +450,8 @@
 	</command>
 
 	<command name="manageDeviceFamilyActions">
-		<execute function="Click#waitForMenuToggleJSClick" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
-
-		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Manage Actions">
-			<var name="key_menuItem" value="Manage Actions" />
+		<execute macro="LexiconEntry#gotoEllipsisMenuItem">
+			<var name="menuItem" value="Manage Actions" />
 		</execute>
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
@@ -537,30 +530,28 @@
 		</execute>
 	</command>
 
-	<command name="tearDownCP" summary="Delete all pages except the Welcome Page">
+	<command name="tearDownCP" summary="Delete all pages except the Welcome and Search Page">
 		<execute macro="TestCase#getSiteName">
 			<return from="siteName" name="siteName" />
 			<var name="siteName" value="${siteName}" />
 		</execute>
 
-		<execute macro="ProductMenu#gotoSite">
-			<var name="site" value="${siteName}" />
-		</execute>
+		<execute macro="Navigator#openURL" />
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
 
 		<while>
 			<condition function="IsElementPresent" locator1="SitePages#LIST_GROUP_ITEM_ROW_ELLIPSIS">
-				<var name="key_index" value="2" />
+				<var name="key_index" value="3" />
 			</condition>
 
 			<then>
 				<execute function="Click#waitForMenuToggleJSClick" locator1="SitePages#LIST_GROUP_ITEM_ROW_ELLIPSIS">
-					<var name="key_index" value="2" />
+					<var name="key_index" value="3" />
 				</execute>
 
 				<execute function="AssertClickNoError" locator1="MenuItem#ANY_MENU_ITEM" value1="Delete">
@@ -572,7 +563,7 @@
 		</while>
 
 		<execute function="AssertElementNotPresent" locator1="SitePages#LIST_GROUP_ITEM_ROW_ELLIPSIS">
-			<var name="key_index" value="2" />
+			<var name="key_index" value="3" />
 		</execute>
 	</command>
 
@@ -621,7 +612,7 @@
 
 	<command name="view">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -663,7 +654,7 @@
 
 	<command name="viewCurrentTheme">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -814,9 +805,11 @@
 			<var name="key_menuItem" value="${menuItem}" />
 		</execute>
 
-		<execute function="Check" locator1="SitePages#LIST_GROUP_ITEM_CHECKBOX">
+		<execute function="Click#waitForMenuToggleJSClick" locator1="SitePages#LIST_GROUP_ITEM_ELLIPSIS_ICON">
 			<var name="key_pageName" value="${page}" />
 		</execute>
+
+		<execute macro="PortletEntry#selectAll" />
 
 		<execute function="ClickNoError" locator1="Icon#DELETE" />
 
@@ -828,14 +821,14 @@
 				<condition function="IsVisible" locator1="Message#ERROR" />
 			</and>
 			<then>
-				<execute function="AssertTextEquals" locator1="Message#ERROR_3" value1="This page cannot be deleted and cannot have child pages because it is associated to a site template." />
+				<execute function="AssertTextEquals" locator1="Message#ERROR_4" value1="This page cannot be deleted and cannot have child pages because it is associated to a site template." />
 			</then>
 		</if>
 	</command>
 
 	<command name="viewNoPage">
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -856,14 +849,8 @@
 	</command>
 
 	<command name="viewNoSelectCategory">
-		<execute macro="LexiconEntry#gotoAdd" />
-
-		<execute macro="PortletEntry#inputName">
-			<var name="name" value="${pageName}" />
-		</execute>
-
-		<execute macro="Panel#expandPanel">
-			<var name="panel" value="Categorization" />
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="SEO" />
 		</execute>
 
 		<execute function="AssertElementNotPresent" locator1="AssetCategorization#CATEGORY_SELECT">
@@ -917,26 +904,6 @@
 	</command>
 
 	<command name="viewPageLocalization">
-		<if>
-			<condition function="IsElementPresent" locator1="Home#PORTAL_LOCALIZATION_CONFIRMATION_MESSAGE" />
-			<then>
-				<execute function="Click" locator1="Home#PORTAL_LOCALIZATION_CONFIRMATION_MESSAGE" />
-			</then>
-		</if>
-
-		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="${category}" />
-			<var name="panel" value="Site Administration" />
-			<var name="portlet" value="${portlet}" />
-		</execute>
-
-		<execute macro="SitePages#gotoPageMenuItem">
-			<var name="menuItem" value="${menuItem}" />
-			<var name="pageName" value="${page}" />
-		</execute>
-
-		<execute macro="Navigator#gotoSEOPanel" />
-
 		<execute function="AssertElementPresent" locator1="TextInput#SEO_HTML_TITLE" />
 
 		<execute function="AssertTextEquals#assertPartialText" locator1="Button#LOCALIZATION" value1="${defaultSiteLanguageKey}">
@@ -985,16 +952,8 @@
 
 		<execute function="AssertTextEquals#assertPartialText" locator1="Message#CUSTOMIZED_PAGE_INFO" value1="This page is linked to a page template. Disable the automatic propagation of changes to this page to be able to make modifications." />
 
-		<execute macro="ProductMenuHelper#expandPanel">
-			<var name="panel" value="Site Administration" />
-		</execute>
-
-		<execute macro="ProductMenuHelper#expandCategory">
-			<var name="category" value="Navigation" />
-		</execute>
-
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -1035,7 +994,7 @@
 		<execute macro="ProductMenuHelper#openProductMenu" />
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>

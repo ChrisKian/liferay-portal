@@ -14,7 +14,6 @@
 
 package com.liferay.adaptive.media.web.internal.messaging;
 
-import com.liferay.adaptive.media.processor.AMAsyncProcessorLocator;
 import com.liferay.adaptive.media.processor.AMProcessor;
 import com.liferay.adaptive.media.web.internal.constants.AMDestinationNames;
 import com.liferay.adaptive.media.web.internal.processor.AMAsyncProcessorImpl;
@@ -32,16 +31,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
  */
 @Component(
 	immediate = true,
-	property = {
-		"destination.name=" + AMDestinationNames.ADAPTIVE_MEDIA_PROCESSOR
-	},
+	property = "destination.name=" + AMDestinationNames.ADAPTIVE_MEDIA_PROCESSOR,
 	service = MessageListener.class
 )
 public class AMMessageListener extends BaseMessageListener {
@@ -92,9 +88,6 @@ public class AMMessageListener extends BaseMessageListener {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AMMessageListener.class);
-
-	@Reference(unbind = "-")
-	private AMAsyncProcessorLocator _amAsyncProcessorLocator;
 
 	private ServiceTrackerMap<String, List<AMProcessor>> _serviceTrackerMap;
 

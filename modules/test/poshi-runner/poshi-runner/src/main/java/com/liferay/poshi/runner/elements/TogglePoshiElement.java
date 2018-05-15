@@ -17,7 +17,9 @@ package com.liferay.poshi.runner.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
@@ -38,7 +40,7 @@ public class TogglePoshiElement extends PoshiElement {
 		PoshiElement parentPoshiElement, String readableSyntax) {
 
 		if (_isElementType(readableSyntax)) {
-			return new TogglePoshiElement(readableSyntax);
+			return new TogglePoshiElement(parentPoshiElement, readableSyntax);
 		}
 
 		return null;
@@ -88,8 +90,14 @@ public class TogglePoshiElement extends PoshiElement {
 		super(_ELEMENT_NAME, element);
 	}
 
-	protected TogglePoshiElement(String readableSyntax) {
-		super(_ELEMENT_NAME, readableSyntax);
+	protected TogglePoshiElement(List<Attribute> attributes, List<Node> nodes) {
+		super(_ELEMENT_NAME, attributes, nodes);
+	}
+
+	protected TogglePoshiElement(
+		PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
 	}
 
 	@Override

@@ -19,42 +19,19 @@ import com.liferay.poshi.runner.util.Dom4JUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
  */
-public class DefinitionPoshiElement extends PoshiElement {
-
-	@Override
-	public PoshiElement clone(Element element) {
-		if (isElementType(_ELEMENT_NAME, element)) {
-			return new DefinitionPoshiElement(element);
-		}
-
-		return null;
-	}
-
-	@Override
-	public PoshiElement clone(
-		PoshiElement parentPoshiElement, String readableSyntax) {
-
-		if (_isElementType(readableSyntax)) {
-			return new DefinitionPoshiElement(readableSyntax);
-		}
-
-		return null;
-	}
+public abstract class DefinitionPoshiElement extends PoshiElement {
 
 	@Override
 	public void parseReadableSyntax(String readableSyntax) {
 		for (String readableBlock : getReadableBlocks(readableSyntax)) {
-			if (readableBlock.startsWith("@") &&
-				!readableBlock.startsWith("@description") &&
-				!readableBlock.startsWith("@ignore") &&
-				!readableBlock.startsWith("@priority")) {
-
+			if (readableBlock.startsWith("@") && !readableBlock.endsWith("}")) {
 				String name = getNameFromAssignment(readableBlock);
 				String value = getQuotedContent(readableBlock);
 
@@ -64,7 +41,7 @@ public class DefinitionPoshiElement extends PoshiElement {
 			}
 
 			if (isReadableSyntaxComment(readableBlock)) {
-				add(PoshiNodeFactory.newPoshiNode(null, readableBlock));
+				add(PoshiNodeFactory.newPoshiNode(this, readableBlock));
 
 				continue;
 			}
@@ -135,13 +112,29 @@ public class DefinitionPoshiElement extends PoshiElement {
 		super(_ELEMENT_NAME, element);
 	}
 
-	protected DefinitionPoshiElement(String readableSyntax) {
-		super(_ELEMENT_NAME, readableSyntax);
+	protected DefinitionPoshiElement(
+		List<Attribute> attributes, List<Node> nodes) {
+
+		super(_ELEMENT_NAME, attributes, nodes);
+	}
+
+	protected DefinitionPoshiElement(
+		PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
 	}
 
 	@Override
 	protected String getBlockName() {
 		return "definition";
+	}
+
+	protected String getElementName() {
+		return _ELEMENT_NAME;
+	}
+
+	protected String getFileType() {
+		return null;
 	}
 
 	@Override
@@ -163,11 +156,7 @@ public class DefinitionPoshiElement extends PoshiElement {
 				continue;
 			}
 
-			if (trimmedLine.startsWith("@") &&
-				!trimmedLine.startsWith("@description") &&
-				!trimmedLine.startsWith("@ignore") &&
-				!trimmedLine.startsWith("@priority")) {
-
+			if (trimmedLine.equals(line) && trimmedLine.startsWith("@")) {
 				readableBlocks.add(line);
 
 				continue;
@@ -194,6 +183,14 @@ public class DefinitionPoshiElement extends PoshiElement {
 		return readableBlocks;
 	}
 
+	protected String getReadableCommandKeyword() {
+		if (getFileType().equals("testcase")) {
+			return "test";
+		}
+
+		return getFileType();
+	}
+
 	@Override
 	protected boolean isBalanceValidationRequired(String readableSyntax) {
 		readableSyntax = readableSyntax.trim();
@@ -201,7 +198,7 @@ public class DefinitionPoshiElement extends PoshiElement {
 		if ((readableSyntax.startsWith("@") && readableSyntax.contains("{")) ||
 			readableSyntax.startsWith("setUp") ||
 			readableSyntax.startsWith("tearDown") ||
-			readableSyntax.startsWith("test")) {
+			readableSyntax.startsWith(getReadableCommandKeyword())) {
 
 			return true;
 		}
@@ -209,7 +206,7 @@ public class DefinitionPoshiElement extends PoshiElement {
 		return false;
 	}
 
-	private boolean _isElementType(String readableSyntax) {
+	protected boolean isElementType(String readableSyntax) {
 		readableSyntax = readableSyntax.trim();
 
 		if (!isBalancedReadableSyntax(readableSyntax)) {

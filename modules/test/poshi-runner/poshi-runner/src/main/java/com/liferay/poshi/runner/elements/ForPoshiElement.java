@@ -17,7 +17,9 @@ package com.liferay.poshi.runner.elements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
@@ -38,7 +40,7 @@ public class ForPoshiElement extends PoshiElement {
 		PoshiElement parentPoshiElement, String readableSyntax) {
 
 		if (_isElementType(readableSyntax)) {
-			return new ForPoshiElement(readableSyntax);
+			return new ForPoshiElement(parentPoshiElement, readableSyntax);
 		}
 
 		return null;
@@ -47,27 +49,28 @@ public class ForPoshiElement extends PoshiElement {
 	@Override
 	public void parseReadableSyntax(String readableSyntax) {
 		for (String readableBlock : getReadableBlocks(readableSyntax)) {
-			if (readableBlock.startsWith("for (")) {
+			if (readableBlock.startsWith("for (") &&
+				!readableBlock.endsWith("}")) {
+
 				String parentheticalContent = getParentheticalContent(
 					readableBlock);
 
-				String[] parentheticalContentArray = parentheticalContent.split(
-					":");
+				int index = parentheticalContent.indexOf(":");
 
-				String param = parentheticalContentArray[0].trim();
+				String param = parentheticalContent.substring(0, index);
 
-				addAttribute("param", param);
+				addAttribute("param", param.trim());
 
 				String list = getQuotedContent(
-					parentheticalContentArray[1].trim());
+					parentheticalContent.substring(index + 1));
 
-				addAttribute("list", list);
+				addAttribute("list", list.trim());
 
 				continue;
 			}
 
 			if (isReadableSyntaxComment(readableBlock)) {
-				add(PoshiNodeFactory.newPoshiNode(null, readableBlock));
+				add(PoshiNodeFactory.newPoshiNode(this, readableBlock));
 
 				continue;
 			}
@@ -90,8 +93,14 @@ public class ForPoshiElement extends PoshiElement {
 		super(_ELEMENT_NAME, element);
 	}
 
-	protected ForPoshiElement(String readableSyntax) {
-		super(_ELEMENT_NAME, readableSyntax);
+	protected ForPoshiElement(List<Attribute> attributes, List<Node> nodes) {
+		super(_ELEMENT_NAME, attributes, nodes);
+	}
+
+	protected ForPoshiElement(
+		PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
 	}
 
 	@Override
@@ -115,13 +124,17 @@ public class ForPoshiElement extends PoshiElement {
 		for (String line : readableSyntax.split("\n")) {
 			String trimmedLine = line.trim();
 
-			if (trimmedLine.startsWith("for (")) {
+			if (readableSyntax.startsWith(line) &&
+				trimmedLine.startsWith("for (")) {
+
 				readableBlocks.add(line);
 
 				continue;
 			}
 
-			if (!trimmedLine.startsWith("else {")) {
+			if (!trimmedLine.startsWith("else if (") &&
+				!trimmedLine.startsWith("else {")) {
+
 				String readableBlock = sb.toString();
 
 				readableBlock = readableBlock.trim();

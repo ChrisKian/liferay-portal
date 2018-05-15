@@ -131,7 +131,7 @@ then
 		REPO_PATH="$(echo "${SUBREPO_SEARCH_PARAMETER}" | sed 's/:[^:]*$//' | sed 's/.*://')"
 		SUBREPOS_PATH="${SUBREPO_SEARCH_PARAMETER##*:}"
 
-		GITREPO_SEARCH="$(git -C "${REPO_PATH}" grep "/${SUBREPO_NAME}.git" "${BRANCH_NAME}" -- '*.gitrepo' | grep ":${SUBREPOS_PATH}/" | sed "s@:@:${REPO_PATH}:@")"
+		GITREPO_SEARCH="$(git -C "${REPO_PATH}" grep "/${SUBREPO_NAME}.git" "${BRANCH_NAME}" -- '*.gitrepo' | grep ":${SUBREPOS_PATH}/" | sed 's@/.gitrepo:.*@/.gitrepo@' | sed "s@:@:${REPO_PATH}:@")"
 
 		if [[ -z "${GITREPO_SEARCH}" ]]
 		then
@@ -302,9 +302,13 @@ master
 master-private
 "
 
+			BRANCHES=()
+
 			for BRANCH_JSON in $(echo "${OUTPUT}" | tr '\n' ' ' | sed 's/ //g' | sed 's/"name"/\'$'\n&/g' | grep '"name"')
 			do
 				BRANCH="$(echo "${BRANCH_JSON}" | sed 's/.*"name":"//' | sed 's/".*//')"
+
+				BRANCHES=("${BRANCHES[@]}" "${BRANCH}")
 
 				if [[ "$(echo "${PROTECTED_BRANCHES}" | grep "^${BRANCH}\$")" ]] && [[ -z "$(echo "${PROTECTED_JSON}" | grep "\"name\":.*\"${BRANCH}\"")" ]]
 				then

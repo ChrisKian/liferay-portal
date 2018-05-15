@@ -623,6 +623,10 @@ public class GroupFinderImpl
 		}
 	}
 
+	/**
+	* @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public List<Group> findByNullFriendlyURL() {
 		Session session = null;
@@ -1052,12 +1056,13 @@ public class GroupFinderImpl
 		StringBundler sb = new StringBundler(params.size());
 
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
-			String key = entry.getKey();
 			Object value = entry.getValue();
 
 			if (Validator.isNull(value)) {
 				continue;
 			}
+
+			String key = entry.getKey();
 
 			if (key.equals("rolePermissions")) {
 				key = "rolePermissions_6";

@@ -178,11 +178,28 @@ based on the value of the `liferay.workspace.bundle.url` property.
 - [LPS-78149]: Add the ability to deploy additional 3rd-party OSGi modules via
 the `providedModules` configuration of the root project.
 - [LPS-78149]: Apply the [`com.liferay.target.platform.ide`](https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins-target-platform)
-Gradle plugin to the root project, if the `target.platform.version` property in
+Gradle plugin to the root project if the `target.platform.version` property in
 `gradle.properties` is set.
 
 ### Changed
 - [LPS-78911]: Update the [Liferay Gradle Plugins] dependency to version 3.9.11.
+
+## 1.9.1 - 2018-03-30
+
+### Changed
+- [LPS-74544]: Update the [Liferay Gradle Plugins] dependency to version 3.9.22.
+
+## 1.9.2 - 2018-05-02
+
+### Changed
+- [LPS-80281]: Update the [Liferay Gradle Plugins] dependency to version
+3.11.27.
+
+## 1.10.0 - *(Unreleased)*
+
+### Added
+- [LPS-79453]: Add support for Ext OSGi modules.
+- [LPS-79453]: Add support for Ext plugins.
 
 [Gradle Download Task]: https://github.com/michel-kraemer/gradle-download-task/
 [Liferay Gradle Plugins]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins
@@ -217,6 +234,7 @@ Gradle plugin to the root project, if the `target.platform.version` property in
 [LPS-73913]: https://issues.liferay.com/browse/LPS-73913
 [LPS-73967]: https://issues.liferay.com/browse/LPS-73967
 [LPS-74124]: https://issues.liferay.com/browse/LPS-74124
+[LPS-74544]: https://issues.liferay.com/browse/LPS-74544
 [LPS-74818]: https://issues.liferay.com/browse/LPS-74818
 [LPS-75323]: https://issues.liferay.com/browse/LPS-75323
 [LPS-75479]: https://issues.liferay.com/browse/LPS-75479
@@ -226,3 +244,5 @@ Gradle plugin to the root project, if the `target.platform.version` property in
 [LPS-77586]: https://issues.liferay.com/browse/LPS-77586
 [LPS-78149]: https://issues.liferay.com/browse/LPS-78149
 [LPS-78911]: https://issues.liferay.com/browse/LPS-78911
+[LPS-79453]: https://issues.liferay.com/browse/LPS-79453
+[LPS-80281]: https://issues.liferay.com/browse/LPS-80281

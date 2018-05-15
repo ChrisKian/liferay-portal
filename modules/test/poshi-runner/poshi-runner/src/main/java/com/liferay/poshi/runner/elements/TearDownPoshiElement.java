@@ -14,7 +14,11 @@
 
 package com.liferay.poshi.runner.elements;
 
+import java.util.List;
+
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
@@ -35,7 +39,7 @@ public class TearDownPoshiElement extends CommandPoshiElement {
 		PoshiElement parentPoshiElement, String readableSyntax) {
 
 		if (_isElementType(readableSyntax)) {
-			return new TearDownPoshiElement(readableSyntax);
+			return new TearDownPoshiElement(parentPoshiElement, readableSyntax);
 		}
 
 		return null;
@@ -48,8 +52,22 @@ public class TearDownPoshiElement extends CommandPoshiElement {
 		super(_ELEMENT_NAME, element);
 	}
 
-	protected TearDownPoshiElement(String readableSyntax) {
-		super(_ELEMENT_NAME, readableSyntax);
+	protected TearDownPoshiElement(
+		List<Attribute> attributes, List<Node> nodes) {
+
+		this(_ELEMENT_NAME, attributes, nodes);
+	}
+
+	protected TearDownPoshiElement(
+		PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
+	}
+
+	protected TearDownPoshiElement(
+		String elementName, List<Attribute> attributes, List<Node> nodes) {
+
+		super(elementName, attributes, nodes);
 	}
 
 	@Override

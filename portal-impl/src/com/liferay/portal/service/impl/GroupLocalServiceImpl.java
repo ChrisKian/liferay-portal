@@ -62,6 +62,7 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.LayoutTemplate;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -509,6 +510,150 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Adds the organization to the group.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param group the primary key of the group
+	 */
+	@Override
+	public void addOrganizationGroup(long organizationId, Group group) {
+		super.addOrganizationGroup(organizationId, group);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the organization to the group.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groupId the primary key of the group
+	 */
+	@Override
+	public void addOrganizationGroup(long organizationId, long groupId) {
+		super.addOrganizationGroup(organizationId, groupId);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the organizations to the groups.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groups the groups
+	 */
+	@Override
+	public void addOrganizationGroups(long organizationId, List<Group> groups) {
+		super.addOrganizationGroups(organizationId, groups);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the organization to the groups.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groupIds the primary keys of the groups
+	 */
+	@Override
+	public void addOrganizationGroups(long organizationId, long[] groupIds) {
+		super.addOrganizationGroups(organizationId, groupIds);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the user group to the group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param group the group
+	 */
+	@Override
+	public void addUserGroupGroup(long userGroupId, Group group) {
+		super.addUserGroupGroup(userGroupId, group);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the user group to the group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param groupId the primary key of the group
+	 */
+	@Override
+	public void addUserGroupGroup(long userGroupId, long groupId) {
+		super.addUserGroupGroup(userGroupId, groupId);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the user group to the groups.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param groups the groups
+	 */
+	@Override
+	public void addUserGroupGroups(long userGroupId, List<Group> groups) {
+		super.addUserGroupGroups(userGroupId, groups);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Adds the user group to the groups.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param groupIds the primary keys of the groups
+	 */
+	@Override
+	public void addUserGroupGroups(long userGroupId, long[] groupIds) {
+		super.addUserGroupGroups(userGroupId, groupIds);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
 	 * Adds a company group if it does not exist. This method is typically used
 	 * when a virtual host is added.
 	 *
@@ -653,13 +798,47 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Clears the organization from the groups.
+	 *
+	 * @param organizationId the primary key of the organization
+	 */
+	@Override
+	public void clearOrganizationGroups(long organizationId) {
+		super.clearOrganizationGroups(organizationId);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Clears the user group from the groups.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 */
+	@Override
+	public void clearUserGroupGroups(long userGroupId) {
+		super.clearUserGroupGroups(userGroupId);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
 	 * Deletes the group and its associated data.
 	 *
 	 * <p>
 	 * The group is unstaged and its assets and resources including layouts,
 	 * membership requests, subscriptions, teams, blogs, bookmarks, events,
-	 * image gallery, journals, message boards, polls, shopping related
-	 * entities, and wikis are also deleted.
+	 * image gallery, journals, message boards, polls, and wikis are also
+	 * deleted.
 	 * </p>
 	 *
 	 * @param  group the group
@@ -939,8 +1118,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 * <p>
 	 * The group is unstaged and its assets and resources including layouts,
 	 * membership requests, subscriptions, teams, blogs, bookmarks, events,
-	 * image gallery, journals, message boards, polls, shopping related
-	 * entities, and wikis are also deleted.
+	 * image gallery, journals, message boards, polls, and wikis are also
+	 * deleted.
 	 * </p>
 	 *
 	 * @param  groupId the primary key of the group
@@ -952,6 +1131,152 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		Group group = groupPersistence.findByPrimaryKey(groupId);
 
 		return deleteGroup(group);
+	}
+
+	/**
+	 * Removes the organization from the group.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param group the group
+	 */
+	@Override
+	public void deleteOrganizationGroup(long organizationId, Group group) {
+		super.deleteOrganizationGroup(organizationId, group);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the organization from the group.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groupId the primary key of the group
+	 */
+	@Override
+	public void deleteOrganizationGroup(long organizationId, long groupId) {
+		super.deleteOrganizationGroup(organizationId, groupId);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the organization from the groups.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groups the groups
+	 */
+	@Override
+	public void deleteOrganizationGroups(
+		long organizationId, List<Group> groups) {
+
+		super.deleteOrganizationGroups(organizationId, groups);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the organization from the groups.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param groupIds the primary keys of the groups
+	 */
+	@Override
+	public void deleteOrganizationGroups(long organizationId, long[] groupIds) {
+		super.deleteOrganizationGroups(organizationId, groupIds);
+
+		try {
+			reindexUsersInOrganization(organizationId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the user group from the group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param group the group
+	 */
+	@Override
+	public void deleteUserGroupGroup(long userGroupId, Group group) {
+		super.deleteUserGroupGroup(userGroupId, group);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the user group from the group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param groupId the primary key of the group
+	 */
+	@Override
+	public void deleteUserGroupGroup(long userGroupId, long groupId) {
+		super.deleteUserGroupGroup(userGroupId, groupId);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the user group from the groups.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param groups the groups
+	 */
+	@Override
+	public void deleteUserGroupGroups(long userGroupId, List<Group> groups) {
+		super.deleteUserGroupGroups(userGroupId, groups);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
+	}
+
+	/**
+	 * Removes the user group from the groups.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param groupIds the primary keys of the groups
+	 */
+	@Override
+	public void deleteUserGroupGroups(long userGroupId, long[] groupIds) {
+		super.deleteUserGroupGroups(userGroupId, groupIds);
+
+		try {
+			reindexUsersInUserGroup(userGroupId);
+		}
+		catch (PortalException pe) {
+			throw new SystemException(pe);
+		}
 	}
 
 	@Override
@@ -1608,7 +1933,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 *
 	 * @return the non-system groups having <code>null</code> or empty friendly
 	 *         URLs
+	 * @deprecated As of 7.0.0, with no direct replacement
 	 */
+	@Deprecated
 	@Override
 	public List<Group> getNullFriendlyURLGroups() {
 		return groupFinder.findByNullFriendlyURL();
@@ -3276,6 +3603,12 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		String groupKey = group.getGroupKey();
 
+		List<String> names = new ArrayList(nameMap.values());
+
+		if (ListUtil.isNull(names)) {
+			throw new GroupKeyException();
+		}
+
 		if ((nameMap != null) &&
 			Validator.isNotNull(nameMap.get(LocaleUtil.getDefault()))) {
 
@@ -4274,6 +4607,47 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		indexableActionableDynamicQuery.performActions();
 	}
 
+	protected void reindexUsersInOrganization(long organizationId)
+		throws PortalException {
+
+		Organization organization = organizationLocalService.getOrganization(
+			organizationId);
+
+		long companyId = organization.getCompanyId();
+
+		long[] userIds = organizationLocalService.getUserPrimaryKeys(
+			organizationId);
+
+		if (ArrayUtil.isNotEmpty(userIds)) {
+			TransactionCommitCallbackUtil.registerCallback(
+				() -> {
+					reindex(companyId, userIds);
+
+					return null;
+				});
+		}
+	}
+
+	protected void reindexUsersInUserGroup(long userGroupId)
+		throws PortalException {
+
+		UserGroup userGroup = userGroupLocalService.getUserGroup(userGroupId);
+
+		long companyId = userGroup.getCompanyId();
+
+		long[] userIds = organizationLocalService.getUserPrimaryKeys(
+			userGroupId);
+
+		if (ArrayUtil.isNotEmpty(userIds)) {
+			TransactionCommitCallbackUtil.registerCallback(
+				() -> {
+					reindex(companyId, userIds);
+
+					return null;
+				});
+		}
+	}
+
 	protected void setCompanyPermissions(
 			Role role, String name, String[] actionIds)
 		throws PortalException {
@@ -4463,9 +4837,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			long groupId, long companyId, String groupKey, boolean site)
 		throws PortalException {
 
+		int groupKeyMaxLength = ModelHintsUtil.getMaxLength(
+			Group.class.getName(), "groupKey");
+
 		if (Validator.isNull(groupKey) || Validator.isNumber(groupKey) ||
 			groupKey.contains(StringPool.STAR) ||
-			groupKey.contains(ORGANIZATION_NAME_SUFFIX)) {
+			groupKey.contains(ORGANIZATION_NAME_SUFFIX) ||
+			(groupKey.length() > groupKeyMaxLength)) {
 
 			throw new GroupKeyException();
 		}

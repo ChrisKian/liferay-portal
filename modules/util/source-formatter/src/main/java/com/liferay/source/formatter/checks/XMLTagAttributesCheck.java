@@ -49,10 +49,6 @@ public class XMLTagAttributesCheck extends TagAttributesCheck {
 			String fileName, String absolutePath, String content)
 		throws Exception {
 
-		if (isSubrepository() || isReadOnly(absolutePath)) {
-			return content;
-		}
-
 		content = formatIncorrectLineBreak(fileName, content);
 
 		content = _formatTagAttributes(absolutePath, content);
@@ -60,6 +56,11 @@ public class XMLTagAttributesCheck extends TagAttributesCheck {
 		content = formatMultiLinesTagAttributes(absolutePath, content, true);
 
 		return content;
+	}
+
+	@Override
+	protected Tag sortHTMLTagAttributes(Tag tag) {
+		return tag;
 	}
 
 	private String _formatTagAttributes(String absolutePath, String content)

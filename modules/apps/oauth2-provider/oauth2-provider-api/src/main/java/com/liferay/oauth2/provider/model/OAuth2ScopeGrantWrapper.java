@@ -59,7 +59,8 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 
 		attributes.put("oAuth2ScopeGrantId", getOAuth2ScopeGrantId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("oAuth2AccessTokenId", getOAuth2AccessTokenId());
+		attributes.put("oAuth2ApplicationScopeAliasesId",
+			getOAuth2ApplicationScopeAliasesId());
 		attributes.put("applicationName", getApplicationName());
 		attributes.put("bundleSymbolicName", getBundleSymbolicName());
 		attributes.put("scope", getScope());
@@ -81,10 +82,11 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 			setCompanyId(companyId);
 		}
 
-		Long oAuth2AccessTokenId = (Long)attributes.get("oAuth2AccessTokenId");
+		Long oAuth2ApplicationScopeAliasesId = (Long)attributes.get(
+				"oAuth2ApplicationScopeAliasesId");
 
-		if (oAuth2AccessTokenId != null) {
-			setOAuth2AccessTokenId(oAuth2AccessTokenId);
+		if (oAuth2ApplicationScopeAliasesId != null) {
+			setOAuth2ApplicationScopeAliasesId(oAuth2ApplicationScopeAliasesId);
 		}
 
 		String applicationName = (String)attributes.get("applicationName");
@@ -107,7 +109,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	}
 
 	@Override
-	public java.lang.Object clone() {
+	public Object clone() {
 		return new OAuth2ScopeGrantWrapper((OAuth2ScopeGrant)_oAuth2ScopeGrant.clone());
 	}
 
@@ -122,7 +124,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	* @return the application name of this o auth2 scope grant
 	*/
 	@Override
-	public java.lang.String getApplicationName() {
+	public String getApplicationName() {
 		return _oAuth2ScopeGrant.getApplicationName();
 	}
 
@@ -132,7 +134,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	* @return the bundle symbolic name of this o auth2 scope grant
 	*/
 	@Override
-	public java.lang.String getBundleSymbolicName() {
+	public String getBundleSymbolicName() {
 		return _oAuth2ScopeGrant.getBundleSymbolicName();
 	}
 
@@ -152,13 +154,13 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	}
 
 	/**
-	* Returns the o auth2 access token ID of this o auth2 scope grant.
+	* Returns the o auth2 application scope aliases ID of this o auth2 scope grant.
 	*
-	* @return the o auth2 access token ID of this o auth2 scope grant
+	* @return the o auth2 application scope aliases ID of this o auth2 scope grant
 	*/
 	@Override
-	public long getOAuth2AccessTokenId() {
-		return _oAuth2ScopeGrant.getOAuth2AccessTokenId();
+	public long getOAuth2ApplicationScopeAliasesId() {
+		return _oAuth2ScopeGrant.getOAuth2ApplicationScopeAliasesId();
 	}
 
 	/**
@@ -192,7 +194,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	* @return the scope of this o auth2 scope grant
 	*/
 	@Override
-	public java.lang.String getScope() {
+	public String getScope() {
 		return _oAuth2ScopeGrant.getScope();
 	}
 
@@ -227,7 +229,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	* @param applicationName the application name of this o auth2 scope grant
 	*/
 	@Override
-	public void setApplicationName(java.lang.String applicationName) {
+	public void setApplicationName(String applicationName) {
 		_oAuth2ScopeGrant.setApplicationName(applicationName);
 	}
 
@@ -237,7 +239,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	* @param bundleSymbolicName the bundle symbolic name of this o auth2 scope grant
 	*/
 	@Override
-	public void setBundleSymbolicName(java.lang.String bundleSymbolicName) {
+	public void setBundleSymbolicName(String bundleSymbolicName) {
 		_oAuth2ScopeGrant.setBundleSymbolicName(bundleSymbolicName);
 	}
 
@@ -278,13 +280,14 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	}
 
 	/**
-	* Sets the o auth2 access token ID of this o auth2 scope grant.
+	* Sets the o auth2 application scope aliases ID of this o auth2 scope grant.
 	*
-	* @param oAuth2AccessTokenId the o auth2 access token ID of this o auth2 scope grant
+	* @param oAuth2ApplicationScopeAliasesId the o auth2 application scope aliases ID of this o auth2 scope grant
 	*/
 	@Override
-	public void setOAuth2AccessTokenId(long oAuth2AccessTokenId) {
-		_oAuth2ScopeGrant.setOAuth2AccessTokenId(oAuth2AccessTokenId);
+	public void setOAuth2ApplicationScopeAliasesId(
+		long oAuth2ApplicationScopeAliasesId) {
+		_oAuth2ScopeGrant.setOAuth2ApplicationScopeAliasesId(oAuth2ApplicationScopeAliasesId);
 	}
 
 	/**
@@ -318,7 +321,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	* @param scope the scope of this o auth2 scope grant
 	*/
 	@Override
-	public void setScope(java.lang.String scope) {
+	public void setScope(String scope) {
 		_oAuth2ScopeGrant.setScope(scope);
 	}
 
@@ -333,7 +336,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	}
 
 	@Override
-	public java.lang.String toString() {
+	public String toString() {
 		return _oAuth2ScopeGrant.toString();
 	}
 
@@ -343,7 +346,7 @@ public class OAuth2ScopeGrantWrapper implements OAuth2ScopeGrant,
 	}
 
 	@Override
-	public java.lang.String toXmlString() {
+	public String toXmlString() {
 		return _oAuth2ScopeGrant.toXmlString();
 	}
 

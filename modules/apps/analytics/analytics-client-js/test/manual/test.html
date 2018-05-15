@@ -6,6 +6,7 @@
 		<meta content="Sandbox page for manual tests" property="og:title">
 		<meta content="http://localhost:3000" property="og:url">
 		<meta content="http://www.newyorker.com/wp-content/uploads/2016/01/Borowitz-Donald-Trump-1200.jpg" property="og:image">
+		<link href="https://www.liferay.com" rel="canonical">
 	</head>
 	<body>
 		<h1>Test</h1>
@@ -13,7 +14,7 @@
 			Parargaph 1
 			<a href="https://bbc.co.uk">External link</a>
 		</p>
-		<form data-analytics data-analytics-form-id="my-analytics-form" data-analytics-title="My Nice Form" id="form1" name="abc" action="http://google.com">
+		<form action="http://google.com" data-analytics-asset-id="my-analytics-form" data-analytics-asset-title="My Nice Form" id="form1" name="abc">
 			<label>Name</label>
 			<input name="name" type="text" />
 			<label>Bio</label>
@@ -27,7 +28,7 @@
 			<input name="submit" type="submit" />
 		</form>
 		<br />
-		<form data-analytics action="http://bbc.co.uk">
+		<form action="http://bbc.co.uk" data-analytics-asset-id="myForm">
 			<label>Other Form</label>
 			<input name="name" type="text" />
 			<input name="submit" type="submit" />

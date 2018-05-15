@@ -122,10 +122,8 @@ else if (modePreview) {
 else if (modePrint) {
 	portletMode = LiferayPortletMode.PRINT;
 }
-else if (layoutTypePortlet instanceof LayoutTypePortletImpl) {
-	LayoutTypePortletImpl layoutTypePortletImpl = (LayoutTypePortletImpl)layoutTypePortlet;
-
-	String customPortletMode = layoutTypePortletImpl.getAddedCustomPortletMode();
+else {
+	String customPortletMode = layoutTypePortlet.getAddedCustomPortletMode();
 
 	if (customPortletMode != null) {
 		portletMode = new PortletMode(customPortletMode);
@@ -316,16 +314,12 @@ if (layoutTypeController.isFullPageDisplayable()) {
 	showCloseIcon = false;
 }
 
-long previousScopeGroupId = themeDisplay.getScopeGroupId();
-
 if (Validator.isNotNull(portletResource)) {
 	themeDisplay.setScopeGroupId(PortalUtil.getScopeGroupId(request, portletResourcePortlet.getPortletId()));
 }
 else {
 	themeDisplay.setScopeGroupId(PortalUtil.getScopeGroupId(request, portletId));
 }
-
-long previousSiteGroupId = themeDisplay.getSiteGroupId();
 
 Group siteGroup = themeDisplay.getSiteGroup();
 
@@ -799,13 +793,8 @@ else if (portletDisplay.isModePrint()) {
 	urlBack = urlPrint.toString();
 }
 else if (portletDisplay.isStateMax()) {
-	if (portletDisplay.getId().startsWith("WSRP_")) {
-		urlBack = portletDisplay.getURLBack();
-	}
-	else {
-		urlBack = ParamUtil.getString(renderRequestImpl, "returnToFullPageURL");
-		urlBack = PortalUtil.escapeRedirect(urlBack);
-	}
+	urlBack = ParamUtil.getString(renderRequestImpl, "returnToFullPageURL");
+	urlBack = PortalUtil.escapeRedirect(urlBack);
 
 	if (Validator.isNull(urlBack)) {
 		urlBack = urlMax.toString();
@@ -1261,9 +1250,6 @@ if (themeDisplay.isStatePopUp()) {
 <%
 	}
 }
-
-themeDisplay.setScopeGroupId(previousScopeGroupId);
-themeDisplay.setSiteGroupId(previousSiteGroupId);
 
 if (showPortletCssIcon) {
 	themeDisplay.setIncludePortletCssJs(true);

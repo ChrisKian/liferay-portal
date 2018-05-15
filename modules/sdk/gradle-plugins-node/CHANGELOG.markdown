@@ -211,8 +211,8 @@ don't match, the `node_modules` directory is deleted before running
 ## 4.3.0 - 2018-03-15
 
 ### Added
-- [LPS-78741]: Add property `useNpmCI` to `NpmInstallTask`. If `true`, run
-`npm ci` instead of `npm install`.
+- [LPS-78741]: Add the property `useNpmCI` to the `NpmInstallTask`. If `true`,
+run `npm ci` instead of `npm install`.
 
 ### Fixed
 - [LPS-73472]: Allow single `"bin"` values in the `package.json` files.
@@ -220,14 +220,25 @@ don't match, the `node_modules` directory is deleted before running
 ## 4.3.1 - 2018-03-22
 
 ### Fixed
-- [LPS-78741]: If the `nodeModulesDigestFile` matches the `node_modules`
-directory's digest, do not run `npm install`.
+- [LPS-78741]: Do not run `npm install` if the `nodeModulesDigestFile` matches
+the `node_modules` directory's digest.
 
 ## 4.3.2 - 2018-03-30
 
 ### Changed
-- [LPS-78741]: If the `nodeModulesDigestFile` matches the `node_modules`
-directory's digest, do not run `npm ci`.
+- [LPS-78741]: Do not run `npm ci` if the `nodeModulesDigestFile` matches the
+`node_modules` directory's digest.
+
+## 4.3.3 - 2018-04-05
+
+### Fixed
+- [LPS-78741]: Fix the `npmPackageLock` task execution when the `npmInstall`
+task's `useNpmCI` property is set to `true`.
+
+## 4.3.4 - 2018-05-07
+
+### Added
+- [LPS-75530]: Define task inputs and outputs for `NpmInstallTask`.
 
 [LPS-66906]: https://issues.liferay.com/browse/LPS-66906
 [LPS-67023]: https://issues.liferay.com/browse/LPS-67023
@@ -250,6 +261,7 @@ directory's digest, do not run `npm ci`.
 [LPS-74904]: https://issues.liferay.com/browse/LPS-74904
 [LPS-74933]: https://issues.liferay.com/browse/LPS-74933
 [LPS-75175]: https://issues.liferay.com/browse/LPS-75175
+[LPS-75530]: https://issues.liferay.com/browse/LPS-75530
 [LPS-75965]: https://issues.liferay.com/browse/LPS-75965
 [LPS-77996]: https://issues.liferay.com/browse/LPS-77996
 [LPS-78741]: https://issues.liferay.com/browse/LPS-78741

@@ -40,7 +40,7 @@
 			<then>
 				<execute function="Check#checkHiddenToggleSwitch" locator1="SiteSettingsStaging#CONTENT_SELECT_ALL_CHECKBOX" />
 
-				<execute function="Check#checkHiddenToggleSwitch" locator1="SiteSettingsStaging#CONTENT_SELECT_ALL_CHECKBOX" />
+				<execute function="Uncheck#uncheckHiddenToggleSwitch" locator1="SiteSettingsStaging#CONTENT_SELECT_ALL_CHECKBOX" />
 			</then>
 			<elseif>
 				<isset var="contentName" />
@@ -135,6 +135,9 @@
 
 		<execute function="Pause" locator1="5000" />
 
+		<execute function="AssertTextNotPresent" locator1="Message#ERROR" value1="The tunneling servlet shared secret is not set." />
+		<execute function="AssertTextNotPresent" locator1="Message#ERROR" value1="Your request failed to complete." />
+		<execute function="AssertConsoleTextNotPresent" value1="Please configure tunneling.servlet.shared.secret" />
 		<execute function="AssertConsoleTextNotPresent" value1="javax.portlet.PortletException: java.lang.NullPointerException" />
 	</command>
 
@@ -196,10 +199,8 @@
 	</command>
 
 	<command name="addPublishTemplate">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Publish Templates">
-			<var name="key_menuItem" value="Publish Templates" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Publish Templates" />
 		</execute>
 
 		<execute function="Pause" locator1="3000" />
@@ -398,10 +399,8 @@
 	</command>
 
 	<command name="deactivateStagingCP">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Staging Configuration">
-			<var name="key_menuItem" value="Staging Configuration" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Staging Configuration" />
 		</execute>
 
 		<if>
@@ -459,10 +458,8 @@
 	</command>
 
 	<command name="deletePublishTemplate">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Publish Templates">
-			<var name="key_menuItem" value="Publish Templates" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Publish Templates" />
 		</execute>
 
 		<execute macro="LexiconEntry#gotoEntryMenuItem">
@@ -474,7 +471,7 @@
 	<command name="deleteSitePagesVariationPG">
 		<execute macro="Staging#navigateToSitePageVariation" />
 
-		<execute macro="LexiconEntry#gotoEntryMenuItemNoError">
+		<execute macro="LexiconEntry#gotoEntryMenuItemNoWaitNoError">
 			<var name="menuItem" value="Delete" />
 			<var name="rowEntry" value="${sitePagesVariationName}" />
 		</execute>
@@ -524,10 +521,8 @@
 	</command>
 
 	<command name="editStagingConfiguration">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Staging Configuration">
-			<var name="key_menuItem" value="Staging Configuration" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Staging Configuration" />
 		</execute>
 
 		<if>
@@ -617,7 +612,7 @@
 
 		<execute macro="Staging#navigateToSitePageVariation" />
 
-		<execute macro="LexiconEntry#gotoEntryMenuItem">
+		<execute macro="LexiconEntry#gotoEntryMenuItemNoWait">
 			<var name="menuItem" value="Merge" />
 			<var name="rowEntry" value="${sitePagesVariationName}" />
 		</execute>
@@ -636,10 +631,8 @@
 	</command>
 
 	<command name="modifyVariation">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Staging Configuration">
-			<var name="key_menuItem" value="Staging Configuration" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Staging Configuration" />
 		</execute>
 
 		<if>
@@ -662,10 +655,8 @@
 	</command>
 
 	<command name="moveToTheRecycleBinPublishTemplate">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Publish Templates">
-			<var name="key_menuItem" value="Publish Templates" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Publish Templates" />
 		</execute>
 
 		<execute macro="LexiconEntry#gotoEntryMenuItem">
@@ -741,7 +732,11 @@
 	</command>
 
 	<command name="publishToLiveNowViaPortletCP">
-		<execute macro="Staging#navigateToStagingMenuItem" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Staging" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION_DIALOG" />
 
 		<execute function="AssertClickNoError" locator1="Staging#STAGING_PUBLISH_TO_LIVE_BUTTON" value1="Publish to Live" />
 
@@ -774,6 +769,8 @@
 
 		<execute function="AssertTextEquals" locator1="Staging#PROCESS_SUCCESSFUL" value1="Successful" />
 
+		<execute function="SelectFrame" value1="relative=top" />
+
 		<if>
 			<condition function="IsElementPresent" locator1="Icon#CLOSE" />
 			<then>
@@ -789,7 +786,7 @@
 			<var name="portlet" value="Staging" />
 		</execute>
 
-		<execute function="AssertTextEquals" locator1="Staging#STAGING_STATUS" value1="Successful" />
+		<execute function="AssertTextEquals" locator1="Staging#LATEST_PROCESS_RESULT" value1="SUCCESSFUL" />
 	</command>
 
 	<command name="redoStagingPageVersioningPG">
@@ -875,7 +872,7 @@
 		<execute function="Type" locator1="StagingPublishToLive#DATE_SCHEDULE_TITLE_FIELD" value1="${scheduleTitleName}" />
 
 		<var method="selenium#getAttribute('//input[contains(@id,\'schedulerStartDateHour\')]@value')" name="displayDateHour" />
-		<var name="displayDateHourLength" value="${displayDateHour?length()}" />
+		<var method="StringUtil#length('${displayDateHour}')" name="displayDateHourLength" />
 
 		<if>
 			<equals arg1="${displayDateHourLength}" arg2="1" />
@@ -890,7 +887,7 @@
 
 		<var method="selenium#getAttribute('//input[contains(@id,\'schedulerStartDateMinute\')]@value')" name="displayDateMinute" />
 		<var method="MathUtil#sum('${displayDateMinute}', '2')" name="displayDateMinuteFuture" />
-		<var name="displayDateMinuteFutureLength" value="${displayDateMinuteFuture?length()}" />
+		<var method="StringUtil#length('${displayDateMinuteFuture}')" name="displayDateMinuteFutureLength" />
 
 		<if>
 			<equals arg1="${displayDateMinuteFutureLength}" arg2="1" />
@@ -965,10 +962,8 @@
 	</command>
 
 	<command name="searchPublishTemplate">
-		<execute function="Click" locator1="Icon#HEADER_VERTICAL_ELLIPSIS" />
-
-		<execute function="AssertClick" locator1="MenuItem#ANY_MENU_ITEM" value1="Publish Templates">
-			<var name="key_menuItem" value="Publish Templates" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Publish Templates" />
 		</execute>
 
 		<execute function="Pause" locator1="3000" />
@@ -1101,7 +1096,11 @@
 	</command>
 
 	<command name="viewNoPublishContentCountViaPortletStagingCP">
-		<execute macro="Staging#navigateToStagingMenuItem" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Staging" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION_DIALOG" />
 
 		<execute function="AssertElementNotPresent" locator1="Staging#STAGING_CONTENT_COUNT" />
 		<execute function="AssertElementNotPresent" locator1="Staging#STAGING_CONTENT_INFO" />
@@ -1128,7 +1127,11 @@
 	</command>
 
 	<command name="viewPublishContentCountViaPortletStagingCP">
-		<execute macro="Staging#navigateToStagingMenuItem" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Staging" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#CONFIGURATION_DIALOG" />
 
 		<execute function="AssertTextEquals" locator1="Staging#STAGING_CONTENT_COUNT" value1="${contentCount}" />
 		<execute function="AssertTextEquals#assertPartialText" locator1="Staging#STAGING_CONTENT_INFO" value1="${contentInformation}" />

@@ -161,6 +161,24 @@ public class ModulesStructureTest {
 							Files.deleteIfExists(buildExtGradlePath));
 					}
 
+					if (Files.exists(dirPath.resolve("package.json"))) {
+						String dirAbsolutePath =
+							ModulesStructureTestUtil.getAbsolutePath(dirPath);
+						Path packageJSONPath = dirPath.resolve("package.json");
+
+						if (!ModulesStructureTestUtil.contains(
+								packageJSONPath, "\"liferay-theme-tasks\":") &&
+							!dirAbsolutePath.contains("/project-templates/")) {
+
+							Path packageLockJSONPath = dirPath.resolve(
+								"package-lock.json");
+
+							Assert.assertTrue(
+								"Missing " + packageLockJSONPath,
+								Files.exists(packageLockJSONPath));
+						}
+					}
+
 					if (Files.exists(dirPath.resolve("bnd.bnd"))) {
 						Assert.assertTrue(
 							"Missing " + buildGradlePath,
@@ -185,9 +203,6 @@ public class ModulesStructureTest {
 						return FileVisitResult.SKIP_SUBTREE;
 					}
 
-					String dirAbsolutePath =
-						ModulesStructureTestUtil.getAbsolutePath(dirPath);
-
 					if (Files.exists(dirPath.resolve("package.json"))) {
 						Path packageJSONPath = dirPath.resolve("package.json");
 
@@ -195,16 +210,6 @@ public class ModulesStructureTest {
 								packageJSONPath, "\"liferay-theme-tasks\":")) {
 
 							_testThemeBuildScripts(dirPath);
-						}
-						else if (!dirAbsolutePath.contains(
-									"/project-templates/")) {
-
-							Path packageLockJSONPath = dirPath.resolve(
-								"package-lock.json");
-
-							Assert.assertTrue(
-								"Missing " + packageLockJSONPath,
-								Files.exists(packageLockJSONPath));
 						}
 
 						return FileVisitResult.SKIP_SUBTREE;
@@ -1343,7 +1348,7 @@ public class ModulesStructureTest {
 		SetUtil.fromList(
 			Arrays.asList(
 				"com.liferay.portal.tools.service.builder.version",
-				"com.liferay.source.formatter.version"));
+				"com.liferay.source.formatter.version", "org.gradle.parallel"));
 	private static final List<String> _gradleConfigurations = Arrays.asList(
 		"compileOnly", "provided", "compile", "runtime", "testCompile",
 		"testRuntime", "testIntegrationCompile", "testIntegrationRuntime");

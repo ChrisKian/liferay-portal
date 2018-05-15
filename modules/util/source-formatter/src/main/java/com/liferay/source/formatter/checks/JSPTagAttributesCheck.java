@@ -19,7 +19,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -39,7 +38,6 @@ import com.liferay.source.formatter.util.SourceFormatterUtil;
 import java.io.File;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,10 +84,6 @@ public class JSPTagAttributesCheck extends TagAttributesCheck {
 	protected String doProcess(
 			String fileName, String absolutePath, String content)
 		throws Exception {
-
-		if (isSubrepository() || isReadOnly(absolutePath)) {
-			return content;
-		}
 
 		content = formatIncorrectLineBreak(fileName, content);
 
@@ -160,36 +154,6 @@ public class JSPTagAttributesCheck extends TagAttributesCheck {
 
 				tag.putAttribute(attributeName, attributeValue);
 			}
-		}
-
-		return tag;
-	}
-
-	@Override
-	protected Tag sortHTMLTagAttributes(Tag tag) {
-		String tagName = tag.getName();
-
-		if (tagName.equals("liferay-ui:tabs")) {
-			return tag;
-		}
-
-		Map<String, String> attributesMap = tag.getAttributesMap();
-
-		for (Map.Entry<String, String> entry : attributesMap.entrySet()) {
-			String attributeValue = entry.getValue();
-
-			if (!attributeValue.matches("([-a-z0-9]+ )+[-a-z0-9]+")) {
-				continue;
-			}
-
-			List<String> htmlAttributes = ListUtil.fromArray(
-				StringUtil.split(attributeValue, StringPool.SPACE));
-
-			Collections.sort(htmlAttributes);
-
-			tag.putAttribute(
-				entry.getKey(),
-				StringUtil.merge(htmlAttributes, StringPool.SPACE));
 		}
 
 		return tag;
@@ -340,7 +304,7 @@ public class JSPTagAttributesCheck extends TagAttributesCheck {
 		String utilTaglibSrcDirName = _getUtilTaglibSrcDirName();
 
 		outerLoop:
-		for (String tldFileName : _getTLDFileNames()) {
+		for (String tldFileName : tldFileNames) {
 			tldFileName = StringUtil.replace(
 				tldFileName, CharPool.BACK_SLASH, CharPool.SLASH);
 

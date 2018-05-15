@@ -136,9 +136,6 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 
 			printError(fileName, sourceFormatterMessage.toString());
 		}
-
-		AlloyMVCCheckstyleUtil.cleanUpSuppressionsFiles(
-			getSourceFormatterSuppressionsFiles());
 	}
 
 	private Map<String, String> _getDeletedContentsMap(String[] excludes)
@@ -211,8 +208,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				sourceFormatterArgs.getBaseDirName());
 			_configuration = CheckstyleUtil.getConfiguration(
 				"checkstyle-alloy-mvc.xml", getPropertiesMap(),
-				sourceFormatterArgs.getMaxLineLength(),
-				sourceFormatterArgs.isShowDebugInformation());
+				sourceFormatterArgs);
 		}
 
 		_sourceFormatterMessages.addAll(

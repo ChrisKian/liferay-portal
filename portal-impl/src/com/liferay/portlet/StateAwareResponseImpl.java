@@ -225,12 +225,14 @@ public abstract class StateAwareResponseImpl
 
 			for (Map.Entry<String, String[]> entry : params.entrySet()) {
 				String key = entry.getKey();
-				String[] value = entry.getValue();
 
 				if (key == null) {
 					throw new IllegalArgumentException();
 				}
-				else if (value == null) {
+
+				String[] value = entry.getValue();
+
+				if (value == null) {
 					throw new IllegalArgumentException();
 				}
 
@@ -275,20 +277,6 @@ public abstract class StateAwareResponseImpl
 		}
 
 		_calledSetRenderParameter = true;
-	}
-
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #init(PortletRequestImpl,
-	 *             HttpServletResponse, User, Layout)}
-	 */
-	@Deprecated
-	protected void init(
-			PortletRequestImpl portletRequestImpl, HttpServletResponse response,
-			String portletName, User user, Layout layout,
-			WindowState windowState, PortletMode portletMode)
-		throws PortletModeException, WindowStateException {
-
-		init(portletRequestImpl, response, user, layout, true);
 	}
 
 	protected void init(

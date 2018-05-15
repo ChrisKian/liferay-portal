@@ -50,6 +50,25 @@
 		</sequential>
 	</macrodef>
 
+	<macrodef name="replace-multilines">
+		<attribute name="file" />
+		<element name="replace-elements" />
+		<sequential>
+			<if>
+				<os family="windows" />
+				<then>
+					<fixcrlf eol="dos" file="@{file}" fixlast="false" />
+				</then>
+			</if>
+
+			<replace
+				file="@{file}"
+			>
+				<replace-elements />
+			</replace>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="update-jboss-java-opts">
 		<sequential>
 			<replace
@@ -1314,13 +1333,6 @@ this task.
 		<replace
 			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
 		>
-			<replacetoken><![CDATA[enable-welcome-root="true"]]></replacetoken>
-			<replacevalue><![CDATA[enable-welcome-root="false"]]></replacevalue>
-		</replace>
-
-		<replace
-			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
-		>
 			<replacetoken><![CDATA[</extensions>]]></replacetoken>
 			<replacevalue>
 				<![CDATA[
@@ -1340,31 +1352,17 @@ this task.
 			<replacevalue><![CDATA[<deployment-scanner deployment-timeout="360" ]]></replacevalue>
 		</replace>
 
-		<replace
+		<replace-multilines
 			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
 		>
-			<replacetoken><![CDATA[<security-domains>]]></replacetoken>
-			<replacevalue>
-				<![CDATA[
-					<security-domains>
-						<security-domain name="PortalRealm">
-							<authentication>
-								<login-module code="com.liferay.portal.security.jaas.PortalLoginModule" flag="required" />
-							</authentication>
-						</security-domain>
-				]]>
-			</replacevalue>
-		</replace>
-
-		<replace
-			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
-		>
-			<replacetoken><![CDATA[<formatter>
+			<replace-elements>
+				<replacetoken><![CDATA[<formatter>
                     <named-formatter name="COLOR-PATTERN"]]></replacetoken>
-			<replacevalue><![CDATA[<filter-spec value="not(any(match(&quot;WFLYSRV0059&quot;),match(&quot;WFLYEE0007&quot;)))" />
+				<replacevalue><![CDATA[<filter-spec value="not(any(match(&quot;WFLYSRV0059&quot;),match(&quot;WFLYEE0007&quot;)))" />
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"]]></replacevalue>
-		</replace>
+			</replace-elements>
+		</replace-multilines>
 
 		<echo file="${app.server.jboss.bin.dir}/server.policy">
 			grant {
@@ -1393,9 +1391,32 @@ this task.
 				</replace>
 
 				<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">${line.separator}<![CDATA[JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true ${java.security.config} -Djboss.as.management.blocking.timeout=480 -Duser.timezone=GMT -Xmx1024m -XX:MaxMetaspaceSize=512m"]]></echo>
+
+				<replace
+					file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
+				>
+					<replacetoken><![CDATA[<security-domains>]]></replacetoken>
+					<replacevalue>
+						<![CDATA[
+							<security-domains>
+								<security-domain name="PortalRealm">
+									<authentication>
+										<login-module code="com.liferay.portal.security.jaas.PortalLoginModule" flag="required" />
+									</authentication>
+								</security-domain>
+						]]>
+					</replacevalue>
+				</replace>
+
+				<replace
+					file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
+				>
+					<replacetoken><![CDATA[enable-welcome-root="true"]]></replacetoken>
+					<replacevalue><![CDATA[enable-welcome-root="false"]]></replacevalue>
+				</replace>
 			</then>
 			<elseif>
-				<equals arg1="${app.server.jboss.version}" arg2="7.0.0" />
+				<equals arg1="${app.server.jboss.version}" arg2="7.1.0" />
 				<then>
 					<replace
 						file="${app.server.jboss.bin.dir}/standalone.conf"
@@ -1405,6 +1426,35 @@ this task.
 					</replace>
 
 					<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">${line.separator}<![CDATA[JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true ${java.security.config} -Djboss.as.management.blocking.timeout=480 -Duser.timezone=GMT -Xmx1024m -XX:MaxMetaspaceSize=512m"]]></echo>
+
+					<replace
+						file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
+					>
+						<replacetoken><![CDATA[<subsystem xmlns="urn:jboss:domain:security:2.0">
+            <security-domains>]]></replacetoken>
+						<replacevalue><![CDATA[<subsystem xmlns="urn:jboss:domain:security:2.0">
+            <security-domains>
+							<security-domain name="PortalRealm">
+								<authentication>
+									<login-module code="com.liferay.portal.security.jaas.PortalLoginModule" flag="required" />
+								</authentication>
+							</security-domain>]]>
+						</replacevalue>
+					</replace>
+
+					<replace
+						file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
+					>
+						<replacetoken><![CDATA[<location name="/" handler="welcome-content"/>]]></replacetoken>
+						<replacevalue><![CDATA[<!--<location name="/" handler="welcome-content"/>-->]]></replacevalue>
+					</replace>
+
+					<replace
+						file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
+					>
+						<replacetoken><![CDATA[<file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>]]></replacetoken>
+						<replacevalue><![CDATA[<!--<file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>-->]]></replacevalue>
+					</replace>
 				</then>
 			</elseif>
 		</if>
@@ -1918,11 +1968,16 @@ this task.
 			src="${app.server.parent.dir}/${app.server.tcserver.zip.name}"
 		>
 			<mapper
-				from="pivotal-tc-server-developer-${app.server.tcserver.version}.RELEASE/*"
+				from="pivotal-tc-server/*"
 				to="tc-server-${app.server.tcserver.version}/*"
 				type="glob"
 			/>
 		</unzip>
+
+		<move
+			file="${app.server.tcserver.developer.dir}/tcserver"
+			tofile="${app.server.tcserver.developer.dir}/tcserver.sh"
+		/>
 
 		<chmod
 			perm="a+x"
@@ -1937,12 +1992,12 @@ this task.
 		<if>
 			<os family="windows" />
 			<then>
-				<exec dir="${app.server.tcserver.dir}" executable="cmd">
-					<arg line="/c set JAVA_OPTS= &amp; tcruntime-instance.bat create liferay -v ${app.server.tcserver.tomcat.version}" />
+				<exec dir="${app.server.tcserver.developer.dir}" executable="cmd">
+					<arg line="/c set JAVA_OPTS= &amp; tcserver.bat create liferay -v ${app.server.tcserver.tomcat.version}" />
 				</exec>
 			</then>
 			<else>
-				<exec dir="${app.server.tcserver.dir}" executable="${app.server.tcserver.dir}/tcruntime-instance.sh">
+				<exec dir="${app.server.tcserver.developer.dir}" executable="${app.server.tcserver.developer.dir}/tcserver.sh">
 					<arg line="create liferay -v ${app.server.tcserver.tomcat.version}" />
 				</exec>
 			</else>
@@ -1963,27 +2018,27 @@ this task.
 					file="${app.server.tcserver.bin.dir}/setenv.sh"
 				>
 					<replacetoken><![CDATA[JVM_OPTS="-Xmx512M -Xss256K"]]></replacetoken>
-					<replacevalue><![CDATA[JVM_OPTS="-Dfile.encoding=UTF-8 -Duser.timezone=GMT -Xmx1024M -Xss512K -XX:MaxPermSize=512m"]]></replacevalue>
+					<replacevalue><![CDATA[JVM_OPTS="-Dfile.encoding=UTF-8 -Duser.timezone=GMT -Xmx1024M -Xss512K -XX:MaxMetaspaceSize=512m"]]></replacevalue>
 				</replace>
 			</else>
 		</if>
 
 		<replace
-			file="${app.server.tcserver.dir}/liferay/conf/catalina.properties"
+			file="${app.server.tcserver.conf.dir}/catalina.properties"
 		>
 			<replacetoken><![CDATA[common.loader=${catalina.base}/lib,${catalina.base}/lib/*.jar,${catalina.home}/lib,${catalina.home}/lib/*.jar]]></replacetoken>
 			<replacevalue><![CDATA[common.loader=${catalina.base}/lib,${catalina.base}/lib/*.jar,${catalina.home}/lib,${catalina.home}/lib/*.jar,${catalina.home}/lib/ext/global,${catalina.home}/lib/ext/global/*.jar,${catalina.home}/lib/ext,${catalina.home}/lib/ext/*.jar]]></replacevalue>
 		</replace>
 
 		<replace
-			file="${app.server.tcserver.dir}/liferay/conf/server.xml"
+			file="${app.server.tcserver.conf.dir}/server.xml"
 		>
-			<replacetoken><![CDATA[redirectPort="${bio.https.port}"/>]]></replacetoken>
-			<replacevalue><![CDATA[redirectPort="${bio.https.port}" URIEncoding="UTF-8"/>]]></replacevalue>
+			<replacetoken><![CDATA[redirectPort="${nio.https.port}"/>]]></replacetoken>
+			<replacevalue><![CDATA[redirectPort="${nio.https.port}" URIEncoding="UTF-8"/>]]></replacevalue>
 		</replace>
 
 		<replace
-			file="${app.server.tcserver.dir}/liferay/conf/web.xml"
+			file="${app.server.tcserver.conf.dir}/web.xml"
 		>
 			<replacetoken><![CDATA[<load-on-startup>3</load-on-startup>]]></replacetoken>
 			<replacevalue>
@@ -2005,18 +2060,18 @@ this task.
 			<os family="windows" />
 			<then>
 				<replace
-					file="${app.server.tcserver.dir}/liferay/conf/wrapper.conf"
+					file="${app.server.tcserver.conf.dir}/wrapper.conf"
 				>
 					<replacetoken><![CDATA[wrapper.java.additional.8=-Xmx512M]]></replacetoken>
 					<replacevalue><![CDATA[wrapper.java.additional.8="-Xmx1024M"]]></replacevalue>
 				</replace>
 
 				<replace
-					file="${app.server.tcserver.dir}/liferay/conf/wrapper.conf"
+					file="${app.server.tcserver.conf.dir}/wrapper.conf"
 				>
 					<replacetoken><![CDATA[wrapper.java.additional.9=-Xss256K]]></replacetoken>
 					<replacevalue><![CDATA[wrapper.java.additional.9="-Xss512K"
-wrapper.java.additional.10="-XX:MaxPermSize=256M"
+wrapper.java.additional.10="-XX:MaxMetaspaceSize=256M"
 wrapper.java.additional.11="-Dfile.encoding=UTF-8"]]></replacevalue>
 				</replace>
 			</then>
@@ -2103,6 +2158,10 @@ org.apache.catalina.startup.ClassLoaderFactory.level=SEVERE]]>
 						<param-name>compilerTargetVM</param-name>
 						<param-value>1.8</param-value>
 					</init-param>
+					<init-param>
+						<param-name>tagpoolClassName</param-name>
+						<param-value>com.liferay.support.tomcat.jasper.runtime.TagHandlerPool</param-value>
+					</init-param>
 					<load-on-startup>3</load-on-startup>
 				]]>
 			</replacevalue>
@@ -2185,7 +2244,7 @@ rerun this task.
 		<delete dir="${app.server.weblogic.dir}" />
 
 		<if>
-			<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+			<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 			<then>
 				<unzip
 					dest="${app.server.weblogic.dir}-temp"
@@ -2201,7 +2260,7 @@ rerun this task.
 		</if>
 
 		<if>
-			<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+			<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 			<then>
 				<java
 					fork="true"
@@ -2273,7 +2332,7 @@ closeTemplate()
 				</pathconvert>
 
 				<if>
-					<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+					<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 					<then>
 						<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="cmd">
 							<env key="MW_HOME" value="${app.server.weblogic.dir.windows}" />
@@ -2375,7 +2434,7 @@ closeTemplate()
 					<os family="unix" />
 					<then>
 						<if>
-							<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+							<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 							<then>
 								<replace
 									file="${app.server.weblogic.dir}/wlserver/server/bin/setWLSEnv.sh"
@@ -2405,7 +2464,7 @@ closeTemplate()
 				</if>
 
 				<if>
-					<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+					<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 					<then>
 						<chmod
 							dir="${app.server.weblogic.dir}/wlserver/server/bin"
@@ -2426,7 +2485,7 @@ closeTemplate()
 					<os family="unix" />
 					<then>
 						<if>
-							<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+							<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 							<then>
 								<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="./setWLSEnv.sh">
 									<env file="${app.server.weblogic.dir}" key="MW_HOME" />
@@ -2443,7 +2502,7 @@ closeTemplate()
 					</then>
 					<else>
 						<if>
-							<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+							<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 							<then>
 								<exec dir="${app.server.weblogic.dir}/wlserver/server/bin" executable="sh">
 									<env file="${app.server.weblogic.dir}" key="MW_HOME" />
@@ -2461,7 +2520,7 @@ closeTemplate()
 				</if>
 
 				<if>
-					<equals arg1="${app.server.weblogic.version.build}" arg2="1221" />
+					<equals arg1="${app.server.weblogic.version.build}" arg2="12213" />
 					<then>
 						<echo file="${tstamp.value}/create-weblogic-domain.sh">
 							#!/bin/sh
@@ -3205,19 +3264,21 @@ this task.
 			<replacevalue><![CDATA[<deployment-scanner deployment-timeout="360" ]]></replacevalue>
 		</replace>
 
-		<replace
+		<replace-multilines
 			file="${app.server.wildfly.dir}/standalone/configuration/standalone.xml"
 		>
-			<replacetoken><![CDATA[">
+			<replace-elements>
+				<replacetoken><![CDATA[">
             <security-domains>]]></replacetoken>
-			<replacevalue><![CDATA[">
+				<replacevalue><![CDATA[">
             <security-domains>
 				<security-domain name="PortalRealm">
 					<authentication>
 						<login-module code="com.liferay.portal.security.jaas.PortalLoginModule" flag="required" />
 					</authentication>
 				</security-domain>]]></replacevalue>
-		</replace>
+			</replace-elements>
+		</replace-multilines>
 
 		<replace
 			file="${app.server.wildfly.dir}/standalone/configuration/standalone.xml"
@@ -3232,15 +3293,17 @@ this task.
 			replace=""
 		/>
 
-		<replace
+		<replace-multilines
 			file="${app.server.wildfly.dir}/standalone/configuration/standalone.xml"
 		>
-			<replacetoken><![CDATA[<formatter>
+			<replace-elements>
+				<replacetoken><![CDATA[<formatter>
                     <named-formatter name="COLOR-PATTERN"]]></replacetoken>
-			<replacevalue><![CDATA[<filter-spec value="not(any(match(&quot;WFLYSRV0059&quot;),match(&quot;WFLYEE0007&quot;)))" />
+				<replacevalue><![CDATA[<filter-spec value="not(any(match(&quot;WFLYSRV0059&quot;),match(&quot;WFLYEE0007&quot;)))" />
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"]]></replacevalue>
-		</replace>
+			</replace-elements>
+		</replace-multilines>
 
 		<echo file="${app.server.wildfly.bin.dir}/server.policy">
 			grant {

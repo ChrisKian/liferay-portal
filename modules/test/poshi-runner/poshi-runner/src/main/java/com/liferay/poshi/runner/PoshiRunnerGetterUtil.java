@@ -21,6 +21,7 @@ import com.liferay.poshi.runner.selenium.SeleniumUtil;
 import com.liferay.poshi.runner.util.Dom4JUtil;
 import com.liferay.poshi.runner.util.ExternalMethod;
 import com.liferay.poshi.runner.util.FileUtil;
+import com.liferay.poshi.runner.util.GetterUtil;
 import com.liferay.poshi.runner.util.OSDetector;
 import com.liferay.poshi.runner.util.PropsValues;
 import com.liferay.poshi.runner.util.StringUtil;
@@ -258,7 +259,10 @@ public class PoshiRunnerGetterUtil {
 			if (className.endsWith("MathUtil") &&
 				(parameter instanceof String)) {
 
-				parameter = Integer.parseInt((String)parameter);
+				parameter = GetterUtil.getInteger((String)parameter);
+			}
+			else if (className.endsWith("StringUtil")) {
+				parameter = String.valueOf(parameter);
 			}
 
 			parameters[i] = parameter;
@@ -349,7 +353,7 @@ public class PoshiRunnerGetterUtil {
 		String filePath = url.getFile();
 
 		if (!fileContent.contains("<definition") &&
-			filePath.endsWith(".testcase")) {
+			(filePath.endsWith(".macro") || filePath.endsWith(".testcase"))) {
 
 			PoshiNode<?, ?> poshiNode = PoshiNodeFactory.newPoshiNodeFromFile(
 				filePath);
@@ -429,6 +433,7 @@ public class PoshiRunnerGetterUtil {
 			}
 
 			sb.append(line);
+			sb.append("\n");
 
 			lineNumber++;
 		}

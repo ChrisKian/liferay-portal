@@ -21,11 +21,11 @@
 	</tear-down>
 
 	<command name="RightToLeftSmoke" priority="5">
-		<property name="portal.acceptance" value="true" />
+		<property name="portal.acceptance" value="quarantine" />
 		<property name="test.name.skip.portal.instance" value="UIInfrastructureUsecase#RightToLeftSmoke" />
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -90,7 +90,7 @@
 		<property name="portal.acceptance" value="true" />
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -219,12 +219,10 @@
 			<var name="entryTitle" value="Blogs Title" />
 		</execute>
 
-		<execute macro-mobile="MobileNavigator#clickRemoveIcon" />
-
 		<execute macro="Button#clickPublish" />
 
 		<execute macro="Alert#viewSuccessMessageText">
-			<var name="sucessMessage" value="Your request completed successfully." />
+			<var name="successMessage" value="Your request completed successfully." />
 		</execute>
 	</command>
 </definition>

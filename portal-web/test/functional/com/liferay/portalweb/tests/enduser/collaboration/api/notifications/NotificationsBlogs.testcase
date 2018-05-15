@@ -13,7 +13,7 @@
 		<execute macro="User#firstLoginPG" />
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -210,7 +210,9 @@
 
 		<execute macro="Notifications#gotoNotifications" />
 
-		<execute macro="Notifications#markAllAsRead" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Mark All Notifications as Read" />
+		</execute>
 
 		<execute macro="Notifications#viewNoNotifications">
 			<var name="activePanel" value="Notifications" />

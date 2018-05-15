@@ -290,28 +290,28 @@ public abstract class BasePropMethodImpl implements Method {
 
 		// Check remaining properties against custom properties
 
-		WebDAVProps webDavProps = WebDAVPropsLocalServiceUtil.getWebDAVProps(
+		WebDAVProps webDAVProps = WebDAVPropsLocalServiceUtil.getWebDAVProps(
 			webDAVRequest.getCompanyId(), resource.getClassName(),
 			resource.getPrimaryKey());
 
-		Set<QName> customProps = webDavProps.getPropsSet();
+		Set<QName> customProps = webDAVProps.getPropsSet();
 
-		for (QName qname : props) {
-			String name = qname.getName();
-			Namespace namespace = qname.getNamespace();
+		for (QName qName : props) {
+			if (customProps.contains(qName)) {
+				Namespace namespace = qName.getNamespace();
 
-			String prefix = namespace.getPrefix();
-			String uri = namespace.getURI();
+				String name = qName.getName();
+				String prefix = namespace.getPrefix();
+				String uri = namespace.getURI();
 
-			if (customProps.contains(qname)) {
-				String text = webDavProps.getText(name, prefix, uri);
+				String text = webDAVProps.getText(name, prefix, uri);
 
-				DocUtil.add(successPropElement, qname, text);
+				DocUtil.add(successPropElement, qName, text);
 
 				hasSuccess = true;
 			}
 			else {
-				DocUtil.add(failurePropElement, qname);
+				DocUtil.add(failurePropElement, qName);
 
 				hasFailure = true;
 			}
@@ -362,8 +362,6 @@ public abstract class BasePropMethodImpl implements Method {
 
 		WebDAVStorage storage = webDAVRequest.getWebDAVStorage();
 
-		long depth = WebDAVUtil.getDepth(webDAVRequest.getHttpServletRequest());
-
 		Document document = SAXReaderUtil.createDocument();
 
 		Element multistatusElement = SAXReaderUtil.createElement(
@@ -374,6 +372,9 @@ public abstract class BasePropMethodImpl implements Method {
 		Resource resource = storage.getResource(webDAVRequest);
 
 		if (resource != null) {
+			long depth = WebDAVUtil.getDepth(
+				webDAVRequest.getHttpServletRequest());
+
 			addResponse(
 				storage, webDAVRequest, resource, props, multistatusElement,
 				depth);

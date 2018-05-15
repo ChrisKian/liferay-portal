@@ -65,6 +65,10 @@ public abstract class PoshiElement
 			return true;
 		}
 
+		if (isMultilineReadableSyntaxComment(readableSyntax)) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -118,10 +122,34 @@ public abstract class PoshiElement
 		_addNodes(element);
 	}
 
-	protected PoshiElement(String name, String readableSyntax) {
+	protected PoshiElement(
+		String name, List<Attribute> attributes, List<Node> nodes) {
+
 		super(name);
 
+		if (attributes != null) {
+			for (Attribute attribute : attributes) {
+				add(attribute);
+			}
+		}
+
+		if (nodes != null) {
+			for (Node node : nodes) {
+				add(node);
+			}
+		}
+	}
+
+	protected PoshiElement(
+		String name, PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(name);
+
+		setParent(parentPoshiElement);
+
 		parseReadableSyntax(readableSyntax);
+
+		detach();
 	}
 
 	protected String createReadableBlock(String content) {
@@ -155,6 +183,12 @@ public abstract class PoshiElement
 		return RegexUtil.getGroup(readableSyntax, ".*?\\{(.*)\\}", 1);
 	}
 
+	protected String getFileType() {
+		PoshiElement poshiParentElement = (PoshiElement)getParent();
+
+		return poshiParentElement.getFileType();
+	}
+
 	protected String getNameFromAssignment(String assignment) {
 		String name = assignment.split("=")[0];
 
@@ -177,15 +211,39 @@ public abstract class PoshiElement
 		return RegexUtil.getGroup(readableSyntax, ".*?\"(.*)\"", 1);
 	}
 
+	protected String getReadableCommandKeyword() {
+		PoshiElement poshiParentElement = (PoshiElement)getParent();
+
+		return poshiParentElement.getReadableCommandKeyword();
+	}
+
+	protected String getReadableEscapedContent(String readableSyntax) {
+		readableSyntax = readableSyntax.trim();
+
+		return readableSyntax.substring(3, readableSyntax.length() - 3);
+	}
+
 	protected String getValueFromAssignment(String assignment) {
+		assignment = assignment.trim();
+
 		int start = assignment.indexOf("=");
 
-		String value = assignment.substring(start + 1);
+		int end = assignment.length();
+
+		if (assignment.endsWith(";")) {
+			end = end - 1;
+		}
+
+		String value = assignment.substring(start + 1, end);
 
 		return value.trim();
 	}
 
 	protected boolean isBalancedReadableSyntax(String readableSyntax) {
+		readableSyntax = readableSyntax.replaceAll("<!--.*?-->", "");
+
+		readableSyntax = readableSyntax.replaceAll("\'\'\'.*?\'\'\'", "\"\"");
+
 		Stack<Character> stack = new Stack<>();
 
 		for (char c : readableSyntax.toCharArray()) {
@@ -250,13 +308,24 @@ public abstract class PoshiElement
 		return false;
 	}
 
+	protected boolean isMultilineReadableSyntaxComment(String readableSyntax) {
+		readableSyntax = readableSyntax.trim();
+
+		if (readableSyntax.endsWith("*/") && readableSyntax.startsWith("/*")) {
+			return true;
+		}
+
+		return false;
+	}
+
 	protected boolean isValidReadableBlock(String readableSyntax) {
 		readableSyntax = readableSyntax.trim();
 
 		if (readableSyntax.startsWith("property") ||
 			readableSyntax.startsWith("var")) {
 
-			if (readableSyntax.endsWith("\";") ||
+			if (readableSyntax.endsWith("\'\'\';") ||
+				readableSyntax.endsWith("\";") ||
 				readableSyntax.endsWith(");")) {
 
 				return true;
@@ -312,8 +381,7 @@ public abstract class PoshiElement
 	}
 
 	protected static final Pattern nestedVarAssignmentPattern = Pattern.compile(
-		"(\\w*? = \".*?\"|\\w*? = escapeText\\(\".*?\"\\))($|\\s|,)",
-		Pattern.DOTALL);
+		"(\\w*? = \".*?\"|\\w*? = \'\'\'.*?\'\'\')($|\\s|,)", Pattern.DOTALL);
 
 	private void _addAttributes(Element element) {
 		for (Attribute attribute :

@@ -14,7 +14,11 @@
 
 package com.liferay.poshi.runner.elements;
 
+import java.util.List;
+
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Kenji Heigel
@@ -35,7 +39,7 @@ public class PropertyPoshiElement extends VarPoshiElement {
 		PoshiElement parentPoshiElement, String readableSyntax) {
 
 		if (_isElementType(readableSyntax)) {
-			return new PropertyPoshiElement(readableSyntax);
+			return new PropertyPoshiElement(parentPoshiElement, readableSyntax);
 		}
 
 		return null;
@@ -48,8 +52,16 @@ public class PropertyPoshiElement extends VarPoshiElement {
 		super(_ELEMENT_NAME, element);
 	}
 
-	protected PropertyPoshiElement(String readableSyntax) {
-		super(_ELEMENT_NAME, readableSyntax);
+	protected PropertyPoshiElement(
+		List<Attribute> attributes, List<Node> nodes) {
+
+		super(_ELEMENT_NAME, attributes, nodes);
+	}
+
+	protected PropertyPoshiElement(
+		PoshiElement parentPoshiElement, String readableSyntax) {
+
+		super(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
 	}
 
 	private boolean _isElementType(String readableSyntax) {

@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.image.ImageToolUtil;
 import com.liferay.portal.kernel.interval.IntervalActionProcessor;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -203,29 +204,38 @@ public class ServicePreAction extends Action {
 
 		// Company logo
 
-		StringBundler sb = new StringBundler(5);
+		StringBundler sb = new StringBundler(6);
 
 		sb.append(imagePath);
-		sb.append("/company_logo?img_id=");
-		sb.append(company.getLogoId());
-		sb.append("&t=");
-		sb.append(WebServerServletTokenUtil.getToken(company.getLogoId()));
+		sb.append("/company_logo");
+
+		long companyLogoId = company.getLogoId();
+
+		if (companyLogoId > 0) {
+			sb.append("?img_id=");
+			sb.append(company.getLogoId());
+			sb.append("&t=");
+			sb.append(WebServerServletTokenUtil.getToken(company.getLogoId()));
+		}
 
 		String companyLogo = sb.toString();
 
 		int companyLogoHeight = 0;
 		int companyLogoWidth = 0;
 
-		long companyLogoId = company.getLogoId();
+		Image companyLogoImage = null;
 
 		if (companyLogoId > 0) {
-			Image companyLogoImage = ImageLocalServiceUtil.getCompanyLogo(
+			companyLogoImage = ImageLocalServiceUtil.getCompanyLogo(
 				companyLogoId);
+		}
+		else {
+			companyLogoImage = ImageToolUtil.getDefaultCompanyLogo();
+		}
 
-			if (companyLogoImage != null) {
-				companyLogoHeight = companyLogoImage.getHeight();
-				companyLogoWidth = companyLogoImage.getWidth();
-			}
+		if (companyLogoImage != null) {
+			companyLogoHeight = companyLogoImage.getHeight();
+			companyLogoWidth = companyLogoImage.getWidth();
 		}
 
 		String realCompanyLogo = companyLogo;
@@ -340,11 +350,12 @@ public class ServicePreAction extends Action {
 		}
 		else {
 			long groupId = ParamUtil.getLong(request, "groupId");
-			boolean privateLayout = ParamUtil.getBoolean(
-				request, "privateLayout");
 			long layoutId = ParamUtil.getLong(request, "layoutId");
 
 			if ((groupId > 0) && (layoutId > 0)) {
+				boolean privateLayout = ParamUtil.getBoolean(
+					request, "privateLayout");
+
 				layout = LayoutLocalServiceUtil.getLayout(
 					groupId, privateLayout, layoutId);
 			}
@@ -372,12 +383,12 @@ public class ServicePreAction extends Action {
 			long sourceGroupId = ParamUtil.getLong(request, "p_v_l_s_g_id");
 
 			if ((sourceGroupId > 0) && (sourceGroupId != layout.getGroupId())) {
-				Group sourceGroup = GroupLocalServiceUtil.getGroup(
-					sourceGroupId);
-
 				if (layout.isTypeControlPanel() || layout.isPublicLayout() ||
 					SitesUtil.isUserGroupLayoutSetViewable(
 						permissionChecker, layout.getGroup())) {
+
+					Group sourceGroup = GroupLocalServiceUtil.getGroup(
+						sourceGroupId);
 
 					layout = new VirtualLayout(layout, sourceGroup);
 				}
@@ -503,7 +514,6 @@ public class ServicePreAction extends Action {
 
 		LayoutSet layoutSet = null;
 
-		boolean hasCustomizeLayoutPermission = false;
 		boolean hasUpdateLayoutPermission = false;
 
 		boolean customizedView = SessionParamUtil.getBoolean(
@@ -513,9 +523,10 @@ public class ServicePreAction extends Action {
 			LayoutTypeAccessPolicy layoutTypeAccessPolicy =
 				LayoutTypeAccessPolicyTracker.getLayoutTypeAccessPolicy(layout);
 
-			hasCustomizeLayoutPermission =
+			boolean hasCustomizeLayoutPermission =
 				layoutTypeAccessPolicy.isCustomizeLayoutAllowed(
 					permissionChecker, layout);
+
 			hasUpdateLayoutPermission =
 				layoutTypeAccessPolicy.isUpdateLayoutAllowed(
 					permissionChecker, layout);

@@ -568,7 +568,7 @@ public class IntrabandProxyUtilTest {
 			IntrabandProxyUtil.getProxyMethodSignatures(TestClass.class));
 	}
 
-	@AdviseWith(adviceClasses = {ReflectionUtilAdvice.class})
+	@AdviseWith(adviceClasses = ReflectionUtilAdvice.class)
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testInitializationFailure() throws ClassNotFoundException {
@@ -1002,7 +1002,7 @@ public class IntrabandProxyUtilTest {
 		}
 	}
 
-	@AdviseWith(adviceClasses = {DisableProxyClassesDump.class})
+	@AdviseWith(adviceClasses = DisableProxyClassesDump.class)
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testToClassProxyClassesDumpDisabled()
@@ -1011,7 +1011,7 @@ public class IntrabandProxyUtilTest {
 		_doTestToClass(false, false);
 	}
 
-	@AdviseWith(adviceClasses = {EnableProxyClassesDump.class})
+	@AdviseWith(adviceClasses = EnableProxyClassesDump.class)
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testToClassProxyClassesDumpEnabled()
@@ -1439,8 +1439,6 @@ public class IntrabandProxyUtilTest {
 
 		Class<?> returnClass = method.getReturnType();
 
-		Type returnType = Type.getType(returnClass);
-
 		if (returnClass == void.class) {
 
 			// INVOKESPECIAL stubInternalName _send
@@ -1564,6 +1562,8 @@ public class IntrabandProxyUtilTest {
 				}
 
 				// xRETURN
+
+				Type returnType = Type.getType(returnClass);
 
 				_assertInsnNode(
 					iterator.next(), returnType.getOpcode(Opcodes.IRETURN));

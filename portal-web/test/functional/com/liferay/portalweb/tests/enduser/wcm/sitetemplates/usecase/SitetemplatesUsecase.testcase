@@ -90,7 +90,7 @@
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -124,7 +124,7 @@
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Navigation" />
+			<var name="category" value="Build" />
 			<var name="panel" value="Site Administration" />
 			<var name="portlet" value="Site Pages" />
 		</execute>
@@ -303,13 +303,13 @@
 			<var name="portlet" value="User Groups" />
 		</execute>
 
-		<execute macro="UserGroup#gotoManagePages">
-			<var name="userGroupName" value="UG UserGroup Name" />
+		<execute macro="LexiconEntry#gotoEllipsisMenuItem">
+			<var name="menuItem" value="Manage Pages" />
 		</execute>
 
 		<for list="Home,Wiki" param="page">
 			<execute macro="ProductMenu#gotoPortlet">
-				<var name="category" value="Navigation" />
+				<var name="category" value="Build" />
 				<var name="panel" value="Site Administration" />
 				<var name="portlet" value="Site Pages" />
 			</execute>
@@ -333,7 +333,9 @@
 			<var name="portlet" value="Sites" />
 		</execute>
 
-		<execute macro="Site#gotoManageSitesTemplatesViaAddDropdown" />
+		<execute macro="LexiconEntry#gotoHeaderMenuItem">
+			<var name="menuItem" value="Manage Sites Templates" />
+		</execute>
 
 		<execute macro="SiteTemplates#viewDefaultCP">
 			<var name="siteTemplateNameList" value="Intranet Site,Community Site" />
