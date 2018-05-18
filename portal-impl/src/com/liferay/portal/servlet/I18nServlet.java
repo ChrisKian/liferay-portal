@@ -180,7 +180,7 @@ public class I18nServlet extends HttpServlet {
 				siteDefaultLocale = PortalUtil.getSiteDefaultLocale(siteGroup);
 
 				if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
-					siteDefaultLocale = LanguageUtil.getLocale(
+					locale = LanguageUtil.getLocale(
 						siteGroup.getGroupId(), locale.getLanguage());
 				}
 			}
@@ -188,15 +188,22 @@ public class I18nServlet extends HttpServlet {
 				siteDefaultLocale = LocaleUtil.getDefault();
 
 				if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
-					siteDefaultLocale = LanguageUtil.getLocale(
-						locale.getLanguage());
+					locale = LanguageUtil.getLocale(locale.getLanguage());
 				}
+			}
+
+			if (!PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE &&
+				locale == null) {
+
+				return null;
 			}
 
 			String siteDefaultLanguageId = LanguageUtil.getLanguageId(
 				siteDefaultLocale);
 
-			if (siteDefaultLanguageId.startsWith(i18nLanguageId)) {
+			if (siteDefaultLanguageId.startsWith(i18nLanguageId) ||
+				locale == null) {
+
 				locale = siteDefaultLocale;
 
 				i18nPath = StringPool.SLASH + locale.getLanguage();
@@ -205,12 +212,6 @@ public class I18nServlet extends HttpServlet {
 			i18nLanguageId = LocaleUtil.toLanguageId(locale);
 
 			i18nLanguageCode = locale.getLanguage();
-		}
-
-		if (!PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE &&
-			!LanguageUtil.isAvailableLocale(i18nLanguageId)) {
-
-			return null;
 		}
 
 		String redirect = path;
