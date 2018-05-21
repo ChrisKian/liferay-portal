@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -12,16 +11,24 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/init.jsp" %>
+package com.liferay.portal.kernel.model.version;
 
-<%
-PortletURL displayStyleURL = renderResponse.createRenderURL();
-%>
+/**
+ * @author Preston Crary
+ */
+public interface VersionedModel<V extends VersionModel> {
 
-<liferay-frontend:management-bar-display-buttons
-	displayViews="<%= ddlDisplayContext.getDDLRecordSetDisplayViews() %>"
-	portletURL="<%= displayStyleURL %>"
-	selectedDisplayStyle="<%= ddlDisplayContext.getDDLRecordSetDisplayStyle() %>"
-/>
+	public long getHeadId();
+
+	public long getPrimaryKey();
+
+	public boolean isDraft();
+
+	public void populateVersionModel(V versionModel);
+
+	public void setHeadId(long headId);
+
+	public void setPrimaryKey(long primaryKey);
+
+}

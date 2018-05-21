@@ -269,6 +269,8 @@
 
 		<execute function="Refresh" />
 
+		<execute function="Refresh#refresh" />
+
 		<execute function="Type" value1="Welcome" />
 
 		<execute function="AssertElementPresent#assertElementPresent" locator1="Home#PAGE" value1="Welcome" />

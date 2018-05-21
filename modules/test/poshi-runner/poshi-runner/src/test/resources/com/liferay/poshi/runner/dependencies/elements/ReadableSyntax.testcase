@@ -207,6 +207,8 @@ definition {
 
 		Refresh();
 
+		Refresh.refresh();
+
 		Type(value1 = "Welcome");
 
 		AssertElementPresent.assertElementPresent(locator1 = "Home#PAGE", value1 = "Welcome");
