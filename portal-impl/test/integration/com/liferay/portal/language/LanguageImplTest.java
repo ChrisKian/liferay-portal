@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -30,9 +31,13 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.servlet.I18nServlet;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,8 +46,10 @@ import java.util.Set;
 
 import org.apache.struts.mock.MockHttpServletRequest;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -136,6 +143,148 @@ public class LanguageImplTest {
 
 		@DeleteAfterTestRun
 		private Company _company;
+
+	}
+
+	public static final class GetDefaultLocales {
+
+		@ClassRule
+		@Rule
+		public static final AggregateTestRule aggregateTestRule =
+			new LiferayIntegrationTestRule();
+
+		@BeforeClass
+		public static void setUpClass() throws Exception {
+			_availableLocales = _languageImpl.getAvailableLocales();
+			_defaultLocale = LocaleUtil.getDefault();
+			_localesEnabled = PropsValues.LOCALES_ENABLED;
+
+			_languageImpl.init();
+
+			CompanyTestUtil.resetCompanyLocales(
+				PortalUtil.getDefaultCompanyId(),
+				Arrays.asList(
+					LocaleUtil.CANADA_FRENCH, LocaleUtil.SPAIN, LocaleUtil.UK,
+					LocaleUtil.US),
+				LocaleUtil.US);
+
+			PropsValues.LOCALES_ENABLED = new String[] {
+				_languageImpl.getLanguageId(LocaleUtil.CANADA_FRENCH),
+				_languageImpl.getLanguageId(LocaleUtil.SPAIN),
+				_languageImpl.getLanguageId(LocaleUtil.UK),
+				_languageImpl.getLanguageId(LocaleUtil.US)
+			};
+		}
+
+		@AfterClass
+		public static void tearDownClass() throws Exception {
+			_languageImpl.init();
+
+			CompanyTestUtil.resetCompanyLocales(
+				PortalUtil.getDefaultCompanyId(), _availableLocales,
+				_defaultLocale);
+
+			PropsValues.LOCALES_ENABLED = _localesEnabled;
+		}
+
+		@Before
+		public void setUp() throws Exception {
+			_languageImpl.init();
+
+			_group = GroupTestUtil.addGroup();
+
+			UnicodeProperties typeSettingsProperties =
+				_group.getTypeSettingsProperties();
+
+			typeSettingsProperties.put(
+				GroupConstants.TYPE_SETTINGS_KEY_INHERIT_LOCALES, "false");
+
+			_group.setTypeSettingsProperties(typeSettingsProperties);
+
+			GroupLocalServiceUtil.updateGroup(_group);
+		}
+
+		@Test
+		public void testGetDefaultLocaleDefaultLanguage() throws Exception {
+			Locale englishLocale = LocaleUtil.fromLanguageId("en", true, false);
+
+			Assert.assertEquals(
+				LocaleUtil.UK,
+				_languageImpl.getDefaultLocale(true, _group, LocaleUtil.UK));
+			Assert.assertNotEquals(
+				LocaleUtil.UK,
+				_languageImpl.getDefaultLocale(true, _group, englishLocale));
+		}
+
+		@Test
+		public void testGetDefaultLocaleDefaultLocale() throws Exception {
+			Locale englishLocale = LocaleUtil.fromLanguageId("en", true, false);
+
+			Assert.assertEquals(
+				LocaleUtil.US,
+				_languageImpl.getDefaultLocale(true, _group, LocaleUtil.US));
+			Assert.assertEquals(
+				LocaleUtil.US,
+				_languageImpl.getDefaultLocale(true, _group, englishLocale));
+		}
+
+		@Test
+		public void testGetDefaultLocaleInvalidLocaleDoNotUseDefault()
+			throws Exception {
+
+			Locale chineseLocale = LocaleUtil.fromLanguageId("zh", true, false);
+
+			Assert.assertNull(
+				_languageImpl.getDefaultLocale(
+					false, _group, LocaleUtil.CHINA));
+			Assert.assertNull(
+				_languageImpl.getDefaultLocale(false, _group, chineseLocale));
+		}
+
+		@Test
+		public void testGetDefaultLocaleInvalidLocaleUseDefault()
+			throws Exception {
+
+			Locale chineseLocale = LocaleUtil.fromLanguageId("zh", true, false);
+
+			Assert.assertEquals(
+				LocaleUtil.US,
+				_languageImpl.getDefaultLocale(true, _group, LocaleUtil.CHINA));
+			Assert.assertEquals(
+				LocaleUtil.US,
+				_languageImpl.getDefaultLocale(true, _group, chineseLocale));
+		}
+
+		@Test
+		public void testGetDefaultLocaleNonDefaultLocale() throws Exception {
+			Locale frenchLocale = LocaleUtil.fromLanguageId("fr", true, false);
+			Locale spanishLocale = LocaleUtil.fromLanguageId("es", true, false);
+
+			Assert.assertEquals(
+				LocaleUtil.CANADA_FRENCH,
+				_languageImpl.getDefaultLocale(
+					true, _group, Locale.CANADA_FRENCH));
+			Assert.assertEquals(
+				LocaleUtil.CANADA_FRENCH,
+				_languageImpl.getDefaultLocale(true, _group, frenchLocale));
+
+			Assert.assertEquals(
+				LocaleUtil.SPAIN,
+				_languageImpl.getDefaultLocale(true, _group, LocaleUtil.SPAIN));
+			Assert.assertEquals(
+				LocaleUtil.SPAIN,
+				_languageImpl.getDefaultLocale(true, _group, spanishLocale));
+		}
+
+		private static Set<Locale> _availableLocales;
+		private static Locale _defaultLocale;
+
+		@DeleteAfterTestRun
+		private static Group _group;
+
+		private static String[] _localesEnabled;
+
+		private final I18nServlet _i18nServlet = new I18nServlet();
 
 	}
 

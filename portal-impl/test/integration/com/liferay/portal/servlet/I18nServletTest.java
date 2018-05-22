@@ -186,9 +186,11 @@ public class I18nServletTest {
 	public void testI18nUseDefaultNonexistentLocale() throws Exception {
 		PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE = true;
 
-		Locale expectedLocale = LocaleUtil.CHINA;
+		Locale locale = LocaleUtil.CHINA;
 
-		testGetI18nData(expectedLocale, getI18nData(expectedLocale));
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		testGetI18nData(locale, getI18nData(defaultLocale));
 	}
 
 	@Test
