@@ -68,6 +68,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -999,6 +1000,49 @@ public class LanguageImpl implements Language, Serializable {
 		Locale locale = PortalUtil.getLocale(portletRequest);
 
 		return getBCP47LanguageId(locale);
+	}
+
+	@Override
+	public Locale getDefaultLocale(
+			boolean useDefault, Group group, Locale locale)
+		throws PortalException {
+
+		String localeLanguageId = getLanguageId(locale);
+
+		Locale siteDefaultLocale = LocaleUtil.getDefault();
+
+		long groupId = 0;
+
+		if (group != null) {
+			groupId = group.getGroupId();
+
+			siteDefaultLocale = PortalUtil.getSiteDefaultLocale(group);
+		}
+
+		if (Objects.equals(locale.getCountry(), StringPool.BLANK)) {
+			locale = getLocale(groupId, localeLanguageId);
+		}
+
+		if (!isAvailableLocale(groupId, locale)) {
+			locale = null;
+		}
+		else if (!isSameLanguage(locale, siteDefaultLocale)) {
+			siteDefaultLocale = getLocale(groupId, locale.getLanguage());
+		}
+
+		if (!useDefault && (locale == null)) {
+			return null;
+		}
+
+		String siteDefaultLanguageId = getLanguageId(siteDefaultLocale);
+
+		if ((locale == null) ||
+			siteDefaultLanguageId.startsWith(localeLanguageId)) {
+
+			locale = siteDefaultLocale;
+		}
+
+		return locale;
 	}
 
 	/**
