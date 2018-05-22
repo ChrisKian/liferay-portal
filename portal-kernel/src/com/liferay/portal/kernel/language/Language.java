@@ -17,6 +17,7 @@ package com.liferay.portal.kernel.language;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.util.ResourceBundleLoader;
 
 import java.util.List;
@@ -122,6 +123,10 @@ public interface Language {
 	public String getBCP47LanguageId(Locale locale);
 
 	public String getBCP47LanguageId(PortletRequest portletRequest);
+
+	public Locale getDefaultLocale(
+			boolean useDefault, Group group, Locale locale)
+		throws PortalException;
 
 	public String getLanguageId(HttpServletRequest request);
 
