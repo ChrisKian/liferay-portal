@@ -1060,10 +1060,17 @@ public class LanguageImpl implements Language, Serializable {
 
 	@Override
 	public Locale getLocale(long groupId, String languageCode) {
-		Map<String, Locale> groupLanguageCodeLocalesMap =
-			_getGroupLanguageCodeLocalesMap(groupId);
+		if (groupId > 0) {
+			Map<String, Locale> groupLanguageCodeLocalesMap =
+				_getGroupLanguageCodeLocalesMap(groupId);
 
-		return groupLanguageCodeLocalesMap.get(languageCode);
+			return groupLanguageCodeLocalesMap.get(languageCode);
+		}
+		else {
+			CompanyLocalesBag companyLocalesBag = _getCompanyLocalesBag();
+
+			return companyLocalesBag.getByLanguageCode(languageCode);
+		}
 	}
 
 	/**
@@ -1075,9 +1082,7 @@ public class LanguageImpl implements Language, Serializable {
 	 */
 	@Override
 	public Locale getLocale(String languageCode) {
-		CompanyLocalesBag companyLocalesBag = _getCompanyLocalesBag();
-
-		return companyLocalesBag.getByLanguageCode(languageCode);
+		return getLocale(0, languageCode);
 	}
 
 	@Override
