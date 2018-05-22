@@ -17,6 +17,7 @@ package com.liferay.portal.servlet;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -135,7 +136,9 @@ public class I18nServlet extends HttpServlet {
 		}
 	}
 
-	protected I18nData getI18nData(HttpServletRequest request) {
+	protected I18nData getI18nData(HttpServletRequest request)
+		throws PortalException {
+
 		String path = GetterUtil.getString(request.getPathInfo());
 
 		if (Validator.isNull(path)) {
@@ -165,38 +168,35 @@ public class I18nServlet extends HttpServlet {
 		if (locale != null) {
 			Locale siteDefaultLocale = null;
 
-			try {
-				int[] friendlyURLIndices = PortalUtil.getGroupFriendlyURLIndex(
-					path);
+			int[] friendlyURLIndices = PortalUtil.getGroupFriendlyURLIndex(
+				path);
 
+			Group siteGroup = null;
+
+			if (friendlyURLIndices != null) {
 				String friendlyURL = path.substring(
 					friendlyURLIndices[0], friendlyURLIndices[1]);
 
-				Group siteGroup = GroupLocalServiceUtil.getFriendlyURLGroup(
+				siteGroup = GroupLocalServiceUtil.fetchFriendlyURLGroup(
 					GetterUtil.getLong(
 						request.getAttribute(WebKeys.COMPANY_ID)),
 					friendlyURL);
-
-				siteDefaultLocale = PortalUtil.getSiteDefaultLocale(siteGroup);
-
-				if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
-					siteDefaultLocale = LanguageUtil.getLocale(
-						siteGroup.getGroupId(), locale.getLanguage());
-				}
 			}
-			catch (Exception e) {
-				siteDefaultLocale = LocaleUtil.getDefault();
 
-				if (!LanguageUtil.isSameLanguage(locale, siteDefaultLocale)) {
-					siteDefaultLocale = LanguageUtil.getLocale(
-						locale.getLanguage());
-				}
+			siteDefaultLocale = LanguageUtil.getDefaultLocale(
+				PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE, siteGroup,
+				locale);
+
+			if (siteDefaultLocale == null) {
+				return null;
 			}
 
 			String siteDefaultLanguageId = LanguageUtil.getLanguageId(
 				siteDefaultLocale);
 
-			if (siteDefaultLanguageId.startsWith(i18nLanguageId)) {
+			if (siteDefaultLanguageId.startsWith(i18nLanguageId) ||
+				!LanguageUtil.isSameLanguage(siteDefaultLocale, locale)) {
+
 				locale = siteDefaultLocale;
 
 				i18nPath = StringPool.SLASH + locale.getLanguage();
@@ -205,12 +205,6 @@ public class I18nServlet extends HttpServlet {
 			i18nLanguageId = LocaleUtil.toLanguageId(locale);
 
 			i18nLanguageCode = locale.getLanguage();
-		}
-
-		if (!PropsValues.LOCALE_USE_DEFAULT_IF_NOT_AVAILABLE &&
-			!LanguageUtil.isAvailableLocale(i18nLanguageId)) {
-
-			return null;
 		}
 
 		String redirect = path;
@@ -223,22 +217,16 @@ public class I18nServlet extends HttpServlet {
 			i18nPath, i18nLanguageCode, i18nLanguageId, redirect);
 	}
 
-	protected I18nData getI18nData(Locale locale) {
+	protected I18nData getI18nData(Locale locale) throws PortalException {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
 		String i18nPath = StringPool.SLASH + languageId;
 
-		Locale defaultLocale = LocaleUtil.getDefault();
+		Locale defaultLocale = LanguageUtil.getDefaultLocale(
+			false, null, locale);
 
 		if (LocaleUtil.equals(defaultLocale, locale)) {
 			i18nPath = StringPool.SLASH + defaultLocale.getLanguage();
-		}
-		else if (!LanguageUtil.isSameLanguage(defaultLocale, locale)) {
-			defaultLocale = LanguageUtil.getLocale(locale.getLanguage());
-
-			if (LocaleUtil.equals(defaultLocale, locale)) {
-				i18nPath = StringPool.SLASH + defaultLocale.getLanguage();
-			}
 		}
 
 		return new I18nData(
