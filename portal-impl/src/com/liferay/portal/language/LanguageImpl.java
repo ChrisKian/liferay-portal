@@ -1616,8 +1616,12 @@ public class LanguageImpl implements Language, Serializable {
 
 		String[] languageIds = PropsValues.LOCALES_ENABLED;
 
+		Locale defaultLocale = LocaleUtil.getDefault();
+
 		try {
 			Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+			defaultLocale = PortalUtil.getSiteDefaultLocale(group);
 
 			UnicodeProperties typeSettingsProperties =
 				group.getTypeSettingsProperties();
@@ -1634,6 +1638,9 @@ public class LanguageImpl implements Language, Serializable {
 
 		HashMap<String, Locale> groupLanguageCodeLocalesMap = new HashMap<>();
 		HashMap<String, Locale> groupLanguageIdLocalesMap = new HashMap<>();
+
+		groupLanguageCodeLocalesMap.put(
+			defaultLocale.getLanguage(), defaultLocale);
 
 		for (String languageId : languageIds) {
 			Locale locale = LocaleUtil.fromLanguageId(languageId, false);
@@ -1929,6 +1936,17 @@ public class LanguageImpl implements Language, Serializable {
 					languageIds = PropsValues.LOCALES_ENABLED;
 				}
 			}
+
+			Locale defaultLocale = LocaleUtil.getDefault();
+
+			String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+			_languageCodeLocalesMap.put(
+				defaultLocale.getLanguage(), defaultLocale);
+
+			_languageIdLocalesMap.put(defaultLanguageId, defaultLocale);
+
+			languageIds = ArrayUtil.remove(languageIds, defaultLanguageId);
 
 			Set<String> duplicateLanguageCodes = new HashSet<>();
 
