@@ -77,6 +77,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
+		"com.liferay.fragment.entry.processor.portlet.alias=kb",
 		"com.liferay.portlet.css-class-wrapper=knowledge-base-portlet knowledge-base-portlet-display",
 		"com.liferay.portlet.display-category=category.cms",
 		"com.liferay.portlet.header-portlet-css=/admin/css/common.css",
@@ -138,7 +139,7 @@ public class DisplayPortlet extends BaseKBPortlet {
 				kbFolder.getGroupId(), kbFolder.getUrlTitle(), urlTitle);
 
 			if ((kbArticle == null) &&
-				Validator.isNull(previousPreferredKBFolderURLTitle)) {
+				Validator.isNotNull(previousPreferredKBFolderURLTitle)) {
 
 				kbArticle = findClosestMatchingKBArticle(
 					kbFolder.getGroupId(), previousPreferredKBFolderURLTitle,

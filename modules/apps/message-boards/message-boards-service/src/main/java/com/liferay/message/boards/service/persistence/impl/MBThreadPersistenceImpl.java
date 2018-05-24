@@ -789,13 +789,6 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 					result = mbThread;
 
 					cacheResult(mbThread);
-
-					if ((mbThread.getUuid() == null) ||
-							!mbThread.getUuid().equals(uuid) ||
-							(mbThread.getGroupId() != groupId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-							finderArgs, mbThread);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -2473,11 +2466,6 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 					result = mbThread;
 
 					cacheResult(mbThread);
-
-					if ((mbThread.getRootMessageId() != rootMessageId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_ROOTMESSAGEID,
-							finderArgs, mbThread);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -6443,12 +6431,12 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 				(orderByComparator == null)) {
 			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_L_P;
-			finderArgs = new Object[] { lastPostDate, priority };
+			finderArgs = new Object[] { _getTime(lastPostDate), priority };
 		}
 		else {
 			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_L_P;
 			finderArgs = new Object[] {
-					lastPostDate, priority,
+					_getTime(lastPostDate), priority,
 					
 					start, end, orderByComparator
 				};
@@ -6859,7 +6847,7 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 	public int countByL_P(Date lastPostDate, double priority) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_L_P;
 
-		Object[] finderArgs = new Object[] { lastPostDate, priority };
+		Object[] finderArgs = new Object[] { _getTime(lastPostDate), priority };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -7030,12 +7018,14 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 				(orderByComparator == null)) {
 			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_C_L;
-			finderArgs = new Object[] { groupId, categoryId, lastPostDate };
+			finderArgs = new Object[] {
+					groupId, categoryId, _getTime(lastPostDate)
+				};
 		}
 		else {
 			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_G_C_L;
 			finderArgs = new Object[] {
-					groupId, categoryId, lastPostDate,
+					groupId, categoryId, _getTime(lastPostDate),
 					
 					start, end, orderByComparator
 				};
@@ -7831,7 +7821,9 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 	public int countByG_C_L(long groupId, long categoryId, Date lastPostDate) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_G_C_L;
 
-		Object[] finderArgs = new Object[] { groupId, categoryId, lastPostDate };
+		Object[] finderArgs = new Object[] {
+				groupId, categoryId, _getTime(lastPostDate)
+			};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -13978,6 +13970,15 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_MBTHREAD = "SELECT mbThread FROM MBThread mbThread";
 	private static final String _SQL_SELECT_MBTHREAD_WHERE_PKS_IN = "SELECT mbThread FROM MBThread mbThread WHERE threadId IN (";
 	private static final String _SQL_SELECT_MBTHREAD_WHERE = "SELECT mbThread FROM MBThread mbThread WHERE ";

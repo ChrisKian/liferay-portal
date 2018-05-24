@@ -102,6 +102,11 @@ public class SourceFormatter {
 
 			sourceFormatterArgs.setBaseDirName(baseDirName);
 
+			String checkName = ArgumentsUtil.getString(
+				arguments, "source.check.name", null);
+
+			sourceFormatterArgs.setCheckName(checkName);
+
 			boolean formatCurrentBranch = ArgumentsUtil.getBoolean(
 				arguments, "format.current.branch",
 				SourceFormatterArgs.FORMAT_CURRENT_BRANCH);
@@ -476,19 +481,26 @@ public class SourceFormatter {
 			return null;
 		}
 
-		File file = SourceFormatterUtil.getFile(
-			_sourceFormatterArgs.getBaseDirName(), "gradle.properties",
-			ToolsUtil.PORTAL_MAX_DIR_LEVEL);
+		String fileName = "gradle.properties";
 
-		if (file == null) {
-			return null;
+		for (int i = 0; i < ToolsUtil.PORTAL_MAX_DIR_LEVEL; i++) {
+			File file = new File(
+				_sourceFormatterArgs.getBaseDirName() + fileName);
+
+			if (file.exists()) {
+				Properties properties = new Properties();
+
+				properties.load(new FileInputStream(file));
+
+				if (properties.containsKey("project.path.prefix")) {
+					return properties.getProperty("project.path.prefix");
+				}
+			}
+
+			fileName = "../" + fileName;
 		}
 
-		Properties properties = new Properties();
-
-		properties.load(new FileInputStream(file));
-
-		return properties.getProperty("project.path.prefix");
+		return null;
 	}
 
 	private Properties _getProperties(File file) throws Exception {

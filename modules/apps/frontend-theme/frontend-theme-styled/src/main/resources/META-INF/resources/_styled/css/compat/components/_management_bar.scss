@@ -1,14 +1,15 @@
 @if $compat-management_bar {
 	.management-bar {
-		border-color: transparent;
-		border-style: solid;
-		border-width: $management-bar-border-width;
-
 		@include clearfix;
 
 		margin-bottom: $management-bar-margin-bottom;
 		min-height: $management-bar-height;
 		position: relative;
+
+		& + .subnav-tbar-primary {
+			margin-bottom: $management-bar-margin-bottom;
+			margin-top: -$management-bar-margin-bottom;
+		}
 
 		.add-menu {
 			z-index: inherit;

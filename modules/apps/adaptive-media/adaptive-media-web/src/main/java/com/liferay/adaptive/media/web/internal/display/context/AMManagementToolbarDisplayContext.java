@@ -20,8 +20,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SafeConsumer;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -42,13 +40,12 @@ public class AMManagementToolbarDisplayContext {
 	public AMManagementToolbarDisplayContext(
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		PortletURL currentURLObj) {
+		HttpServletRequest request, PortletURL currentURLObj) {
 
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_request = request;
 		_currentURLObj = currentURLObj;
-
-		_request = _liferayPortletRequest.getHttpServletRequest();
 	}
 
 	public CreationMenu getCreationMenu() {
@@ -94,23 +91,6 @@ public class AMManagementToolbarDisplayContext {
 			getSelectedConfigurationEntries();
 
 		return selectedConfigurationEntries.size();
-	}
-
-	public ViewTypeItemList getViewTypes() {
-		return new ViewTypeItemList(null, "list") {
-			{
-				ViewTypeItem cardViewTypeItem = addCardViewTypeItem();
-
-				cardViewTypeItem.setDisabled(true);
-
-				ViewTypeItem listViewTypeItem = addListViewTypeItem();
-
-				listViewTypeItem.setDisabled(true);
-
-				addTableViewTypeItem();
-			}
-
-		};
 	}
 
 	public boolean isDisabled() {

@@ -14,7 +14,6 @@
 
 package com.liferay.site.navigation.admin.web.internal.display.context;
 
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
@@ -78,10 +77,8 @@ public class SiteNavigationAdminDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" +
-								_liferayPortletResponse.getNamespace() +
-									"deleteSelectedSiteNavigationMenus();");
+						dropdownItem.putData(
+							"action", "deleteSelectedSiteNavigationMenus");
 						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -120,22 +117,6 @@ public class SiteNavigationAdminDisplayContext {
 		clearResultsURL.setParameter("keywords", StringPool.BLANK);
 
 		return clearResultsURL.toString();
-	}
-
-	public CreationMenu getCreationMenu() {
-		return new CreationMenu() {
-			{
-				addPrimaryDropdownItem(
-					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" +
-								_liferayPortletResponse.getNamespace() +
-									"addNavigationMenuMenuItem();");
-						dropdownItem.setLabel(
-							LanguageUtil.get(_request, "add-menu"));
-					});
-			}
-		};
 	}
 
 	public String getDisplayStyle() {

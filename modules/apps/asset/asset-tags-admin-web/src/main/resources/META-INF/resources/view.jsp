@@ -76,9 +76,11 @@
 						</h6>
 					</liferay-ui:search-container-column-text>
 
-					<liferay-ui:search-container-column-jsp
-						path="/tag_action.jsp"
-					/>
+					<c:if test="<%= assetTagsDisplayContext.isShowTagsActionMenu() %>">
+						<liferay-ui:search-container-column-jsp
+							path="/tag_action.jsp"
+						/>
+					</c:if>
 				</c:when>
 				<c:when test='<%= Objects.equals(assetTagsDisplayContext.getDisplayStyle(), "icon") %>'>
 
@@ -88,7 +90,7 @@
 
 					<liferay-ui:search-container-column-text>
 						<liferay-frontend:icon-vertical-card
-							actionJsp="/tag_action.jsp"
+							actionJsp='<%= assetTagsDisplayContext.isShowTagsActionMenu() ? "/tag_action.jsp" : StringPool.BLANK %>'
 							actionJspServletContext="<%= application %>"
 							icon="tag"
 							resultRow="<%= row %>"
@@ -113,9 +115,11 @@
 						value="<%= String.valueOf(fullTagsCount) %>"
 					/>
 
-					<liferay-ui:search-container-column-jsp
-						path="/tag_action.jsp"
-					/>
+					<c:if test="<%= assetTagsDisplayContext.isShowTagsActionMenu() %>">
+						<liferay-ui:search-container-column-jsp
+							path="/tag_action.jsp"
+						/>
+					</c:if>
 				</c:when>
 			</c:choose>
 		</liferay-ui:search-container-row>
@@ -130,7 +134,7 @@
 <aui:script>
 	var form = document.querySelector('#<portlet:namespace />fm');
 
-	window.<portlet:namespace />mergeTags = function() {
+	var mergeTags = function() {
 		<portlet:renderURL var="mergeURL">
 			<portlet:param name="mvcPath" value="/merge_tag.jsp" />
 			<portlet:param name="mergeTagIds" value="[$MERGE_TAGS_IDS$]" />
@@ -144,9 +148,29 @@
 		);
 	}
 
-	window.<portlet:namespace/>deleteTags = function() {
+	var deleteTags = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm(form);
 		}
 	}
+
+	var ACTIONS = {
+		'deleteTags': deleteTags,
+		'mergeTags': mergeTags
+	};
+
+	Liferay.componentReady('assetTagsManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				['actionItemClicked'],
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

@@ -1,4 +1,5 @@
 <definition component-name="portal-wcm">
+	<property name="portal.release" value="true" />
 	<property name="portal.upstream" value="true" />
 	<property name="testray.main.component.name" value="Fragments" />
 
@@ -44,8 +45,6 @@
 	</tear-down>
 
 	<command name="AddCollectionFragmentWithSnippets" priority="5">
-		<property name="portal.acceptance" value="pending" />
-
 		<execute macro="Navigator#gotoNavNested">
 			<var name="navNested" value="Collection Name" />
 		</execute>
@@ -71,7 +70,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="htmlSnippet" />
-			<var name="fileName" value="Document_3.html" />
+			<var name="fileName" value="fragment_button.html" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -81,7 +80,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="cssSnippet" />
-			<var name="fileName" value="Document_3.css" />
+			<var name="fileName" value="fragment_button.css" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -91,7 +90,7 @@
 
 		<execute macro="TestCase#getFileContent">
 			<return from="fileContent" name="javascriptSnippet" />
-			<var name="fileName" value="Document_3.js" />
+			<var name="fileName" value="fragment_button.js" />
 		</execute>
 
 		<execute macro="Fragment#typeFragmentEditor">
@@ -129,7 +128,7 @@
 	</command>
 
 	<command name="DeleteFragment" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="true" />
 
 		<execute macro="Navigator#gotoNavNested">
 			<var name="navNested" value="Collection Name" />
@@ -169,16 +168,10 @@
 	</command>
 
 	<command name="DeleteFragmentCollection" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="true" />
 
-		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Build" />
-			<var name="panel" value="Site Administration" />
-			<var name="portlet" value="Fragments" />
-		</execute>
-
-		<execute macro="LexiconEntry#delete">
-			<var name="rowEntry" value="Collection Name" />
+		<execute macro="Collection#deleteCollection">
+			<var name="collectionName" value="Collection Name" />
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
@@ -187,8 +180,8 @@
 			<var name="portlet" value="Fragments" />
 		</execute>
 
-		<execute macro="LexiconEntry#viewNoEntry">
-			<var name="rowEntry" value="Collection Name" />
+		<execute macro="Collection#viewNotPresent">
+			<var name="collectionName" value="Collection Name" />
 		</execute>
 	</command>
 

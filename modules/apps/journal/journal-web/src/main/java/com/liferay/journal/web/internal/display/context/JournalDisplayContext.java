@@ -155,10 +155,7 @@ public class JournalDisplayContext {
 				add(
 					SafeConsumer.ignore(
 						dropdownItem -> {
-							dropdownItem.setHref(
-								"javascript:" +
-									_liferayPortletResponse.getNamespace() +
-										"deleteEntries();");
+							dropdownItem.putData("action", "deleteEntries");
 
 							boolean trashEnabled = _trashHelper.isTrashEnabled(
 								themeDisplay.getScopeGroupId());
@@ -180,12 +177,7 @@ public class JournalDisplayContext {
 
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							StringBundler.concat(
-								"javascript:Liferay.fire('",
-								_liferayPortletResponse.getNamespace(),
-								"editEntry', {action: 'expireEntries'});",
-								"void(0);"));
+						dropdownItem.putData("action", "expireEntries");
 						dropdownItem.setIcon("time");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "expire"));
@@ -194,12 +186,7 @@ public class JournalDisplayContext {
 
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							StringBundler.concat(
-								"javascript:Liferay.fire('",
-								_liferayPortletResponse.getNamespace(),
-								"editEntry', {action: 'moveEntries'});",
-								"void(0);"));
+						dropdownItem.putData("action", "moveEntries");
 						dropdownItem.setIcon("change");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "move"));
@@ -220,8 +207,20 @@ public class JournalDisplayContext {
 		String key = JournalPortletUtil.getAddMenuFavItemKey(
 			_liferayPortletRequest, _liferayPortletResponse);
 
-		_addMenuFavItems = portalPreferences.getValues(
+		List<String> addMenuFavItemsList = new ArrayList<>();
+
+		String[] addMenuFavItems = portalPreferences.getValues(
 			JournalPortletKeys.JOURNAL, key, new String[0]);
+
+		for (DDMStructure ddmStructure : getDDMStructures()) {
+			if (ArrayUtil.contains(
+					addMenuFavItems, ddmStructure.getStructureKey())) {
+
+				addMenuFavItemsList.add(ddmStructure.getStructureKey());
+			}
+		}
+
+		_addMenuFavItems = ArrayUtil.toStringArray(addMenuFavItemsList);
 
 		return _addMenuFavItems;
 	}
@@ -361,9 +360,6 @@ public class JournalDisplayContext {
 				setHelpText(
 					"you-can-customize-this-menu-or-see-all-you-have-by-" +
 						"clicking-more");
-				setViewMoreURL(
-					"javascript:" + _liferayPortletResponse.getNamespace() +
-						"openViewMoreStructuresSelector();");
 
 				if (JournalFolderPermission.contains(
 						themeDisplay.getPermissionChecker(),
@@ -881,6 +877,18 @@ public class JournalDisplayContext {
 		}
 
 		return orderColumns;
+	}
+
+	public long getParentFolderId() {
+		if (_parentFolderId != null) {
+			return _parentFolderId;
+		}
+
+		_parentFolderId = ParamUtil.getLong(
+			_request, "parentFolderId",
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		return _parentFolderId;
 	}
 
 	public PortletURL getPortletURL() {
@@ -1613,12 +1621,8 @@ public class JournalDisplayContext {
 				add(
 					dropdownItem -> {
 						dropdownItem.setActive(isNavigationStructure());
-
-						dropdownItem.setHref(
-							"javascript:" +
-								_liferayPortletResponse.getNamespace() +
-									"openStructuresSelector();");
-
+						dropdownItem.putData(
+							"action", "openStructuresSelector");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "structures"));
 					});
@@ -1666,8 +1670,12 @@ public class JournalDisplayContext {
 			jsonObject.put("id", folder.getFolderId());
 			jsonObject.put("name", folder.getName());
 
-			if (folder.getFolderId() == getFolderId()) {
+			if (folder.getFolderId() == getParentFolderId()) {
 				jsonObject.put("selected", true);
+			}
+
+			if (folder.getFolderId() == getFolderId()) {
+				jsonObject.put("disabled", true);
 			}
 
 			jsonArray.put(jsonObject);
@@ -1821,6 +1829,7 @@ public class JournalDisplayContext {
 	private String _navigation;
 	private String _orderByCol;
 	private String _orderByType;
+	private Long _parentFolderId;
 	private final PortalPreferences _portalPreferences;
 	private final PortletPreferences _portletPreferences;
 	private final HttpServletRequest _request;

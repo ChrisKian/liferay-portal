@@ -1,0 +1,25 @@
+<definition>
+	<command name="catSearch">
+		<execute macro="LocalFile.PoshiXMLSyntax#visitURL">
+			<var name="url" value="https://www.yahoo.com"/>
+		</execute>
+		<execute macro="LocalFile.PoshiXMLSyntax#issueSearch">
+			<var name="input" value="cats"/>
+		</execute>
+		<execute macro="LocalFile.PoshiXMLSyntax#assertSearchResults">
+			<var name="result1" value="stray cat"/>
+			<var name="result2" value="domestic cat"/>
+			<var name="result3" value="kitten"/>
+			<var name="result4" value="lion"/>
+		</execute>
+	</command>
+	<command name="assertLiferayMainPageAvailability">
+		<execute macro="LocalFile.PoshiXMLSyntax#visitURL">
+			<var name="url" value="https://www.liferay.com"/>
+		</execute>
+		<execute macro="LocalFile.PoshiXMLSyntax#wait">
+			<var name="element" value="title"/>
+		</execute>
+		<execute macro="LocalFile.PoshiXMLSyntax#closeWindow"/>
+	</command>
+</definition>

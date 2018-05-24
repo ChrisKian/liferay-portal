@@ -46,14 +46,14 @@ import org.osgi.service.component.annotations.Component;
  *
  * @author Alejandro Hernández
  */
-@Component(immediate = true)
+@Component
 public class BlogPostingCollectionResource
 	implements CollectionResource
 		<BlogPostingModel, Long, BlogPostingIdentifier> {
 
 	@Override
-	public CollectionRoutes<BlogPostingModel> collectionRoutes(
-		CollectionRoutes.Builder<BlogPostingModel> builder) {
+	public CollectionRoutes<BlogPostingModel, Long> collectionRoutes(
+		CollectionRoutes.Builder<BlogPostingModel, Long> builder) {
 
 		return builder.addGetter(
 			this::_getPageItems
@@ -124,7 +124,7 @@ public class BlogPostingCollectionResource
 			blogPostingForm.getHeadline());
 	}
 
-	private void _deleteBlogPostingModel(Long id, Credentials credentials) {
+	private void _deleteBlogPostingModel(long id, Credentials credentials) {
 		if (!hasPermission(credentials)) {
 			throw new ForbiddenException();
 		}
@@ -132,7 +132,7 @@ public class BlogPostingCollectionResource
 		BlogPostingModel.remove(id);
 	}
 
-	private BlogPostingModel _getBlogPostingModel(Long id) {
+	private BlogPostingModel _getBlogPostingModel(long id) {
 		Optional<BlogPostingModel> optional = BlogPostingModel.get(id);
 
 		return optional.orElseThrow(
@@ -148,7 +148,7 @@ public class BlogPostingCollectionResource
 	}
 
 	private BlogPostingModel _updateBlogPostingModel(
-		Long id, BlogPostingForm blogPostingForm, Credentials credentials) {
+		long id, BlogPostingForm blogPostingForm, Credentials credentials) {
 
 		if (!hasPermission(credentials)) {
 			throw new ForbiddenException();

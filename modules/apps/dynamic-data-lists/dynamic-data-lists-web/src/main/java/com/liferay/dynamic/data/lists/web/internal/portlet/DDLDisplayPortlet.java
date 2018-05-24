@@ -48,8 +48,6 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -62,6 +60,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 @Component(
 	immediate = true,
 	property = {
+		"com.liferay.fragment.entry.processor.portlet.alias=dynamic-data-list",
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=portlet-dynamic-data-lists-display",
 		"com.liferay.portlet.display-category=category.collaboration",
@@ -100,11 +99,8 @@ public class DDLDisplayPortlet extends MVCPortlet {
 
 			setDDLRecordSetRequestAttribute(renderRequest);
 
-			HttpServletRequest request = _portal.getHttpServletRequest(
-				renderRequest);
-
 			DDLDisplayContext ddlDisplayContext = new DDLDisplayContext(
-				request, _ddl, _ddlRecordSetLocalService,
+				renderRequest, renderResponse, _ddl, _ddlRecordSetLocalService,
 				_ddlWebConfigurationActivator.getDDLWebConfiguration(),
 				_ddmDisplayRegistry, _ddmPermissionSupport,
 				_ddmTemplateLocalService, _storageEngine);

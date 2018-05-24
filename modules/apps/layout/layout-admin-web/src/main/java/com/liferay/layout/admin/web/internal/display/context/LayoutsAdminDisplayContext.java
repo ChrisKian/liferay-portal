@@ -21,14 +21,12 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SafeConsumer;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.configuration.LayoutAdminWebConfiguration;
 import com.liferay.layout.admin.web.constants.LayoutAdminDisplayStyleKeys;
 import com.liferay.layout.admin.web.internal.constants.LayoutAdminWebKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollectionNameComparator;
 import com.liferay.layout.util.comparator.LayoutCreateDateComparator;
 import com.liferay.petra.string.StringPool;
@@ -47,8 +45,6 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
@@ -65,6 +61,7 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.util.LayoutDescription;
 import com.liferay.portal.util.LayoutListUtil;
 import com.liferay.portlet.layoutsadmin.display.context.GroupDisplayContextHelper;
@@ -110,10 +107,7 @@ public class LayoutsAdminDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" +
-								_liferayPortletResponse.getNamespace() +
-									"deleteSelectedPages();");
+						dropdownItem.putData("action", "deleteSelectedPages");
 						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -242,21 +236,6 @@ public class LayoutsAdminDisplayContext {
 		return deleteLayoutURL.toString();
 	}
 
-	public String getDisplayStyle() {
-		if (Validator.isNotNull(_displayStyle)) {
-			return _displayStyle;
-		}
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(
-				_liferayPortletRequest);
-
-		_displayStyle = portalPreferences.getValue(
-			LayoutAdminPortletKeys.GROUP_PAGES, "display-style", "list");
-
-		return _displayStyle;
-	}
-
 	public List<DropdownItem> getFilterDropdownItems() {
 		return new DropdownItemList() {
 			{
@@ -279,9 +258,7 @@ public class LayoutsAdminDisplayContext {
 		};
 	}
 
-	public long getFirstLayoutPageTemplateCollectionId()
-		throws PortalException {
-
+	public long getFirstLayoutPageTemplateCollectionId() {
 		LayoutPageTemplateCollectionService
 			layoutPageTemplateCollectionService =
 				(LayoutPageTemplateCollectionService)_liferayPortletRequest.
@@ -299,12 +276,25 @@ public class LayoutsAdminDisplayContext {
 					getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					layoutPageTemplateCollectionNameComparator);
 
-		if (ListUtil.isNotEmpty(layoutPageTemplateCollections)) {
-			LayoutPageTemplateCollection layoutPageTemplateCollection =
-				layoutPageTemplateCollections.get(0);
+		if (layoutPageTemplateCollections.isEmpty()) {
+			return 0;
+		}
 
-			return layoutPageTemplateCollection.
-				getLayoutPageTemplateCollectionId();
+		for (LayoutPageTemplateCollection layoutPageTemplateCollection :
+				layoutPageTemplateCollections) {
+
+			int layoutPageTemplateEntriesCount =
+				LayoutPageTemplateEntryServiceUtil.
+					getLayoutPageTemplateEntriesCount(
+						_themeDisplay.getScopeGroupId(),
+						layoutPageTemplateCollection.
+							getLayoutPageTemplateCollectionId(),
+						WorkflowConstants.STATUS_APPROVED);
+
+			if (layoutPageTemplateEntriesCount > 0) {
+				return layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId();
+			}
 		}
 
 		return 0;
@@ -766,14 +756,6 @@ public class LayoutsAdminDisplayContext {
 		editLayoutURL.setParameter("selPlid", String.valueOf(layout.getPlid()));
 
 		return editLayoutURL.toString();
-	}
-
-	public List<ViewTypeItem> getViewTypeItems() {
-		return new ViewTypeItemList(getPortletURL(), getDisplayStyle()) {
-			{
-				addTableViewTypeItem();
-			}
-		};
 	}
 
 	public boolean isMillerColumnsEnabled() {

@@ -95,7 +95,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 				fullClassName);
 
 			if (javaFile == null) {
-				throw new RuntimeException("No matching files found");
+				System.out.println(
+					"No matching files found for " + fullClassName);
+
+				return null;
 			}
 
 			return getInstance(file, gitWorkingDirectory, javaFile);
@@ -188,6 +191,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			if (parentClassName.contains(".") &&
 				parentClassName.matches("[a-z].*")) {
 
+				if (!parentClassName.startsWith("com.liferay")) {
+					return null;
+				}
+
 				return parentClassName;
 			}
 
@@ -244,6 +251,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 			JunitBatchTestClass parentJunitBatchTestClass = getInstance(
 				parentFullClassName, _gitWorkingDirectory);
+
+			if (parentJunitBatchTestClass == null) {
+				return;
+			}
 
 			for (BaseTestMethod testMethod :
 					parentJunitBatchTestClass.getTestMethods()) {
@@ -580,12 +591,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		List<String> testClassNamesExcludesRelativeGlobs = Arrays.asList(
 			testClassNamesExcludesPropertyValue.split(","));
 
-		if (testRelevantChanges) {
-			testClassNamesExcludesRelativeGlobs =
-				getRelevantTestClassNamesRelativeGlobs(
-					testClassNamesExcludesRelativeGlobs);
-		}
-
 		testClassNamesExcludesPathMatchers.addAll(
 			_getTestClassNamesPathMatchers(
 				testClassNamesExcludesRelativeGlobs));
@@ -601,13 +606,27 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			return;
 		}
 
-		List<String> testClassNamesIncludesRelativeGlobs = Arrays.asList(
+		List<String> testClassNamesIncludesRelativeGlobs = new ArrayList<>();
+
+		Collections.addAll(
+			testClassNamesIncludesRelativeGlobs,
 			testClassNamesIncludesPropertyValue.split(","));
 
 		if (testRelevantChanges) {
 			testClassNamesIncludesRelativeGlobs =
 				getRelevantTestClassNamesRelativeGlobs(
 					testClassNamesIncludesRelativeGlobs);
+		}
+
+		String testBatchClassNamesIncludesRequiredPropertyValue =
+			getFirstPropertyValue("test.batch.class.names.includes.required");
+
+		if ((testBatchClassNamesIncludesRequiredPropertyValue != null) &&
+			!testBatchClassNamesIncludesRequiredPropertyValue.isEmpty()) {
+
+			Collections.addAll(
+				testClassNamesIncludesRelativeGlobs,
+				testBatchClassNamesIncludesRequiredPropertyValue.split(","));
 		}
 
 		testClassNamesIncludesPathMatchers.addAll(

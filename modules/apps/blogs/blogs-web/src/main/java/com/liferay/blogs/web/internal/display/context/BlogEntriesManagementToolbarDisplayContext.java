@@ -21,7 +21,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SafeConsumer;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -51,15 +50,15 @@ public class BlogEntriesManagementToolbarDisplayContext {
 
 	public BlogEntriesManagementToolbarDisplayContext(
 		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse, PortletURL currentURLObj,
+		LiferayPortletResponse liferayPortletResponse,
+		HttpServletRequest request, PortletURL currentURLObj,
 		TrashHelper trashHelper) {
 
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_request = request;
 		_currentURLObj = currentURLObj;
 		_trashHelper = trashHelper;
-
-		_request = _liferayPortletRequest.getHttpServletRequest();
 
 		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
 			liferayPortletRequest);
@@ -74,11 +73,7 @@ public class BlogEntriesManagementToolbarDisplayContext {
 				add(
 					SafeConsumer.ignore(
 						dropdownItem -> {
-							dropdownItem.setHref(
-								StringBundler.concat(
-									"javascript:",
-									_liferayPortletResponse.getNamespace(),
-									"deleteEntries();"));
+							dropdownItem.putData("action", "deleteEntries");
 
 							boolean trashEnabled = _trashHelper.isTrashEnabled(
 								themeDisplay.getScopeGroupId());
@@ -109,7 +104,7 @@ public class BlogEntriesManagementToolbarDisplayContext {
 				themeDisplay.getPermissionChecker(),
 				themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY)) {
 
-			return new CreationMenu();
+			return null;
 		}
 
 		CreationMenu creationMenu = new CreationMenu();
@@ -194,13 +189,13 @@ public class BlogEntriesManagementToolbarDisplayContext {
 	}
 
 	public PortletURL getSortingURL() throws PortletException {
-		PortletURL currentSortingURL = _getCurrentSortingURL();
+		PortletURL sortingURL = _getCurrentSortingURL();
 
-		currentSortingURL.setParameter(
+		sortingURL.setParameter(
 			"orderByType",
 			Objects.equals(getOrderByType(), "asc") ? "desc" : "asc");
 
-		return currentSortingURL;
+		return sortingURL;
 	}
 
 	public ViewTypeItemList getViewTypes() {

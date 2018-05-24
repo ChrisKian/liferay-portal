@@ -417,7 +417,7 @@
 	</command>
 
 	<command name="AddOrganizationTeam" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="false" />
 		<property name="test.name.skip.portal.instance" value="CPUsersandorganizations#AddOrganizationTeam" />
 		<property name="testray.component.names" value="Training" />
 
@@ -1293,6 +1293,7 @@
 		</execute>
 
 		<execute macro="User#deactivateCP">
+			<var name="deactivateType" value="Actions" />
 			<var name="userFirstName" value="userfn" />
 			<var name="userScreenName" value="usersn" />
 		</execute>
@@ -1971,7 +1972,7 @@
 	</command>
 
 	<command name="ViewLoginForActivatedUser" priority="5">
-		<property name="portal.acceptance" value="pending" />
+		<property name="portal.acceptance" value="false" />
 		<property name="testray.component.names" value="Training" />
 
 		<execute macro="ProductMenu#gotoPortlet">

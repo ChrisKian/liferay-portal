@@ -2385,14 +2385,14 @@ ${tomcat-gc-log}
 		<sequential>
 			<beanshell>
 				<![CDATA[
-					import com.liferay.jenkins.results.parser.AxisTestClassGroup;
 					import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
-					import com.liferay.jenkins.results.parser.TestClassGroup;
-					import com.liferay.jenkins.results.parser.TestClassGroupFactory;
+					import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
+					import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
+					import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroupFactory;
 
 					PortalGitWorkingDirectory portalGitWorkingDirectory = new PortalGitWorkingDirectory(project.getProperty("git.working.branch.name"), project.getProperty("project.dir"));
 
-					TestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), portalGitWorkingDirectory, project.getProperty("env.CI_TEST_SUITE"));
+					BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), portalGitWorkingDirectory, project.getProperty("env.CI_TEST_SUITE"));
 
 					int axisCount = batchTestClassGroup.getAxisCount();
 
@@ -7597,28 +7597,82 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 
 	<target name="prepare-selenium-google-properties">
 		<if>
-			<isset property="google.api.key" />
+			<isset property="google.api.key.1" />
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
-					google.api.key=${google.api.key}
+					google.api.key.1=${google.api.key.1}
 				</echo>
 			</then>
 		</if>
 
 		<if>
-			<isset property="google.client.id" />
+			<isset property="google.api.key.2" />
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
-					google.client.id=${google.client.id}
+					google.api.key.2=${google.api.key.2}
 				</echo>
 			</then>
 		</if>
 
 		<if>
-			<isset property="google.client.secret" />
+			<isset property="google.api.key.3" />
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
-					google.client.secret=${google.client.secret}
+					google.api.key.3=${google.api.key.3}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.id.1" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.id.1=${google.client.id.1}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.id.2" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.id.2=${google.client.id.2}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.id.3" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.id.3=${google.client.id.3}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.secret.1" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.secret.1=${google.client.secret.1}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.secret.2" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.secret.2=${google.client.secret.2}
+				</echo>
+			</then>
+		</if>
+
+		<if>
+			<isset property="google.client.secret.3" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					google.client.secret.3=${google.client.secret.3}
 				</echo>
 			</then>
 		</if>
@@ -8014,7 +8068,7 @@ ANT_OPTS=${env.ANT_OPTS}</echo>
 							dir="${app.server.websphere.dir}"
 						>
 							<include name="bin/**/*.sh" />
-							<include name="java*/bin/*" />
+							<include name="java*/**/bin/*" />
 						</fileset>
 					</chmod>
 				</then>
@@ -8444,7 +8498,11 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 						</if>
 					</then>
 					<elseif>
-						<equals arg1="${database.type}" arg2="hypersonic" />
+						<and>
+							<available file="sql/${database.name}.properties" />
+							<available file="sql/${database.name}.script" />
+							<equals arg1="${database.type}" arg2="hypersonic" />
+						</and>
 						<then>
 							<delete dir="${liferay.home}/data" includeemptydirs="true" />
 
@@ -9019,14 +9077,14 @@ if (ppstate.equals("normal")) {
 
 		<beanshell>
 			<![CDATA[
-				import com.liferay.jenkins.results.parser.AxisTestClassGroup;
 				import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
-				import com.liferay.jenkins.results.parser.TestClassGroup;
-				import com.liferay.jenkins.results.parser.TestClassGroupFactory;
+				import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
+				import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
+				import com.liferay.jenkins.results.parser.test.clazz.group.TestClassGroupFactory;
 
 				PortalGitWorkingDirectory portalGitWorkingDirectory = new PortalGitWorkingDirectory(project.getProperty("git.working.branch.name"), project.getProperty("project.dir"));
 
-				TestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), portalGitWorkingDirectory, project.getProperty("env.CI_TEST_SUITE"));
+				BatchTestClassGroup batchTestClassGroup = TestClassGroupFactory.newBatchTestClassGroup(project.getProperty("test.batch.name"), portalGitWorkingDirectory, project.getProperty("env.CI_TEST_SUITE"));
 
 				int axisCount = batchTestClassGroup.getAxisCount();
 

@@ -1,0 +1,9 @@
+Scenario: catSearch
+    When I visit the URL "https://www.yahoo.com"
+    And I issue a search for "cats"
+    Then I should see "stray cat" and "domestic cat" and "kitten" and "lion"
+
+Scenario: assertLiferayMainPageAvailability
+    When I visit the URL "https://www.liferay.com"
+    And I wait for "title" to be present
+    Then I should close the window

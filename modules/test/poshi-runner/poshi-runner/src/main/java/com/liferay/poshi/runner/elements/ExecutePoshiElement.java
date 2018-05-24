@@ -52,30 +52,48 @@ public class ExecutePoshiElement extends PoshiElement {
 
 	@Override
 	public void parseReadableSyntax(String readableSyntax) {
-		if (readableSyntax.contains("return(\n")) {
+		String executeType = "macro";
+
+		if (isValidUtilClassName(readableSyntax)) {
+			executeType = "class";
+		}
+		else if (isValidFunctionFileName(readableSyntax)) {
+			executeType = "function";
+		}
+
+		if (executeType.equals("class")) {
+			int index = readableSyntax.indexOf("(");
+
+			String methodName = readableSyntax.substring(0, index);
+
+			for (String utilClassName : utilClassNames) {
+				if (readableSyntax.startsWith(utilClassName)) {
+					addAttribute("class", utilClassName);
+
+					methodName = methodName.replace(utilClassName + ".", "");
+
+					addAttribute("method", methodName);
+
+					break;
+				}
+			}
+
+			String parentheticalContent = getParentheticalContent(
+				readableSyntax);
+
+			add(PoshiNodeFactory.newPoshiNode(this, parentheticalContent));
+
+			return;
+		}
+
+		if (readableSyntax.startsWith("var ")) {
 			PoshiNode returnPoshiNode = PoshiNodeFactory.newPoshiNode(
 				this, readableSyntax);
 
 			if (returnPoshiNode instanceof ReturnPoshiElement) {
 				add(returnPoshiNode);
 
-				readableSyntax = RegexUtil.getGroup(
-					readableSyntax, "return\\((.*),", 1);
-			}
-		}
-
-		String executeType = "macro";
-
-		String content = getParentheticalContent(readableSyntax);
-
-		String[] functionAttributeNames =
-			{"locator1", "locator2", "value1", "value2"};
-
-		for (String functionAttributeName : functionAttributeNames) {
-			if (content.startsWith(functionAttributeName)) {
-				executeType = "function";
-
-				break;
+				readableSyntax = getValueFromAssignment(readableSyntax);
 			}
 		}
 
@@ -84,11 +102,9 @@ public class ExecutePoshiElement extends PoshiElement {
 
 		executeCommandName = executeCommandName.replace(".", "#");
 
-		if (!executeCommandName.contains("#") && (content.length() == 0)) {
-			executeType = "function";
-		}
-
 		addAttribute(executeType, executeCommandName);
+
+		String content = getParentheticalContent(readableSyntax);
 
 		if (content.length() == 0) {
 			return;
@@ -107,7 +123,7 @@ public class ExecutePoshiElement extends PoshiElement {
 
 			boolean functionAttributeAdded = false;
 
-			for (String functionAttributeName : functionAttributeNames) {
+			for (String functionAttributeName : _FUNCTION_ATTRIBUTE_NAMES) {
 				if (assignment.startsWith(functionAttributeName)) {
 					String name = getNameFromAssignment(assignment);
 					String value = getQuotedContent(assignment);
@@ -136,9 +152,39 @@ public class ExecutePoshiElement extends PoshiElement {
 
 	@Override
 	public String toReadableSyntax() {
-		if (attributeValue("function") != null) {
-			StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
+		if (attributeValue("class") != null) {
+			String pad = getPad();
+
+			sb.append("\n\n");
+			sb.append(pad);
+			sb.append(attributeValue("class"));
+			sb.append(".");
+			sb.append(attributeValue("method"));
+			sb.append("(");
+
+			for (PoshiElement poshiElement : toPoshiElements(elements())) {
+				String readableSyntax = poshiElement.toReadableSyntax();
+
+				if (poshiElement instanceof ArgPoshiElement) {
+					sb.append(readableSyntax.trim());
+					sb.append(", ");
+
+					continue;
+				}
+			}
+
+			if (sb.length() > 2) {
+				sb.setLength(sb.length() - 2);
+			}
+
+			sb.append(");");
+
+			return sb.toString();
+		}
+
+		if (attributeValue("function") != null) {
 			for (PoshiElementAttribute poshiElementAttribute :
 					toPoshiElementAttributes(attributeList())) {
 
@@ -169,8 +215,6 @@ public class ExecutePoshiElement extends PoshiElement {
 
 			return createFunctionReadableBlock(sb.toString());
 		}
-
-		StringBuilder sb = new StringBuilder();
 
 		ReturnPoshiElement returnPoshiElement = null;
 
@@ -327,8 +371,8 @@ public class ExecutePoshiElement extends PoshiElement {
 			return false;
 		}
 
-		if (readableSyntax.startsWith("var ") &&
-			readableSyntax.contains(" = return(")) {
+		if (isMacroReturnVar(readableSyntax) &&
+			readableSyntax.startsWith("var ")) {
 
 			return true;
 		}
@@ -345,5 +389,8 @@ public class ExecutePoshiElement extends PoshiElement {
 	}
 
 	private static final String _ELEMENT_NAME = "execute";
+
+	private static final String[] _FUNCTION_ATTRIBUTE_NAMES =
+		{"locator1", "locator2", "value1", "value2"};
 
 }

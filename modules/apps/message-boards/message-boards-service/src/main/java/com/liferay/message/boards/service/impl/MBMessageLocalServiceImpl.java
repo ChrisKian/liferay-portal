@@ -50,6 +50,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -959,6 +960,24 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<MBMessage> getChildMessages(long parentMessageId, int status) {
+		return mbMessagePersistence.findByP_S(parentMessageId, status);
+	}
+
+	@Override
+	public List<MBMessage> getChildMessages(
+		long parentMessageId, int status, int start, int end) {
+
+		return mbMessagePersistence.findByP_S(
+			parentMessageId, status, start, end);
+	}
+
+	@Override
+	public int getChildMessagesCount(long parentMessageId, int status) {
+		return mbMessagePersistence.countByP_S(parentMessageId, status);
+	}
+
+	@Override
 	public List<MBMessage> getCompanyMessages(
 		long companyId, int status, int start, int end) {
 
@@ -1295,6 +1314,38 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		return mbMessageFinder.countByC_T(
 			message.getCreateDate(), message.getThreadId());
+	}
+
+	@Override
+	public List<MBMessage> getRootMessages(
+			String className, long classPK, int status)
+		throws PortalException {
+
+		return getRootMessages(
+			className, classPK, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+	}
+
+	@Override
+	public List<MBMessage> getRootMessages(
+			String className, long classPK, int status, int start, int end)
+		throws PortalException {
+
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		MBMessage rootMbMessage = mbMessagePersistence.findByC_C_First(
+			classNameId, classPK, new MessageCreateDateComparator(true));
+
+		return getChildMessages(
+			rootMbMessage.getMessageId(), status, start, end);
+	}
+
+	@Override
+	public int getRootMessagesCount(
+		String className, long classPK, int status) {
+
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		return mbMessagePersistence.countByC_C_S(classNameId, classPK, status);
 	}
 
 	@Override
@@ -2465,9 +2516,13 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			Date modifiedDate)
 		throws PortalException {
 
-		MBCategory category = null;
-
 		int status = message.getStatus();
+
+		if (status == oldStatus) {
+			return;
+		}
+
+		MBCategory category = null;
 
 		if ((thread.getCategoryId() !=
 				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) &&
@@ -2478,18 +2533,12 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				thread.getCategoryId());
 		}
 
-		if ((thread.getRootMessageId() == message.getMessageId()) &&
-			(oldStatus != status)) {
-
+		if (thread.getRootMessageId() == message.getMessageId()) {
 			thread.setModifiedDate(modifiedDate);
 			thread.setStatus(status);
 			thread.setStatusByUserId(user.getUserId());
 			thread.setStatusByUserName(user.getFullName());
 			thread.setStatusDate(modifiedDate);
-		}
-
-		if (status == oldStatus) {
-			return;
 		}
 
 		if (status == WorkflowConstants.STATUS_APPROVED) {
@@ -2708,8 +2757,10 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			updatePriorities(thread.getThreadId(), priority);
 		}
 
-		if (message.isRoot() && !Objects.equals(subject, oldSubject)) {
-			thread.setTitle(subject);
+		if (message.isRoot()) {
+			if (!Objects.equals(subject, oldSubject)) {
+				thread.setTitle(subject);
+			}
 
 			mbThreadLocalService.updateMBThread(thread);
 		}

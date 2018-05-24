@@ -32,7 +32,6 @@
 	showSearch="<%= assetTagsSelectorDisplayContext.isShowTagsSearch() %>"
 	sortingOrder="<%= assetTagsSelectorDisplayContext.getOrderByType() %>"
 	sortingURL="<%= assetTagsSelectorDisplayContext.getSortingURL() %>"
-	viewTypeItems="<%= assetTagsSelectorDisplayContext.getViewTypeItems() %>"
 />
 
 <div class="container-fluid-1280">
@@ -54,7 +53,7 @@
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator
-			displayStyle="<%= assetTagsSelectorDisplayContext.getDisplayStyle() %>"
+			displayStyle="list"
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>

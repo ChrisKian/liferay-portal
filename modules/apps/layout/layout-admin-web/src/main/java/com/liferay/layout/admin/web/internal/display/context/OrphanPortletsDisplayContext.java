@@ -68,10 +68,7 @@ public class OrphanPortletsDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" +
-								_liferayPortletResponse.getNamespace() +
-									"deleteOrphanPortlets();");
+						dropdownItem.putData("action", "deleteOrphanPortlets");
 						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -136,7 +133,7 @@ public class OrphanPortletsDisplayContext {
 						navigationItem.setHref(
 							_liferayPortletResponse.createRenderURL());
 						navigationItem.setLabel(
-							LanguageUtil.get(request, "orphan-portlets"));
+							LanguageUtil.get(request, "orphan-widgets"));
 					});
 			}
 		};

@@ -31,7 +31,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SafeConsumer;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -40,11 +39,11 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.Menu;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -68,13 +67,16 @@ public class DLAdminManagementToolbarDisplayContext {
 	public DLAdminManagementToolbarDisplayContext(
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
+		HttpServletRequest request,
 		DLAdminDisplayContext dlAdminDisplayContext) {
 
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_request = request;
 		_dlAdminDisplayContext = dlAdminDisplayContext;
 
-		_request = liferayPortletRequest.getHttpServletRequest();
+		_currentURLObj = PortletURLUtil.getCurrent(
+			liferayPortletRequest, liferayPortletResponse);
 
 		_dlRequestHelper = new DLRequestHelper(_request);
 
@@ -102,58 +104,16 @@ public class DLAdminManagementToolbarDisplayContext {
 					add(
 						SafeConsumer.ignore(
 							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:Liferay.fire('",
-										_liferayPortletResponse.getNamespace(),
-										"editEntry', {action: 'download'});",
-										"void(0);"));
+								dropdownItem.putData("action", "download");
 								dropdownItem.setIcon("download");
 								dropdownItem.setLabel(
 									LanguageUtil.get(_request, "download"));
 								dropdownItem.setQuickAction(true);
 							}));
-
 					add(
 						SafeConsumer.ignore(
 							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:Liferay.fire('",
-										_liferayPortletResponse.getNamespace(),
-										"editEntry', {action: '",
-										Constants.CHECKIN, "'}); void(0);"));
-								dropdownItem.setIcon("unlock");
-								dropdownItem.setLabel(
-									LanguageUtil.get(_request, "checkin"));
-								dropdownItem.setQuickAction(false);
-							}));
-
-					add(
-						SafeConsumer.ignore(
-							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:Liferay.fire('",
-										_liferayPortletResponse.getNamespace(),
-										"editEntry', {action: '",
-										Constants.CHECKOUT, "'}); void(0);"));
-								dropdownItem.setIcon("lock");
-								dropdownItem.setLabel(
-									LanguageUtil.get(
-										_request, "checkout[document]"));
-								dropdownItem.setQuickAction(false);
-							}));
-
-					add(
-						SafeConsumer.ignore(
-							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:Liferay.fire('",
-										_liferayPortletResponse.getNamespace(),
-										"editEntry', {action: '",
-										Constants.MOVE, "'}); void(0);"));
+								dropdownItem.putData("action", "move");
 								dropdownItem.setIcon("change");
 								dropdownItem.setLabel(
 									LanguageUtil.get(_request, "move"));
@@ -165,11 +125,7 @@ public class DLAdminManagementToolbarDisplayContext {
 					add(
 						SafeConsumer.ignore(
 							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:",
-										_liferayPortletResponse.getNamespace(),
-										"deleteEntries();"));
+								dropdownItem.putData("action", "deleteEntries");
 
 								if (_dlTrashUtil.isTrashEnabled(
 										scopeGroup.getGroupId(),
@@ -190,6 +146,27 @@ public class DLAdminManagementToolbarDisplayContext {
 								dropdownItem.setQuickAction(true);
 							}));
 				}
+
+				add(
+					SafeConsumer.ignore(
+						dropdownItem -> {
+							dropdownItem.putData("action", "checkin");
+							dropdownItem.setIcon("unlock");
+							dropdownItem.setLabel(
+								LanguageUtil.get(_request, "checkin"));
+							dropdownItem.setQuickAction(false);
+						}));
+
+				add(
+					SafeConsumer.ignore(
+						dropdownItem -> {
+							dropdownItem.putData("action", "checkout");
+							dropdownItem.setIcon("lock");
+							dropdownItem.setLabel(
+								LanguageUtil.get(
+									_request, "checkout[document]"));
+							dropdownItem.setQuickAction(false);
+						}));
 			}
 		};
 	}
@@ -219,6 +196,10 @@ public class DLAdminManagementToolbarDisplayContext {
 		List<Menu> menus = dlPortletToolbarContributor.getPortletTitleMenus(
 			_liferayPortletRequest, _liferayPortletResponse);
 
+		if (menus.isEmpty()) {
+			return null;
+		}
+
 		CreationMenu creationMenu = new CreationMenu();
 
 		for (Menu menu : menus) {
@@ -238,6 +219,10 @@ public class DLAdminManagementToolbarDisplayContext {
 	}
 
 	public List<DropdownItem> getFilterDropdownItems() {
+		if (_isSearch()) {
+			return null;
+		}
+
 		return new DropdownItemList() {
 			{
 				addGroup(
@@ -250,7 +235,7 @@ public class DLAdminManagementToolbarDisplayContext {
 									_request, "filter-by-navigation"));
 						}));
 
-				if (!_isSearch() && !_isNavigationRecent()) {
+				if (!_isNavigationRecent()) {
 					addGroup(
 						dropdownGroupItem -> {
 							dropdownGroupItem.setDropdownItems(
@@ -295,17 +280,25 @@ public class DLAdminManagementToolbarDisplayContext {
 	}
 
 	public String getSortingOrder() {
+		if (_isSearch()) {
+			return null;
+		}
+
 		return _dlAdminDisplayContext.getOrderByType();
 	}
 
 	public PortletURL getSortingURL() {
-		PortletURL currentSortingURL = _getCurrentSortingURL();
+		if (_isSearch()) {
+			return null;
+		}
 
-		currentSortingURL.setParameter(
+		PortletURL sortingURL = _getCurrentSortingURL();
+
+		sortingURL.setParameter(
 			"orderByType",
 			Objects.equals(_getOrderByType(), "asc") ? "desc" : "asc");
 
-		return currentSortingURL;
+		return sortingURL;
 	}
 
 	public int getTotalItems() {
@@ -456,75 +449,82 @@ public class DLAdminManagementToolbarDisplayContext {
 	private List<DropdownItem> _getFilterNavigationDropdownItems() {
 		long fileEntryTypeId = ParamUtil.getLong(
 			_request, "fileEntryTypeId", -1);
-		long folderId = _getFolderId();
 		final String navigation = ParamUtil.getString(
 			_request, "navigation", "home");
-		final long rootFolderId = _getRootFolderId();
 
 		return new DropdownItemList() {
 			{
 				add(
-					dropdownItem -> {
-						dropdownItem.setActive(
-							(navigation.equals("home")) &&
-							(folderId == rootFolderId) &&
-							(fileEntryTypeId == -1));
+					SafeConsumer.ignore(
+						dropdownItem -> {
+							dropdownItem.setActive(
+								(navigation.equals("home")) &&
+								(fileEntryTypeId == -1));
 
-						PortletURL viewDocumentsHomeURL =
-							_liferayPortletResponse.createRenderURL();
+							PortletURL viewAllDocumentsURL =
+								PortletURLUtil.clone(
+									_currentURLObj, _liferayPortletResponse);
 
-						viewDocumentsHomeURL.setParameter(
-							"mvcRenderCommandName", "/document_library/view");
-						viewDocumentsHomeURL.setParameter(
-							"folderId", String.valueOf(rootFolderId));
+							viewAllDocumentsURL.setParameter(
+								"mvcRenderCommandName",
+								"/document_library/view");
+							viewAllDocumentsURL.setParameter(
+								"navigation", "home");
+							viewAllDocumentsURL.setParameter(
+								"browseBy", (String)null);
+							viewAllDocumentsURL.setParameter(
+								"fileEntryTypeId", (String)null);
 
-						dropdownItem.setHref(viewDocumentsHomeURL);
+							dropdownItem.setHref(viewAllDocumentsURL);
 
-						dropdownItem.setLabel(
-							LanguageUtil.get(_request, "all"));
-					});
+							dropdownItem.setLabel(
+								LanguageUtil.get(_request, "all"));
+						}));
 
 				add(
-					dropdownItem -> {
-						dropdownItem.setActive(navigation.equals("recent"));
+					SafeConsumer.ignore(
+						dropdownItem -> {
+							dropdownItem.setActive(navigation.equals("recent"));
 
-						PortletURL viewRecentDocumentsURL =
-							_liferayPortletResponse.createRenderURL();
+							PortletURL viewRecentDocumentsURL =
+								PortletURLUtil.clone(
+									_currentURLObj, _liferayPortletResponse);
 
-						viewRecentDocumentsURL.setParameter(
-							"mvcRenderCommandName", "/document_library/view");
-						viewRecentDocumentsURL.setParameter(
-							"navigation", "recent");
-						viewRecentDocumentsURL.setParameter(
-							"folderId", String.valueOf(rootFolderId));
+							viewRecentDocumentsURL.setParameter(
+								"mvcRenderCommandName",
+								"/document_library/view");
+							viewRecentDocumentsURL.setParameter(
+								"navigation", "recent");
 
-						dropdownItem.setHref(viewRecentDocumentsURL);
+							dropdownItem.setHref(viewRecentDocumentsURL);
 
-						dropdownItem.setLabel(
-							LanguageUtil.get(_request, "recent"));
-					});
+							dropdownItem.setLabel(
+								LanguageUtil.get(_request, "recent"));
+						}));
 
 				if (_themeDisplay.isSignedIn()) {
 					add(
-						dropdownItem -> {
-							dropdownItem.setActive(navigation.equals("mine"));
+						SafeConsumer.ignore(
+							dropdownItem -> {
+								dropdownItem.setActive(
+									navigation.equals("mine"));
 
-							PortletURL viewMyDocumentsURL =
-								_liferayPortletResponse.createRenderURL();
+								PortletURL viewMyDocumentsURL =
+									PortletURLUtil.clone(
+										_currentURLObj,
+										_liferayPortletResponse);
 
-							viewMyDocumentsURL.setParameter(
-								"mvcRenderCommandName",
-								"/document_library/view");
-							viewMyDocumentsURL.setParameter(
-								"navigation", "mine");
-							viewMyDocumentsURL.setParameter(
-								"folderId", String.valueOf(rootFolderId));
+								viewMyDocumentsURL.setParameter(
+									"mvcRenderCommandName",
+									"/document_library/view");
+								viewMyDocumentsURL.setParameter(
+									"navigation", "mine");
 
-							dropdownItem.setHref(viewMyDocumentsURL);
+								dropdownItem.setHref(viewMyDocumentsURL);
 
-							dropdownItem.setLabel(
-								LanguageUtil.get(_request, "mine"));
-						});
+								dropdownItem.setLabel(
+									LanguageUtil.get(_request, "mine"));
+							}));
 				}
 
 				add(
@@ -532,10 +532,8 @@ public class DLAdminManagementToolbarDisplayContext {
 						dropdownItem -> {
 							dropdownItem.setActive(fileEntryTypeId != -1);
 
-							dropdownItem.setHref(
-								"javascript:" +
-									_liferayPortletResponse.getNamespace() +
-										"openDocumentTypesSelector();");
+							dropdownItem.putData(
+								"action", "openDocumentTypesSelector");
 
 							String label = LanguageUtil.get(
 								_request, "document-types");
@@ -623,10 +621,6 @@ public class DLAdminManagementToolbarDisplayContext {
 		return _dlAdminDisplayContext.getRepositoryId();
 	}
 
-	private long _getRootFolderId() {
-		return _dlAdminDisplayContext.getRootFolderId();
-	}
-
 	private boolean _isNavigationRecent() {
 		if (Objects.equals(_getNavigation(), "recent")) {
 			return true;
@@ -639,6 +633,7 @@ public class DLAdminManagementToolbarDisplayContext {
 		return _dlAdminDisplayContext.isSearch();
 	}
 
+	private final PortletURL _currentURLObj;
 	private final DLAdminDisplayContext _dlAdminDisplayContext;
 	private final DLPortletInstanceSettingsHelper
 		_dlPortletInstanceSettingsHelper;

@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 
 import java.util.List;
 import java.util.Map;
@@ -42,16 +41,15 @@ public class AnnouncementsAdminViewManagementToolbarDisplayContext {
 	public AnnouncementsAdminViewManagementToolbarDisplayContext(
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		SearchContainer searchContainer) {
+		HttpServletRequest request, SearchContainer searchContainer) {
 
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_request = request;
 		_searchContainer = searchContainer;
 
 		_currentURLObj = PortletURLUtil.getCurrent(
 			_liferayPortletRequest, _liferayPortletResponse);
-
-		_request = liferayPortletRequest.getHttpServletRequest();
 	}
 
 	public List<DropdownItem> getActionDropdownItems() {
@@ -59,12 +57,8 @@ public class AnnouncementsAdminViewManagementToolbarDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							StringBundler.concat(
-								"javascript:",
-								_liferayPortletResponse.getNamespace(),
-								"deleteEntries();"));
-						dropdownItem.setIcon("times");
+						dropdownItem.putData("action", "deleteEntries");
+						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
 						dropdownItem.setQuickAction(true);

@@ -20,8 +20,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.journal.service.JournalFolderServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -29,6 +27,7 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -69,15 +68,21 @@ public class JournalViewMoreMenuItemsDisplayContext {
 	}
 
 	public List<DDMStructure> getDDMStructures() throws PortalException {
+		if (ListUtil.isNotEmpty(_ddmStructures)) {
+			return _ddmStructures;
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		return JournalFolderServiceUtil.searchDDMStructures(
+		_ddmStructures = JournalFolderServiceUtil.searchDDMStructures(
 			themeDisplay.getCompanyId(),
 			PortalUtil.getCurrentAndAncestorSiteGroupIds(
 				themeDisplay.getScopeGroupId()),
 			_folderId, _restrictionType, _getKeywords(), QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS, _getOrderByComparator());
+
+		return _ddmStructures;
 	}
 
 	public SearchContainer getDDMStructuresSearchContainer()
@@ -215,14 +220,6 @@ public class JournalViewMoreMenuItemsDisplayContext {
 		return searchContainer.getTotal();
 	}
 
-	public List<ViewTypeItem> getViewTypeItems() {
-		return new ViewTypeItemList(getPortletURL(), "list") {
-			{
-				addTableViewTypeItem();
-			}
-		};
-	}
-
 	private List<DropdownItem> _getFilterNavigationDropdownItems() {
 		return new DropdownItemList() {
 			{
@@ -274,6 +271,7 @@ public class JournalViewMoreMenuItemsDisplayContext {
 		};
 	}
 
+	private List<DDMStructure> _ddmStructures;
 	private SearchContainer _ddmStructuresSearchContainer;
 	private String _eventName;
 	private final long _folderId;
