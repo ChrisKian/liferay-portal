@@ -5,6 +5,12 @@
 
 	.lfr-icon-menu > .dropdown-toggle {
 		color: $secondary;
+
+		&:active, &:focus, &:hover {
+			background-color: #F7F8F9;
+			border-radius: 4px;
+			color: $body-color;
+		}
 	}
 
 	.list-group {
@@ -19,7 +25,7 @@
 				margin-bottom: 0;
 			}
 
-			h5, h6 {
+			h5, h6, .h5, .h6 {
 				font-size: $font-size-sm;
 				font-weight: 400;
 				line-height: 1.5;

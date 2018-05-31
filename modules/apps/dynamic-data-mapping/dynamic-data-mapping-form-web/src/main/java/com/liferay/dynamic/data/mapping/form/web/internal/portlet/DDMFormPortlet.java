@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -58,6 +59,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
+		"com.liferay.fragment.entry.processor.portlet.alias=form",
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.application-type=full-page-application",
 		"com.liferay.portlet.application-type=widget",
@@ -161,13 +163,13 @@ public class DDMFormPortlet extends MVCPortlet {
 
 	protected void checkFormIsNotRestricted(
 			RenderRequest renderRequest, RenderResponse renderResponse,
-			DDMFormDisplayContext ddlFormDisplayContext)
+			DDMFormDisplayContext ddmFormDisplayContext)
 		throws PortalException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		DDMFormInstance formInstance = ddlFormDisplayContext.getFormInstance();
+		DDMFormInstance formInstance = ddmFormDisplayContext.getFormInstance();
 
 		if (formInstance == null) {
 			return;
@@ -215,15 +217,15 @@ public class DDMFormPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortalException {
 
-		DDMFormDisplayContext ddlFormDisplayContext = new DDMFormDisplayContext(
+		DDMFormDisplayContext ddmFormDisplayContext = new DDMFormDisplayContext(
 			renderRequest, renderResponse,
 			_ddmFormInstanceRecordVersionLocalService, _ddmFormInstanceService,
 			_ddmFormInstanceVersionLocalService, _ddmFormRenderer,
-			_ddmFormValuesFactory, _ddmFormValuesMerger,
+			_ddmFormValuesFactory, _ddmFormValuesMerger, _groupLocalService,
 			_workflowDefinitionLinkLocalService);
 
 		renderRequest.setAttribute(
-			WebKeys.PORTLET_DISPLAY_CONTEXT, ddlFormDisplayContext);
+			WebKeys.PORTLET_DISPLAY_CONTEXT, ddmFormDisplayContext);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DDMFormPortlet.class);
@@ -251,6 +253,9 @@ public class DDMFormPortlet extends MVCPortlet {
 
 	@Reference
 	private DDMFormValuesMerger _ddmFormValuesMerger;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;

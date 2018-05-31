@@ -23,10 +23,14 @@ import com.liferay.apio.architect.error.APIError;
  * APIError} representation. Use the exception's message to provide meaningful
  * information about the error.
  *
- * @author Alejandro Hernández
- * @param  <T> the exception's type
+ * @author     Alejandro Hernández
+ * @param      <T> the exception's type
+ * @deprecated As of 1.0.0, use {@link
+ *             com.liferay.apio.architect.exception.mapper.ExceptionMapper}
+ *             instead
  */
 @ConsumerType
+@Deprecated
 public interface ExceptionMapper<T extends Exception> {
 
 	/**

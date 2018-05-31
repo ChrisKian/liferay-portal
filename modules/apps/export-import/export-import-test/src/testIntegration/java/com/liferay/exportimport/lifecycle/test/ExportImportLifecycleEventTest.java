@@ -16,8 +16,8 @@ package com.liferay.exportimport.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationConstants;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactory;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactory;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleConstants;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEvent;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEventListenerRegistryUtil;
@@ -90,13 +90,14 @@ public class ExportImportLifecycleEventTest {
 		_firedExportImportLifecycleEventsMap = new HashMap<>();
 
 		_parameterMap =
-			ExportImportConfigurationParameterMapFactory.buildParameterMap();
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
 	}
 
 	@Test
 	public void testFailedLayoutExport() throws Exception {
 		Map<String, Serializable> exportLayoutSettingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildExportLayoutSettingsMap(
 					TestPropsValues.getUserId(), 0, false, new long[0],
 					_parameterMap, Locale.US, TimeZoneUtil.GMT);
@@ -133,7 +134,7 @@ public class ExportImportLifecycleEventTest {
 	@Test
 	public void testFailedLayoutImport() throws Exception {
 		Map<String, Serializable> importLayoutSettingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildImportLayoutSettingsMap(
 					TestPropsValues.getUserId(), 0, false, new long[0],
 					_parameterMap, Locale.US, TimeZoneUtil.GMT);
@@ -202,7 +203,7 @@ public class ExportImportLifecycleEventTest {
 		long plid = RandomTestUtil.nextLong();
 
 		Map<String, Serializable> exportPortletSettingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildExportPortletSettingsMap(
 					TestPropsValues.getUserId(), plid, _group.getGroupId(),
 					StringPool.BLANK, _parameterMap, Locale.US,
@@ -235,7 +236,7 @@ public class ExportImportLifecycleEventTest {
 	@Test
 	public void testFailedPortletImport() throws Exception {
 		Map<String, Serializable> importPortletSettingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildImportPortletSettingsMap(
 					TestPropsValues.getUserId(), 0, _group.getGroupId(),
 					StringPool.BLANK, _parameterMap, Locale.US,

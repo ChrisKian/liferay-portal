@@ -99,17 +99,19 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		setDDMFormFields();
 	}
 
-	public DropdownItemList getActionItemsDropdownItemList() {
+	public List<DropdownItem> getActionItemsDropdownItems() {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(
+			_renderRequest);
+
 		return new DropdownItemList() {
 
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" + _renderResponse.getNamespace() +
-								"deleteRecords();");
+						dropdownItem.putData("action", "deleteRecords");
 						dropdownItem.setIcon("trash");
-						dropdownItem.setLabel("delete");
+						dropdownItem.setLabel(
+							LanguageUtil.get(request, "delete"));
 						dropdownItem.setQuickAction(true);
 					});
 			}
@@ -182,7 +184,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		return "list";
 	}
 
-	public DropdownItemList getFilterItemsDropdownItemList() {
+	public List<DropdownItem> getFilterItemsDropdownItems() {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(
 			_renderRequest);
 
@@ -199,7 +201,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 				addGroup(
 					dropdownGroupItem -> {
 						dropdownGroupItem.setDropdownItems(
-							getOrderByDropdownItemList());
+							getOrderByDropdownItems());
 						dropdownGroupItem.setLabel(
 							LanguageUtil.get(request, "order-by"));
 					});
@@ -409,6 +411,9 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 	}
 
 	protected List<DropdownItem> getFilterNavigationDropdownItems() {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(
+			_renderRequest);
+
 		return new DropdownItemList() {
 			{
 				add(
@@ -418,7 +423,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 						dropdownItem.setHref(
 							getPortletURL(), "navigation", "all");
 
-						dropdownItem.setLabel("all");
+						dropdownItem.setLabel(LanguageUtil.get(request, "all"));
 					});
 			}
 		};
@@ -464,7 +469,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		return formFields;
 	}
 
-	protected DropdownItemList getOrderByDropdownItemList() {
+	protected List<DropdownItem> getOrderByDropdownItems() {
 		return new DropdownItemList() {
 			{
 				add(
@@ -517,8 +522,8 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 		List<DDMFormField> formFields = getNontransientFormFields(
 			structure.getDDMForm());
 
-		for (int i = 0; i < formFields.size(); i++) {
-			_ddmFormFields.add(formFields.get(i));
+		for (DDMFormField formField : formFields) {
+			_ddmFormFields.add(formField);
 		}
 	}
 

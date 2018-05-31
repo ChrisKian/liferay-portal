@@ -51,15 +51,6 @@
 		<execute function="AssertTextNotPresent" value1="There was an unexpected error. Please refresh the current page." />
 	</command>
 
-	<command name="ViewWebContentArchive6012" priority="5">
-		<property name="data.archive.type" value="data-archive-web-content-draft" />
-		<property name="portal.version" value="6.0.12" />
-
-		<execute macro="Upgrade#addWCStructureAndTemplate" />
-
-		<execute macro="Upgrade#publishWCDraft" />
-	</command>
-
 	<command name="ViewWebContentArchive612" priority="5">
 		<property name="data.archive.type" value="data-archive-web-content-draft" />
 		<property name="portal.version" value="6.1.2" />
@@ -81,15 +72,6 @@
 	<command name="ViewWebContentArchive621015" priority="5">
 		<property name="data.archive.type" value="data-archive-web-content-draft" />
 		<property name="portal.version" value="6.2.10.15" />
-
-		<execute macro="Upgrade#addWCStructureAndTemplate" />
-
-		<execute macro="Upgrade#publishWCDraft" />
-	</command>
-
-	<command name="ViewWebContentArchive623" priority="5">
-		<property name="data.archive.type" value="data-archive-web-content-draft" />
-		<property name="portal.version" value="6.2.3" />
 
 		<execute macro="Upgrade#addWCStructureAndTemplate" />
 

@@ -20,11 +20,6 @@
 SiteTeamsDisplayContext siteTeamsDisplayContext = new SiteTeamsDisplayContext(renderRequest, renderResponse, request);
 %>
 
-<clay:navigation-bar
-	inverted="<%= true %>"
-	navigationItems="<%= siteTeamsDisplayContext.getNavigationItems() %>"
-/>
-
 <clay:management-toolbar
 	actionDropdownItems="<%= siteTeamsDisplayContext.getActionDropdownItems() %>"
 	clearResultsURL="<%= siteTeamsDisplayContext.getClearResultsURL() %>"
@@ -142,9 +137,28 @@ SiteTeamsDisplayContext siteTeamsDisplayContext = new SiteTeamsDisplayContext(re
 </aui:form>
 
 <aui:script sandbox="<%= true %>">
-	window.<portlet:namespace />deleteSelectedTeams = function() {
+	var deleteSelectedTeams = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm($(document.<portlet:namespace />fm));
 		}
 	}
+
+	var ACTIONS = {
+		'deleteSelectedTeams': deleteSelectedTeams
+	};
+
+	Liferay.componentReady('teamsManagementToolbar').then(
+		(managementToolbar) => {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

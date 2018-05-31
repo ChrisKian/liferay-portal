@@ -768,9 +768,12 @@ AUI.add(
 
 							fieldJSON.value = instance.get('localizationMap');
 
-							var form = instance.getForm();
+							if (instance.get('localizable')) {
+								var form = instance.getForm();
 
-							form.addAvailableLanguageIds(AObject.keys(fieldJSON.value));
+								form.addAvailableLanguageIds(AObject.keys(fieldJSON.value));
+							}
+
 						}
 
 						var fields = instance.get('fields');
@@ -2569,7 +2572,7 @@ AUI.add(
 					getDocumentLibrarySelectorURL: function() {
 						var instance = this;
 
-						return instance.getDocumentLibraryURL('com.liferay.journal.item.selector.criterion.JournalItemSelectorCriterion,com.liferay.item.selector.criteria.image.criterion.ImageItemSelectorCriterion');
+						return instance.getDocumentLibraryURL('com.liferay.journal.item.selector.criterion.JournalItemSelectorCriterion');
 					},
 
 					getDocumentLibraryURL: function(criteria) {
@@ -2588,14 +2591,14 @@ AUI.add(
 						portletURL.setParameter('p_p_auth', container.getData('itemSelectorAuthToken'));
 
 						var journalCriterionJSON = {
-							desiredItemSelectorReturnTypes: 'com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType,com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType',
+							desiredItemSelectorReturnTypes: 'com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType',
 							resourcePrimKey: parsedValue.resourcePrimKey
 						};
 
 						portletURL.setParameter('0_json', JSON.stringify(journalCriterionJSON));
 
 						var imageCriterionJSON = {
-							desiredItemSelectorReturnTypes: 'com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType,com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType'
+							desiredItemSelectorReturnTypes: 'com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType'
 						};
 
 						portletURL.setParameter('1_json', JSON.stringify(imageCriterionJSON));
@@ -3051,11 +3054,11 @@ AUI.add(
 					setLabel: function() {
 						var instance = this;
 
-						var fieldDefinition = instance.getFieldDefinition();
+						var options = instance._getOptions();
 
 						instance.getInputNode().all('option').each(
 							function(item, index) {
-								var optionDefinition = fieldDefinition.options[index];
+								var optionDefinition = options[index];
 
 								var optionLabel = optionDefinition.label[instance.get('displayLocale')];
 
@@ -3080,6 +3083,30 @@ AUI.add(
 								item.set('selected', value.indexOf(item.val()) > -1);
 							}
 						);
+					},
+
+					_getOptions: function() {
+						var instance = this;
+
+						var fieldDefinition = instance.getFieldDefinition();
+
+						var fieldOptions = fieldDefinition.options;
+
+						fieldOptions.unshift(instance._getPlaceholderOption());
+
+						return fieldOptions;
+					},
+
+					_getPlaceholderOption: function() {
+						var instance = this;
+						var label = {};
+
+						label[instance.get('displayLocale')] = '';
+
+						return {
+							label: label,
+							value: ''
+						};
 					}
 				}
 			}

@@ -1,17 +1,31 @@
 $accentColor: #80ACFF;
 $defaultColor: #A7A9BC;
+$gridSize: 8px;
 $translatedColor: #3DC513;
 
 .fragments-editor__fragment-entry-links lfr-editable {
+	background-size: $gridSize $gridSize;
 	box-shadow: 0 0 0 1px transparent;
 	cursor: pointer;
 	display: block;
+	min-height: 25px;
+	min-width: 25px;
 	position: relative;
 	transition: box-shadow ease 0.2s;
 
 	& > div[data-lfr-editable-id] {
 		display: inline;
 		outline: none;
+	}
+
+	&[type="image"]:after {
+		background-size: $gridSize $gridSize;
+		content: '';
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
 	}
 
 	&:hover {
@@ -43,5 +57,53 @@ $translatedColor: #3DC513;
 	&:focus-within {
 		background-color: fade_out($accentColor, 0.9);
 		box-shadow: 0 0 0 1px $accentColor;
+	}
+}
+
+.fragments-editor__fragment-entry-links.mapping lfr-editable {
+	box-shadow: 0 0 0 1px $defaultColor;
+
+	&,
+	&[type="image"]:after {
+		background-image: linear-gradient(45deg, transparent 0%, transparent calc(50% - 1px), fade_out($defaultColor, 0.7) 50%, transparent calc(50% + 1px), transparent 100%);
+	}
+
+	&:hover,
+	&[type="image"]:hover:after {
+		box-shadow: 0 0 0 1px $accentColor;
+	}
+}
+
+.fragments-editor__fragment-entry-links lfr-editable.mapped,
+.fragments-editor__fragment-entry-links lfr-editable.mapped[type="image"]:after {
+	background-image: linear-gradient(45deg, transparent 0%, transparent calc(50% - 1px), fade_out($accentColor, 0.7) 50%, transparent calc(50% + 1px), transparent 100%);
+	box-shadow: 0 0 0 1px fade_out($accentColor, 0.7);
+}
+
+.fragments-editor__fragment-entry-links lfr-editable.mapped:hover,
+.fragments-editor__fragment-entry-links lfr-editable.mapped[type="image"]:hover:after {
+	box-shadow: 0 0 0 1px fade_out($accentColor, 0.4);
+}
+
+.lfr-editable-field-tooltip.tooltip {
+	font-size: 0.8rem;
+	max-width: 100vw;
+	position: absolute;
+
+	.tooltip-inner {
+		max-width: 100%;
+	}
+
+	.btn {
+		font-size: 1em;
+	}
+
+	.btn + .btn {
+		margin-left: 1em;
+	}
+
+	&__btn-group {
+		display: flex;
+		flex-flow: nowrap;
 	}
 }

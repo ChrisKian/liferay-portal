@@ -59,9 +59,11 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
+import javax.naming.ldap.Rdn;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
@@ -201,7 +203,7 @@ public class DefaultPortalLDAP implements PortalLDAP {
 			sb.append(groupMappings.getProperty("groupName"));
 
 			sb.append(StringPool.EQUAL);
-			sb.append(groupName);
+			sb.append(Rdn.escapeValue(groupName));
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 
 			if (Validator.isNotNull(groupFilter)) {
@@ -812,7 +814,7 @@ public class DefaultPortalLDAP implements PortalLDAP {
 			sb.append(StringPool.OPEN_PARENTHESIS);
 			sb.append(groupMappings.getProperty("user"));
 			sb.append(StringPool.EQUAL);
-			sb.append(userDN);
+			sb.append(StringUtil.replace(userDN, '\\', "\\\\"));
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 
 			SearchControls searchControls = new SearchControls(
@@ -868,7 +870,7 @@ public class DefaultPortalLDAP implements PortalLDAP {
 			sb.append(StringPool.OPEN_PARENTHESIS);
 			sb.append(userMappings.getProperty(UserConverterKeys.GROUP));
 			sb.append(StringPool.EQUAL);
-			sb.append(groupDN);
+			sb.append(StringUtil.replace(groupDN, '\\', "\\\\"));
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 
 			SearchControls searchControls = new SearchControls(
@@ -969,13 +971,6 @@ public class DefaultPortalLDAP implements PortalLDAP {
 		}
 
 		return null;
-	}
-
-	@Reference(policyOption = ReferencePolicyOption.GREEDY, unbind = "-")
-	protected void setLdapFilterValidator(
-		LDAPFilterValidator ldapFilterValidator) {
-
-		_ldapFilterValidator = ldapFilterValidator;
 	}
 
 	@Reference(
@@ -1128,7 +1123,13 @@ public class DefaultPortalLDAP implements PortalLDAP {
 		DefaultPortalLDAP.class);
 
 	private String _companySecurityAuthType;
-	private LDAPFilterValidator _ldapFilterValidator;
+
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile LDAPFilterValidator _ldapFilterValidator;
+
 	private ConfigurationProvider<LDAPServerConfiguration>
 		_ldapServerConfigurationProvider;
 	private LDAPSettings _ldapSettings;

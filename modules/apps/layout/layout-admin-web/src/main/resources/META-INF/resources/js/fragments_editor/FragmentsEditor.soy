@@ -33,13 +33,14 @@
 	{@param? _handleMappeableFieldClicked: any}
 	{@param? _handleMappeableFieldSelected: any}
 	{@param? _handleMappingTypeSelected: any}
-	{@param? _handlePublishButtonClick: any}
 	{@param? _handleToggleContextualSidebarButtonClick: any}
 	{@param? _handleSelectAssetTypeButtonClick: any}
 	{@param? _handleSelectMappingDialogVisibleChanged: any}
 	{@param? _handleSelectMappingTypeDialogVisibleChanged: any}
 	{@param? _handleSidebarTabClick: any}
+	{@param? _handleToggleHighlightMapping: any}
 	{@param? _handleTranslationLanguageChange: any}
+	{@param? _highlightMapping: bool}
 	{@param? _lastSaveDate: string}
 	{@param? _selectMappingDialogEditableId: string}
 	{@param? _selectMappingDialogFragmentEntryLinkId: string}
@@ -60,6 +61,7 @@
 	{@param? getAssetDisplayContributorsURL: any}
 	{@param? id: string}
 	{@param? mappingFieldsURL: string}
+	{@param? publishLayoutPageTemplateEntryURL: string}
 	{@param? selectedMappingTypes: [
 		subtype: [
 			id: string,
@@ -76,15 +78,17 @@
 	<div id="{$id}">
 		{call .managementBar}
 			{param availableLanguages: $availableLanguages /}
+			{param classPK: $classPK /}
 			{param defaultLanguageId: $defaultLanguageId /}
-			{param languageId: $languageId /}
-			{param redirectURL: $redirectURL /}
-			{param spritemap: $spritemap /}
 			{param dirty: $_dirty /}
-			{param handlePublishButtonClick: $_handlePublishButtonClick /}
 			{param handleToggleContextualSidebarButtonClick: $_handleToggleContextualSidebarButtonClick /}
 			{param handleTranslationLanguageChange: $_handleTranslationLanguageChange /}
+			{param languageId: $languageId /}
 			{param lastSaveDate: $_lastSaveDate /}
+			{param portletNamespace: $portletNamespace /}
+			{param publishLayoutPageTemplateEntryURL: $publishLayoutPageTemplateEntryURL /}
+			{param redirectURL: $redirectURL /}
+			{param spritemap: $spritemap /}
 			{param status: $status /}
 			{param translationStatus: $_translationStatus /}
 		{/call}
@@ -96,6 +100,10 @@
 				{if $languageId != $defaultLanguageId}
 					{sp}translating
 				{/if}
+
+				{if $_highlightMapping}
+					{sp}mapping
+				{/if}
 			{/let}
 
 			<div class="{$entryLinksClasses}" ref="fragmentEntryLinks">
@@ -105,6 +113,7 @@
 							{call com.liferay.layout.admin.web.FragmentEntryLink.render}
 								{param content: $fragmentEntryLink.content /}
 								{param defaultEditorConfiguration: $defaultEditorConfiguration /}
+								{param defaultLanguageId: $defaultLanguageId /}
 								{param editableValues: $fragmentEntryLink.editableValues /}
 								{param events: [
 									'editableChanged': $_handleEditableChanged,
@@ -112,15 +121,14 @@
 									'move': $_handleFragmentMove,
 									'remove': $_handleFragmentRemove
 								] /}
-								{param defaultLanguageId: $defaultLanguageId /}
-								{param languageId: $languageId /}
 								{param fragmentEntryLinkId: $fragmentEntryLink.fragmentEntryLinkId /}
 								{param imageSelectorURL: $imageSelectorURL /}
-								{param selectedMappingTypes: $selectedMappingTypes /}
-								{param showMapping: $selectedMappingTypes and $selectedMappingTypes.type and $_sidebarSelectedTab == 'mapping' /}
+								{param languageId: $languageId /}
 								{param name: $fragmentEntryLink.name /}
 								{param portletNamespace: $portletNamespace /}
 								{param ref: 'fragmentEntryLink_' + $fragmentEntryLink.fragmentEntryLinkId /}
+								{param selectedMappingTypes: $selectedMappingTypes /}
+								{param showMapping: $selectedMappingTypes and $mappingFieldsURL ? true : false /}
 								{param spritemap: $spritemap /}
 							{/call}
 						</div>
@@ -146,19 +154,21 @@
 				{/call}
 			{/if}
 
-			{call com.liferay.layout.admin.web.SelectMappingTypeDialog.render}
-				{param classPK: $classPK /}
-				{param events: [
-					'mappingTypeSelected': $_handleMappingTypeSelected,
-					'visibleChanged': $_handleSelectMappingTypeDialogVisibleChanged
-				] /}
-				{param getAssetClassTypesURL: $getAssetClassTypesURL /}
-				{param getAssetDisplayContributorsURL: $getAssetDisplayContributorsURL /}
-				{param portletNamespace: $portletNamespace /}
-				{param spritemap: $spritemap /}
-				{param updateLayoutPageTemplateEntryAssetTypeURL: $updateLayoutPageTemplateEntryAssetTypeURL /}
-				{param visible: $_selectMappingTypeDialogVisible ?: false /}
-			{/call}
+			{if $getAssetClassTypesURL and $getAssetDisplayContributorsURL and $updateLayoutPageTemplateEntryAssetTypeURL}
+				{call com.liferay.layout.admin.web.SelectMappingTypeDialog.render}
+					{param classPK: $classPK /}
+					{param events: [
+						'mappingTypeSelected': $_handleMappingTypeSelected,
+						'visibleChanged': $_handleSelectMappingTypeDialogVisibleChanged
+					] /}
+					{param getAssetClassTypesURL: $getAssetClassTypesURL /}
+					{param getAssetDisplayContributorsURL: $getAssetDisplayContributorsURL /}
+					{param portletNamespace: $portletNamespace /}
+					{param spritemap: $spritemap /}
+					{param updateLayoutPageTemplateEntryAssetTypeURL: $updateLayoutPageTemplateEntryAssetTypeURL /}
+					{param visible: $_selectMappingTypeDialogVisible ?: false /}
+				{/call}
+			{/if}
 
 			{call liferay.frontend.ContextualSidebar.render}
 				{param body kind="html"}
@@ -196,7 +206,11 @@
 						{/call}
 					{elseif $_sidebarSelectedTab == 'mapping'}
 						{call com.liferay.layout.admin.web.SidebarMapping.render}
-							{param events: ['selectAssetTypeButtonClick': $_handleSelectAssetTypeButtonClick] /}
+							{param events: [
+								'selectAssetTypeButtonClick': $_handleSelectAssetTypeButtonClick,
+								'toggleHighlightMapping': $_handleToggleHighlightMapping
+							] /}
+							{param highlightMapping: $_highlightMapping ?: false /}
 							{param selectedMappingTypes: $selectedMappingTypes /}
 							{param spritemap: $spritemap /}
 						{/call}
@@ -257,14 +271,17 @@
  */
 {template .managementBar}
 	{@param availableLanguages: ?}
+	{@param classPK: ?}
 	{@param defaultLanguageId: string}
 	{@param languageId: string}
+	{@param portletNamespace: string}
+	{@param redirectURL: string}
 	{@param spritemap: string}
 	{@param? dirty: bool}
-	{@param? handlePublishButtonClick: any}
 	{@param? handleToggleContextualSidebarButtonClick: any}
 	{@param? handleTranslationLanguageChange: any}
 	{@param? lastSaveDate: string}
+	{@param? publishLayoutPageTemplateEntryURL: string}
 	{@param? status: string}
 	{@param? translationStatus: [
 		languageValues: list<[languageId: string, values: list<string>]>,
@@ -301,11 +318,27 @@
 						<span class="label label-secondary">{$status}</span>
 					</li>
 				{/if}
-				<li class="nav-item">
-					<button class="btn btn-primary nav-btn" data-onclick="{$handlePublishButtonClick}">
-						{msg desc=""}publish{/msg}
-					</button>
-				</li>
+				{if $publishLayoutPageTemplateEntryURL}
+					<li class="nav-item">
+						<form action="{$publishLayoutPageTemplateEntryURL}" method="POST">
+							<input
+								name="{$portletNamespace}classPK"
+								type="hidden"
+								value="{$classPK}"
+							/>
+
+							<input
+								name="{$portletNamespace}redirect"
+								type="hidden"
+								value="{$redirectURL}"
+							/>
+
+							<button class="btn btn-primary nav-btn" type="submit">
+								{msg desc=""}publish{/msg}
+							</button>
+						</form>
+					</li>
+				{/if}
 				<li class="nav-item">
 					<button class="btn btn-secondary nav-btn" data-onclick="{$handleToggleContextualSidebarButtonClick}">
 						<svg class="icon-monospaced lexicon-icon">

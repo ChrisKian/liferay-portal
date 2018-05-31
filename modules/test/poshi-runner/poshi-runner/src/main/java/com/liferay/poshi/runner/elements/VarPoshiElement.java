@@ -91,24 +91,23 @@ public class VarPoshiElement extends PoshiElement {
 			return;
 		}
 
-		value = getQuotedContent(value);
+		if (value.endsWith("\"") && value.startsWith("\"")) {
+			value = getQuotedContent(value);
 
-		if (value.contains("Util.") || value.startsWith("selenium.")) {
-			if (value.startsWith("selenium.")) {
-				value = value.replace("selenium.", "selenium#");
-			}
-			else {
-				value = value.replace("Util.", "Util#");
-			}
+			value = value.replace("&quot;", "\"");
 
-			addAttribute("method", value);
+			addAttribute("value", value);
 
 			return;
 		}
 
-		value = value.replace("&quot;", "\"");
+		if (isValidUtilClassName(value) || value.startsWith("selenium.") ||
+			value.startsWith("TestPropsUtil.")) {
 
-		addAttribute("value", value);
+			value = value.replaceFirst("\\.", "#");
+
+			addAttribute("method", value);
+		}
 	}
 
 	@Override
@@ -140,11 +139,11 @@ public class VarPoshiElement extends PoshiElement {
 
 		if (Validator.isNotNull(valueAttributeName)) {
 			if (valueAttributeName.equals("method")) {
-				if (value.startsWith("selenium#")) {
-					value = value.replace("selenium#", "selenium.");
-				}
-				else {
-					value = value.replace("Util#", "Util.");
+				if (isValidUtilClassName(value) ||
+					value.startsWith("selenium#") ||
+					value.startsWith("TestPropsUtil#")) {
+
+					value = value.replaceFirst("#", ".");
 				}
 			}
 			else {
@@ -153,9 +152,9 @@ public class VarPoshiElement extends PoshiElement {
 				if (parentElement instanceof ExecutePoshiElement) {
 					value = value.replace("\\", "\\\\");
 				}
-			}
 
-			value = quoteContent(value);
+				value = quoteContent(value);
+			}
 		}
 
 		sb.append(value);
@@ -258,7 +257,7 @@ public class VarPoshiElement extends PoshiElement {
 			return false;
 		}
 
-		if (readableSyntax.contains(" = return(")) {
+		if (isMacroReturnVar(readableSyntax)) {
 			return false;
 		}
 

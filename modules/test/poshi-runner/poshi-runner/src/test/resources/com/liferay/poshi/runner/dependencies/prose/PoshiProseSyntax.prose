@@ -1,0 +1,46 @@
+Scenario: catSearch
+	When I visit the URL "https://www.yahoo.com"
+	And I issue a search for "cats"
+	Then I should see "stray cat" and "domestic cat" and "kitten" and "lion"
+
+Scenario: assertLiferayMainPageAvailability
+	When I visit the URL "https://www.liferay.com"
+	And I wait for "title" to be present
+	Then I should close the window
+
+Scenario: multiLineString
+    When I visit the URL "https://www.liferay.com"
+    And I have a lot to say:
+		"""json
+		{
+			"corpProjectId": 105016901,
+			"createDate": 1524669656551,
+			"dossieraProjectKey": "",
+			"modifiedDate": 1524669718798,
+			"name": "QA Test - {random}",
+			"organization": {
+				"name": "CorpProject(105016901)QA Test B1",
+				"organizationId": 105016902,
+				"uuid": "4eeb0852-52e1-4f4c-b538-fa2b44975f8d"
+			},
+			"salesforceProjectKey": "",
+			"userUuid": "8079bfab-daa0-4eae-b54a-c8e74f32e904",
+			"user": {
+				"agreedToTermsOfUse": "true",
+				"createDate": 1223420276000,
+				"emailAddress": "amos.fong@liferay.com.broken",
+				"emailAddressVerified": true,
+				"firstName": "Amos",
+				"jobTitle": "Software Engineer",
+				"languageId": "en_US",
+				"lastName": "Fong",
+				"middleName": "",
+				"screenName": "amos.fong",
+				"timeZoneId": "America/Los_Angeles",
+				"userId": 1395288,
+				"uuid": "8079bfab-daa0-4eae-b54a-c8e74f32e904"
+			},
+			"uuid": "cea92adc-6047-40b2-b42b-64372d9bb4bf"
+		}
+		"""
+	Then I visit the URL "https://www.ask.com"

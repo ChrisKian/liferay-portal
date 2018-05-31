@@ -1422,36 +1422,7 @@ app.server.type=@{app.server.type}]]></echo>
 
 							<antcall inheritAll="false" target="prepare-system-ext-properties" />
 
-							<for param="app.dir">
-								<path>
-									<dirset
-										dir="modules"
-									>
-										<include name="apps/*" />
-										<include name="private/apps/*" />
-										<exclude name="${build.exclude.dirs}" />
-									</dirset>
-								</path>
-
-								<sequential>
-									<local name="app.name" />
-									<local name="Liferay-Releng-Bundle" />
-
-									<basename file="@{app.dir}" property="app.name" />
-
-									<property file="@{app.dir}/app.bnd" />
-
-									<if>
-										<equals arg1="${Liferay-Releng-Bundle}" arg2="true" />
-										<then>
-											<ant dir="modules" inheritAll="false" target="build-app-lpkg">
-												<property name="app.name" value="${app.name}" />
-												<property name="osgi.dir" value="${app.server.parent.dir}/osgi" />
-											</ant>
-										</then>
-									</if>
-								</sequential>
-							</for>
+							<ant dir="modules" inheritAll="false" target="build-app-lpkg-release" />
 
 							<delete dir="${liferay.home}/osgi/modules" />
 							<delete dir="${liferay.home}/osgi/portal" />
@@ -1465,9 +1436,21 @@ app.server.type=@{app.server.type}]]></echo>
 								/>
 							</delete>
 
+							<ant dir="modules" inheritAll="false" target="index-modules-and-app-lpkgs">
+								<property name="app.server.parent.dir" value="${project.dir}/bundles" />
+								<property name="osgi.dir" value="${app.server.parent.dir}/osgi" />
+							</ant>
+
 							<trycatch>
 								<try>
 									<antcall inheritall="false" target="start-app-server" />
+
+									<gradle-execute dir="modules/apps/static/portal-lpkg-deployer/portal-lpkg-deployer-test" task="test">
+										<arg value="test" />
+										<arg value="--tests" />
+										<arg value="*.LPKGIndexValidatorLogScannerTest" />
+										<arg value="-Dliferay.home=${liferay.home}" />
+									</gradle-execute>
 
 									<gradle-execute dir="modules/apps/static/portal-lpkg-deployer/portal-lpkg-deployer-test" task="testIntegration">
 										<arg value="testIntegration" />
@@ -1516,6 +1499,13 @@ app.server.type=@{app.server.type}]]></echo>
 							<trycatch>
 								<try>
 									<antcall inheritall="false" target="start-app-server" />
+
+									<gradle-execute dir="modules/apps/static/portal-lpkg-deployer/portal-lpkg-deployer-test" task="test">
+										<arg value="test" />
+										<arg value="--tests" />
+										<arg value="*.LPKGIndexValidatorLogScannerTest" />
+										<arg value="-Dliferay.home=${liferay.home}" />
+									</gradle-execute>
 
 									<gradle-execute dir="modules/apps/static/portal-lpkg-deployer/portal-lpkg-deployer-test" task="testIntegration">
 										<arg value="testIntegration" />
@@ -2254,6 +2244,26 @@ app.server.type=@{app.server.type}]]></echo>
 		/>
 	</target>
 
+	<target name="functional-bundle-tomcat-mysql57-jdk8">
+		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
+
+		<run-functional-test
+			app.server.type="tomcat"
+			database.type="mysql"
+			database.version="5.7"
+			setup.proxy="false"
+			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
+			test.fix.pack.base.url="${test.fix.pack.base.url}"
+			test.license.xml.url="${test.license.xml.url}"
+			test.plugin.zip.url="${test.plugin.zip.url}"
+			test.plugins.war.zip.url="${test.plugins.war.zip.url}"
+			test.portal.bundle.version="${test.portal.bundle.version}"
+			test.portal.bundle.zip.url="${test.portal.bundle.zip.url}"
+			test.portal.lpkg.name="${test.portal.lpkg.name}"
+			test.sql.zip.url="${test.sql.zip.url}"
+		/>
+	</target>
+
 	<target name="functional-bundle-tomcat-oracle121-jdk8">
 		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
 
@@ -2383,6 +2393,10 @@ app.server.type=@{app.server.type}]]></echo>
 		<antcall target="functional-bundle-tomcat-mysql56-jdk8" />
 	</target>
 
+	<target name="functional-smoke-bundle-tomcat-mysql57-jdk8">
+		<antcall target="functional-bundle-tomcat-mysql57-jdk8" />
+	</target>
+
 	<target name="functional-smoke-jboss70-mysql56-jdk8">
 		<run-functional-test app.server.type="jboss" database.type="mysql" test.portal.log.assert="true" />
 	</target>
@@ -2463,7 +2477,7 @@ app.server.type=@{app.server.type}]]></echo>
 		<run-functional-test app.server.type="websphere" database.type="mysql" test.portal.log.assert="true" />
 	</target>
 
-	<target name="functional-smoke-websphere85-mysql57-jdk8">
+	<target name="functional-smoke-websphere90-mysql57-jdk8">
 		<run-functional-test app.server.type="websphere" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
 
@@ -2990,6 +3004,22 @@ ${output.content}</echo>
 		/>
 	</target>
 
+	<target name="plugins-functional-bundle-tomcat-mysql57-jdk8">
+		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
+
+		<run-functional-test
+			app.server.type="tomcat"
+			database.type="mysql"
+			database.version="5.7"
+			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
+			test.fix.pack.base.url="${test.fix.pack.base.url}"
+			test.license.xml.url="${test.license.xml.url}"
+			test.portal.bundle.version="${test.portal.bundle.version}"
+			test.portal.bundle.zip.url="${test.portal.bundle.zip.url}"
+			test.sql.zip.url="${test.sql.zip.url}"
+		/>
+	</target>
+
 	<target name="plugins-functional-tomcat80-mysql56-jdk8">
 		<run-functional-test app.server.type="tomcat" database.type="mysql" />
 	</target>
@@ -3285,6 +3315,10 @@ ${output.content}</echo>
 
 	<target name="release-functional-smoke-bundle-tomcat-mysql56-jdk8">
 		<antcall target="functional-bundle-tomcat-mysql56-jdk8" />
+	</target>
+
+	<target name="release-functional-smoke-bundle-tomcat-mysql57-jdk8">
+		<antcall target="functional-bundle-tomcat-mysql57-jdk8" />
 	</target>
 
 	<target name="ruby-sass-compiler-jdk8">

@@ -56,13 +56,14 @@ public class AppServer {
 
 	public static AppServer getWebLogicAppServer() {
 		return new AppServer(
-			"../../weblogic-12.2.1", "/bin", "/domains/liferay/lib",
-			"/domains/liferay/autodeploy/ROOT", "weblogic");
+			"../../weblogic-12.2.1", "/wlserver/modules",
+			"/domains/liferay/lib", "/domains/liferay/autodeploy/ROOT",
+			"weblogic");
 	}
 
 	public static AppServer getWebSphereAppServer() {
 		return new AppServer(
-			"../../websphere-8.5.5.0", "", "/lib",
+			"../../websphere-9.0.0.0", "", "/lib",
 			"/profiles/liferay/installedApps/liferay-cell/liferay-portal.ear" +
 				"/liferay-portal.war",
 			"websphere");

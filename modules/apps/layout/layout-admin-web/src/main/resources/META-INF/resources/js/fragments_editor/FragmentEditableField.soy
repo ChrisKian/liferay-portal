@@ -1,0 +1,40 @@
+{namespace com.liferay.layout.admin.web.FragmentEditableField}
+
+/**
+ * FragmentEditableField
+ */
+{template .render}
+	{@param content: html}
+	{@param editableId: string}
+	{@param type: string}
+	{@param? _handleEditableClick: any}
+	{@param? _handleOutsideTooltipClick: any}
+	{@param? _handleTooltipButtonClick: any}
+	{@param? _showTooltip: bool}
+	{@param? _tooltipAlignElement: ?}
+	{@param? _tooltipButtons: list<[
+		id: string,
+		label: string
+	]>}
+
+	<lfr-editable
+		data-onclick="{$_handleEditableClick}"
+		id="{$editableId}"
+		ref="editable"
+		type="{$type}"
+	>
+		{$content}
+
+		{if $_showTooltip and $_tooltipAlignElement and $_tooltipButtons}
+			{call com.liferay.layout.admin.web.FragmentEditableFieldTooltip.render}
+				{param alignElement: $_tooltipAlignElement /}
+				{param buttons: $_tooltipButtons /}
+				{param events: [
+					'buttonClick': $_handleTooltipButtonClick,
+					'outsideTooltipClick': $_handleOutsideTooltipClick
+				] /}
+				{param portalElement: 'body' /}
+			{/call}
+		{/if}
+	</lfr-editable>
+{/template}

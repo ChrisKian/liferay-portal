@@ -84,8 +84,7 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 	@Reference(
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC,
-		policyOption = ReferencePolicyOption.GREEDY,
-		unbind = "removeDDMFormFieldValueValidator"
+		policyOption = ReferencePolicyOption.GREEDY
 	)
 	protected void addDDMFormFieldValueValidator(
 		DDMFormFieldValueValidator ddmFormFieldValueValidator,
@@ -114,13 +113,17 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 				_ddmExpressionFactory.createBooleanDDMExpression(
 					expressionString);
 
-			if (dataType.equals(FieldConstants.INTEGER)) {
-				ddmExpression.setIntegerVariableValue(
-					ddmFormFieldName, GetterUtil.getInteger(valueString));
-			}
-			else if (dataType.equals(FieldConstants.BOOLEAN)) {
+			if (dataType.equals(FieldConstants.BOOLEAN)) {
 				ddmExpression.setBooleanVariableValue(
 					ddmFormFieldName, GetterUtil.getBoolean(valueString));
+			}
+			else if (dataType.equals(FieldConstants.DOUBLE)) {
+				ddmExpression.setDoubleVariableValue(
+					ddmFormFieldName, GetterUtil.getDouble(valueString));
+			}
+			else if (dataType.equals(FieldConstants.INTEGER)) {
+				ddmExpression.setIntegerVariableValue(
+					ddmFormFieldName, GetterUtil.getInteger(valueString));
 			}
 			else {
 				ddmExpression.setStringVariableValue(

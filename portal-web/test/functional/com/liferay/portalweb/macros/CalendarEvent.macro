@@ -736,7 +736,15 @@
 	</command>
 
 	<command name="addViaDayView">
-		<execute macro="CalendarScheduler#gotoAddViaDayView" />
+		<if>
+			<isset var="eventBlock" />
+			<then>
+				<execute macro="CalendarScheduler#addViaDayViewDragAndDrop" />
+			</then>
+			<else>
+				<execute macro="CalendarScheduler#gotoAddViaDayView" />
+			</else>
+		</if>
 
 		<execute macro="CalendarScheduler#editTitle">
 			<var name="eventTitle" value="${eventTitle}" />
@@ -1371,6 +1379,12 @@
 		<execute function="SelectFrame" value1="relative=top" />
 	</command>
 
+	<command name="resizeViaEventBlock">
+		<execute function="MouseOver#mouseOverNotVisible" locator1="DragAndDrop#CALENDAR_EVENT" />
+
+		<execute function="SikuliDragAndDrop" locator1="Calendar#SCHEDULER_VIEW_DAY_RESIZER_ICON" value1="0,100" />
+	</command>
+
 	<command name="saveEventUserInvite">
 		<execute function="AssertElementPresent" locator1="CalendarEditEvent#ARE_YOU_SURE_DIALOG_BOX_HEADER" />
 		<execute function="AssertTextEquals" locator1="CalendarEditEvent#ARE_YOU_SURE_DIALOG_BOX_BODY" value1="Invited users will be notified." />
@@ -1654,7 +1668,7 @@
 				<execute macro="ProductMenu#gotoPortlet">
 					<var name="category" value="Build" />
 					<var name="panel" value="Site Administration" />
-					<var name="portlet" value="Site Pages" />
+					<var name="portlet" value="Pages" />
 				</execute>
 
 				<execute macro="SitePages#addPublicPage">
@@ -1679,7 +1693,7 @@
 
 		<execute macro="CalendarEvent#delete" />
 
-		<execute macro="Alert#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="tearDownOnBusyDayInCurrentMonth">
@@ -1718,7 +1732,7 @@
 	</command>
 
 	<command name="viewAllDay">
-		<for list="${viewType}" param="Day,Week,Month">
+		<for list="Day,Week,Month" param="viewType">
 			<execute macro="CalendarNavigator#gotoView">
 				<var name="viewType" value="${viewType}" />
 			</execute>
@@ -1922,7 +1936,7 @@
 	</command>
 
 	<command name="viewEventNotToday">
-		<for list="${viewType}" param="Day,Week,Month">
+		<for list="Day,Week,Month" param="viewType">
 			<execute macro="CalendarNavigator#gotoView">
 				<var name="viewType" value="${viewType}" />
 			</execute>
@@ -2261,7 +2275,7 @@
 	</command>
 
 	<command name="viewYearly">
-		<for list="${viewType}" param="Day,Week,Month">
+		<for list="Day,Week,Month" param="viewType">
 			<execute macro="CalendarNavigator#gotoView">
 				<var name="viewType" value="${viewType}" />
 			</execute>

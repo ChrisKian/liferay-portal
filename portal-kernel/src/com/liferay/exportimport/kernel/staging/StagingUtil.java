@@ -22,6 +22,7 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutRevision;
@@ -52,6 +53,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ProviderType
 public class StagingUtil {
+
+	public static <T extends BaseModel> void addModelToChangesetCollection(
+			T model)
+		throws PortalException {
+
+		_staging.addModelToChangesetCollection(model);
+	}
 
 	public static String buildRemoteURL(
 		ExportImportConfiguration exportImportConfiguration) {
@@ -433,6 +441,13 @@ public class StagingUtil {
 		_staging.lockGroup(userId, groupId);
 	}
 
+	public static void populateLastPublishDateCounts(
+			PortletDataContext portletDataContext, String[] classNames)
+		throws PortalException {
+
+		_staging.populateLastPublishDateCounts(portletDataContext, classNames);
+	}
+
 	public static long publishLayout(
 			long userId, long plid, long liveGroupId, boolean includeChildren)
 		throws PortalException {
@@ -740,6 +755,12 @@ public class StagingUtil {
 		_staging.updateStaging(portletRequest, liveGroup);
 	}
 
+	/**
+	 * @deprecated As of 5.0.0, replaced by {@link
+	 *             com.liferay.portal.kernel.service.GroupLocalService#validateRemote(
+	 *             long, String, int, String, boolean, long)}
+	 */
+	@Deprecated
 	public static void validateRemote(
 			long groupId, String remoteAddress, int remotePort,
 			String remotePathContext, boolean secureConnection,

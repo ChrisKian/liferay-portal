@@ -1017,7 +1017,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 
 	@Override
 	public String getBodyText() {
-		WebElement webElement = findElement(By.tagName("body"));
+		WebElement webElement = getWebElement("//body");
 
 		return webElement.getText();
 	}
@@ -1672,7 +1672,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 
 	@Override
 	public boolean isTextPresent(String pattern) {
-		WebElement webElement = findElement(By.tagName("body"));
+		WebElement webElement = getWebElement("//body");
 
 		String text = webElement.getText();
 

@@ -115,7 +115,7 @@ public class ChangesetManagerImpl implements ChangesetManager {
 		}
 
 		Map<String, String[]> parameterMap =
-			ExportImportConfigurationParameterMapFactory.buildParameterMap();
+			_exportImportConfigurationParameterMapFactory.buildParameterMap();
 
 		parameterMap.put("changesetUuid", new String[] {changeset.getUuid()});
 
@@ -136,7 +136,7 @@ public class ChangesetManagerImpl implements ChangesetManager {
 			changesetEnvironment.getUserId());
 
 		Map<String, Serializable> settingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			_exportImportConfigurationSettingsMapFactory.
 				buildPublishPortletSettingsMap(
 					user, groupId, changesetEnvironment.getPlid(), liveGroupId,
 					changesetEnvironment.getPlid(),
@@ -170,6 +170,14 @@ public class ChangesetManagerImpl implements ChangesetManager {
 	@Reference
 	private ExportImportConfigurationLocalService
 		_exportImportConfigurationLocalService;
+
+	@Reference
+	private ExportImportConfigurationParameterMapFactory
+		_exportImportConfigurationParameterMapFactory;
+
+	@Reference
+	private ExportImportConfigurationSettingsMapFactory
+		_exportImportConfigurationSettingsMapFactory;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

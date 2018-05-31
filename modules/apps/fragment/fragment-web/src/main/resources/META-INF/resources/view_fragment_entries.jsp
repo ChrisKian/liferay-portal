@@ -31,10 +31,9 @@
 	showCreationMenu="<%= fragmentDisplayContext.isShowAddButton(FragmentActionKeys.ADD_FRAGMENT_ENTRY) ? true : false %>"
 	sortingOrder="<%= fragmentDisplayContext.getOrderByType() %>"
 	sortingURL="<%= fragmentDisplayContext.getFragmentEntrySortingURL() %>"
-	viewTypeItems="<%= fragmentDisplayContext.getFragmentEntryViewTypeItems() %>"
 />
 
-<aui:form cssClass="container-fluid-1280" name="fm">
+<aui:form name="fm">
 	<liferay-ui:search-container
 		id="fragmentEntries"
 		searchContainer="<%= fragmentDisplayContext.getFragmentEntriesSearchContainer() %>"
@@ -119,7 +118,7 @@
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator
-			displayStyle="<%= fragmentDisplayContext.getDisplayStyle() %>"
+			displayStyle="icon"
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>
@@ -184,13 +183,33 @@
 </c:if>
 
 <aui:script>
-	window.<portlet:namespace />deleteSelectedFragmentEntries = function() {
+	var deleteSelectedFragmentEntries = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm(document.querySelector('#<portlet:namespace />fm'), '<portlet:actionURL name="/fragment/delete_fragment_entries"><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:actionURL>');
 		}
 	}
 
-	window.<portlet:namespace />exportSelectedFragmentEntries = function() {
+	var exportSelectedFragmentEntries = function() {
 		submitForm(document.querySelector('#<portlet:namespace />fm'), '<portlet:resourceURL id="/fragment/export_fragment_entries" />');
 	}
+
+	var ACTIONS = {
+		'deleteSelectedFragmentEntries': deleteSelectedFragmentEntries,
+		'exportSelectedFragmentEntries': exportSelectedFragmentEntries
+	};
+
+	Liferay.componentReady('fragmentEntriesManagementToolbar').then(
+		(managementToolbar) => {
+			managementToolbar.on(
+				'actionItemClicked',
+					function(event) {
+						var itemData = event.data.item.data;
+
+						if (itemData && itemData.action && ACTIONS[itemData.action]) {
+							ACTIONS[itemData.action]();
+						}
+					}
+				);
+		}
+	);
 </aui:script>

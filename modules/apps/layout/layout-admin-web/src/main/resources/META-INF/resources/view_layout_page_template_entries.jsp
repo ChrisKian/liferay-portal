@@ -34,14 +34,13 @@ LayoutPageTemplateDisplayContext layoutPageTemplateDisplayContext = new LayoutPa
 	showSearch="<%= layoutPageTemplateDisplayContext.isShowLayoutPageTemplateEntriesSearch() %>"
 	sortingOrder="<%= layoutPageTemplateDisplayContext.getOrderByType() %>"
 	sortingURL="<%= layoutPageTemplateDisplayContext.getSortingURL() %>"
-	viewTypeItems="<%= layoutPageTemplateDisplayContext.getViewTypeItems() %>"
 />
 
 <portlet:actionURL name="/layout/delete_layout_page_template_entry" var="deleteLayoutPageTemplateEntryURL">
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form action="<%= deleteLayoutPageTemplateEntryURL %>" cssClass="container-fluid-1280" name="fm">
+<aui:form action="<%= deleteLayoutPageTemplateEntryURL %>" name="fm">
 	<liferay-ui:search-container
 		id="layoutPageTemplateEntries"
 		searchContainer="<%= layoutPageTemplateDisplayContext.getLayoutPageTemplateEntriesSearchContainer() %>"
@@ -71,14 +70,27 @@ LayoutPageTemplateDisplayContext layoutPageTemplateDisplayContext = new LayoutPa
 							rowChecker="<%= searchContainer.getRowChecker() %>"
 							title="<%= layoutPageTemplateEntry.getName() %>"
 						>
-							<liferay-frontend:vertical-card-header>
-								<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
-							</liferay-frontend:vertical-card-header>
-
 							<liferay-frontend:vertical-card-footer>
-								<span class="label <%= (layoutPageTemplateEntry.getStatus() == WorkflowConstants.STATUS_APPROVED) ? "label-success" : "label-secondary" %>">
-									<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(layoutPageTemplateEntry.getStatus()) %>" />
-								</span>
+								<div class="card-subtitle row">
+									<div class="col text-truncate">
+										<c:choose>
+											<c:when test="<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) %>">
+												<liferay-ui:message key="widget-page-template" />
+											</c:when>
+											<c:otherwise>
+												<liferay-ui:message key="content-page-template" />
+											</c:otherwise>
+										</c:choose>
+									</div>
+								</div>
+
+								<div class="card-subtitle row">
+									<div class="col text-truncate">
+										<span class="label <%= (layoutPageTemplateEntry.getStatus() == WorkflowConstants.STATUS_APPROVED) ? "label-success" : "label-secondary" %>">
+											<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(layoutPageTemplateEntry.getStatus()) %>" />
+										</span>
+									</div>
+								</div>
 							</liferay-frontend:vertical-card-footer>
 						</liferay-frontend:vertical-card>
 					</c:when>
@@ -87,19 +99,32 @@ LayoutPageTemplateDisplayContext layoutPageTemplateDisplayContext = new LayoutPa
 							actionJsp="/layout_page_template_entry_action.jsp"
 							actionJspServletContext="<%= application %>"
 							cssClass="entry-display-style"
-							icon="page"
+							icon='<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) ? "page-template" : "page" %>'
 							resultRow="<%= row %>"
 							rowChecker="<%= searchContainer.getRowChecker() %>"
 							title="<%= layoutPageTemplateEntry.getName() %>"
 						>
-							<liferay-frontend:vertical-card-header>
-								<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
-							</liferay-frontend:vertical-card-header>
-
 							<liferay-frontend:vertical-card-footer>
-								<span class="label <%= (layoutPageTemplateEntry.getStatus() == WorkflowConstants.STATUS_APPROVED) ? "label-success" : "label-secondary" %>">
-									<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(layoutPageTemplateEntry.getStatus()) %>" />
-								</span>
+								<div class="card-subtitle row">
+									<div class="col text-truncate">
+										<c:choose>
+											<c:when test="<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) %>">
+												<liferay-ui:message key="widget-page-template" />
+											</c:when>
+											<c:otherwise>
+												<liferay-ui:message key="content-page-template" />
+											</c:otherwise>
+										</c:choose>
+									</div>
+								</div>
+
+								<div class="card-subtitle row">
+									<div class="col text-truncate">
+										<span class="label <%= (layoutPageTemplateEntry.getStatus() == WorkflowConstants.STATUS_APPROVED) ? "label-success" : "label-secondary" %>">
+											<liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(layoutPageTemplateEntry.getStatus()) %>" />
+										</span>
+									</div>
+								</div>
 							</liferay-frontend:vertical-card-footer>
 						</liferay-frontend:icon-vertical-card>
 					</c:otherwise>
@@ -108,7 +133,7 @@ LayoutPageTemplateDisplayContext layoutPageTemplateDisplayContext = new LayoutPa
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator
-			displayStyle="<%= layoutPageTemplateDisplayContext.getDisplayStyle() %>"
+			displayStyle="icon"
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>
@@ -163,15 +188,30 @@ LayoutPageTemplateDisplayContext layoutPageTemplateDisplayContext = new LayoutPa
 		}
 	);
 
-	window.<portlet:namespace />deleteLayoutPageTemplateEntries = function() {
+	var deleteLayoutPageTemplateEntries = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm($(document.<portlet:namespace />fm));
 		}
 	}
 
+	var ACTIONS = {
+		'deleteLayoutPageTemplateEntries': deleteLayoutPageTemplateEntries
+	};
+
 	Liferay.componentReady('layoutPageTemplateEntriesManagementToolbar').then(
 		(managementToolbar) => {
 			managementToolbar.on('creationButtonClicked', handleAddLayoutPageTemplateEntryMenuItemClick);
+
+			managementToolbar.on(
+				['actionItemClicked', 'filterItemClicked'],
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
 		}
 	);
 

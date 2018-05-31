@@ -48,6 +48,8 @@ class ManagementToolbar extends ClayComponent {
 						width: '320px'
 					}
 				);
+
+				this._sidenavInstance = sidenavToggle.sideNavigation('instance');
 			}
 		}
 
@@ -72,6 +74,33 @@ class ManagementToolbar extends ClayComponent {
 	}
 
 	/**
+	 * Deselects all searchContainer rows
+	 * @param {!Event} event
+	 * @private
+	 */
+
+	_handleDeselectAllClicked() {
+		if (this._searchContainer) {
+			this._searchContainer.select.toggleAllRows(false);
+		}
+	}
+
+	/**
+	 * Toggles the info panel
+	 * @param {!Event} event
+	 * @private
+	 */
+
+	_handleInfoButtonClicked(event) {
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (this._sidenavInstance) {
+			this._sidenavInstance.toggle()
+		}
+	}
+
+	/**
 	 * Toggles all searchContainer rows
 	 * @param {!Event} event
 	 * @private
@@ -87,18 +116,6 @@ class ManagementToolbar extends ClayComponent {
 			else {
 				this._searchContainer.select.toggleAllRows(false);
 			}
-		}
-	}
-
-	/**
-	 * Deselects all searchContainer rows
-	 * @param {!Event} event
-	 * @private
-	 */
-
-	_handleDeselectAllClicked() {
-		if (this._searchContainer) {
-			this._searchContainer.select.toggleAllRows(false);
 		}
 	}
 
@@ -252,6 +269,16 @@ ManagementToolbar.STATE = {
 	 */
 
 	searchActionURL: Config.string(),
+
+	/**
+	 * Map of properties that will be rendered as hidden inputs in the search
+	 * form.
+	 * @default undefined
+	 * @instance
+	 * @memberof ManagementToolbar
+	 * @type {?object}
+	 */
+	searchData: Config.object(),
 
 	/**
 	 * Method of the search form.

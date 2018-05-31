@@ -18,7 +18,6 @@ import static com.liferay.apio.architect.endpoint.ExceptionSupplierUtil.notFound
 
 import com.google.gson.JsonObject;
 
-import com.liferay.apio.architect.alias.RequestFunction;
 import com.liferay.apio.architect.documentation.APIDescription;
 import com.liferay.apio.architect.documentation.APITitle;
 import com.liferay.apio.architect.documentation.Documentation;
@@ -27,7 +26,6 @@ import com.liferay.apio.architect.endpoint.FormEndpoint;
 import com.liferay.apio.architect.endpoint.RootEndpoint;
 import com.liferay.apio.architect.functional.Try;
 import com.liferay.apio.architect.routes.ItemRoutes;
-import com.liferay.apio.architect.routes.NestedCollectionRoutes;
 import com.liferay.apio.architect.single.model.SingleModel;
 import com.liferay.apio.architect.uri.Path;
 import com.liferay.apio.architect.url.ServerURL;
@@ -38,7 +36,6 @@ import com.liferay.apio.architect.wiring.osgi.manager.representable.Representabl
 import com.liferay.apio.architect.wiring.osgi.manager.router.CollectionRouterManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.ItemRouterManager;
 import com.liferay.apio.architect.wiring.osgi.manager.router.NestedCollectionRouterManager;
-import com.liferay.apio.architect.wiring.osgi.manager.router.ReusableNestedCollectionRouterManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,25 +55,18 @@ import org.osgi.service.component.annotations.Reference;
  * @author Carlos Sierra Andrés
  * @author Jorge Ferrer
  */
-@Component(immediate = true)
+@Component
 public class RootEndpointImpl implements RootEndpoint {
 
 	@Activate
 	public void activate() {
-		RequestFunction<Optional<APITitle>> apiTitleRequestFunction =
-			httpServletRequest -> _providerManager.provideOptional(
-				httpServletRequest, APITitle.class);
-
-		RequestFunction<Optional<APIDescription>>
-			apiDescriptionRequestFunction =
-				httpServletRequest -> _providerManager.provideOptional(
-					httpServletRequest, APIDescription.class);
-
 		_documentation = new Documentation(
-			apiTitleRequestFunction, apiDescriptionRequestFunction,
+			() -> _provide(APITitle.class),
+			() -> _provide(APIDescription.class),
 			() -> _representableManager.getRepresentors(),
 			() -> _collectionRouterManager.getCollectionRoutes(),
-			() -> _itemRouterManager.getItemRoutes());
+			() -> _itemRouterManager.getItemRoutes(),
+			() -> _nestedCollectionRouterManager.getNestedCollectionRoutes());
 	}
 
 	@Override
@@ -96,7 +86,7 @@ public class RootEndpointImpl implements RootEndpoint {
 		return new FormEndpoint(
 			_collectionRouterManager::getCollectionRoutesOptional,
 			_itemRouterManager::getItemRoutesOptional,
-			this::_getNestedCollectionRoutesOptional);
+			_nestedCollectionRouterManager::getNestedCollectionRoutesOptional);
 	}
 
 	@Override
@@ -140,23 +130,9 @@ public class RootEndpointImpl implements RootEndpoint {
 			() -> _collectionRouterManager.getCollectionRoutesOptional(name),
 			() -> _representableManager.getRepresentorOptional(name),
 			() -> _itemRouterManager.getItemRoutesOptional(name),
-			nestedName -> _getNestedCollectionRoutesOptional(name, nestedName),
+			nestedName -> _nestedCollectionRouterManager.
+				getNestedCollectionRoutesOptional(name, nestedName),
 			_pathIdentifierMapperManager::mapToIdentifierOrFail);
-	}
-
-	private <T> Optional<NestedCollectionRoutes<T, Object>>
-		_getNestedCollectionRoutesOptional(String name, String nestedName) {
-
-		Optional<NestedCollectionRoutes<T, Object>> optional =
-			_nestedCollectionRouterManager.getNestedCollectionRoutesOptional(
-				name, nestedName);
-
-		return optional.map(
-			Optional::of
-		).orElseGet(
-			() -> _reusableNestedCollectionRouterManager.
-				getNestedCollectionRoutesOptional(nestedName)
-		);
 	}
 
 	private <T, S> Try<SingleModel<T>> _getSingleModelTry(
@@ -176,6 +152,10 @@ public class RootEndpointImpl implements RootEndpoint {
 					new Path(name, id))
 			)
 		);
+	}
+
+	private <T> Optional<T> _provide(Class<T> clazz) {
+		return _providerManager.provideOptional(_httpServletRequest, clazz);
 	}
 
 	@Reference
@@ -203,9 +183,5 @@ public class RootEndpointImpl implements RootEndpoint {
 
 	@Reference
 	private RepresentableManager _representableManager;
-
-	@Reference
-	private ReusableNestedCollectionRouterManager
-		_reusableNestedCollectionRouterManager;
 
 }

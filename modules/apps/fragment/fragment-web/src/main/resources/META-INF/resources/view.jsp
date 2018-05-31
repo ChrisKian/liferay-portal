@@ -20,13 +20,6 @@
 List<FragmentCollection> fragmentCollections = FragmentCollectionServiceUtil.getFragmentCollections(themeDisplay.getScopeGroupId());
 %>
 
-<liferay-ui:error exception="<%= RequiredFragmentEntryException.class %>" message="the-collection-cannot-be-deleted-because-it-contains-a-fragment-required-by-one-or-more-templates" />
-
-<clay:navigation-bar
-	inverted="<%= true %>"
-	navigationItems="<%= fragmentDisplayContext.getNavigationItems() %>"
-/>
-
 <div class="container-fluid container-fluid-max-xl container-view">
 	<div class="row">
 		<div class="col-lg-3">
@@ -48,14 +41,23 @@ List<FragmentCollection> fragmentCollections = FragmentCollectionServiceUtil.get
 									</div>
 
 									<div class="autofit-col autofit-col-end">
-										<c:if test="<%= fragmentDisplayContext.isShowAddButton(FragmentActionKeys.ADD_FRAGMENT_COLLECTION) %>">
-											<liferay-ui:icon
-												icon="plus"
-												iconCssClass="btn btn-monospaced btn-outline-borderless btn-outline-secondary"
-												markupView="lexicon"
-												url="<%= editFragmentCollectionURL %>"
-											/>
-										</c:if>
+										<ul class="navbar-nav">
+											<li>
+												<c:if test="<%= fragmentDisplayContext.isShowAddButton(FragmentActionKeys.ADD_FRAGMENT_COLLECTION) %>">
+													<liferay-ui:icon
+														icon="plus"
+														iconCssClass="btn btn-monospaced btn-outline-borderless btn-outline-secondary"
+														markupView="lexicon"
+														url="<%= editFragmentCollectionURL %>"
+													/>
+												</c:if>
+											</li>
+											<li>
+												<clay:dropdown-actions
+													dropdownItems="<%= fragmentDisplayContext.getCollectionsDropdownItems() %>"
+												/>
+											</li>
+										</ul>
 									</div>
 								</div>
 
@@ -111,22 +113,101 @@ List<FragmentCollection> fragmentCollections = FragmentCollectionServiceUtil.get
 
 			<c:if test="<%= fragmentCollection != null %>">
 				<div class="sheet">
-					<div class="align-items-center autofit-row h3">
-						<div class="autofit-col">
-							<%= HtmlUtil.escape(fragmentCollection.getName()) %>
-						</div>
+					<h3 class="sheet-title">
+						<div class="align-items-center autofit-row">
+							<div class="autofit-col">
+								<%= HtmlUtil.escape(fragmentCollection.getName()) %>
+							</div>
 
-						<div class="autofit-col autofit-col-end inline-item-after">
-							<liferay-util:include page="/fragment_collection_action.jsp" servletContext="<%= application %>" />
+							<div class="autofit-col autofit-col-end inline-item-after">
+								<liferay-util:include page="/fragment_collection_action.jsp" servletContext="<%= application %>" />
+							</div>
 						</div>
+					</h3>
+
+					<div class="sheet-section">
+						<liferay-util:include page="/view_fragment_entries.jsp" servletContext="<%= application %>" />
 					</div>
-
-					<liferay-util:include page="/view_fragment_entries.jsp" servletContext="<%= application %>" />
 				</div>
 			</c:if>
 		</div>
 	</div>
 </div>
+
+<aui:form cssClass="hide" name="fragmentCollectionsFm">
+</aui:form>
+
+<aui:script use="liferay-item-selector-dialog">
+	window.<portlet:namespace />deleteCollections = function() {
+		var fragmentCollectionsFm = $(document.<portlet:namespace />fragmentCollectionsFm);
+
+		var itemSelectorDialog = new A.LiferayItemSelectorDialog(
+			{
+				eventName: '<portlet:namespace />selectCollections',
+				on: {
+					selectedItemChange: function(event) {
+						var selectedItem = event.newVal;
+
+						if (selectedItem) {
+							fragmentCollectionsFm.append(selectedItem);
+
+							submitForm(fragmentCollectionsFm, '<liferay-portlet:actionURL copyCurrentRenderParameters="<%= false %>" name="/fragment/delete_fragment_collection"></liferay-portlet:actionURL>');
+						}
+					}
+				},
+				'strings.add': '<liferay-ui:message key="delete" />',
+				title: '<liferay-ui:message key="delete-collection" />',
+				url: '<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcRenderCommandName" value="/fragment/view_fragment_collections" /></portlet:renderURL>'
+			}
+		);
+
+		itemSelectorDialog.open();
+	}
+
+	window.<portlet:namespace />exportCollections = function() {
+		var fragmentCollectionsFm = $(document.<portlet:namespace />fragmentCollectionsFm);
+
+		var itemSelectorDialog = new A.LiferayItemSelectorDialog(
+			{
+				eventName: '<portlet:namespace />selectCollections',
+				on: {
+					selectedItemChange: function(event) {
+						var selectedItem = event.newVal;
+
+						if (selectedItem) {
+							fragmentCollectionsFm.append(selectedItem);
+
+							submitForm(fragmentCollectionsFm, '<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/fragment/export_fragment_collections" />');
+						}
+					}
+				},
+				'strings.add': '<liferay-ui:message key="export" />',
+				title: '<liferay-ui:message key="export-collection" />',
+				url: '<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcRenderCommandName" value="/fragment/view_fragment_collections" /></portlet:renderURL>'
+			}
+		);
+
+		itemSelectorDialog.open();
+	}
+
+	window.<portlet:namespace />openImportView = function() {
+		Liferay.Util.openWindow(
+			{
+				dialog: {
+					after: {
+						destroy: function(event) {
+							window.location.reload();
+						}
+					},
+					destroyOnHide: true
+				},
+				id: '<portlet:namespace />openImportView',
+				title: '<liferay-ui:message key="import-collections" />',
+				uri: '<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="mvcRenderCommandName" value="/fragment/view_import_fragment_collections" /></portlet:renderURL>'
+			}
+		);
+	}
+</aui:script>
 
 <aui:script require="metal-dom/src/all/dom as dom">
 	window.<portlet:namespace />exportSelectedFragmentCollections = function() {

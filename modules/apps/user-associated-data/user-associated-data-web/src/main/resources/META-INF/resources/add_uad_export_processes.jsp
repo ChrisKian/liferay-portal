@@ -60,6 +60,7 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 
 				<clay:management-toolbar
 					disabled="<%= disableManagementBar %>"
+					itemsTotal="<%= uadApplicationExportDisplayList.size() %>"
 					namespace="<%= renderResponse.getNamespace() %>"
 					searchContainerId="uadApplicationExportDisplay"
 					selectable="<%= true %>"
@@ -68,11 +69,12 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 
 				<liferay-ui:search-container
 					id="uadApplicationExportDisplay"
+					iteratorURL="<%= currentURLObj %>"
 					rowChecker="<%= new UADApplicationExportDisplayChecker(renderResponse) %>"
 					total="<%= uadApplicationExportDisplayList.size() %>"
 				>
 					<liferay-ui:search-container-results
-						results="<%= uadApplicationExportDisplayList %>"
+						results="<%= ListUtil.subList(uadApplicationExportDisplayList, searchContainer.getStart(), searchContainer.getEnd()) %>"
 					/>
 
 					<liferay-ui:search-container-row
@@ -123,10 +125,19 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 
 <aui:script>
 	function <portlet:namespace />exportApplicationData() {
-		var form = AUI.$(document.<portlet:namespace />fm);
+		var form = document.getElementById('<portlet:namespace />fm');
 
-		form.fm('applicationKeys').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds', '<portlet:namespace />rowIds'));
+		if (form) {
+			var applicationKeys = form.querySelector('#<portlet:namespace />applicationKeys');
 
-		submitForm(form, '<portlet:actionURL name="/export_application_data" />');
+			if (applicationKeys) {
+				applicationKeys.setAttribute(
+					'value',
+					Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds', '<portlet:namespace />rowIds')
+				);
+			}
+
+			submitForm(form, '<portlet:actionURL name="/export_application_data" />');
+		}
 	}
 </aui:script>

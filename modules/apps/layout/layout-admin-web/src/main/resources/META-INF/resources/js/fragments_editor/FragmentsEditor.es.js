@@ -34,10 +34,6 @@ class FragmentsEditor extends Component {
 	 * @review
 	 */
 
-	created() {
-		this.on('languageIdChanged', this._handleLanguageIdChange);
-	}
-
 	rendered(firstRender) {
 		if (firstRender) {
 			this._translationStatus = this._getTranslationStatus(
@@ -77,7 +73,9 @@ class FragmentsEditor extends Component {
 				}
 			).then(
 				() => {
-					this._lastSaveDate = new Date().toLocaleTimeString();
+					this._lastSaveDate = new Date().toLocaleTimeString(
+						Liferay.ThemeDisplay.getBCP47LanguageId()
+					);
 
 					this._dirty = false;
 				}
@@ -348,7 +346,7 @@ class FragmentsEditor extends Component {
 						{
 							config: {},
 							content: '',
-							editableValues: {},
+							editableValues: JSON.parse(response.editableValues),
 							fragmentEntryId: event.fragmentEntryId,
 							fragmentEntryLinkId: response.fragmentEntryLinkId,
 							name: event.fragmentName,
@@ -376,7 +374,9 @@ class FragmentsEditor extends Component {
 						}
 					).then(
 						() => {
-							this._lastSaveDate = new Date().toLocaleTimeString();
+							this._lastSaveDate = new Date().toLocaleTimeString(
+								Liferay.ThemeDisplay.getBCP47LanguageId()
+							);
 
 							this._dirty = false;
 
@@ -433,7 +433,9 @@ class FragmentsEditor extends Component {
 				}
 			).then(
 				() => {
-					this._lastSaveDate = new Date().toLocaleTimeString();
+					this._lastSaveDate = new Date().toLocaleTimeString(
+						Liferay.ThemeDisplay.getBCP47LanguageId()
+					);
 
 					this._dirty = false;
 				}
@@ -496,20 +498,6 @@ class FragmentsEditor extends Component {
 	}
 
 	/**
-	 * Callback executed when the language id has changed
-	 * @private
-	 * @review
-	 */
-
-	_handleLanguageIdChange() {
-		Object.keys(this.refs).filter(
-			key => key.startsWith('fragmentEntryLink_')
-		).forEach(
-			key => this.refs[key].update(this.languageId, this.defaultLanguageId)
-		);
-	}
-
-	/**
 	 * Callback executed when a mappeable fragment has been clicked
 	 * @param {!{ fragmentEntryLinkId: !string, editableId: !string }} event
 	 * @private
@@ -517,9 +505,15 @@ class FragmentsEditor extends Component {
 	 */
 
 	_handleMappeableFieldClicked(event) {
-		this._selectMappingDialogVisible = true;
 		this._selectMappingDialogFragmentEntryLinkId = event.fragmentEntryLinkId;
 		this._selectMappingDialogEditableId = event.editableId;
+
+		if (this.selectedMappingTypes && this.selectedMappingTypes.type) {
+			this._selectMappingDialogVisible = true;
+		}
+		else {
+			this._handleSelectAssetTypeButtonClick();
+		}
 	}
 
 	/**
@@ -561,6 +555,12 @@ class FragmentsEditor extends Component {
 
 	_handleMappingTypeSelected(event) {
 		this.selectedMappingTypes = event.mappingTypes;
+
+		if (this._selectMappingDialogFragmentEntryLinkId &&
+			this._selectMappingDialogEditableId) {
+
+			this._selectMappingDialogVisible = true;
+		}
 	}
 
 	/**
@@ -606,39 +606,6 @@ class FragmentsEditor extends Component {
 	}
 
 	/**
-	 * Callback executed when the publish button is clicked
-	 * @private
-	 * @review
-	 */
-
-	_handlePublishButtonClick() {
-		const formData = new FormData();
-
-		formData.append(
-			`${this.portletNamespace}classPK`,
-			this.classPK
-		);
-
-		fetch(
-			this.publishLayoutPageTemplateEntryURL,
-			{
-				body: formData,
-				credentials: 'include',
-				method: 'POST'
-			}
-		).then(
-			() => {
-				if (Liferay.SPA) {
-					Liferay.SPA.app.navigate(this.redirectURL);
-				}
-				else {
-					location.href = this.redirectURL;
-				}
-			}
-		);
-	}
-
-	/**
 	 * Callback executed when the sidebar visible state should be toggled
 	 * @private
 	 * @review
@@ -646,6 +613,16 @@ class FragmentsEditor extends Component {
 
 	_handleToggleContextualSidebarButtonClick() {
 		this._contextualSidebarVisible = !this._contextualSidebarVisible;
+	}
+
+	/**
+	 * Toggle highlightMapping attribute value
+	 * @private
+	 * @review
+	 */
+
+	_handleToggleHighlightMapping() {
+		this._highlightMapping = !this._highlightMapping;
 	}
 
 	/**
@@ -751,18 +728,14 @@ class FragmentsEditor extends Component {
 				}
 			).then(
 				() => {
-					this._lastSaveDate = new Date().toLocaleTimeString();
+					this._lastSaveDate = new Date().toLocaleTimeString(
+						Liferay.ThemeDisplay.getBCP47LanguageId()
+					);
 
 					this._translationStatus = this._getTranslationStatus(
 						Object.keys(this.availableLanguages).filter(languageId => languageId !== '_INJECTED_DATA_'),
 						this._getEditableValues()
 					);
-
-					const fragmentEntryLinkComponent = this.refs[`fragmentEntryLink_${fragmentEntryLink.fragmentEntryLinkId}`];
-
-					if (fragmentEntryLinkComponent) {
-						fragmentEntryLinkComponent.updateTranslationStatus(this.languageId, this.defaultLanguageId);
-					}
 
 					this._dirty = false;
 				}
@@ -913,7 +886,7 @@ FragmentsEditor.STATE = {
 	 * @type {!string}
 	 */
 
-	getAssetClassTypesURL: Config.string().required(),
+	getAssetClassTypesURL: Config.string(),
 
 	/**
 	 * URL for obtaining the asset types for which asset display pages can be
@@ -925,7 +898,7 @@ FragmentsEditor.STATE = {
 	 * @type {!string}
 	 */
 
-	getAssetDisplayContributorsURL: Config.string().required(),
+	getAssetDisplayContributorsURL: Config.string(),
 
 	/**
 	 * Optional ID provided by the template system.
@@ -1023,7 +996,7 @@ FragmentsEditor.STATE = {
 	 * @type {!string}
 	 */
 
-	publishLayoutPageTemplateEntryURL: Config.string().required(),
+	publishLayoutPageTemplateEntryURL: Config.string(),
 
 	/**
 	 * URL for redirect.
@@ -1137,7 +1110,7 @@ FragmentsEditor.STATE = {
 	 * @type {!string}
 	 */
 
-	updateLayoutPageTemplateEntryAssetTypeURL: Config.string().required(),
+	updateLayoutPageTemplateEntryAssetTypeURL: Config.string(),
 
 	/**
 	 * Allow opening/closing contextual sidebar
@@ -1164,6 +1137,20 @@ FragmentsEditor.STATE = {
 	 */
 
 	_dirty: Config.bool()
+		.internal()
+		.value(false),
+
+	/**
+	 * If true, editable values should be highlighted.
+	 * @default false
+	 * @instance
+	 * @memberOf FragmentsEditor
+	 * @private
+	 * @review
+	 * @type {boolean}
+	 */
+
+	_highlightMapping: Config.bool()
 		.internal()
 		.value(false),
 

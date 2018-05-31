@@ -101,11 +101,13 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
+import javax.naming.ldap.Rdn;
 
 import org.apache.commons.lang.time.StopWatch;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
@@ -483,20 +485,6 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		}
 	}
 
-	@Reference(policyOption = ReferencePolicyOption.GREEDY, unbind = "-")
-	public void setAttributesTransformer(
-		AttributesTransformer attributesTransformer) {
-
-		_attributesTransformer = attributesTransformer;
-	}
-
-	@Reference(policyOption = ReferencePolicyOption.GREEDY, unbind = "-")
-	public void setLDAPToPortalConverter(
-		LDAPToPortalConverter ldapToPortalConverter) {
-
-		_ldapToPortalConverter = ldapToPortalConverter;
-	}
-
 	@Reference(unbind = "-")
 	public void setSingleVMPool(SingleVMPool singleVMPool) {
 		_portalCache = (PortalCache<String, Long>)singleVMPool.getPortalCache(
@@ -651,8 +639,8 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		}
 	}
 
-	protected String escapeValue(String value) {
-		return StringUtil.replace(value, _UNESCAPED_CHARS, _ESCAPED_CHARS);
+	protected String escapeLDAPName(String ldapName) {
+		return StringUtil.replace(ldapName, '\\', "\\\\");
 	}
 
 	protected LDAPImportContext getLDAPImportContext(
@@ -732,7 +720,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		sb.append(StringPool.OPEN_PARENTHESIS);
 		sb.append(groupMappings.getProperty("groupName"));
 		sb.append("=");
-		sb.append(escapeValue(userGroup.getName()));
+		sb.append(Rdn.escapeValue(userGroup.getName()));
 		sb.append("))");
 
 		return _portalLDAP.getMultivaluedAttribute(
@@ -982,7 +970,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 			String fullUserDN = binding.getNameInNamespace();
 
-			sb.append(escapeValue(fullUserDN));
+			sb.append(escapeLDAPName(fullUserDN));
 
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 			sb.append(StringPool.CLOSE_PARENTHESIS);
@@ -1411,11 +1399,6 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		_lockManager = lockManager;
 	}
 
-	@Reference(policyOption = ReferencePolicyOption.GREEDY, unbind = "-")
-	protected void setPortalLDAP(PortalLDAP portalLDAP) {
-		_portalLDAP = portalLDAP;
-	}
-
 	protected void setProperty(
 		Object bean1, Object bean2, String propertyName) {
 
@@ -1701,16 +1684,9 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 		"prefixId", "skypeSn", "smsSn", "suffixId", "twitterSn"
 	};
 
-	private static final String[] _ESCAPED_CHARS = {
-		"\\\\,", "\\\\#", "\\\\+", "\\\\<", "\\\\>", "\\\\;", "\\\\=", "\\\\ "
-	};
-
 	private static final String _IMPORT_BY_GROUP = "group";
 
 	private static final String _IMPORT_BY_USER = "user";
-
-	private static final String[] _UNESCAPED_CHARS =
-		{"\\,", "\\#", "\\+", "\\<", "\\>", "\\;", "\\=", "\\ "};
 
 	private static final String _USER_PASSWORD_SCREEN_NAME = "screenName";
 
@@ -1725,7 +1701,12 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 	private static final Log _log = LogFactoryUtil.getLog(
 		LDAPUserImporterImpl.class);
 
-	private AttributesTransformer _attributesTransformer;
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile AttributesTransformer _attributesTransformer;
+
 	private CompanyLocalService _companyLocalService;
 	private String _companySecurityAuthType;
 	private ExpandoValueLocalService _expandoValueLocalService;
@@ -1740,10 +1721,22 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 	private ConfigurationProvider<LDAPServerConfiguration>
 		_ldapServerConfigurationProvider;
 	private LDAPSettings _ldapSettings;
-	private LDAPToPortalConverter _ldapToPortalConverter;
+
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile LDAPToPortalConverter _ldapToPortalConverter;
+
 	private LockManager _lockManager;
 	private PortalCache<String, Long> _portalCache;
-	private PortalLDAP _portalLDAP;
+
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile PortalLDAP _portalLDAP;
+
 	private RoleLocalService _roleLocalService;
 	private UserGroupLocalService _userGroupLocalService;
 	private UserLocalService _userLocalService;

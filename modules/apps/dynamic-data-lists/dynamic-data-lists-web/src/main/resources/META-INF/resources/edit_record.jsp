@@ -101,14 +101,12 @@ else {
 </portlet:actionURL>
 
 <c:if test="<%= record != null %>">
-	<liferay-frontend:management-bar>
-		<liferay-frontend:management-bar-buttons>
-			<liferay-frontend:management-bar-sidenav-toggler-button
-				icon="info-circle"
-				label="info"
-			/>
-		</liferay-frontend:management-bar-buttons>
-	</liferay-frontend:management-bar>
+	<clay:management-toolbar
+		infoPanelId="infoPanelId"
+		namespace="<%= renderResponse.getNamespace() %>"
+		selectable="false"
+		showSearch="false"
+	/>
 </c:if>
 
 <div class="closed container-fluid-1280 sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
@@ -165,8 +163,14 @@ else {
 	</c:if>
 
 	<div class="sidenav-content">
+		<liferay-portlet:renderURL varImpl="viewRecordSetURL">
+			<portlet:param name="mvcPath" value="/view_record_set.jsp" />
+			<portlet:param name="recordSetId" value="<%= String.valueOf(recordSetId) %>" />
+			<portlet:param name="displayStyle" value="<%= ddlDisplayContext.getDisplayStyle() %>" />
+		</liferay-portlet:renderURL>
+
 		<aui:form action="<%= (record == null) ? addRecordURL : updateRecordURL %>" cssClass="container-fluid-1280" enctype="multipart/form-data" method="post" name="fm">
-			<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+			<aui:input name="redirect" type="hidden" value="<%= viewRecordSetURL %>" />
 			<aui:input name="recordId" type="hidden" value="<%= recordId %>" />
 			<aui:input name="groupId" type="hidden" value="<%= recordSet.getGroupId() %>" />
 			<aui:input name="recordSetId" type="hidden" value="<%= recordSetId %>" />

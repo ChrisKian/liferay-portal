@@ -80,7 +80,7 @@
 
 		<execute macro="CalendarScheduler#saveEvent" />
 
-		<execute macro="Alert#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="addLocalizedEvent">
@@ -97,7 +97,11 @@
 
 		<execute function="AssertClick" locator1="Button#SAVE_LOCALIZED" value1="${saveButton}" />
 
-		<execute macro="Alert#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
+	</command>
+
+	<command name="addViaDayViewDragAndDrop">
+		<execute function="SikuliDragAndDrop" locator1="Calendar#SCHEDULER_DAY_VIEW_PNG" value1="0,200" />
 	</command>
 
 	<command name="changeCalendar">
@@ -216,7 +220,7 @@
 
 		<execute function="AssertClick" locator1="CalendarEditEvent#${saveOptionPath}_BUTTON" value1="${saveOption}" />
 
-		<execute macro="Alert#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="selectCalendar">

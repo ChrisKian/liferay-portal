@@ -366,9 +366,8 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			return Collections.emptyList();
 		}
 
-		for (int i = 0; i < inputStreamOVPs.size(); i++) {
-			ObjectValuePair<String, InputStream> inputStreamOVP =
-				inputStreamOVPs.get(i);
+		for (ObjectValuePair<String, InputStream> inputStreamOVP :
+				inputStreamOVPs) {
 
 			String fileName = inputStreamOVP.getKey();
 			InputStream inputStream = inputStreamOVP.getValue();
@@ -1521,7 +1520,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		cal.add(Calendar.WEEK_OF_YEAR, -1);
 
-		return wikiPageFinder.findByCreateDate(
+		return wikiPageFinder.findByModifiedDate(
 			groupId, nodeId, cal.getTime(), false, start, end);
 	}
 
@@ -1531,7 +1530,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		cal.add(Calendar.WEEK_OF_YEAR, -1);
 
-		return wikiPageFinder.countByCreateDate(
+		return wikiPageFinder.countByModifiedDate(
 			groupId, nodeId, cal.getTime(), false);
 	}
 

@@ -22,7 +22,7 @@ SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplay
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(String.valueOf(layoutsAdminDisplayContext.getPortletURL()));
 
-renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
+renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 %>
 
 <div class="container-fluid container-fluid-max-xl container-view">
@@ -84,7 +84,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
 
 		<div class="col-lg-9">
 			<div class="sheet">
-				<h3>
+				<h3 class="sheet-title">
 					<c:choose>
 						<c:when test="<%= selectLayoutPageTemplateEntryDisplayContext.isContentPages() %>">
 
@@ -137,7 +137,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
 										actionJspServletContext="<%= application %>"
 										cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
 										data="<%= addLayoutData %>"
-										icon="page"
+										icon='<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) ? "page-template" : "page" %>'
 										resultRow="<%= row %>"
 										rowChecker="<%= searchContainer.getRowChecker() %>"
 										title="<%= layoutPageTemplateEntry.getName() %>"

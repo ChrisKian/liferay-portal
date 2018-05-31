@@ -1226,12 +1226,6 @@ public class BlogsStatsUserPersistenceImpl extends BasePersistenceImpl<BlogsStat
 					result = blogsStatsUser;
 
 					cacheResult(blogsStatsUser);
-
-					if ((blogsStatsUser.getGroupId() != groupId) ||
-							(blogsStatsUser.getUserId() != userId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_G_U,
-							finderArgs, blogsStatsUser);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -2489,12 +2483,12 @@ public class BlogsStatsUserPersistenceImpl extends BasePersistenceImpl<BlogsStat
 				(orderByComparator == null)) {
 			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_U_L;
-			finderArgs = new Object[] { userId, lastPostDate };
+			finderArgs = new Object[] { userId, _getTime(lastPostDate) };
 		}
 		else {
 			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_U_L;
 			finderArgs = new Object[] {
-					userId, lastPostDate,
+					userId, _getTime(lastPostDate),
 					
 					start, end, orderByComparator
 				};
@@ -2907,7 +2901,7 @@ public class BlogsStatsUserPersistenceImpl extends BasePersistenceImpl<BlogsStat
 	public int countByU_L(long userId, Date lastPostDate) {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_U_L;
 
-		Object[] finderArgs = new Object[] { userId, lastPostDate };
+		Object[] finderArgs = new Object[] { userId, _getTime(lastPostDate) };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -3744,6 +3738,15 @@ public class BlogsStatsUserPersistenceImpl extends BasePersistenceImpl<BlogsStat
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_BLOGSSTATSUSER = "SELECT blogsStatsUser FROM BlogsStatsUser blogsStatsUser";
 	private static final String _SQL_SELECT_BLOGSSTATSUSER_WHERE_PKS_IN = "SELECT blogsStatsUser FROM BlogsStatsUser blogsStatsUser WHERE statsUserId IN (";
 	private static final String _SQL_SELECT_BLOGSSTATSUSER_WHERE = "SELECT blogsStatsUser FROM BlogsStatsUser blogsStatsUser WHERE ";

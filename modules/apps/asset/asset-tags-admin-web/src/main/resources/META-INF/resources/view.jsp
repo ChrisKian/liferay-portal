@@ -16,11 +16,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<clay:navigation-bar
-	inverted="<%= true %>"
-	navigationItems="<%= assetTagsDisplayContext.getNavigationItems() %>"
-/>
-
 <clay:management-toolbar
 	actionDropdownItems="<%= assetTagsDisplayContext.getActionDropdownItems() %>"
 	clearResultsURL="<%= assetTagsDisplayContext.getClearResultsURL() %>"
@@ -76,30 +71,11 @@
 						</h6>
 					</liferay-ui:search-container-column-text>
 
-					<liferay-ui:search-container-column-jsp
-						path="/tag_action.jsp"
-					/>
-				</c:when>
-				<c:when test='<%= Objects.equals(assetTagsDisplayContext.getDisplayStyle(), "icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
-					<liferay-ui:search-container-column-text>
-						<liferay-frontend:icon-vertical-card
-							actionJsp="/tag_action.jsp"
-							actionJspServletContext="<%= application %>"
-							icon="tag"
-							resultRow="<%= row %>"
-							rowChecker="<%= searchContainer.getRowChecker() %>"
-							title="<%= tag.getName() %>"
-						>
-							<liferay-frontend:vertical-card-footer>
-								<strong><liferay-ui:message key="usages" /></strong>: <span><%= String.valueOf(fullTagsCount) %></span>
-							</liferay-frontend:vertical-card-footer>
-						</liferay-frontend:icon-vertical-card>
-					</liferay-ui:search-container-column-text>
+					<c:if test="<%= assetTagsDisplayContext.isShowTagsActionMenu() %>">
+						<liferay-ui:search-container-column-jsp
+							path="/tag_action.jsp"
+						/>
+					</c:if>
 				</c:when>
 				<c:when test='<%= Objects.equals(assetTagsDisplayContext.getDisplayStyle(), "list") %>'>
 					<liferay-ui:search-container-column-text
@@ -113,9 +89,11 @@
 						value="<%= String.valueOf(fullTagsCount) %>"
 					/>
 
-					<liferay-ui:search-container-column-jsp
-						path="/tag_action.jsp"
-					/>
+					<c:if test="<%= assetTagsDisplayContext.isShowTagsActionMenu() %>">
+						<liferay-ui:search-container-column-jsp
+							path="/tag_action.jsp"
+						/>
+					</c:if>
 				</c:when>
 			</c:choose>
 		</liferay-ui:search-container-row>
@@ -130,7 +108,7 @@
 <aui:script>
 	var form = document.querySelector('#<portlet:namespace />fm');
 
-	window.<portlet:namespace />mergeTags = function() {
+	var mergeTags = function() {
 		<portlet:renderURL var="mergeURL">
 			<portlet:param name="mvcPath" value="/merge_tag.jsp" />
 			<portlet:param name="mergeTagIds" value="[$MERGE_TAGS_IDS$]" />
@@ -144,9 +122,29 @@
 		);
 	}
 
-	window.<portlet:namespace/>deleteTags = function() {
+	var deleteTags = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm(form);
 		}
 	}
+
+	var ACTIONS = {
+		'deleteTags': deleteTags,
+		'mergeTags': mergeTags
+	};
+
+	Liferay.componentReady('assetTagsManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				['actionItemClicked'],
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

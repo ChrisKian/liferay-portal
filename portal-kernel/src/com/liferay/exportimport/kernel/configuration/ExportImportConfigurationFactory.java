@@ -79,7 +79,7 @@ public class ExportImportConfigurationFactory {
 		throws PortalException {
 
 		Map<String, Serializable> publishLayoutLocalSettingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildPublishLayoutLocalSettingsMap(
 					user, sourceGroupId, targetGroupId, privateLayout,
 					ExportImportHelperUtil.getAllLayoutIds(
@@ -158,7 +158,7 @@ public class ExportImportConfigurationFactory {
 		PortletRequest portletRequest) {
 
 		Map<String, String[]> parameterMap =
-			ExportImportConfigurationParameterMapFactory.buildParameterMap(
+			ExportImportConfigurationParameterMapFactoryUtil.buildParameterMap(
 				portletRequest);
 
 		return addDefaultPublishingParameters(parameterMap);
@@ -216,7 +216,7 @@ public class ExportImportConfigurationFactory {
 		throws PortalException {
 
 		Map<String, Serializable> publishLayoutRemoteSettingsMap =
-			ExportImportConfigurationSettingsMapFactory.
+			ExportImportConfigurationSettingsMapFactoryUtil.
 				buildPublishLayoutRemoteSettingsMap(
 					user.getUserId(), sourceGroupId, privateLayout,
 					ExportImportHelperUtil.getAllLayoutIdsMap(
@@ -234,7 +234,8 @@ public class ExportImportConfigurationFactory {
 
 	protected static Map<String, String[]> getDefaultPublishingParameters() {
 		Map<String, String[]> parameterMap =
-			ExportImportConfigurationParameterMapFactory.buildParameterMap();
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
 
 		return addDefaultPublishingParameters(parameterMap);
 	}

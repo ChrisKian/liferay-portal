@@ -18,6 +18,7 @@ import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.apio.architect.routes.NestedCollectionRoutes;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,6 +31,8 @@ import java.util.Optional;
 @ProviderType
 public interface NestedCollectionRouterManager {
 
+	public Map<String, NestedCollectionRoutes> getNestedCollectionRoutes();
+
 	/**
 	 * Returns the nested collection routes for the nested collection resource's
 	 * name.
@@ -38,7 +41,7 @@ public interface NestedCollectionRouterManager {
 	 * @param  nestedName the nested collection resource's name
 	 * @return the nested collection routes
 	 */
-	public <T, S> Optional<NestedCollectionRoutes<T, S>>
+	public <T, S, U> Optional<NestedCollectionRoutes<T, S, U>>
 		getNestedCollectionRoutesOptional(String name, String nestedName);
 
 }

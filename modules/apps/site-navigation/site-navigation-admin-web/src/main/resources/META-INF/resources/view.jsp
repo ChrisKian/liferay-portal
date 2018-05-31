@@ -20,21 +20,16 @@
 String displayStyle = siteNavigationAdminDisplayContext.getDisplayStyle();
 %>
 
-<clay:navigation-bar
-	inverted="<%= true %>"
-	navigationItems="<%= siteNavigationAdminDisplayContext.getNavigationItems() %>"
-/>
-
 <clay:management-toolbar
 	actionDropdownItems="<%= siteNavigationAdminDisplayContext.getActionDropdownItems() %>"
 	clearResultsURL="<%= siteNavigationAdminDisplayContext.getClearResultsURL() %>"
 	componentId="siteNavigationMenuWebManagementToolbar"
-	creationMenu="<%= siteNavigationAdminDisplayContext.isShowAddButton() ? siteNavigationAdminDisplayContext.getCreationMenu() : null %>"
 	filterDropdownItems="<%= siteNavigationAdminDisplayContext.getFilterDropdownItems() %>"
 	itemsTotal="<%= siteNavigationAdminDisplayContext.getTotalItems() %>"
 	searchActionURL="<%= siteNavigationAdminDisplayContext.getSearchActionURL() %>"
 	searchContainerId="siteNavigationMenus"
 	searchFormName="searchFm"
+	showCreationMenu="<%= siteNavigationAdminDisplayContext.isShowAddButton() %>"
 	sortingOrder="<%= siteNavigationAdminDisplayContext.getOrderByType() %>"
 	sortingURL="<%= siteNavigationAdminDisplayContext.getSortingURL() %>"
 	viewTypeItems="<%= siteNavigationAdminDisplayContext.getViewTypeItems() %>"
@@ -138,7 +133,6 @@ String displayStyle = siteNavigationAdminDisplayContext.getDisplayStyle();
 					/>
 
 					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content text-center"
 						name="add-new-pages"
 						value='<%= siteNavigationMenu.isAuto() ? LanguageUtil.get(request, "yes") : StringPool.BLANK %>'
 					/>
@@ -173,7 +167,7 @@ String displayStyle = siteNavigationAdminDisplayContext.getDisplayStyle();
 </aui:form>
 
 <aui:script require="metal-dom/src/all/dom as dom,frontend-js-web/liferay/modal/commands/OpenSimpleInputModal.es as modalCommands" sandbox="<%= true %>">
-	window.<portlet:namespace />addNavigationMenuMenuItem = function(event) {
+	var addNavigationMenuMenuItem = function(event) {
 		modalCommands.openSimpleInputModal(
 			{
 				dialogTitle: '<liferay-ui:message key="add-menu" />',
@@ -185,7 +179,7 @@ String displayStyle = siteNavigationAdminDisplayContext.getDisplayStyle();
 				spritemap: '<%= themeDisplay.getPathThemeImages() %>/lexicon/icons.svg'
 			}
 		);
-	}
+	};
 
 	var renameSiteNavigationMenuClickHandler = dom.delegate(
 		document.body,
@@ -213,11 +207,33 @@ String displayStyle = siteNavigationAdminDisplayContext.getDisplayStyle();
 		}
 	);
 
-	window.<portlet:namespace />deleteSelectedSiteNavigationMenus = function() {
+	var deleteSelectedSiteNavigationMenus = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm($(document.<portlet:namespace />fm));
 		}
-	}
+	};
+
+	var ACTIONS = {
+		'addNavigationMenuMenuItem': addNavigationMenuMenuItem,
+		'deleteSelectedSiteNavigationMenus': deleteSelectedSiteNavigationMenus
+	};
+
+	Liferay.componentReady('siteNavigationMenuWebManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on('creationButtonClicked', addNavigationMenuMenuItem);
+
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 
 	function handleDestroyPortlet() {
 		renameSiteNavigationMenuClickHandler.removeListener();

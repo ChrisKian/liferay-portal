@@ -246,9 +246,17 @@ AUI.add(
 					_onClickDocument: function(event) {
 						var instance = this;
 
+						var clickedOnProductNav = false;
+
+						var productMenuSidebar = A.one('.lfr-product-menu-sidebar .sidebar-body');
+
 						var productNavToogle = A.one('.control-menu-nav-item.active');
 
-						if (instance.get('open') && !productNavToogle.contains(event.target) && !instance.hasFocus(event.target)) {
+						if (productNavToogle) {
+							clickedOnProductNav = productMenuSidebar.contains(event.target) || productNavToogle.contains(event.target);
+						}
+
+						if (instance.get('open') && !clickedOnProductNav && !instance.hasFocus(event.target)) {
 							instance.close();
 						}
 					},

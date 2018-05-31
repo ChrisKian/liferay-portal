@@ -1289,14 +1289,6 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 					result = oAuth2ApplicationScopeAliases;
 
 					cacheResult(oAuth2ApplicationScopeAliases);
-
-					if ((oAuth2ApplicationScopeAliases.getOAuth2ApplicationId() != oAuth2ApplicationId) ||
-							(oAuth2ApplicationScopeAliases.getScopeAliases() == null) ||
-							!oAuth2ApplicationScopeAliases.getScopeAliases()
-															  .equals(scopeAliases)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_O_S,
-							finderArgs, oAuth2ApplicationScopeAliases);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -1406,8 +1398,8 @@ public class OAuth2ApplicationScopeAliasesPersistenceImpl
 
 	private static final String _FINDER_COLUMN_O_S_OAUTH2APPLICATIONID_2 = "oAuth2ApplicationScopeAliases.oAuth2ApplicationId = ? AND ";
 	private static final String _FINDER_COLUMN_O_S_SCOPEALIASES_1 = "oAuth2ApplicationScopeAliases.scopeAliases IS NULL";
-	private static final String _FINDER_COLUMN_O_S_SCOPEALIASES_2 = "CAST_CLOB_TEXT(oAuth2ApplicationScopeAliases.scopeAliases) = ?";
-	private static final String _FINDER_COLUMN_O_S_SCOPEALIASES_3 = "(oAuth2ApplicationScopeAliases.scopeAliases IS NULL OR CAST_CLOB_TEXT(oAuth2ApplicationScopeAliases.scopeAliases) = '')";
+	private static final String _FINDER_COLUMN_O_S_SCOPEALIASES_2 = "oAuth2ApplicationScopeAliases.scopeAliases = ?";
+	private static final String _FINDER_COLUMN_O_S_SCOPEALIASES_3 = "(oAuth2ApplicationScopeAliases.scopeAliases IS NULL OR oAuth2ApplicationScopeAliases.scopeAliases = '')";
 
 	public OAuth2ApplicationScopeAliasesPersistenceImpl() {
 		setModelClass(OAuth2ApplicationScopeAliases.class);

@@ -16,9 +16,6 @@ package com.liferay.layout.admin.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.security.permission.resource.LayoutPageTemplatePermission;
 import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -31,8 +28,6 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -60,8 +55,10 @@ public class LayoutPageTemplateDisplayContext {
 
 		_renderRequest = renderRequest;
 		_renderResponse = renderResponse;
-
 		_request = request;
+
+		_themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public List<DropdownItem> geLayoutPageTemplateEntriesActionDropdownItems() {
@@ -69,9 +66,8 @@ public class LayoutPageTemplateDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" + _renderResponse.getNamespace() +
-								"deleteLayoutPageTemplateEntries();");
+						dropdownItem.putData(
+							"action", "deleteLayoutPageTemplateEntries");
 						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -82,9 +78,6 @@ public class LayoutPageTemplateDisplayContext {
 	}
 
 	public List<DropdownItem> getActionDropdownItems() {
-		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		return new DropdownItemList() {
 			{
 				add(
@@ -93,7 +86,7 @@ public class LayoutPageTemplateDisplayContext {
 							_renderResponse.createRenderURL(),
 							"mvcRenderCommandName",
 							"/layout/edit_layout_page_template_collection",
-							"redirect", themeDisplay.getURLCurrent());
+							"redirect", _themeDisplay.getURLCurrent());
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "new"));
 					});
@@ -107,20 +100,6 @@ public class LayoutPageTemplateDisplayContext {
 		clearResultsURL.setParameter("keywords", StringPool.BLANK);
 
 		return clearResultsURL.toString();
-	}
-
-	public String getDisplayStyle() {
-		if (Validator.isNotNull(_displayStyle)) {
-			return _displayStyle;
-		}
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(_request);
-
-		_displayStyle = portalPreferences.getValue(
-			LayoutAdminPortletKeys.GROUP_PAGES, "display-style", "icon");
-
-		return _displayStyle;
 	}
 
 	public List<DropdownItem> getFilterDropdownItems() {
@@ -203,13 +182,10 @@ public class LayoutPageTemplateDisplayContext {
 			return _layoutPageTemplateCollections;
 		}
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		_layoutPageTemplateCollections =
 			LayoutPageTemplateCollectionServiceUtil.
 				getLayoutPageTemplateCollections(
-					themeDisplay.getScopeGroupId());
+					_themeDisplay.getScopeGroupId());
 
 		return _layoutPageTemplateCollections;
 	}
@@ -218,9 +194,6 @@ public class LayoutPageTemplateDisplayContext {
 		if (_layoutPageTemplateEntriesSearchContainer != null) {
 			return _layoutPageTemplateEntriesSearchContainer;
 		}
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		SearchContainer layoutPageTemplateEntriesSearchContainer =
 			new SearchContainer(
@@ -249,7 +222,7 @@ public class LayoutPageTemplateDisplayContext {
 		if (isSearch()) {
 			layoutPageTemplateEntries =
 				LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
-					themeDisplay.getScopeGroupId(),
+					_themeDisplay.getScopeGroupId(),
 					getLayoutPageTemplateCollectionId(), getKeywords(),
 					layoutPageTemplateEntriesSearchContainer.getStart(),
 					layoutPageTemplateEntriesSearchContainer.getEnd(),
@@ -258,13 +231,13 @@ public class LayoutPageTemplateDisplayContext {
 			layoutPageTemplateEntriesCount =
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageTemplateEntriesCount(
-						themeDisplay.getScopeGroupId(),
+						_themeDisplay.getScopeGroupId(),
 						getLayoutPageTemplateCollectionId(), getKeywords());
 		}
 		else {
 			layoutPageTemplateEntries =
 				LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
-					themeDisplay.getScopeGroupId(),
+					_themeDisplay.getScopeGroupId(),
 					getLayoutPageTemplateCollectionId(),
 					layoutPageTemplateEntriesSearchContainer.getStart(),
 					layoutPageTemplateEntriesSearchContainer.getEnd(),
@@ -273,7 +246,7 @@ public class LayoutPageTemplateDisplayContext {
 			layoutPageTemplateEntriesCount =
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageTemplateEntriesCount(
-						themeDisplay.getScopeGroupId(),
+						_themeDisplay.getScopeGroupId(),
 						getLayoutPageTemplateCollectionId());
 		}
 
@@ -346,14 +319,11 @@ public class LayoutPageTemplateDisplayContext {
 	}
 
 	public PortletURL getPortletURL() {
-		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		PortletURL portletURL = _renderResponse.createRenderURL();
 
 		portletURL.setParameter("mvcRenderCommandName", "/layout/view");
 		portletURL.setParameter("tabs1", "page-templates");
-		portletURL.setParameter("redirect", themeDisplay.getURLCurrent());
+		portletURL.setParameter("redirect", _themeDisplay.getURLCurrent());
 
 		long layoutPageTemplateCollectionId =
 			getLayoutPageTemplateCollectionId();
@@ -362,12 +332,6 @@ public class LayoutPageTemplateDisplayContext {
 			portletURL.setParameter(
 				"layoutPageTemplateCollectionId",
 				String.valueOf(layoutPageTemplateCollectionId));
-		}
-
-		String displayStyle = getDisplayStyle();
-
-		if (Validator.isNotNull(displayStyle)) {
-			portletURL.setParameter("displayStyle", displayStyle);
 		}
 
 		String keywords = getKeywords();
@@ -414,14 +378,6 @@ public class LayoutPageTemplateDisplayContext {
 		return layoutPageTemplateEntriesSearchContainer.getTotal();
 	}
 
-	public List<ViewTypeItem> getViewTypeItems() {
-		return new ViewTypeItemList(getPortletURL(), getDisplayStyle()) {
-			{
-				addCardViewTypeItem();
-			}
-		};
-	}
-
 	public boolean isDisabledLayoutPageTemplateEntriesManagementBar() {
 		if (_hasLayoutPageTemplateEntriesResults()) {
 			return false;
@@ -453,12 +409,9 @@ public class LayoutPageTemplateDisplayContext {
 	}
 
 	public boolean isShowAddButton(String actionId) {
-		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		if (LayoutPageTemplatePermission.contains(
-				themeDisplay.getPermissionChecker(),
-				themeDisplay.getSiteGroupId(), actionId)) {
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getSiteGroupId(), actionId)) {
 
 			return true;
 		}
@@ -529,7 +482,6 @@ public class LayoutPageTemplateDisplayContext {
 		return false;
 	}
 
-	private String _displayStyle;
 	private String _keywords;
 	private LayoutPageTemplateCollection _layoutPageTemplateCollection;
 	private Long _layoutPageTemplateCollectionId;
@@ -542,5 +494,6 @@ public class LayoutPageTemplateDisplayContext {
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final HttpServletRequest _request;
+	private final ThemeDisplay _themeDisplay;
 
 }

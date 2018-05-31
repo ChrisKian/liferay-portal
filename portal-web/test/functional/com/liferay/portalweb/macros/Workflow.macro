@@ -2,7 +2,7 @@
 	<command name="_gotoPendingFilter">
 		<execute function="Pause" locator1="5000" />
 
-		<execute function="Click" locator1="Dropdown#FILTER" />
+		<execute function="Click" locator1="Dropdown#FILTER_AND_ORDER" />
 
 		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Pending">
 			<var name="key_menuItem" value="Pending" />
@@ -190,7 +190,7 @@
 
 		<execute macro="Button#clickDone" />
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="assignToMeTaskByActions">
@@ -318,7 +318,7 @@
 
 		<execute function="Click" locator1="Button#DONE" />
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="deleteWorkflowDefinition">
@@ -338,7 +338,7 @@
 
 		<execute function="AssertTextEquals" locator1="Message#SUCCESS" value1="Workflow deleted successfully." />
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 
 		<execute function="AssertElementNotPresent" locator1="WorkflowDefinition#DEFINITION_TABLE_TITLE" />
 	</command>
@@ -352,7 +352,7 @@
 	<command name="gotoCompletedFilter">
 		<execute function="Pause" locator1="5000" />
 
-		<execute function="Click" locator1="Dropdown#FILTER" />
+		<execute function="Click" locator1="Dropdown#FILTER_AND_ORDER" />
 
 		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Completed">
 			<var name="key_menuItem" value="Completed" />
@@ -433,7 +433,7 @@
 
 		<execute macro="PortletEntry#publish" />
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 
 		<execute macro="Workflow#viewDefinitionPublicationStatus">
 			<var name="status" value="Published" />
@@ -457,7 +457,7 @@
 			<var name="key_menuItem" value="Publish" />
 		</execute>
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="rejectTaskByActions">
@@ -691,7 +691,7 @@
 
 		<execute function="AssertTextEquals" locator1="Message#SUCCESS" value1="Workflow unpublished successfully." />
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="updateDueDateAssignedToMeTaskByActions">
@@ -892,8 +892,6 @@
 	</command>
 
 	<command name="viewCompletedTasksTaskNotPresentCP">
-		<execute macro="Workflow#gotoCompletedFilter" />
-
 		<var name="key_workflowAssetTitle" value="${workflowAssetTitle}" />
 
 		<execute function="AssertElementNotPresent" locator1="MyWorkflowTasks#COMPLETED_TABLE_TASK" />
@@ -908,49 +906,21 @@
 	</command>
 
 	<command name="viewDefaultMySubmissionsCP">
-		<execute macro="Workflow#_gotoPendingFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no pending publications requested by me." />
-
-		<execute macro="Workflow#gotoCompletedFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no completed publications requested by me." />
+		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no publications requested by me." />
 	</command>
 
 	<command name="viewDefaultMyWorkflowTasksCP">
 		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no tasks assigned to you." />
-
-		<execute macro="Workflow#_gotoPendingFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no pending tasks assigned to you." />
-
-		<execute macro="Workflow#gotoCompletedFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no completed tasks." />
 
 		<execute macro="Navigator#gotoNavTab">
 			<var name="navTab" value="Assigned to My Roles" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no tasks assigned to your roles." />
-
-		<execute macro="Workflow#_gotoPendingFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no pending tasks assigned to your roles." />
-
-		<execute macro="Workflow#gotoCompletedFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no completed tasks." />
 	</command>
 
 	<command name="viewDefaultWorkflowSubmissions">
-		<execute macro="Workflow#_gotoPendingFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no pending publication requests." />
-
-		<execute macro="Workflow#gotoCompletedFilter" />
-
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no completed publication requests." />
+		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="There are no publication requests." />
 	</command>
 
 	<command name="viewDefinition">
@@ -1186,10 +1156,6 @@
 		</execute>
 	</command>
 
-	<command name="waitForSuccessMessageHide">
-		<execute function="AssertNotVisible" locator1="Message#SUCCESS" />
-	</command>
-
 	<command name="withdrawTaskByActions">
 		<execute macro="Workflow#viewMySubmissions">
 			<var name="workflowAssetTitle" value="${workflowAssetTitle}" />
@@ -1204,7 +1170,7 @@
 			<var name="menuItem" value="Withdraw Submission" />
 		</execute>
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="withdrawTaskByDetails">
@@ -1232,7 +1198,7 @@
 			<var name="menuItem" value="Withdraw Submission" />
 		</execute>
 
-		<execute macro="Workflow#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="withdrawTaskCompletedNoByDetails">

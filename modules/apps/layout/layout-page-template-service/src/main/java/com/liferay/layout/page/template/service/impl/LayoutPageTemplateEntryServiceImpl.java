@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +46,36 @@ public class LayoutPageTemplateEntryServiceImpl
 	@Override
 	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
 			long groupId, long layoutPageTemplateCollectionId, String name,
-			int type, long[] fragmentEntryIds, int status,
+			int type, int status, ServiceContext serviceContext)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
+
+		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+			getUserId(), groupId, layoutPageTemplateCollectionId, name, type,
+			status, serviceContext);
+	}
+
+	@Override
+	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
+			long groupId, long layoutPageTemplateCollectionId, String name,
+			int type, ServiceContext serviceContext)
+		throws PortalException {
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
+
+		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+			getUserId(), groupId, layoutPageTemplateCollectionId, name, type,
+			WorkflowConstants.STATUS_DRAFT, serviceContext);
+	}
+
+	@Override
+	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
+			long groupId, long layoutPageTemplateCollectionId, String name,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -56,86 +84,23 @@ public class LayoutPageTemplateEntryServiceImpl
 			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
 
 		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			getUserId(), groupId, layoutPageTemplateCollectionId, name, type,
-			fragmentEntryIds, status, serviceContext);
-	}
-
-	@Override
-	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
-			long groupId, long layoutPageTemplateCollectionId, String name,
-			int type, long[] fragmentEntryIds, ServiceContext serviceContext)
-		throws PortalException {
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), groupId,
-			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
-
-		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			getUserId(), groupId, layoutPageTemplateCollectionId, name, type,
-			fragmentEntryIds, WorkflowConstants.STATUS_DRAFT, serviceContext);
-	}
-
-	@Override
-	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
-			long groupId, long layoutPageTemplateCollectionId, String name,
-			long[] fragmentEntryIds, int status, ServiceContext serviceContext)
-		throws PortalException {
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), groupId,
-			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
-
-		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
 			getUserId(), groupId, layoutPageTemplateCollectionId, name,
-			fragmentEntryIds, status, serviceContext);
+			serviceContext);
 	}
 
 	@Override
-	public LayoutPageTemplateEntry addLayoutPageTemplateEntry(
-			long groupId, long layoutPageTemplateCollectionId, String name,
-			long[] fragmentEntryIds, ServiceContext serviceContext)
+	public void deleteLayoutPageTemplateEntries(
+			long[] layoutPageTemplateEntryIds)
 		throws PortalException {
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), groupId,
-			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
-
-		return layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-			getUserId(), groupId, layoutPageTemplateCollectionId, name,
-			fragmentEntryIds, WorkflowConstants.STATUS_DRAFT, serviceContext);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> deleteLayoutPageTemplateEntries(
-		long[] layoutPageTemplateEntryIds) {
-
-		List<LayoutPageTemplateEntry> undeletableLayoutPageTemplateEntries =
-			new ArrayList<>();
 
 		for (long layoutPageTemplateEntryId : layoutPageTemplateEntryIds) {
-			try {
-				_layoutPageTemplateEntryModelResourcePermission.check(
-					getPermissionChecker(), layoutPageTemplateEntryId,
-					ActionKeys.DELETE);
+			_layoutPageTemplateEntryModelResourcePermission.check(
+				getPermissionChecker(), layoutPageTemplateEntryId,
+				ActionKeys.DELETE);
 
-				layoutPageTemplateEntryLocalService.
-					deleteLayoutPageTemplateEntry(layoutPageTemplateEntryId);
-			}
-			catch (PortalException pe) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(pe, pe);
-				}
-
-				LayoutPageTemplateEntry layoutPageTemplateEntry =
-					layoutPageTemplateEntryPersistence.fetchByPrimaryKey(
-						layoutPageTemplateEntryId);
-
-				undeletableLayoutPageTemplateEntries.add(
-					layoutPageTemplateEntry);
-			}
+			layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+				layoutPageTemplateEntryId);
 		}
-
-		return undeletableLayoutPageTemplateEntries;
 	}
 
 	@Override
@@ -372,15 +337,14 @@ public class LayoutPageTemplateEntryServiceImpl
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getLayoutPageTemplateEntries(
-			groupId, classNameId, classTypeId,
-			_customSQL.keywords(name, WildcardMode.SURROUND)[0], type,
+			groupId, classNameId, classTypeId, name, type,
 			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
 	}
 
 	@Override
 	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
 		long groupId, long layoutPageTemplateCollectionId, String name,
-		int start, int status, int end,
+		int status, int start, int end,
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
@@ -403,8 +367,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getLayoutPageTemplateEntries(
-			groupId, layoutPageTemplateCollectionId,
-			_customSQL.keywords(name, WildcardMode.SURROUND)[0],
+			groupId, layoutPageTemplateCollectionId, name,
 			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
 	}
 
@@ -430,8 +393,18 @@ public class LayoutPageTemplateEntryServiceImpl
 		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
 
 		return getLayoutPageTemplateEntries(
-			groupId, _customSQL.keywords(name, WildcardMode.SURROUND)[0], type,
-			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
+			groupId, name, type, WorkflowConstants.STATUS_ANY, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntriesByType(
+		long groupId, long layoutPageTemplateCollectionId, int type, int start,
+		int end, OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+
+		return layoutPageTemplateEntryPersistence.filterFindByG_L_T(
+			groupId, layoutPageTemplateCollectionId, type, start, end,
+			orderByComparator);
 	}
 
 	@Override
@@ -503,8 +476,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		int type) {
 
 		return getLayoutPageTemplateEntriesCount(
-			groupId, classNameId, classTypeId,
-			_customSQL.keywords(name, WildcardMode.SURROUND)[0], type,
+			groupId, classNameId, classTypeId, name, type,
 			WorkflowConstants.STATUS_ANY);
 	}
 
@@ -530,8 +502,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		long groupId, long layoutPageTemplateFolderId, String name) {
 
 		return getLayoutPageTemplateEntriesCount(
-			groupId, layoutPageTemplateFolderId,
-			_customSQL.keywords(name, WildcardMode.SURROUND)[0],
+			groupId, layoutPageTemplateFolderId, name,
 			WorkflowConstants.STATUS_ANY);
 	}
 
@@ -556,8 +527,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		long groupId, String name, int type) {
 
 		return getLayoutPageTemplateEntriesCount(
-			groupId, _customSQL.keywords(name, WildcardMode.SURROUND)[0], type,
-			WorkflowConstants.STATUS_ANY);
+			groupId, name, type, WorkflowConstants.STATUS_ANY);
 	}
 
 	@Override
@@ -573,6 +543,14 @@ public class LayoutPageTemplateEntryServiceImpl
 		return layoutPageTemplateEntryPersistence.filterCountByG_T_LikeN_S(
 			groupId, _customSQL.keywords(name, WildcardMode.SURROUND)[0], type,
 			status);
+	}
+
+	@Override
+	public int getLayoutPageTemplateEntriesCountByType(
+		long groupId, long layoutPageTemplateCollectionId, int type) {
+
+		return layoutPageTemplateEntryPersistence.filterCountByG_L_T(
+			groupId, layoutPageTemplateCollectionId, type);
 	}
 
 	@Override

@@ -23,7 +23,7 @@
 	</command>
 
 	<command name="addFavoriteStructure">
-		<execute function="AssertTextEquals" locator1="Message#INFO_1" value1="You can add as many as 7 favorites in your quick menu." />
+		<execute function="AssertTextEquals#assertPartialText" locator1="Message#INFO" value1="You can add as many as 7 favorites in your quick menu." />
 
 		<execute function="Click" locator1="Icon#ADD_FAVORITE">
 			<var name="key_rowEntry" value="${structureName}" />
@@ -87,37 +87,6 @@
 		<execute function="Confirm#assertConfirmationNoWait" value1="Selecting a new structure deletes all unsaved content. Do you want to proceed?" />
 
 		<execute function="SelectFrame" value1="relative=top" />
-	</command>
-
-	<command name="advancedSearchCP">
-		<var name="key_ddlDataDefinitionName" value="${structureName}" />
-
-		<execute function="AssertTextEquals" locator1="DDMSelectStructure#DDM_STRUCTURE_TABLE_NAME" value1="${structureName}" />
-
-		<execute function="Click" locator1="Icon#ADVANCED_SEARCH" />
-
-		<if>
-			<isset var="structureName" />
-			<then>
-				<execute macro="PortletEntry#inputName">
-					<var name="name" value="${structureName}" />
-				</execute>
-			</then>
-		</if>
-
-		<if>
-			<isset var="structureDescription" />
-			<then>
-				<execute macro="PortletEntry#inputDescriptionTextInput">
-					<var name="description" value="${structureDescription}" />
-				</execute>
-			</then>
-		</if>
-
-		<execute function="Click" locator1="Icon#BASIC_SEARCH" />
-
-		<execute function="AssertTextEquals" locator1="DDMSelectStructure#DDM_STRUCTURE_TABLE_NAME" value1="${structureName}" />
-		<execute function="AssertTextEquals" locator1="DDMSelectStructure#DDM_STRUCTURE_TABLE_DESCRIPTION" value1="${structureDescription}" />
 	</command>
 
 	<command name="deleteCP">
@@ -309,8 +278,8 @@
 			<var name="key_menuItem" value="More" />
 		</execute>
 
-		<execute function="AssertTextEquals" locator1="MenuItem#ANY_MENU_ITEM" value1="Favorite">
-			<var name="key_menuItem" value="Favorite" />
+		<execute function="AssertTextEquals" locator1="MenuItem#ANY_MENU_ITEM" value1="FAVORITES">
+			<var name="key_menuItem" value="favorites" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="MenuItem#ANY_MENU_ITEM" value1="${structureName}">

@@ -24,6 +24,8 @@ import com.liferay.apio.architect.alias.form.FormBuilderFunction;
 import com.liferay.apio.architect.alias.routes.DeleteItemConsumer;
 import com.liferay.apio.architect.alias.routes.GetItemFunction;
 import com.liferay.apio.architect.alias.routes.UpdateItemFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasRemovePermissionFunction;
+import com.liferay.apio.architect.alias.routes.permission.HasUpdatePermissionFunction;
 import com.liferay.apio.architect.consumer.throwable.ThrowableBiConsumer;
 import com.liferay.apio.architect.consumer.throwable.ThrowableConsumer;
 import com.liferay.apio.architect.consumer.throwable.ThrowablePentaConsumer;
@@ -37,6 +39,7 @@ import com.liferay.apio.architect.function.throwable.ThrowableHexaFunction;
 import com.liferay.apio.architect.function.throwable.ThrowablePentaFunction;
 import com.liferay.apio.architect.function.throwable.ThrowableTetraFunction;
 import com.liferay.apio.architect.function.throwable.ThrowableTriFunction;
+import com.liferay.apio.architect.functional.Try;
 import com.liferay.apio.architect.operation.Operation;
 import com.liferay.apio.architect.single.model.SingleModel;
 
@@ -44,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
@@ -125,8 +127,8 @@ public class ItemRoutes<T, S> {
 	 * com.liferay.apio.architect.router.ItemRouter}.
 	 *
 	 * @param <T> the model's type
-	 * @param <S> the model identifier's type. It must be a subclass of {@code
-	 *        Identifier}.
+	 * @param <S> the type of the model's identifier (e.g., {@code Long}, {@code
+	 *        String}, etc.)
 	 */
 	@SuppressWarnings("unused")
 	public static class Builder<T, S> {
@@ -155,7 +157,7 @@ public class ItemRoutes<T, S> {
 			_singleModelFunction = httpServletRequest -> s -> provide(
 				_provideFunction.apply(httpServletRequest), aClass,
 				Credentials.class,
-				a -> credentials -> throwableBiFunction.andThen(
+				(a, credentials) -> throwableBiFunction.andThen(
 					t -> new SingleModel<>(
 						t, _name, _getOperations(credentials, s))
 				).apply(
@@ -209,13 +211,12 @@ public class ItemRoutes<T, S> {
 			_singleModelFunction = httpServletRequest -> s -> provide(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				cClass, dClass, Credentials.class,
-				a -> b -> c -> d -> credentials ->
-					throwablePentaFunction.andThen(
-						t -> new SingleModel<>(
-							t, _name, _getOperations(credentials, s))
-					).apply(
-						s, a, b, c, d
-					));
+				(a, b, c, d, credentials) -> throwablePentaFunction.andThen(
+					t -> new SingleModel<>(
+						t, _name, _getOperations(credentials, s))
+				).apply(
+					s, a, b, c, d
+				));
 
 			return this;
 		}
@@ -240,7 +241,7 @@ public class ItemRoutes<T, S> {
 			_singleModelFunction = httpServletRequest -> s -> provide(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				cClass, Credentials.class,
-				a -> b -> c -> credentials -> throwableTetraFunction.andThen(
+				(a, b, c, credentials) -> throwableTetraFunction.andThen(
 					t -> new SingleModel<>(
 						t, _name, _getOperations(credentials, s))
 				).apply(
@@ -268,7 +269,7 @@ public class ItemRoutes<T, S> {
 			_singleModelFunction = httpServletRequest -> s -> provide(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				Credentials.class,
-				a -> b -> credentials -> throwableTriFunction.andThen(
+				(a, b, credentials) -> throwableTriFunction.andThen(
 					t -> new SingleModel<>(
 						t, _name, _getOperations(credentials, s))
 				).apply(
@@ -281,23 +282,24 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with one extra parameter.
 		 *
-		 * @param  biConsumer the remover function
+		 * @param  throwableBiConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasRemovePermissionFunction the permission function for this
+		 *         route
 		 * @return the updated builder
 		 */
 		public <A> Builder<T, S> addRemover(
-			ThrowableBiConsumer<S, A> biConsumer, Class<A> aClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction) {
+			ThrowableBiConsumer<S, A> throwableBiConsumer, Class<A> aClass,
+			HasRemovePermissionFunction<S> hasRemovePermissionFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 
-			_deleteItemPermissionFunction = permissionBiFunction;
+			_hasRemovePermissionFunction = hasRemovePermissionFunction;
 
 			_deleteItemConsumer = httpServletRequest -> s -> provideConsumer(
 				_provideFunction.apply(httpServletRequest), aClass,
-				a -> biConsumer.accept(s, a));
+				a -> throwableBiConsumer.accept(s, a));
 
 			return this;
 		}
@@ -305,17 +307,18 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with no extra parameters.
 		 *
-		 * @param  consumer the remover function
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  throwableConsumer the remover function
+		 * @param  hasRemovePermissionFunction the permission function for this
+		 *         route
 		 * @return the updated builder
 		 */
 		public Builder<T, S> addRemover(
-			ThrowableConsumer<S> consumer,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction) {
+			ThrowableConsumer<S> throwableConsumer,
+			HasRemovePermissionFunction<S> hasRemovePermissionFunction) {
 
-			_deleteItemPermissionFunction = permissionBiFunction;
+			_hasRemovePermissionFunction = hasRemovePermissionFunction;
 
-			_deleteItemConsumer = __ -> consumer;
+			_deleteItemConsumer = __ -> throwableConsumer;
 
 			return this;
 		}
@@ -323,7 +326,7 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with four extra parameters.
 		 *
-		 * @param  pentaConsumer the remover function
+		 * @param  throwablePentaConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  bClass the class of the item remover function's third
@@ -332,25 +335,26 @@ public class ItemRoutes<T, S> {
 		 *         parameter
 		 * @param  dClass the class of the item remover function's fifth
 		 *         parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasRemovePermissionFunction the permission function for this
+		 *         route
 		 * @return the updated builder
 		 */
 		public <A, B, C, D> Builder<T, S> addRemover(
-			ThrowablePentaConsumer<S, A, B, C, D> pentaConsumer,
+			ThrowablePentaConsumer<S, A, B, C, D> throwablePentaConsumer,
 			Class<A> aClass, Class<B> bClass, Class<C> cClass, Class<D> dClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction) {
+			HasRemovePermissionFunction<S> hasRemovePermissionFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 			_neededProviderConsumer.accept(cClass.getName());
 			_neededProviderConsumer.accept(dClass.getName());
 
-			_deleteItemPermissionFunction = permissionBiFunction;
+			_hasRemovePermissionFunction = hasRemovePermissionFunction;
 
 			_deleteItemConsumer = httpServletRequest -> s -> provideConsumer(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				cClass, dClass,
-				a -> b -> c -> d -> pentaConsumer.accept(s, a, b, c, d));
+				(a, b, c, d) -> throwablePentaConsumer.accept(s, a, b, c, d));
 
 			return this;
 		}
@@ -358,30 +362,31 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with three extra parameters.
 		 *
-		 * @param  tetraConsumer the remover function
+		 * @param  throwableTetraConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  bClass the class of the item remover function's third
 		 *         parameter
 		 * @param  cClass the class of the item remover function's fourth
 		 *         parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasRemovePermissionFunction the permission function for this
+		 *         route
 		 * @return the updated builder
 		 */
 		public <A, B, C> Builder<T, S> addRemover(
-			ThrowableTetraConsumer<S, A, B, C> tetraConsumer, Class<A> aClass,
-			Class<B> bClass, Class<C> cClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction) {
+			ThrowableTetraConsumer<S, A, B, C> throwableTetraConsumer,
+			Class<A> aClass, Class<B> bClass, Class<C> cClass,
+			HasRemovePermissionFunction<S> hasRemovePermissionFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 			_neededProviderConsumer.accept(cClass.getName());
 
-			_deleteItemPermissionFunction = permissionBiFunction;
+			_hasRemovePermissionFunction = hasRemovePermissionFunction;
 
 			_deleteItemConsumer = httpServletRequest -> s -> provideConsumer(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
-				cClass, a -> b -> c -> tetraConsumer.accept(s, a, b, c));
+				cClass, (a, b, c) -> throwableTetraConsumer.accept(s, a, b, c));
 
 			return this;
 		}
@@ -389,27 +394,28 @@ public class ItemRoutes<T, S> {
 		/**
 		 * Adds a route to a remover function with two extra parameters.
 		 *
-		 * @param  triConsumer the remover function
+		 * @param  throwableTriConsumer the remover function
 		 * @param  aClass the class of the item remover function's second
 		 *         parameter
 		 * @param  bClass the class of the item remover function's third
 		 *         parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasRemovePermissionFunction the permission function for this
+		 *         route
 		 * @return the updated builder
 		 */
 		public <A, B> Builder<T, S> addRemover(
-			ThrowableTriConsumer<S, A, B> triConsumer, Class<A> aClass,
+			ThrowableTriConsumer<S, A, B> throwableTriConsumer, Class<A> aClass,
 			Class<B> bClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction) {
+			HasRemovePermissionFunction<S> hasRemovePermissionFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 
-			_deleteItemPermissionFunction = permissionBiFunction;
+			_hasRemovePermissionFunction = hasRemovePermissionFunction;
 
 			_deleteItemConsumer = httpServletRequest -> s -> provideConsumer(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
-				a -> b -> triConsumer.accept(s, a, b));
+				(a, b) -> throwableTriConsumer.accept(s, a, b));
 
 			return this;
 		}
@@ -418,17 +424,18 @@ public class ItemRoutes<T, S> {
 		 * Adds a route to an updater function with no extra parameters.
 		 *
 		 * @param  throwableBiFunction the updater function
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasUpdatePermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
 		 */
 		public <R> Builder<T, S> addUpdater(
 			ThrowableBiFunction<S, R, T> throwableBiFunction,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction,
+			HasUpdatePermissionFunction<S> hasUpdatePermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
-			_updateItemPermissionFunction = permissionBiFunction;
+			_hasUpdatePermissionFunction = hasUpdatePermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("u", _name)));
@@ -455,7 +462,8 @@ public class ItemRoutes<T, S> {
 		 * @param  bClass the class of the updater function's fourth parameter
 		 * @param  cClass the class of the updater function's fifth parameter
 		 * @param  dClass the class of the updater function's sixth parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasUpdatePermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -463,7 +471,7 @@ public class ItemRoutes<T, S> {
 		public <A, B, C, D, R> Builder<T, S> addUpdater(
 			ThrowableHexaFunction<S, R, A, B, C, D, T> throwableHexaFunction,
 			Class<A> aClass, Class<B> bClass, Class<C> cClass, Class<D> dClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction,
+			HasUpdatePermissionFunction<S> hasUpdatePermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
@@ -471,7 +479,7 @@ public class ItemRoutes<T, S> {
 			_neededProviderConsumer.accept(cClass.getName());
 			_neededProviderConsumer.accept(dClass.getName());
 
-			_updateItemPermissionFunction = permissionBiFunction;
+			_hasUpdatePermissionFunction = hasUpdatePermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("u", _name)));
@@ -481,13 +489,12 @@ public class ItemRoutes<T, S> {
 			_updateItemFunction = httpServletRequest -> s -> body -> provide(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				cClass, dClass, Credentials.class,
-				a -> b -> c -> d -> credentials ->
-					throwableHexaFunction.andThen(
-						t -> new SingleModel<>(
-							t, _name, _getOperations(credentials, s))
-					).apply(
-						s, form.get(body), a, b, c, d
-					));
+				(a, b, c, d, credentials) -> throwableHexaFunction.andThen(
+					t -> new SingleModel<>(
+						t, _name, _getOperations(credentials, s))
+				).apply(
+					s, form.get(body), a, b, c, d
+				));
 
 			return this;
 		}
@@ -500,7 +507,8 @@ public class ItemRoutes<T, S> {
 		 * @param  aClass the class of the updater function's third parameter
 		 * @param  bClass the class of the updater function's fourth parameter
 		 * @param  cClass the class of the updater function's fifth parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasUpdatePermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -508,14 +516,14 @@ public class ItemRoutes<T, S> {
 		public <A, B, C, R> Builder<T, S> addUpdater(
 			ThrowablePentaFunction<S, R, A, B, C, T> throwablePentaFunction,
 			Class<A> aClass, Class<B> bClass, Class<C> cClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction,
+			HasUpdatePermissionFunction<S> hasUpdatePermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 			_neededProviderConsumer.accept(cClass.getName());
 
-			_updateItemPermissionFunction = permissionBiFunction;
+			_hasUpdatePermissionFunction = hasUpdatePermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("u", _name)));
@@ -525,7 +533,7 @@ public class ItemRoutes<T, S> {
 			_updateItemFunction = httpServletRequest -> s -> body -> provide(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				cClass, Credentials.class,
-				a -> b -> c -> credentials -> throwablePentaFunction.andThen(
+				(a, b, c, credentials) -> throwablePentaFunction.andThen(
 					t -> new SingleModel<>(
 						t, _name, _getOperations(credentials, s))
 				).apply(
@@ -541,7 +549,8 @@ public class ItemRoutes<T, S> {
 		 * @param  throwableTetraFunction the updater function
 		 * @param  aClass the class of the updater function's third parameter
 		 * @param  bClass the class of the updater function's fourth parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasUpdatePermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -549,13 +558,13 @@ public class ItemRoutes<T, S> {
 		public <A, B, R> Builder<T, S> addUpdater(
 			ThrowableTetraFunction<S, R, A, B, T> throwableTetraFunction,
 			Class<A> aClass, Class<B> bClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction,
+			HasUpdatePermissionFunction<S> hasUpdatePermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 			_neededProviderConsumer.accept(bClass.getName());
 
-			_updateItemPermissionFunction = permissionBiFunction;
+			_hasUpdatePermissionFunction = hasUpdatePermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("u", _name)));
@@ -565,7 +574,7 @@ public class ItemRoutes<T, S> {
 			_updateItemFunction = httpServletRequest -> s -> body -> provide(
 				_provideFunction.apply(httpServletRequest), aClass, bClass,
 				Credentials.class,
-				a -> b -> credentials -> throwableTetraFunction.andThen(
+				(a, b, credentials) -> throwableTetraFunction.andThen(
 					t -> new SingleModel<>(
 						t, _name, _getOperations(credentials, s))
 				).apply(
@@ -581,7 +590,8 @@ public class ItemRoutes<T, S> {
 		 * @param  throwableTriFunction the updater function that removes the
 		 *         item
 		 * @param  aClass the class of the updater function's third parameter
-		 * @param  permissionBiFunction the permission function for this route
+		 * @param  hasUpdatePermissionFunction the permission function for this
+		 *         route
 		 * @param  formBuilderFunction the function that creates the form for
 		 *         this operation
 		 * @return the updated builder
@@ -589,12 +599,12 @@ public class ItemRoutes<T, S> {
 		public <A, R> Builder<T, S> addUpdater(
 			ThrowableTriFunction<S, R, A, T> throwableTriFunction,
 			Class<A> aClass,
-			BiFunction<Credentials, S, Boolean> permissionBiFunction,
+			HasUpdatePermissionFunction<S> hasUpdatePermissionFunction,
 			FormBuilderFunction<R> formBuilderFunction) {
 
 			_neededProviderConsumer.accept(aClass.getName());
 
-			_updateItemPermissionFunction = permissionBiFunction;
+			_hasUpdatePermissionFunction = hasUpdatePermissionFunction;
 
 			Form<R> form = formBuilderFunction.apply(
 				new Form.Builder<>(Arrays.asList("u", _name)));
@@ -604,7 +614,7 @@ public class ItemRoutes<T, S> {
 			_updateItemFunction = httpServletRequest -> s -> body -> provide(
 				_provideFunction.apply(httpServletRequest), aClass,
 				Credentials.class,
-				a -> credentials -> throwableTriFunction.andThen(
+				(a, credentials) -> throwableTriFunction.andThen(
 					t -> new SingleModel<>(
 						t, _name, _getOperations(credentials, s))
 				).apply(
@@ -630,17 +640,25 @@ public class ItemRoutes<T, S> {
 			List<Operation> operations = new ArrayList<>();
 
 			Optional.ofNullable(
-				_deleteItemPermissionFunction
+				_hasRemovePermissionFunction
 			).filter(
-				function -> function.apply(credentials, identifier)
+				function -> Try.fromFallible(
+					() -> function.apply(credentials, identifier)
+				).orElse(
+					false
+				)
 			).ifPresent(
 				__ -> operations.add(new Operation(DELETE, _name + "/delete"))
 			);
 
 			Optional.ofNullable(
-				_updateItemPermissionFunction
+				_hasUpdatePermissionFunction
 			).filter(
-				function -> function.apply(credentials, identifier)
+				function -> Try.fromFallible(
+					() -> function.apply(credentials, identifier)
+				).orElse(
+					false
+				)
 			).ifPresent(
 				__ -> operations.add(
 					new Operation(_form, PUT, _name + "/update"))
@@ -650,16 +668,14 @@ public class ItemRoutes<T, S> {
 		}
 
 		private DeleteItemConsumer<S> _deleteItemConsumer;
-		private BiFunction<Credentials, S, Boolean>
-			_deleteItemPermissionFunction;
 		private Form _form;
+		private HasRemovePermissionFunction<S> _hasRemovePermissionFunction;
+		private HasUpdatePermissionFunction<S> _hasUpdatePermissionFunction;
 		private final String _name;
 		private final Consumer<String> _neededProviderConsumer;
 		private final ProvideFunction _provideFunction;
 		private GetItemFunction<T, S> _singleModelFunction;
 		private UpdateItemFunction<T, S> _updateItemFunction;
-		private BiFunction<Credentials, S, Boolean>
-			_updateItemPermissionFunction;
 
 	}
 

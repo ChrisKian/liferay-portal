@@ -1919,10 +1919,10 @@ public class PortalImpl implements Portal {
 
 		Set<Group> groups = new LinkedHashSet<>();
 
-		for (int i = 0; i < groupIds.length; i++) {
+		for (long groupId : groupIds) {
 			groups.addAll(
 				getCurrentAndAncestorSiteGroups(
-					groupIds[i], checkContentSharingWithChildrenEnabled));
+					groupId, checkContentSharingWithChildrenEnabled));
 		}
 
 		return new ArrayList<>(groups);
@@ -5531,6 +5531,14 @@ public class PortalImpl implements Portal {
 	public UploadServletRequest getUploadServletRequest(
 		HttpServletRequest request) {
 
+		return getUploadServletRequest(request, 0, null, 0, 0);
+	}
+
+	@Override
+	public UploadServletRequest getUploadServletRequest(
+		HttpServletRequest request, int fileSizeThreshold, String location,
+		long maxRequestSize, long maxFileSize) {
+
 		List<PersistentHttpServletRequestWrapper>
 			persistentHttpServletRequestWrappers = new ArrayList<>();
 
@@ -5583,7 +5591,9 @@ public class PortalImpl implements Portal {
 			currentRequest = httpServletRequestWrapper;
 		}
 
-		return new UploadServletRequestImpl(currentRequest);
+		return new UploadServletRequestImpl(
+			currentRequest, fileSizeThreshold, location, maxRequestSize,
+			maxFileSize);
 	}
 
 	@Override

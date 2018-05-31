@@ -19,17 +19,12 @@ import com.liferay.asset.kernel.service.AssetTagServiceUtil;
 import com.liferay.asset.tags.selector.web.internal.search.EntriesChecker;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -38,7 +33,6 @@ import com.liferay.portlet.asset.util.comparator.AssetTagNameComparator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.portlet.ActionRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -65,16 +59,6 @@ public class AssetTagsSelectorDisplayContext {
 		clearResultsURL.setParameter("keywords", StringPool.BLANK);
 
 		return clearResultsURL.toString();
-	}
-
-	public String getDisplayStyle() {
-		if (Validator.isNotNull(_displayStyle)) {
-			return _displayStyle;
-		}
-
-		_displayStyle = ParamUtil.getString(_request, "displayStyle", "list");
-
-		return _displayStyle;
 	}
 
 	public String getEventName() {
@@ -106,21 +90,6 @@ public class AssetTagsSelectorDisplayContext {
 							_getOrderByDropdownItems());
 						dropdownGroupItem.setLabel(
 							LanguageUtil.get(_request, "order-by"));
-					});
-			}
-		};
-	}
-
-	public List<NavigationItem> getNavigationItems() {
-		return new NavigationItemList() {
-			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(true);
-						navigationItem.setHref(
-							_renderResponse.createRenderURL());
-						navigationItem.setLabel(
-							LanguageUtil.get(_request, "tags"));
 					});
 			}
 		};
@@ -215,20 +184,6 @@ public class AssetTagsSelectorDisplayContext {
 		SearchContainer tagsSearchContainer = getTagsSearchContainer();
 
 		return tagsSearchContainer.getTotal();
-	}
-
-	public List<ViewTypeItem> getViewTypeItems() {
-		PortletURL portletURL = _renderResponse.createActionURL();
-
-		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "changeDisplayStyle");
-		portletURL.setParameter("redirect", PortalUtil.getCurrentURL(_request));
-
-		return new ViewTypeItemList(portletURL, getDisplayStyle()) {
-			{
-				addTableViewTypeItem();
-			}
-		};
 	}
 
 	public boolean isDisabledTagsManagementBar() {
