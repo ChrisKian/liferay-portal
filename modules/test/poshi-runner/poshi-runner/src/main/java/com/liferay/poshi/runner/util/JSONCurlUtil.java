@@ -14,9 +14,6 @@
 
 package com.liferay.poshi.runner.util;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -111,16 +108,7 @@ public class JSONCurlUtil {
 
 		String response = request.send();
 
-		DocumentContext documentContext = JsonPath.parse(response);
-
-		Object object = documentContext.read(jsonPath);
-
-		if (object == null) {
-			throw new IOException(
-				"Invalid JSON path " + jsonPath + " in " + response);
-		}
-
-		return object.toString();
+		return JSONUtil.getWithJSONPath(response, jsonPath);
 	}
 
 	private static class Request {

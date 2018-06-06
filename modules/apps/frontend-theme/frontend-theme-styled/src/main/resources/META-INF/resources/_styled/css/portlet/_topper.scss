@@ -6,6 +6,14 @@
 	}
 }
 
+%display-portlet-content-editable {
+	@include media-query(sm) {
+		border-color: $portlet-topper-border;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+}
+
 .portlet {
 	margin-bottom: 10px;
 	position: relative;
@@ -29,8 +37,14 @@
 
 			top: 0;
 		}
+	}
 
-		&.open {
+	&.open {
+		> .portlet-content-editable {
+			@extend %display-portlet-content-editable;
+		}
+
+		> .portlet-topper {
 			@extend %display-portlet-topper;
 		}
 	}
@@ -39,11 +53,7 @@
 .portlet {
 	&:hover, &.focus {
 		> .portlet-content-editable {
-			@include media-query(sm) {
-				border-color: $portlet-topper-border;
-				border-top-left-radius: 0;
-				border-top-right-radius: 0;
-			}
+			@extend %display-portlet-content-editable;
 		}
 
 		> .portlet-topper {
@@ -64,6 +74,11 @@
 
 .portlet-actions {
 	float: right;
+}
+
+.portlet-name-text {
+	font-size: 0.875rem;
+	font-weight: 600;
 }
 
 .portlet-options {
@@ -96,19 +111,13 @@
 
 	@include display(flex);
 
-	padding-left: 10px;
-	padding-right: 10px;
+	padding: 3px 12px 3px 24px;
 	position: relative;
 }
 
 .portlet-topper-toolbar {
-	margin-bottom: 0;
-	margin-top: 0;
+	margin: 0;
 	padding-left: 0;
-
-	&:last-of-type {
-		margin-right: -10px;
-	}
 
 	> a, > span > a, .lfr-icon-menu > a {
 		color: $portlet-topper-link-color;

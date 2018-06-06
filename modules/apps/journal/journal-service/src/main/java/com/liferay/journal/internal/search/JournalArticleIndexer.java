@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.DDMStructureIndexer;
 import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
@@ -78,6 +77,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.batch.BatchIndexingHelper;
 import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.trash.TrashHelper;
 
@@ -414,7 +414,7 @@ public class JournalArticleIndexer
 			return Collections.emptyMap();
 		}
 
-		String localizedField = DocumentImpl.getLocalizedName(
+		String localizedField = Field.getLocalizedName(
 			searchContext.getLocale(), field);
 
 		Map<String, Query> queries = new HashMap<>();
@@ -608,8 +608,7 @@ public class JournalArticleIndexer
 
 		Locale snippetLocale = getSnippetLocale(document, locale);
 
-		String localizedTitleName = DocumentImpl.getLocalizedName(
-			locale, Field.TITLE);
+		String localizedTitleName = Field.getLocalizedName(locale, Field.TITLE);
 
 		if ((snippetLocale == null) &&
 			(document.getField(localizedTitleName) == null)) {
@@ -859,6 +858,9 @@ public class JournalArticleIndexer
 				_journalArticleLocalService.
 					getIndexableActionableDynamicQuery();
 
+			indexableActionableDynamicQuery.setInterval(
+				_batchIndexingHelper.getBulkSize(
+					JournalArticle.class.getName()));
 			indexableActionableDynamicQuery.setPerformActionMethod(
 				new ActionableDynamicQuery.
 					PerformActionMethod<JournalArticle>() {
@@ -887,6 +889,10 @@ public class JournalArticleIndexer
 			indexableActionableDynamicQuery =
 				_journalArticleResourceLocalService.
 					getIndexableActionableDynamicQuery();
+
+			indexableActionableDynamicQuery.setInterval(
+				_batchIndexingHelper.getBulkSize(
+					JournalArticleResource.class.getName()));
 
 			indexableActionableDynamicQuery.setPerformActionMethod(
 				new ActionableDynamicQuery.
@@ -1009,6 +1015,9 @@ public class JournalArticleIndexer
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalArticleIndexer.class);
+
+	@Reference
+	private BatchIndexingHelper _batchIndexingHelper;
 
 	private ConfigurationProvider _configurationProvider;
 	private DDMIndexer _ddmIndexer;

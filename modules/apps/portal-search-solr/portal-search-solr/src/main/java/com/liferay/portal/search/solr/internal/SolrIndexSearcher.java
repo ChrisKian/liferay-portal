@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.solr.configuration.SolrConfiguration;
 import com.liferay.portal.search.solr.connection.SolrClientManager;
 import com.liferay.portal.search.solr.facet.FacetProcessor;
@@ -276,7 +277,7 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 
 		solrQuery.addHighlightField(fieldName);
 
-		String localizedFieldName = DocumentImpl.getLocalizedName(
+		String localizedFieldName = Field.getLocalizedName(
 			queryConfig.getLocale(), fieldName);
 
 		solrQuery.addHighlightField(localizedFieldName);
@@ -301,7 +302,8 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 		}
 
 		boolean luceneSyntax = GetterUtil.getBoolean(
-			searchContext.getAttribute("luceneSyntax"));
+			searchContext.getAttribute(
+				SearchContextAttributes.ATTRIBUTE_KEY_LUCENE_SYNTAX));
 
 		if (!luceneSyntax) {
 			solrQuery.setHighlightRequireFieldMatch(
@@ -344,8 +346,7 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 		Document document, Map<String, List<String>> highlights,
 		String fieldName, Locale locale) {
 
-		String snippetFieldName = DocumentImpl.getLocalizedName(
-			locale, fieldName);
+		String snippetFieldName = Field.getLocalizedName(locale, fieldName);
 
 		List<String> list = highlights.get(snippetFieldName);
 
@@ -539,7 +540,7 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 			return sortFieldName;
 		}
 
-		return DocumentImpl.getSortFieldName(sort, scoreFieldName);
+		return Field.getSortFieldName(sort, scoreFieldName);
 	}
 
 	protected Hits processResponse(

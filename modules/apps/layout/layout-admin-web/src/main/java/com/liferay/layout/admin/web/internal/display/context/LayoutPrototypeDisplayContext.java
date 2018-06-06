@@ -17,30 +17,25 @@ package com.liferay.layout.admin.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.layout.prototype.constants.LayoutPrototypePortletKeys;
+import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.model.LayoutPrototype;
-import com.liferay.portal.kernel.portlet.PortalPreferences;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.util.comparator.LayoutPrototypeCreateDateComparator;
 
 import java.util.List;
 import java.util.Objects;
 
-import javax.portlet.ActionRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -66,9 +61,8 @@ public class LayoutPrototypeDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" + _renderResponse.getNamespace() +
-								"deleteSelectedLayoutPrototypes();");
+						dropdownItem.putData(
+							"action", "deleteSelectedLayoutPrototypes");
 						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -106,21 +100,6 @@ public class LayoutPrototypeDisplayContext {
 					});
 			}
 		};
-	}
-
-	public String getDisplayStyle() {
-		if (Validator.isNotNull(_displayStyle)) {
-			return _displayStyle;
-		}
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(_request);
-
-		_displayStyle = portalPreferences.getValue(
-			LayoutPrototypePortletKeys.LAYOUT_PROTOTYPE, "display-style",
-			"list");
-
-		return _displayStyle;
 	}
 
 	public List<DropdownItem> getFilterDropdownItems() {
@@ -202,25 +181,32 @@ public class LayoutPrototypeDisplayContext {
 		searchContainer.setRowChecker(
 			new EmptyOnClickRowChecker(_renderResponse));
 
-		boolean orderByAsc = false;
-
-		if (getOrderByType().equals("asc")) {
-			orderByAsc = true;
-		}
-
-		OrderByComparator<LayoutPrototype> orderByComparator =
-			new LayoutPrototypeCreateDateComparator(orderByAsc);
-
 		searchContainer.setOrderByCol(getOrderByCol());
+
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator =
+			LayoutPageTemplatePortletUtil.
+				getLayoutPageTemplateEntryOrderByComparator(
+					getOrderByCol(), getOrderByType());
+
 		searchContainer.setOrderByComparator(orderByComparator);
+
 		searchContainer.setOrderByType(getOrderByType());
 
-		searchContainer.setTotal(getTotal());
+		int count =
+			LayoutPageTemplateEntryServiceUtil.
+				getLayoutPageTemplateEntriesCountByType(
+					themeDisplay.getScopeGroupId(), 0,
+					LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE);
 
-		List results = LayoutPrototypeLocalServiceUtil.search(
-			themeDisplay.getCompanyId(), getActive(),
-			searchContainer.getStart(), searchContainer.getEnd(),
-			searchContainer.getOrderByComparator());
+		searchContainer.setTotal(count);
+
+		List<LayoutPageTemplateEntry> results =
+			LayoutPageTemplateEntryServiceUtil.
+				getLayoutPageTemplateEntriesByType(
+					themeDisplay.getScopeGroupId(), 0,
+					LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE,
+					searchContainer.getStart(), searchContainer.getEnd(),
+					orderByComparator);
 
 		searchContainer.setResults(results);
 
@@ -243,30 +229,6 @@ public class LayoutPrototypeDisplayContext {
 		return searchContainer.getTotal();
 	}
 
-	public List<ViewTypeItem> getViewTypeItems() {
-		PortletURL portletURL = _renderResponse.createActionURL();
-
-		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "changeDisplayStyle");
-		portletURL.setParameter("redirect", PortalUtil.getCurrentURL(_request));
-
-		return new ViewTypeItemList(portletURL, getDisplayStyle()) {
-			{
-				addCardViewTypeItem();
-				addListViewTypeItem();
-				addTableViewTypeItem();
-			}
-		};
-	}
-
-	public boolean isDescriptiveView() {
-		if (Objects.equals(getDisplayStyle(), "descriptive")) {
-			return true;
-		}
-
-		return false;
-	}
-
 	public boolean isDisabledManagementBar() {
 		if (getTotal() > 0) {
 			return false;
@@ -277,22 +239,6 @@ public class LayoutPrototypeDisplayContext {
 		}
 
 		return true;
-	}
-
-	public boolean isIconView() {
-		if (Objects.equals(getDisplayStyle(), "icon")) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public boolean isListView() {
-		if (Objects.equals(getDisplayStyle(), "list")) {
-			return true;
-		}
-
-		return false;
 	}
 
 	public boolean isShowAddButton() {

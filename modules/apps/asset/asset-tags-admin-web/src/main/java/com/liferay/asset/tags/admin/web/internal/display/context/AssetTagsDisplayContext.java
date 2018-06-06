@@ -22,8 +22,6 @@ import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.petra.string.StringPool;
@@ -31,6 +29,7 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -80,10 +79,8 @@ public class AssetTagsDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" + _renderResponse.getNamespace() +
-								"mergeTags();");
-						dropdownItem.setIcon("change");
+						dropdownItem.putData("action", "mergeTags");
+						dropdownItem.setIcon("merge");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "merge"));
 						dropdownItem.setQuickAction(true);
@@ -91,9 +88,7 @@ public class AssetTagsDisplayContext {
 
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" + _renderResponse.getNamespace() +
-								"deleteTags();");
+						dropdownItem.putData("action", "deleteTags");
 						dropdownItem.setIcon("trash");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -222,21 +217,6 @@ public class AssetTagsDisplayContext {
 		_mergeTagNames = mergeTagNames;
 
 		return _mergeTagNames;
-	}
-
-	public List<NavigationItem> getNavigationItems() {
-		return new NavigationItemList() {
-			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(true);
-						navigationItem.setHref(
-							_renderResponse.createRenderURL());
-						navigationItem.setLabel(
-							LanguageUtil.get(_request, "tags"));
-					});
-			}
-		};
 	}
 
 	public String getOrderByCol() {
@@ -413,7 +393,6 @@ public class AssetTagsDisplayContext {
 
 		return new ViewTypeItemList(portletURL, getDisplayStyle()) {
 			{
-				addCardViewTypeItem();
 				addListViewTypeItem();
 				addTableViewTypeItem();
 			}
@@ -430,7 +409,7 @@ public class AssetTagsDisplayContext {
 				AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
 				themeDisplay.getSiteGroupId(), ActionKeys.ADD_TAG)) {
 
-			return true;
+			return isShowTagsActionMenu();
 		}
 
 		return false;
@@ -448,6 +427,29 @@ public class AssetTagsDisplayContext {
 		}
 
 		return false;
+	}
+
+	public boolean isShowTagsActionMenu() {
+		if (_showTagsActionMenu != null) {
+			return _showTagsActionMenu;
+		}
+
+		boolean showTagsActionMenu = true;
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Group group = themeDisplay.getScopeGroup();
+
+		if (group.isStaged() && !group.isStagingGroup() &&
+			!group.isStagedRemotely()) {
+
+			showTagsActionMenu = false;
+		}
+
+		_showTagsActionMenu = showTagsActionMenu;
+
+		return _showTagsActionMenu;
 	}
 
 	private List<DropdownItem> _getFilterNavigationDropdownItems() {
@@ -497,6 +499,7 @@ public class AssetTagsDisplayContext {
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private final HttpServletRequest _request;
+	private Boolean _showTagsActionMenu;
 	private AssetTag _tag;
 	private Long _tagId;
 	private SearchContainer _tagsSearchContainer;

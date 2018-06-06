@@ -20,13 +20,6 @@
 		</execute>
 	</set-up>
 
-	<command name="AddFormAfterUpgrade6012" priority="5">
-		<property name="data.archive.type" value="data-archive-portal" />
-		<property name="portal.version" value="6.0.12" />
-
-		<execute macro="Upgrade#addForm" />
-	</command>
-
 	<command name="AddFormAfterUpgrade612" priority="5">
 		<property name="data.archive.type" value="data-archive-portal" />
 		<property name="portal.version" value="6.1.2" />
@@ -44,14 +37,6 @@
 	<command name="AddFormAfterUpgrade621015" priority="5">
 		<property name="data.archive.type" value="data-archive-portal" />
 		<property name="portal.version" value="6.2.10.15" />
-		<property name="testray.component.names" value="Forms" />
-
-		<execute macro="Upgrade#addForm" />
-	</command>
-
-	<command name="AddFormAfterUpgrade623" priority="5">
-		<property name="data.archive.type" value="data-archive-portal" />
-		<property name="portal.version" value="6.2.3" />
 		<property name="testray.component.names" value="Forms" />
 
 		<execute macro="Upgrade#addForm" />

@@ -14,15 +14,15 @@
 
 package com.liferay.fragment.web.internal.display.context;
 
+import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.util.comparator.FragmentEntryLinkLastPropagationDateComparator;
+import com.liferay.fragment.web.internal.security.permission.resource.FragmentPermission;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
@@ -67,10 +67,8 @@ public class FragmentEntryLinkDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							"javascript:" + _renderResponse.getNamespace() +
-								"propagate();");
-						dropdownItem.setIcon("upload");
+						dropdownItem.putData("action", "propagate");
+						dropdownItem.setIcon("propagation");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "propagate"));
 						dropdownItem.setQuickAction(true);
@@ -274,12 +272,21 @@ public class FragmentEntryLinkDisplayContext {
 			return _searchContainer;
 		}
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		SearchContainer fragmentEntryLinksSearchContainer = new SearchContainer(
 			_renderRequest, _renderResponse.createRenderURL(), null,
 			"there-are-no-fragment-usages");
 
-		fragmentEntryLinksSearchContainer.setRowChecker(
-			new EmptyOnClickRowChecker(_renderResponse));
+		if (FragmentPermission.contains(
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)) {
+
+			fragmentEntryLinksSearchContainer.setRowChecker(
+				new EmptyOnClickRowChecker(_renderResponse));
+		}
 
 		boolean orderByAsc = false;
 
@@ -377,14 +384,6 @@ public class FragmentEntryLinkDisplayContext {
 			Objects.equals(getOrderByType(), "asc") ? "desc" : "asc");
 
 		return sortingURL.toString();
-	}
-
-	public List<ViewTypeItem> getViewTypeItems() {
-		return new ViewTypeItemList(getPortletURL(), "list") {
-			{
-				addTableViewTypeItem();
-			}
-		};
 	}
 
 	private List<DropdownItem> _getOrderByDropdownItems() {

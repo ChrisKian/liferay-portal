@@ -34,6 +34,17 @@ Layout curLayout = (Layout)row.getObject();
 		url="<%= layoutsAdminDisplayContext.getViewLayoutURL(curLayout) %>"
 	/>
 
+	<%
+	String editLayoutURL = layoutsAdminDisplayContext.getEditLayoutURL(curLayout);
+	%>
+
+	<c:if test="<%= Validator.isNotNull(editLayoutURL) %>">
+		<liferay-ui:icon
+			message="edit"
+			url="<%= editLayoutURL %>"
+		/>
+	</c:if>
+
 	<c:if test="<%= layoutsAdminDisplayContext.showConfigureAction(curLayout) %>">
 		<liferay-ui:icon
 			message="configure"
@@ -67,7 +78,7 @@ Layout curLayout = (Layout)row.getObject();
 
 	<c:if test="<%= layoutsAdminDisplayContext.showOrphanPortletsAction(curLayout) %>">
 		<liferay-ui:icon
-			message="orphan-portlets"
+			message="orphan-widgets"
 			url="<%= layoutsAdminDisplayContext.getOrphanPortletsURL(curLayout) %>"
 		/>
 	</c:if>

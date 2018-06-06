@@ -22,7 +22,7 @@ SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplay
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(String.valueOf(layoutsAdminDisplayContext.getPortletURL()));
 
-renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
+renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 %>
 
 <div class="container-fluid container-fluid-max-xl container-view">
@@ -84,7 +84,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
 
 		<div class="col-lg-9">
 			<div class="sheet">
-				<h3>
+				<h3 class="sheet-title">
 					<c:choose>
 						<c:when test="<%= selectLayoutPageTemplateEntryDisplayContext.isContentPages() %>">
 
@@ -108,7 +108,6 @@ renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
 				<c:choose>
 					<c:when test="<%= selectLayoutPageTemplateEntryDisplayContext.isContentPages() %>">
 						<liferay-ui:search-container
-							id="layoutPageTemplateEntries"
 							total="<%= selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateEntriesCount() %>"
 						>
 							<liferay-ui:search-container-results
@@ -131,22 +130,39 @@ renderResponse.setTitle(LanguageUtil.get(request, "add-page"));
 									Map<String, Object> addLayoutData = new HashMap<>();
 
 									addLayoutData.put("layout-page-template-entry-id", layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+									String imagePreviewURL = layoutPageTemplateEntry.getImagePreviewURL(themeDisplay);
 									%>
 
-									<liferay-frontend:icon-vertical-card
-										actionJspServletContext="<%= application %>"
-										cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
-										data="<%= addLayoutData %>"
-										icon="page"
-										resultRow="<%= row %>"
-										rowChecker="<%= searchContainer.getRowChecker() %>"
-										title="<%= layoutPageTemplateEntry.getName() %>"
-										url="javascript:;"
-									>
-										<liferay-frontend:vertical-card-header>
-											<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
-										</liferay-frontend:vertical-card-header>
-									</liferay-frontend:icon-vertical-card>
+									<c:choose>
+										<c:when test="<%= Validator.isNotNull(imagePreviewURL) %>">
+											<liferay-frontend:vertical-card
+												cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
+												data="<%= addLayoutData %>"
+												imageCSSClass="aspect-ratio-bg-contain"
+												imageUrl="<%= imagePreviewURL %>"
+												title="<%= layoutPageTemplateEntry.getName() %>"
+												url="javascript:;"
+											>
+												<liferay-frontend:vertical-card-header>
+													<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
+												</liferay-frontend:vertical-card-header>
+											</liferay-frontend:vertical-card>
+										</c:when>
+										<c:otherwise>
+											<liferay-frontend:icon-vertical-card
+												cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
+												data="<%= addLayoutData %>"
+												icon='<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) ? "page-template" : "page" %>'
+												title="<%= layoutPageTemplateEntry.getName() %>"
+												url="javascript:;"
+											>
+												<liferay-frontend:vertical-card-header>
+													<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
+												</liferay-frontend:vertical-card-header>
+											</liferay-frontend:icon-vertical-card>
+										</c:otherwise>
+									</c:choose>
 								</liferay-ui:search-container-column-text>
 							</liferay-ui:search-container-row>
 

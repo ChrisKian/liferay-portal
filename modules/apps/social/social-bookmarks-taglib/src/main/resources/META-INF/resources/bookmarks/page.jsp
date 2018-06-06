@@ -18,6 +18,7 @@
 
 <%
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_social_bookmarks_page") + StringPool.UNDERLINE;
+String dropdownMenuComponentId = randomNamespace + "socialBookmarksDropdownMenu";
 %>
 
 <liferay-util:html-top
@@ -30,28 +31,11 @@ String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_social
 	<c:choose>
 		<c:when test='<%= displayStyle.equals("menu") %>'>
 			<clay:dropdown-menu
-				dropdownItems="<%=
-					new JSPDropdownItemList(pageContext) {
-						{
-							for (int i = 0; i < types.length; i++) {
-								SocialBookmark socialBookmark = SocialBookmarksRegistryUtil.getSocialBookmark(types[i]);
-								final String type = types[i];
-
-								if (socialBookmark != null) {
-									add(
-										dropdownItem -> {
-											dropdownItem.setHref("javascript:" + SocialBookmarksTagUtil.getClickJSCall(className, classPK, type, socialBookmark.getPostURL(title, url), url));
-											dropdownItem.setLabel(socialBookmark.getName(request.getLocale()));
-										});
-								}
-							}
-						}
-					}
-				%>"
-				label="<%= LanguageUtil.get(request, "share") %>"
+				componentId="<%= dropdownMenuComponentId %>"
+				dropdownItems="<%= SocialBookmarksTagUtil.getDropdownItems(request.getLocale(), types, className, classPK, title, url) %>"
 				icon="share"
-				style="secondary"
-				triggerCssClasses="btn-outline-borderless btn-sm"
+				label='<%= LanguageUtil.get(request, "share") %>'
+				triggerCssClasses="btn-outline-borderless btn-outline-secondary btn-sm"
 			/>
 		</c:when>
 		<c:otherwise>
@@ -83,28 +67,16 @@ String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_social
 			if (types.length > maxInlineItems) {
 			%>
 
-				<clay:dropdown-menu
-					dropdownItems="<%=
-						new JSPDropdownItemList(pageContext) {
-							{
-								for (int i = maxInlineItems; i < types.length; i++) {
-									SocialBookmark socialBookmark = SocialBookmarksRegistryUtil.getSocialBookmark(types[i]);
-									final String type = types[i];
+				<%
+				String[] remainingTypes = ArrayUtil.subset(types, maxInlineItems, types.length);
+				%>
 
-									if (socialBookmark != null) {
-										add(
-											dropdownItem -> {
-												dropdownItem.setHref("javascript:" + SocialBookmarksTagUtil.getClickJSCall(className, classPK, type, socialBookmark.getPostURL(title, url), url) + " void(0);");
-												dropdownItem.setLabel(socialBookmark.getName(request.getLocale()));
-											});
-									}
-								}
-							}
-						}
-					%>"
+				<clay:dropdown-menu
+					componentId="<%= dropdownMenuComponentId %>"
+					dropdownItems="<%= SocialBookmarksTagUtil.getDropdownItems(request.getLocale(), remainingTypes, className, classPK, title, url) %>"
 					icon="share"
 					style="secondary"
-					triggerCssClasses="btn-outline-borderless btn-sm"
+					triggerCssClasses="btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
 				/>
 
 			<%
@@ -118,7 +90,7 @@ String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_social
 		outputKey="social_bookmarks"
 	>
 		<aui:script>
-			function socialBookmarks_handleItemClick(className, classPK, type, shareURL, url) {
+			function socialBookmarks_handleItemClick(className, classPK, type, postURL, url) {
 				var SHARE_WINDOW_HEIGHT = 436;
 				var SHARE_WINDOW_WIDTH = 626;
 
@@ -131,7 +103,7 @@ String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_social
 					'width=' + SHARE_WINDOW_WIDTH
 				];
 
-				window.open(shareURL, null, shareWindowFeatures.join()).focus();
+				window.open(postURL, null, shareWindowFeatures.join()).focus();
 
 				Liferay.fire(
 					'socialBookmarks:share',
@@ -147,4 +119,27 @@ String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_social
 			}
 		</aui:script>
 	</liferay-util:html-bottom>
+
+	<aui:script sandbox="<%= true %>">
+		Liferay.componentReady('<%= dropdownMenuComponentId %>').then(
+			function(dropdownMenu) {
+				dropdownMenu.on(
+					['itemClicked'],
+					function(event) {
+						event.preventDefault();
+
+						var data = event.data.item.data;
+
+						socialBookmarks_handleItemClick(
+							data.className,
+							parseInt(data.classPK),
+							data.type,
+							data.postURL,
+							data.url
+						);
+					}
+				);
+			}
+		);
+	</aui:script>
 </div>

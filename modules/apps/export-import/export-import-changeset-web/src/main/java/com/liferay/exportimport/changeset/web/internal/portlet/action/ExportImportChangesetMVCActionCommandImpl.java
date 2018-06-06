@@ -162,7 +162,7 @@ public class ExportImportChangesetMVCActionCommandImpl
 		}
 
 		Map<String, String[]> parameterMap =
-			ExportImportConfigurationParameterMapFactory.buildParameterMap();
+			_exportImportConfigurationParameterMapFactory.buildParameterMap();
 
 		parameterMap.put("changesetUuid", new String[] {changesetUuid});
 
@@ -184,7 +184,7 @@ public class ExportImportChangesetMVCActionCommandImpl
 
 		if (cmd.equals(Constants.EXPORT)) {
 			Map<String, Serializable> settingsMap =
-				ExportImportConfigurationSettingsMapFactory.
+				_exportImportConfigurationSettingsMapFactory.
 					buildExportPortletSettingsMap(
 						themeDisplay.getUser(), themeDisplay.getPlid(),
 						themeDisplay.getScopeGroupId(),
@@ -235,7 +235,7 @@ public class ExportImportChangesetMVCActionCommandImpl
 			}
 
 			Map<String, Serializable> settingsMap =
-				ExportImportConfigurationSettingsMapFactory.
+				_exportImportConfigurationSettingsMapFactory.
 					buildPublishPortletSettingsMap(
 						themeDisplay.getUser(), themeDisplay.getScopeGroupId(),
 						themeDisplay.getPlid(), liveGroupId,
@@ -266,6 +266,14 @@ public class ExportImportChangesetMVCActionCommandImpl
 	@Reference
 	private ExportImportConfigurationLocalService
 		_exportImportConfigurationLocalService;
+
+	@Reference
+	private ExportImportConfigurationParameterMapFactory
+		_exportImportConfigurationParameterMapFactory;
+
+	@Reference
+	private ExportImportConfigurationSettingsMapFactory
+		_exportImportConfigurationSettingsMapFactory;
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;

@@ -30,10 +30,6 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 
 	<aui:form action="<%= deleteArchivedSetupsURL %>" name="fm">
 		<div class="portlet-configuration-body-content">
-			<clay:navigation-bar
-				navigationItems="<%= portletConfigurationTemplatesDisplayContext.getNavigationItems() %>"
-			/>
-
 			<clay:management-toolbar
 				actionDropdownItems="<%= portletConfigurationTemplatesDisplayContext.getActionDropdownItems() %>"
 				componentId="archivedSettingsManagementToolbar"
@@ -149,9 +145,32 @@ PortletConfigurationTemplatesDisplayContext portletConfigurationTemplatesDisplay
 </div>
 
 <aui:script sandbox="<%= true %>">
-	window.<portlet:namespace />deleteArchivedSettings = function() {
+	var deleteArchivedSettings = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
-			submitForm($(document.<portlet:namespace />fm));
+			var form = document.getElementById('<portlet:namespace />fm');
+
+			if (form) {
+				submitForm(form);
+			}
 		}
 	}
+
+	var ACTIONS = {
+		'deleteArchivedSettings': deleteArchivedSettings
+	};
+
+	Liferay.componentReady('archivedSettingsManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+					function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

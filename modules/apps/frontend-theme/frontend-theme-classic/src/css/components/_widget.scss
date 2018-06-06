@@ -11,10 +11,18 @@
 		font-weight: 400;
 	}
 
-	.username {
-		color: $dark-color;
-		font-weight: 700;
-		line-height: 2;
+	.widget-metadata {
+		font-size: 0.875rem;
+
+		.inline-item-before {
+			margin-right: 1rem;
+		}
+
+		.username {
+			color: $dark-color;
+			font-weight: 600;
+			line-height: 2;
+		}
 	}
 
 	.aspect-ratio {
@@ -48,11 +56,16 @@
 	}
 
 	.widget-metadata {
+		font-size: 0.875rem;
 		margin-bottom: 16px;
+
+		.inline-item-before {
+			margin-right: 1rem;
+		}
 
 		.username {
 			color: $dark-color;
-			font-weight: 700;
+			font-weight: 600;
 		}
 	}
 
@@ -89,8 +102,22 @@
 		}
 	}
 
-	.widget-metadata .username {
-		color: $dark-color;
-		font-weight: 700;
+	.widget-metadata {
+		font-size: 0.875rem;
+
+		.inline-item-before {
+			margin-right: 1rem;
+		}
+
+		.username {
+			color: $dark-color;
+			font-weight: 600;
+		}
+	}
+}
+
+.widget-toolbar {
+	.autofit-col:first-of-type > .btn-outline-borderless {
+		margin-left: -0.75rem;
 	}
 }

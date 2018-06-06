@@ -62,56 +62,85 @@ if (organizationId > 0) {
 				</div>
 
 				<aui:script>
-					AUI.$('#<portlet:namespace />selectOrganizationButton').on(
-						'click',
-						function(event) {
-							Liferay.Util.selectEntity(
-								{
-									dialog: {
-										constrain: true,
-										modal: true
+					var <portlet:namespace />selectOrganizationButton = document.getElementById('<portlet:namespace />selectOrganizationButton');
+
+					if (<portlet:namespace />selectOrganizationButton) {
+						<portlet:namespace />selectOrganizationButton.addEventListener(
+							'click',
+							function(event) {
+								Liferay.Util.selectEntity(
+									{
+										dialog: {
+											constrain: true,
+											destroyOnHide: true,
+											modal: true
+										},
+
+										<%
+										String portletId = PortletProviderUtil.getPortletId(User.class.getName(), PortletProvider.Action.VIEW);
+										%>
+
+										id: '<%= PortalUtil.getPortletNamespace(portletId) %>selectOrganization',
+										title: '<liferay-ui:message arguments="organization" key="select-x" />',
+
+										<%
+										PortletURL selectOrganizationURL = PortletProviderUtil.getPortletURL(request, Organization.class.getName(), PortletProvider.Action.BROWSE);
+
+										selectOrganizationURL.setParameter("tabs1", "organizations");
+										selectOrganizationURL.setWindowState(LiferayWindowState.POP_UP);
+										%>
+
+										uri: '<%= selectOrganizationURL.toString() %>'
 									},
+									function(event) {
+										var form = document.getElementById('<portlet:namespace />fm');
 
-									<%
-									String portletId = PortletProviderUtil.getPortletId(User.class.getName(), PortletProvider.Action.VIEW);
-									%>
+										if (form) {
+											var organizationId = form.querySelector('#<portlet:namespace />organizationId');
 
-									id: '<%= PortalUtil.getPortletNamespace(portletId) %>selectOrganization',
+											if (organizationId) {
+												organizationId.setAttribute('value', event.entityid);
+											}
 
-									title: '<liferay-ui:message arguments="organization" key="select-x" />',
+											var organizationName = form.querySelector('#<portlet:namespace />organizationName');
 
-									<%
-									PortletURL selectOrganizationURL = PortletProviderUtil.getPortletURL(request, Organization.class.getName(), PortletProvider.Action.BROWSE);
+											if (organizationName) {
+												organizationName.setAttribute('value' ,event.entityname);
+											}
+										}
 
-									selectOrganizationURL.setParameter("tabs1", "organizations");
-									selectOrganizationURL.setWindowState(LiferayWindowState.POP_UP);
-									%>
+										Liferay.Util.toggleDisabled('#<portlet:namespace />removeOrganizationButton', false);
+									}
+								);
+							}
+						);
+					}
+				</aui:script>
 
-									uri: '<%= selectOrganizationURL.toString() %>'
-								},
-								function(event) {
-									document.<portlet:namespace />fm.<portlet:namespace />organizationId.value = event.entityid;
+				<aui:script require="metal-dom/src/dom">
+					let dom = metalDomSrcDom.default;
 
-									document.getElementById('<portlet:namespace />organizationName').value = event.entityname;
+					var <portlet:namespace />selectionMethod = document.getElementById('<portlet:namespace />selectionMethod');
 
-									Liferay.Util.toggleDisabled('#<portlet:namespace />removeOrganizationButton', false);
+					if (<portlet:namespace />selectionMethod) {
+						<portlet:namespace />selectionMethod.addEventListener(
+							'change',
+							function(event) {
+								var usersSelectionOptions = document.getElementById('<portlet:namespace />usersSelectionOptions');
+
+								if (usersSelectionOptions) {
+									var showUsersSelectionOptions = !(selectionMethod.val() === 'users');
+
+									if (showUsersSelectionOptions) {
+										dom.addClasses(usersSelectionOptions, 'hide');
+									}
+									else {
+										dom.removeClasses(usersSelectionOptions, 'hide');
+									}
 								}
-							);
-						}
-					);
-
-					var selectionMethod = AUI.$('#<portlet:namespace />selectionMethod');
-
-					selectionMethod.on(
-						'change',
-						function() {
-							var usersSelectionOptions = AUI.$('#<portlet:namespace />usersSelectionOptions');
-
-							var showUsersSelectionOptions = !(selectionMethod.val() === 'users');
-
-							usersSelectionOptions.toggleClass('hide', showUsersSelectionOptions);
-						}
-					);
+							}
+						);
+					}
 				</aui:script>
 
 				<aui:select name="preferences--displayStyle--" value="<%= displayStyle %>">

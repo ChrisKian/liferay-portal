@@ -55,8 +55,17 @@ public class AssetDisplayPageEntryLocalServiceUtil {
 	}
 
 	public static com.liferay.asset.display.page.model.AssetDisplayPageEntry addAssetDisplayPageEntry(
-		long assetEntryId, long layoutId) {
-		return getService().addAssetDisplayPageEntry(assetEntryId, layoutId);
+		long assetEntryId, long layoutPageTemplateEntryId) {
+		return getService()
+				   .addAssetDisplayPageEntry(assetEntryId,
+			layoutPageTemplateEntryId);
+	}
+
+	public static com.liferay.asset.display.page.model.AssetDisplayPageEntry addAssetDisplayPageEntry(
+		long assetEntryId, long layoutPageTemplateEntryId, int type) {
+		return getService()
+				   .addAssetDisplayPageEntry(assetEntryId,
+			layoutPageTemplateEntryId, type);
 	}
 
 	/**
@@ -225,6 +234,12 @@ public class AssetDisplayPageEntryLocalServiceUtil {
 	*/
 	public static int getAssetDisplayPageEntriesCount() {
 		return getService().getAssetDisplayPageEntriesCount();
+	}
+
+	public static int getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
+		long layoutPageTemplateEntryId) {
+		return getService()
+				   .getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(layoutPageTemplateEntryId);
 	}
 
 	/**

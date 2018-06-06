@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Collection;
@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import org.osgi.service.component.annotations.Component;
@@ -64,7 +65,7 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		Document document = _getDocument(html);
 
-		for (Element element : document.select("lfr-editable")) {
+		for (Element element : document.select(_LFR_EDITABLE)) {
 			EditableElementParser editableElementParser =
 				_editableElementParsers.get(element.attr("type"));
 
@@ -95,7 +96,7 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		Document document = _getDocument(html);
 
-		for (Element element : document.select("lfr-editable")) {
+		for (Element element : document.select(_LFR_EDITABLE)) {
 			EditableElementParser editableElementParser =
 				_editableElementParsers.get(element.attr("type"));
 
@@ -126,7 +127,8 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 			if (Objects.equals(
 					mode, FragmentEntryLinkConstants.ASSET_DISPLAY_PAGE)) {
 
-				value = _getMappedValue(editableValueJSONObject);
+				value = _getMappedValue(
+					editableElementParser, editableValueJSONObject);
 			}
 
 			if (Validator.isNull(value)) {
@@ -136,6 +138,15 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 			editableElementParser.replace(element, value);
 		}
 
+		if (Objects.equals(mode, FragmentEntryLinkConstants.VIEW)) {
+			for (Element element : document.select(_LFR_EDITABLE)) {
+				TextNode textNode = new TextNode(
+					element.html(), StringPool.BLANK);
+
+				element.replaceWith(textNode);
+			}
+		}
+
 		Element bodyElement = document.body();
 
 		return bodyElement.html();
@@ -143,8 +154,7 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 
 	@Reference(
 		cardinality = ReferenceCardinality.MULTIPLE,
-		policy = ReferencePolicy.DYNAMIC,
-		unbind = "unregisterEditableElementParser"
+		policy = ReferencePolicy.DYNAMIC
 	)
 	public void registerEditableElementParser(
 		EditableElementParser editableElementParser,
@@ -193,32 +203,17 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 		return value;
 	}
 
-	private String _getMappedValue(JSONObject jsonObject) {
+	private String _getMappedValue(
+		EditableElementParser editableElementParser, JSONObject jsonObject) {
+
 		String value = jsonObject.getString("mappedField");
 
 		if (Validator.isNull(value)) {
 			return StringPool.BLANK;
 		}
 
-		StringBundler sb = new StringBundler(15);
-
-		sb.append("${");
-		sb.append(value);
-		sb.append("???then(");
-		sb.append(value);
-		sb.append("?is_sequence?then(");
-		sb.append(value);
-		sb.append("?join(\", \"), ");
-		sb.append(value);
-		sb.append("?is_date_like?then(");
-		sb.append(value);
-		sb.append("?datetime?string, ");
-		sb.append(value);
-		sb.append("???then(");
-		sb.append(value);
-		sb.append("?string, \"\"))), \"\")}");
-
-		return sb.toString();
+		return StringUtil.replace(
+			editableElementParser.getFieldTemplate(), "field_name", value);
 	}
 
 	private void _validateAttribute(Element element, String attribute)
@@ -244,7 +239,7 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		Document document = _getDocument(html);
 
-		for (Element element : document.getElementsByTag("lfr-editable")) {
+		for (Element element : document.getElementsByTag(_LFR_EDITABLE)) {
 			for (String attribute : _REQUIRED_ATTRIBUTES) {
 				_validateAttribute(element, attribute);
 			}
@@ -258,7 +253,7 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		Document document = _getDocument(html);
 
-		Elements elements = document.getElementsByTag("lfr-editable");
+		Elements elements = document.getElementsByTag(_LFR_EDITABLE);
 
 		Stream<Element> uniqueNodesStream = elements.stream();
 
@@ -288,7 +283,7 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 
 		Document document = _getDocument(html);
 
-		for (Element element : document.select("lfr-editable")) {
+		for (Element element : document.select(_LFR_EDITABLE)) {
 			EditableElementParser editableElementParser =
 				_editableElementParsers.get(element.attr("type"));
 
@@ -318,6 +313,8 @@ public class EditableFragmentEntryProcessor implements FragmentEntryProcessor {
 				resourceBundle,
 				"you-must-define-a-valid-type-for-each-editable-element"));
 	}
+
+	private static final String _LFR_EDITABLE = "lfr-editable";
 
 	private static final String[] _REQUIRED_ATTRIBUTES = {"id", "type"};
 

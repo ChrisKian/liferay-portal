@@ -34,7 +34,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 				<ul class="nav nav-nested">
 					<li class="nav-item">
 						<strong class="text-uppercase">
-							<liferay-ui:message key="site-pages" />
+							<liferay-ui:message key="usages" />
 						</strong>
 
 						<ul class="nav nav-stacked">
@@ -94,7 +94,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 
 		<div class="col-lg-9">
 			<div class="sheet">
-				<h3>
+				<h3 class="sheet-title">
 					<c:choose>
 						<c:when test='<%= Objects.equals(fragmentEntryLinkDisplayContext.getNavigation(), "pages") %>'>
 							<liferay-ui:message arguments="<%= fragmentEntryLinkDisplayContext.getPagesUsageCount() %>" key="pages-x" />
@@ -112,16 +112,16 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 				</h3>
 
 				<clay:management-toolbar
-					actionDropdownItems="<%= fragmentEntryLinkDisplayContext.getActionItemsDropdownItemList() %>"
+					actionDropdownItems="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) ? fragmentEntryLinkDisplayContext.getActionItemsDropdownItemList() : null %>"
 					componentId="fragmentEntryLinksManagementToolbar"
 					disabled="<%= fragmentEntry.getUsageCount() <= 0 %>"
 					filterDropdownItems="<%= fragmentEntryLinkDisplayContext.getFilterItemsDropdownItems() %>"
 					itemsTotal="<%= fragmentEntry.getUsageCount() %>"
 					searchContainerId="fragmentEntryLinks"
+					selectable="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) %>"
 					showSearch="<%= false %>"
 					sortingOrder="<%= fragmentEntryLinkDisplayContext.getOrderByType() %>"
 					sortingURL="<%= fragmentEntryLinkDisplayContext.getSortingURL() %>"
-					viewTypeItems="<%= fragmentEntryLinkDisplayContext.getViewTypeItems() %>"
 				/>
 
 				<portlet:actionURL name="/fragment/propagate_fragment_entry_changes" var="propagateFragmentEntryChangesURL">
@@ -175,7 +175,26 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 </div>
 
 <aui:script>
-	window.<portlet:namespace/>propagate = function() {
+	var propagate = function() {
 		submitForm(document.querySelector('#<portlet:namespace />fm'));
 	};
+
+	var ACTIONS = {
+		'propagate': propagate
+	};
+
+	Liferay.componentReady('fragmentEntryLinksManagementToolbar').then(
+		(managementToolbar) => {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

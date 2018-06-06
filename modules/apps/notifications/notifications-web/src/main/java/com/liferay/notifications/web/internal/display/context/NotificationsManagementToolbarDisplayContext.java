@@ -17,9 +17,6 @@ package com.liferay.notifications.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SafeConsumer;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItemList;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -43,13 +40,12 @@ public class NotificationsManagementToolbarDisplayContext {
 	public NotificationsManagementToolbarDisplayContext(
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		PortletURL currentURLObj) {
+		HttpServletRequest request, PortletURL currentURLObj) {
 
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_request = request;
 		_currentURLObj = currentURLObj;
-
-		_request = _liferayPortletRequest.getHttpServletRequest();
 	}
 
 	public List<DropdownItem> getActionDropdownItems() {
@@ -62,11 +58,8 @@ public class NotificationsManagementToolbarDisplayContext {
 					add(
 						SafeConsumer.ignore(
 							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:",
-										_liferayPortletResponse.getNamespace(),
-										"markNotificationsAsRead();"));
+								dropdownItem.putData(
+									"action", "markNotificationsAsRead");
 								dropdownItem.setIcon("envelope-open");
 								dropdownItem.setLabel(
 									LanguageUtil.get(_request, "mark-as-read"));
@@ -76,11 +69,8 @@ public class NotificationsManagementToolbarDisplayContext {
 					add(
 						SafeConsumer.ignore(
 							dropdownItem -> {
-								dropdownItem.setHref(
-									StringBundler.concat(
-										"javascript:",
-										_liferayPortletResponse.getNamespace(),
-										"markNotificationsAsUnread();"));
+								dropdownItem.putData(
+									"action", "markNotificationsAsUnread");
 								dropdownItem.setIcon("envelope-closed");
 								dropdownItem.setLabel(
 									LanguageUtil.get(
@@ -92,11 +82,8 @@ public class NotificationsManagementToolbarDisplayContext {
 				add(
 					SafeConsumer.ignore(
 						dropdownItem -> {
-							dropdownItem.setHref(
-								StringBundler.concat(
-									"javascript:",
-									_liferayPortletResponse.getNamespace(),
-									"deleteAllNotifications();"));
+							dropdownItem.putData(
+								"action", "deleteAllNotifications");
 							dropdownItem.setIcon("times");
 							dropdownItem.setLabel(
 								LanguageUtil.get(_request, "delete"));
@@ -145,23 +132,6 @@ public class NotificationsManagementToolbarDisplayContext {
 			Objects.equals(getOrderByType(), "asc") ? "desc" : "asc");
 
 		return sortingURL;
-	}
-
-	public ViewTypeItemList getViewTypes() {
-		return new ViewTypeItemList(null, "descriptive") {
-			{
-				ViewTypeItem cardViewTypeItem = addCardViewTypeItem();
-
-				cardViewTypeItem.setDisabled(true);
-
-				addListViewTypeItem();
-
-				ViewTypeItem tableViewTypeItem = addTableViewTypeItem();
-
-				tableViewTypeItem.setDisabled(true);
-			}
-
-		};
 	}
 
 	private List<DropdownItem> _getFilterNavigationDropdownItems() {

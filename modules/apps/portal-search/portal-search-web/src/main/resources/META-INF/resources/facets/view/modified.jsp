@@ -19,17 +19,47 @@
 <%
 String fieldParamSelection = ParamUtil.getString(request, facet.getFieldId() + "selection", "0");
 
-int fromDay = ParamUtil.getInteger(request, HtmlUtil.escapeJS(facet.getFieldId()) + "dayFrom");
-int fromMonth = ParamUtil.getInteger(request, HtmlUtil.escapeJS(facet.getFieldId()) + "monthFrom");
-int fromYear = ParamUtil.getInteger(request, HtmlUtil.escapeJS(facet.getFieldId()) + "yearFrom");
+String fieldParamFrom = ParamUtil.getString(request, facet.getFieldId() + "from");
+String fieldParamTo = ParamUtil.getString(request, facet.getFieldId() + "to");
 
-Date fromDate = PortalUtil.getDate(fromMonth, fromDay, fromYear);
+Date fromDate = null;
+Date toDate = null;
 
-int toDay = ParamUtil.getInteger(request, HtmlUtil.escapeJS(facet.getFieldId()) + "dayTo");
-int toMonth = ParamUtil.getInteger(request, HtmlUtil.escapeJS(facet.getFieldId()) + "monthTo");
-int toYear = ParamUtil.getInteger(request, HtmlUtil.escapeJS(facet.getFieldId()) + "yearTo");
+if (Validator.isNotNull(fieldParamFrom) || Validator.isNotNull(fieldParamTo)) {
+	String delimiter = StringPool.FORWARD_SLASH;
 
-Date toDate = PortalUtil.getDate(toMonth, toDay, toYear);
+	int dayPosition = 1;
+	int monthPosition = 0;
+	int yearPosition = 2;
+
+	if (BrowserSnifferUtil.isMobile(request)) {
+		delimiter = StringPool.DASH;
+
+		dayPosition = 2;
+		monthPosition = 1;
+		yearPosition = 0;
+	}
+
+	String[] from = StringUtil.split(fieldParamFrom, delimiter);
+
+	if (ArrayUtil.isNotEmpty(from) && (from.length == 3)) {
+		int fromDay = GetterUtil.getInteger(from[dayPosition]);
+		int fromMonth = GetterUtil.getInteger(from[monthPosition]) - 1;
+		int fromYear = GetterUtil.getInteger(from[yearPosition]);
+
+		fromDate = PortalUtil.getDate(fromMonth, fromDay, fromYear);
+	}
+
+	String[] to = StringUtil.split(fieldParamTo, delimiter);
+
+	if (ArrayUtil.isNotEmpty(to) && (to.length == 3)) {
+		int toDay = GetterUtil.getInteger(to[dayPosition]);
+		int toMonth = GetterUtil.getInteger(to[monthPosition]) - 1;
+		int toYear = GetterUtil.getInteger(to[yearPosition]);
+
+		toDate = PortalUtil.getDate(toMonth, toDay, toYear);
+	}
+}
 
 JSONArray rangesJSONArray = dataJSONObject.getJSONArray("ranges");
 
@@ -53,19 +83,13 @@ int index = 0;
 					<li class="default facet-value">
 
 						<%
-						String defaultRangeCssClass = "text-default";
-
-						if (fieldParamSelection.equals("0")) {
-							defaultRangeCssClass = "text-primary";
-						}
-
 						Map<String, Object> data = new HashMap<>();
 
 						data.put("selection", 0);
 						data.put("value", StringPool.BLANK);
 						%>
 
-						<aui:a cssClass="<%= defaultRangeCssClass %>" href="javascript:;">
+						<aui:a cssClass='<%= (Validator.isNull(fieldParamSelection) || fieldParamSelection.equals("0")) ? "facet-term-selected" : "facet-term-unselected" %>' href="javascript:;">
 							<liferay-ui:message key="<%= HtmlUtil.escape(facetConfiguration.getLabel()) %>" />
 						</aui:a>
 					</li>
@@ -83,10 +107,10 @@ int index = 0;
 						<li class="facet-value">
 
 							<%
-							String rangeCssClass = "text-default";
+							String rangeCssClass = "facet-term-unselected";
 
 							if (fieldParamSelection.equals(String.valueOf(index))) {
-								rangeCssClass = "text-primary";
+								rangeCssClass = "facet-term-selected";
 							}
 
 							data = new HashMap<>();
@@ -118,10 +142,10 @@ int index = 0;
 						String customRangeCssClass = randomNamespace + "custom-range-toggle";
 
 						if (fieldParamSelection.equals(String.valueOf(index + 1))) {
-							customRangeCssClass += " text-primary";
+							customRangeCssClass += " facet-term-selected";
 						}
 						else {
-							customRangeCssClass += " text-default";
+							customRangeCssClass += " facet-term-unselected";
 						}
 
 						TermCollector termCollector = null;
@@ -194,7 +218,7 @@ int index = 0;
 						String taglibSearchCustomRange = "window['" + renderResponse.getNamespace() + HtmlUtil.escapeJS(facet.getFieldId()) + "searchCustomRange'](" + (index + 1) + ");";
 						%>
 
-						<aui:button disabled="<%= (toCalendar.getTimeInMillis() < fromCalendar.getTimeInMillis()) %>" name="searchCustomRangeButton" onClick="<%= taglibSearchCustomRange %>" value="search" />
+						<aui:button disabled="<%= toCalendar.getTimeInMillis() < fromCalendar.getTimeInMillis() %>" name="searchCustomRangeButton" onClick="<%= taglibSearchCustomRange %>" value="search" />
 					</div>
 				</ul>
 			</aui:field-wrapper>
@@ -203,12 +227,20 @@ int index = 0;
 </div>
 
 <aui:script>
+	var form = AUI.$(document.<portlet:namespace />fm);
+
+	form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>dayFrom').prop('disabled', true);
+	form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>monthFrom').prop('disabled', true);
+	form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>yearFrom').prop('disabled', true);
+
+	form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>dayTo').prop('disabled', true);
+	form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>monthTo').prop('disabled', true);
+	form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>yearTo').prop('disabled', true);
+
 	function <portlet:namespace /><%= HtmlUtil.escapeJS(facet.getFieldId()) %>searchCustomRange(selection) {
 		var A = AUI();
 		var Lang = A.Lang;
 		var LString = Lang.String;
-
-		var form = AUI.$(document.<portlet:namespace />fm);
 
 		var dayFrom = form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>dayFrom').val();
 		var monthFrom = Lang.toInt(form.fm('<%= HtmlUtil.escapeJS(facet.getFieldId()) %>monthFrom').val()) + 1;

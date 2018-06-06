@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -53,17 +52,17 @@ public class KBTemplatesManagementToolbarDisplayContext {
 
 	public KBTemplatesManagementToolbarDisplayContext(
 			LiferayPortletRequest liferayPortletRequest,
-			LiferayPortletResponse liferayPortletResponse, String templatePath)
+			LiferayPortletResponse liferayPortletResponse,
+			HttpServletRequest request, String templatePath)
 		throws PortalException {
 
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+		_request = request;
 		_templatePath = templatePath;
 
 		_currentURLObj = PortletURLUtil.getCurrent(
 			_liferayPortletRequest, _liferayPortletResponse);
-
-		_request = liferayPortletRequest.getHttpServletRequest();
 
 		_themeDisplay = (ThemeDisplay)_request.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -76,11 +75,7 @@ public class KBTemplatesManagementToolbarDisplayContext {
 			{
 				add(
 					dropdownItem -> {
-						dropdownItem.setHref(
-							StringBundler.concat(
-								"javascript:",
-								_liferayPortletResponse.getNamespace(),
-								"deleteKBTemplates();"));
+						dropdownItem.putData("action", "deleteKBTemplates");
 						dropdownItem.setIcon("times");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "delete"));
@@ -91,30 +86,32 @@ public class KBTemplatesManagementToolbarDisplayContext {
 	}
 
 	public CreationMenu getCreationMenu() {
+		if (Validator.isNotNull(_getKeywords()) ||
+			!AdminPermission.contains(
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroupId(),
+				KBActionKeys.ADD_KB_TEMPLATE)) {
+
+			return null;
+		}
+
 		return new CreationMenu() {
 			{
-				if (Validator.isNull(_getKeywords()) &&
-					AdminPermission.contains(
-						_themeDisplay.getPermissionChecker(),
-						_themeDisplay.getScopeGroupId(),
-						KBActionKeys.ADD_KB_TEMPLATE)) {
+				addDropdownItem(
+					dropdownItem -> {
+						PortletURL addKBTemplateURL =
+							_liferayPortletResponse.createRenderURL();
 
-					addDropdownItem(
-						dropdownItem -> {
-							PortletURL addKBTemplateURL =
-								_liferayPortletResponse.createRenderURL();
+						addKBTemplateURL.setParameter(
+							"mvcPath", _templatePath + "edit_template.jsp");
+						addKBTemplateURL.setParameter(
+							"redirect", PortalUtil.getCurrentURL(_request));
 
-							addKBTemplateURL.setParameter(
-								"mvcPath", _templatePath + "edit_template.jsp");
-							addKBTemplateURL.setParameter(
-								"redirect", PortalUtil.getCurrentURL(_request));
+						dropdownItem.setHref(addKBTemplateURL);
 
-							dropdownItem.setHref(addKBTemplateURL);
-
-							dropdownItem.setLabel(
-								LanguageUtil.get(_request, "add-template"));
-						});
-				}
+						dropdownItem.setLabel(
+							LanguageUtil.get(_request, "add-template"));
+					});
 			}
 		};
 	}
@@ -150,13 +147,13 @@ public class KBTemplatesManagementToolbarDisplayContext {
 	}
 
 	public PortletURL getSortingURL() throws PortletException {
-		PortletURL currentSortingURL = _getCurrentSortingURL();
+		PortletURL sortingURL = _getCurrentSortingURL();
 
-		currentSortingURL.setParameter(
+		sortingURL.setParameter(
 			"orderByType",
 			Objects.equals(getOrderByType(), "asc") ? "desc" : "asc");
 
-		return currentSortingURL;
+		return sortingURL;
 	}
 
 	public int getTotal() {

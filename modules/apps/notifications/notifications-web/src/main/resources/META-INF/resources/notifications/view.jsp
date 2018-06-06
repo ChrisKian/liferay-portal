@@ -35,7 +35,7 @@ if (actionRequired) {
 
 notificationsSearchContainer.setId(searchContainerId);
 
-NotificationsManagementToolbarDisplayContext notificationsManagementToolbarDisplayContext = new NotificationsManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, currentURLObj);
+NotificationsManagementToolbarDisplayContext notificationsManagementToolbarDisplayContext = new NotificationsManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, request, currentURLObj);
 
 NotificationsUtil.populateResults(themeDisplay.getUserId(), actionRequired, navigation, notificationsManagementToolbarDisplayContext.getOrderByType(), notificationsSearchContainer);
 
@@ -70,6 +70,7 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 
 <clay:management-toolbar
 	actionDropdownItems="<%= notificationsManagementToolbarDisplayContext.getActionDropdownItems() %>"
+	componentId="notificationsManagementToolbar"
 	disabled="<%= NotificationsUtil.getAllNotificationsCount(themeDisplay.getUserId(), actionRequired) == 0 %>"
 	filterDropdownItems="<%= notificationsManagementToolbarDisplayContext.getFilterDropdownItems() %>"
 	itemsTotal="<%= notificationsSearchContainer.getTotal() %>"
@@ -79,7 +80,6 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 	showSearch="<%= false %>"
 	sortingOrder="<%= notificationsManagementToolbarDisplayContext.getOrderByType() %>"
 	sortingURL="<%= String.valueOf(notificationsManagementToolbarDisplayContext.getSortingURL()) %>"
-	viewTypeItems="<%= notificationsManagementToolbarDisplayContext.getViewTypes() %>"
 />
 
 <div class="container-fluid-1280 main-content-body">
@@ -117,30 +117,51 @@ navigationURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, "0");
 	</aui:form>
 </div>
 
-<aui:script>
-	function <portlet:namespace />deleteAllNotifications() {
+<aui:script sandbox="<%= true %>">
+	var deleteAllNotifications = function() {
 		var form = AUI.$(document.<portlet:namespace />fm);
 
 		form.attr('method', 'post');
 
 		submitForm(form, '<portlet:actionURL name="deleteAllNotifications"><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:actionURL>');
-	}
+	};
 
-	function <portlet:namespace />markNotificationsAsRead() {
+	var markNotificationsAsRead = function() {
 		var form = AUI.$(document.<portlet:namespace />fm);
 
 		form.attr('method', 'post');
 
 		submitForm(form, '<portlet:actionURL name="markNotificationsAsRead"><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:actionURL>');
-	}
+	};
 
-	function <portlet:namespace />markNotificationsAsUnread() {
+	var markNotificationsAsUnread = function() {
 		var form = AUI.$(document.<portlet:namespace />fm);
 
 		form.attr('method', 'post');
 
 		submitForm(form, '<portlet:actionURL name="markNotificationsAsUnread"><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:actionURL>');
-	}
+	};
+
+	var ACTIONS = {
+		'deleteAllNotifications': deleteAllNotifications,
+		'markNotificationsAsRead': markNotificationsAsRead,
+		'markNotificationsAsUnread': markNotificationsAsUnread
+	};
+
+	Liferay.componentReady('notificationsManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>
 
 <aui:script use="aui-base,liferay-notice">

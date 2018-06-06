@@ -53,7 +53,7 @@ kbSuggestionListDisplayContext.populateResultsAndTotal(kbCommentsSearchContainer
 
 kbCommentsSearchContainer.setRowChecker(new KBCommentsChecker(liferayPortletRequest, liferayPortletResponse));
 
-KBSuggestionListManagementToolbarDisplayContext kbSuggestionListManagementToolbarDisplayContext = new KBSuggestionListManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, kbCommentsSearchContainer);
+KBSuggestionListManagementToolbarDisplayContext kbSuggestionListManagementToolbarDisplayContext = new KBSuggestionListManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, request, kbCommentsSearchContainer);
 
 request.setAttribute("view_suggestions.jsp-resultRowSplitter", kbCommentResultRowSplitter);
 request.setAttribute("view_suggestions.jsp-searchContainer", kbCommentsSearchContainer);
@@ -65,6 +65,7 @@ List<KBComment> kbComments = kbCommentsSearchContainer.getResults();
 
 <clay:management-toolbar
 	actionDropdownItems="<%= kbSuggestionListManagementToolbarDisplayContext.getActionDropdownItems() %>"
+	componentId="kbSuggestionListManagementToolbar"
 	disabled="<%= kbSuggestionListManagementToolbarDisplayContext.isDisabled() %>"
 	filterDropdownItems="<%= kbSuggestionListManagementToolbarDisplayContext.getFilterDropdownItems() %>"
 	itemsTotal="<%= kbSuggestionListManagementToolbarDisplayContext.getTotal() %>"
@@ -88,7 +89,7 @@ List<KBComment> kbComments = kbCommentsSearchContainer.getResults();
 </div>
 
 <aui:script>
-	function <portlet:namespace />deleteKBComments() {
+	var deleteKBComments = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			var form = document.querySelector('#<portlet:namespace />fm');
 
@@ -96,5 +97,24 @@ List<KBComment> kbComments = kbCommentsSearchContainer.getResults();
 				submitForm(form);
 			}
 		}
-	}
+	};
+
+	var ACTIONS = {
+		'deleteKBComments': deleteKBComments
+	};
+
+	Liferay.componentReady('kbSuggestionListManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

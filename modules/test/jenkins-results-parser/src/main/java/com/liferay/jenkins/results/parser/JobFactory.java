@@ -28,14 +28,29 @@ import java.util.Properties;
 public class JobFactory {
 
 	public static Job newJob(String jobName) {
-		return newJob(jobName, "default");
+		return newJob(jobName, null, null);
 	}
 
 	public static Job newJob(String jobName, String testSuiteName) {
+		return newJob(jobName, testSuiteName, null);
+	}
+
+	public static Job newJob(
+		String jobName, String testSuiteName, String portalBranchName) {
+
 		Job job = _jobs.get(jobName);
 
 		if (job != null) {
 			return job;
+		}
+
+		if (jobName.contains("test-plugins-acceptance-pullrequest(")) {
+			PluginsRepositoryJob pluginsRepositoryJob =
+				new PluginsRepositoryJob(jobName);
+
+			_jobs.put(jobName, pluginsRepositoryJob);
+
+			return pluginsRepositoryJob;
 		}
 
 		if (jobName.contains("test-portal-acceptance-pullrequest(")) {
@@ -86,6 +101,18 @@ public class JobFactory {
 			return _jobs.get(jobName);
 		}
 
+		if (jobName.equals("test-portal-release")) {
+			_jobs.put(jobName, new PortalReleaseJob(jobName, portalBranchName));
+
+			return _jobs.get(jobName);
+		}
+
+		if (jobName.contains("test-portal-upstream(")) {
+			_jobs.put(jobName, new PortalUpstreamJob(jobName));
+
+			return _jobs.get(jobName);
+		}
+
 		if (jobName.contains("test-subrepository-acceptance-pullrequest(")) {
 			_jobs.put(
 				jobName, new SubrepositoryAcceptancePullRequestJob(jobName));
@@ -115,10 +142,10 @@ public class JobFactory {
 						moduleDir, "\\.lfrbuild-portal");
 
 				if (lfrBuildPortalFiles.isEmpty()) {
-					File gitRepoFile = new File(moduleDir, ".gitrepo");
+					File gitrepoFile = new File(moduleDir, ".gitrepo");
 
 					Properties properties =
-						JenkinsResultsParserUtil.getProperties(gitRepoFile);
+						JenkinsResultsParserUtil.getProperties(gitrepoFile);
 
 					String subrepositoryRemote = properties.getProperty(
 						"remote");

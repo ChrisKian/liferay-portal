@@ -16,16 +16,21 @@ package com.liferay.frontend.taglib.clay.servlet.taglib.soy;
 
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
 import com.liferay.frontend.taglib.clay.internal.js.loader.modules.extender.npm.NPMResolverProvider;
+import com.liferay.frontend.taglib.clay.internal.servlet.taglib.display.context.ManagementToolbarDefaults;
 import com.liferay.frontend.taglib.clay.servlet.taglib.soy.base.BaseClayTag;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.ViewTypeItem;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.search.DisplayTerms;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,34 +39,44 @@ import java.util.Map;
  */
 public class ManagementToolbarTag extends BaseClayTag {
 
-	public ManagementToolbarTag() {
-		this(
-			"management-toolbar",
-			"com.liferay.frontend.taglib.clay.ManagementToolbar", true);
-	}
-
-	public ManagementToolbarTag(
-		String moduleBaseName, String componentBaseName, boolean hydrate) {
-
-		super(moduleBaseName, componentBaseName, hydrate);
-	}
-
 	@Override
 	public int doStartTag() {
+		setComponentBaseName(
+			"com.liferay.frontend.taglib.clay.ManagementToolbar");
+		setHydrate(true);
+		setModuleBaseName("management-toolbar");
+
 		Map<String, Object> context = getContext();
 
 		String searchInputName = (String)context.get("searchInputName");
 
 		if (Validator.isNull(searchInputName)) {
-			searchInputName = DisplayTerms.KEYWORDS;
+			searchInputName = ManagementToolbarDefaults.getSearchInputName();
 
 			setSearchInputName(searchInputName);
 		}
 
 		String searchFormMethod = GetterUtil.getString(
-			context.get("searchFormMethod"), "POST");
+			context.get("searchFormMethod"),
+			ManagementToolbarDefaults.getSearchFormMethod());
 
 		setSearchFormMethod(searchFormMethod);
+
+		String searchActionURL = (String)context.get("searchActionURL");
+
+		if (searchFormMethod.equals("GET") &&
+			Validator.isNotNull(searchActionURL)) {
+
+			Map<String, Object> searchData = _getSearchData(searchActionURL);
+
+			putValue("searchData", searchData);
+
+			String contentRenderer = GetterUtil.getString(
+				context.get("contentRenderer"),
+				ManagementToolbarDefaults.getContentRenderer());
+
+			setContentRenderer(contentRenderer);
+		}
 
 		String searchValue = (String)context.get("searchValue");
 
@@ -79,7 +94,8 @@ public class ManagementToolbarTag extends BaseClayTag {
 		CreationMenu creationMenu = (CreationMenu)context.get("creationMenu");
 
 		boolean showCreationMenu = GetterUtil.getBoolean(
-			context.get("showCreationMenu"), Validator.isNotNull(creationMenu));
+			context.get("showCreationMenu"),
+			ManagementToolbarDefaults.isShowCreationMenu(creationMenu));
 
 		setShowCreationMenu(showCreationMenu);
 
@@ -91,7 +107,8 @@ public class ManagementToolbarTag extends BaseClayTag {
 		String infoPanelId = (String)context.get("infoPanelId");
 
 		boolean showInfoButton = GetterUtil.getBoolean(
-			context.get("showInfoButton"), Validator.isNotNull(infoPanelId));
+			context.get("showInfoButton"),
+			ManagementToolbarDefaults.isShowInfoButton(infoPanelId));
 
 		setShowInfoButton(showInfoButton);
 
@@ -209,6 +226,40 @@ public class ManagementToolbarTag extends BaseClayTag {
 	@Override
 	protected String[] getNamespacedParams() {
 		return _NAMESPACED_PARAMS;
+	}
+
+	private Map<String, Object> _getSearchData(String searchActionURL) {
+		Map<String, Object> searchData = new HashMap<>();
+
+		String queryString = HttpUtil.getQueryString(searchActionURL);
+
+		String[] parameters = StringUtil.split(queryString, CharPool.AMPERSAND);
+
+		for (String parameter : parameters) {
+			if (parameter.length() == 0) {
+				continue;
+			}
+
+			String[] parameterParts = StringUtil.split(
+				parameter, CharPool.EQUAL);
+
+			if (ArrayUtil.isEmpty(parameterParts)) {
+				continue;
+			}
+
+			String parameterName = parameterParts[0];
+			String parameterValue = StringPool.BLANK;
+
+			if (parameterParts.length > 1) {
+				parameterValue = parameterParts[1];
+			}
+
+			parameterValue = HttpUtil.decodeURL(parameterValue);
+
+			searchData.put(parameterName, parameterValue);
+		}
+
+		return searchData;
 	}
 
 	private static final String[] _NAMESPACED_PARAMS = {

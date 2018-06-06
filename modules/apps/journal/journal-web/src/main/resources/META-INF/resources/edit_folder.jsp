@@ -181,7 +181,8 @@ renderResponse.setTitle(title);
 
 											<portlet:renderURL var="selectFolderURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 												<portlet:param name="mvcPath" value="/select_folder.jsp" />
-												<portlet:param name="folderId" value="<%= String.valueOf(parentFolderId) %>" />
+												<portlet:param name="folderId" value="<%= String.valueOf(folderId) %>" />
+												<portlet:param name="parentFolderId" value="<%= String.valueOf(parentFolderId) %>" />
 											</portlet:renderURL>
 
 											url: '<%= selectFolderURL.toString() %>'
@@ -197,7 +198,7 @@ renderResponse.setTitle(title);
 						String taglibRemoveFolder = "Liferay.Util.removeEntitySelection('parentFolderId', 'parentFolderName', this, '" + renderResponse.getNamespace() + "');";
 						%>
 
-						<aui:button disabled="<%= (parentFolderId <= 0) %>" name="removeFolderButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
+						<aui:button disabled="<%= parentFolderId <= 0 %>" name="removeFolderButton" onClick="<%= taglibRemoveFolder %>" value="remove" />
 					</div>
 
 					<aui:input disabled="<%= mergeWithParentFolderDisabled %>" label="merge-with-parent-folder" name="mergeWithParentFolder" type="toggle-switch" />

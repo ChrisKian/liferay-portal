@@ -50,6 +50,20 @@ AUI.add(
 						);
 					},
 
+					getKey: function() {
+						var instance = this;
+
+						var key = '';
+
+						var keyInput = instance._getKeyInput();
+
+						if (keyInput) {
+							key = keyInput.val();
+						}
+
+						return key;
+					},
+
 					getTemplateContext: function() {
 						var instance = this;
 
@@ -117,6 +131,16 @@ AUI.add(
 						return instance;
 					},
 
+					setKey: function(key) {
+						var instance = this;
+
+						var keyInput = instance._getKeyInput();
+
+						if (keyInput) {
+							keyInput.val(key);
+						}
+					},
+
 					showErrorMesasage: function() {
 						var instance = this;
 
@@ -148,6 +172,12 @@ AUI.add(
 						if (!instance.get('generationLocked')) {
 							instance.set('key', instance.normalizeKey(event.newVal));
 						}
+					},
+
+					_getKeyInput: function() {
+						var instance = this;
+
+						return instance.get('container').one('.key-value-input');
 					},
 
 					_getKeyInputSize: function(str) {
@@ -212,7 +242,7 @@ AUI.add(
 					_uiSetKey: function(key) {
 						var instance = this;
 
-						var keyInput = instance.get('container').one('.key-value-input');
+						var keyInput = instance._getKeyInput();
 
 						if (document.activeElement !== keyInput.getDOM()) {
 							keyInput.val(key);
@@ -222,15 +252,7 @@ AUI.add(
 					_updateInputValue: function(inputNode, newValue) {
 						var instance = this;
 
-						var currentValue = inputNode.val();
-
-						var selectionEnd = inputNode.get('selectionEnd');
-						var selectionStart = inputNode.get('selectionStart');
-
 						inputNode.val(newValue);
-
-						inputNode.set('selectionStart', selectionStart);
-						inputNode.set('selectionEnd', selectionEnd - (currentValue.length - newValue.length));
 					},
 
 					_valueGenerationLocked: function() {

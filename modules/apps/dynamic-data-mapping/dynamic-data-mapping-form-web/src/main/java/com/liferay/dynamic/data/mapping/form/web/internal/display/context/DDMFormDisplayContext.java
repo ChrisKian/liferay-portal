@@ -41,8 +41,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -86,6 +88,7 @@ public class DDMFormDisplayContext {
 			DDMFormRenderer ddmFormRenderer,
 			DDMFormValuesFactory ddmFormValuesFactory,
 			DDMFormValuesMerger ddmFormValuesMerger,
+			GroupLocalService groupLocalService,
 			WorkflowDefinitionLinkLocalService
 				workflowDefinitionLinkLocalService)
 		throws PortalException {
@@ -100,6 +103,7 @@ public class DDMFormDisplayContext {
 		_ddmFormRenderer = ddmFormRenderer;
 		_ddmFormValuesFactory = ddmFormValuesFactory;
 		_ddmFormValuesMerger = ddmFormValuesMerger;
+		_groupLocalService = groupLocalService;
 		_workflowDefinitionLinkLocalService =
 			workflowDefinitionLinkLocalService;
 
@@ -118,13 +122,20 @@ public class DDMFormDisplayContext {
 	}
 
 	public String[] getAvailableLanguageIds() throws PortalException {
+		ThemeDisplay themeDisplay = getThemeDisplay();
+
+		Set<Locale> siteAvailablesLocales = LanguageUtil.getAvailableLocales(
+			themeDisplay.getSiteGroupId());
+
 		DDMForm ddmForm = getDDMForm();
 
 		Set<Locale> availableLocales = ddmForm.getAvailableLocales();
 
 		Stream<Locale> localeStreams = availableLocales.stream();
 
-		return localeStreams.map(
+		return localeStreams.filter(
+			locale -> siteAvailablesLocales.contains(locale)
+		).map(
 			locale -> LanguageUtil.getLanguageId(locale)
 		).toArray(
 			String[]::new
@@ -260,6 +271,17 @@ public class DDMFormDisplayContext {
 			return true;
 		}
 
+		DDMFormInstance formInstance = getFormInstance();
+
+		if (formInstance != null) {
+			Group group = _groupLocalService.getGroup(
+				formInstance.getGroupId());
+
+			if ((group != null) && group.isStagingGroup()) {
+				return false;
+			}
+		}
+
 		if (isSharedURL()) {
 			if (isFormPublished() && isFormShared()) {
 				return true;
@@ -268,7 +290,7 @@ public class DDMFormDisplayContext {
 			return false;
 		}
 
-		if (getFormInstance() != null) {
+		if (formInstance != null) {
 			return true;
 		}
 
@@ -285,8 +307,18 @@ public class DDMFormDisplayContext {
 		return ParamUtil.getBoolean(_renderRequest, "shared");
 	}
 
-	public boolean isPreview() {
-		return ParamUtil.getBoolean(_renderRequest, "preview");
+	public boolean isPreview() throws PortalException {
+		ThemeDisplay themeDisplay = getThemeDisplay();
+
+		if (ParamUtil.getBoolean(_renderRequest, "preview") &&
+			DDMFormInstancePermission.contains(
+				themeDisplay.getPermissionChecker(), getFormInstanceId(),
+				ActionKeys.UPDATE)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isShowConfigurationIcon() throws PortalException {
@@ -630,6 +662,7 @@ public class DDMFormDisplayContext {
 	private final DDMFormRenderer _ddmFormRenderer;
 	private final DDMFormValuesFactory _ddmFormValuesFactory;
 	private final DDMFormValuesMerger _ddmFormValuesMerger;
+	private final GroupLocalService _groupLocalService;
 	private Boolean _hasViewPermission;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;

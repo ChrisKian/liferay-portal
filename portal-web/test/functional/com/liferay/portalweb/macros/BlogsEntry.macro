@@ -238,6 +238,8 @@
 	</command>
 
 	<command name="editContentViaCardViewPG">
+		<execute function="MouseOver" locator1="Portlet#PORTLET_CONTENT" />
+
 		<execute macro="LexiconEntry#gotoEllipsisMenuItem">
 			<var name="menuItem" value="Edit" />
 		</execute>
@@ -436,7 +438,7 @@
 	</command>
 
 	<command name="moveToRecycleBinNoPermissionPG">
-		<execute function="AssertElementNotPresent" locator1="Link#MOVE_TO_THE_RECYCLING_BIN" />
+		<execute function="AssertElementNotPresent" locator1="Link#MOVE_TO_RECYCLING_BIN" />
 	</command>
 
 	<command name="moveToRecycleBinPG">
@@ -450,13 +452,11 @@
 			<var name="portletTitleName" value="Blogs" />
 		</execute>
 
-		<var name="key_assetHeader" value="${entryTitle}" />
-
 		<execute function="Click" locator1="Icon#BODY_VERTICAL_ELLIPSIS" />
 
 		<execute macro="PortletEntry#clickMoveToRecycleBin" />
 
-		<execute macro="Alert#viewSuccessMessage" />
+		<execute function="AssertElementPresent" locator1="Message#SUCCESS" />
 
 		<execute function="AssertElementNotPresent" locator1="BlogsEntry#TITLE" />
 		<execute function="AssertElementNotPresent" locator1="BlogsEntry#CONTENT" />
@@ -517,7 +517,6 @@
 	</command>
 
 	<command name="removeViewPermissionsPG">
-		<var name="key_assetHeader" value="${entryTitle}" />
 		<var method="StringUtil#replace('${roleTitle}', ' ', '-')" name="key_roleTitle" />
 		<var method="StringUtil#lowerCase('${key_roleTitle}')" name="key_roleTitle" />
 
@@ -891,8 +890,8 @@
 	<command name="viewEntryTable">
 		<var name="key_entryTitle" value="${entryTitle}" />
 
-		<execute macro="Portlet#changeDisplayStyle">
-			<var name="displayStyle" value="list" />
+		<execute macro="LexiconEntry#changeDisplayStyle">
+			<var name="displayStyle" value="table" />
 		</execute>
 
 		<execute function="AssertElementPresent" locator1="Blogs#ENTRY_TABLE_CHECKBOX" />
@@ -1103,9 +1102,9 @@
 	</command>
 
 	<command name="viewRSS">
-		<var name="key_text" value="rss RSS" />
+		<var name="key_text" value="rss-full RSS" />
 
-		<execute function="AssertClick" locator1="Button#ANY" value1="rss RSS" />
+		<execute function="AssertClick" locator1="Button#ANY" value1="rss-full RSS" />
 
 		<execute function="Pause" locator1="3000" />
 
@@ -1188,7 +1187,7 @@
 
 				<execute function="AssertClick" locator1="BlogsEntry#TAG" value1="${tagName}" />
 
-				<execute function="AssertTextEquals#assertPartialText" locator1="AssetCategorization#TAG_FILTER_TITLE" value1="Entries with tag ${tagName}" />
+				<execute function="AssertTextEquals#assertPartialText" locator1="AssetCategorization#TAG_FILTER_TITLE" value1="${tagName}" />
 				<execute function="AssertTextEquals" locator1="BlogsEntry#TITLE" value1="${entryTitle}" />
 			</else>
 		</if>
@@ -1338,8 +1337,8 @@
 	<command name="viewWithWorkflowCP">
 		<var name="key_entryTitle" value="${entryTitle}" />
 
-		<execute macro="Portlet#changeDisplayStyle">
-			<var name="displayStyle" value="list" />
+		<execute macro="LexiconEntry#changeDisplayStyle">
+			<var name="displayStyle" value="table" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="Blogs#ENTRY_TABLE_TITLE" value1="${entryTitle}" />

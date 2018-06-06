@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,6 +61,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -71,9 +73,14 @@ import org.dom4j.io.SAXReader;
  */
 public class PoshiRunnerContext {
 
+	public static final String[] POSHI_SUPPORT_FILE_INCLUDES =
+		{"**/*.action", "**/*.function", "**/*.macro", "**/*.path"};
+
+	public static final String[] POSHI_TEST_FILE_INCLUDES =
+		{"**/*.prose", "**/*.testcase"};
+
 	public static void clear() {
 		_commandElements.clear();
-		_commandReturns.clear();
 		_commandSummaries.clear();
 		_filePaths.clear();
 		_functionLocatorCounts.clear();
@@ -90,6 +97,10 @@ public class PoshiRunnerContext {
 		String fileName, String namespace) {
 
 		return _filePaths.get(namespace + "." + fileName);
+	}
+
+	public static List<String> getFilePathKeys() {
+		return new ArrayList<>(_filePaths.keySet());
 	}
 
 	public static List<String> getFilePaths() {
@@ -132,13 +143,6 @@ public class PoshiRunnerContext {
 		String classCommandName, String namespace) {
 
 		return _commandElements.get(
-			"macro#" + namespace + "." + classCommandName);
-	}
-
-	public static List<String> getMacroCommandReturns(
-		String classCommandName, String namespace) {
-
-		return _commandReturns.get(
 			"macro#" + namespace + "." + classCommandName);
 	}
 
@@ -285,6 +289,13 @@ public class PoshiRunnerContext {
 		_readTestToggleFiles();
 	}
 
+	public static void readFiles(String[] includes, String... baseDirNames)
+		throws Exception {
+
+		_readPoshiFiles(includes, baseDirNames);
+		_readSeleniumFiles();
+	}
+
 	public static void setTestCaseNamespacedClassCommandName(
 		String testCaseNamespacedClassCommandName) {
 
@@ -339,16 +350,6 @@ public class PoshiRunnerContext {
 		}
 
 		return properties;
-	}
-
-	private static List<String> _getCommandReturns(Element commandElement) {
-		String returns = commandElement.attributeValue("returns");
-
-		if (returns == null) {
-			return new ArrayList<>();
-		}
-
-		return Arrays.asList(StringUtil.split(returns));
 	}
 
 	private static String _getCommandSummary(
@@ -540,9 +541,8 @@ public class PoshiRunnerContext {
 			List<List<String>> partitions = Lists.partition(
 				classCommandNameGroup, groupSize);
 
-			for (int j = 0; j < partitions.size(); j++) {
-				classCommandNameGroups.put(
-					classCommandNameIndex, partitions.get(j));
+			for (List<String> partition : partitions) {
+				classCommandNameGroups.put(classCommandNameIndex, partition);
 
 				classCommandNameIndex++;
 			}
@@ -756,26 +756,23 @@ public class PoshiRunnerContext {
 	}
 
 	private static void _readPoshiFiles() throws Exception {
-		String[] poshiFileNames = {
-			"**/*.action", "**/*.function", "**/*.macro", "**/*.path",
-			"**/*.testcase"
-		};
-
-		_readPoshiFilesFromClassPath(poshiFileNames, "testFunctional");
-
 		if (Validator.isNotNull(PropsValues.TEST_INCLUDE_DIR_NAMES)) {
 			_readPoshiFiles(
-				new String[] {
-					"**/*.action", "**/*.function", "**/*.macro", "**/*.path"
-				},
+				POSHI_SUPPORT_FILE_INCLUDES,
 				PropsValues.TEST_INCLUDE_DIR_NAMES);
 		}
 
+		String[] poshiFileIncludes = ArrayUtils.addAll(
+			PoshiRunnerContext.POSHI_SUPPORT_FILE_INCLUDES,
+			PoshiRunnerContext.POSHI_TEST_FILE_INCLUDES);
+
+		_readPoshiFilesFromClassPath(poshiFileIncludes, "testFunctional");
+
 		if (Validator.isNotNull(PropsValues.TEST_SUBREPO_DIRS)) {
-			_readPoshiFiles(poshiFileNames, PropsValues.TEST_SUBREPO_DIRS);
+			_readPoshiFiles(poshiFileIncludes, PropsValues.TEST_SUBREPO_DIRS);
 		}
 
-		_readPoshiFiles(poshiFileNames, _TEST_BASE_DIR_NAME);
+		_readPoshiFiles(poshiFileIncludes, _TEST_BASE_DIR_NAME);
 
 		_initComponentCommandNamesMap();
 
@@ -1105,10 +1102,6 @@ public class PoshiRunnerContext {
 						classCommandName, classType, commandElement,
 						rootElement));
 
-				_commandReturns.put(
-					classType + "#" + namespacedClassCommandName,
-					_getCommandReturns(commandElement));
-
 				String prose = commandElement.attributeValue("prose");
 
 				if (classType.equals("macro") && (prose != null) &&
@@ -1179,6 +1172,46 @@ public class PoshiRunnerContext {
 		throws Exception {
 
 		Map<String, String> filePaths = new HashMap<>();
+
+		Collections.sort(
+			urls,
+			new Comparator<URL>() {
+
+				@Override
+				public int compare(URL url1, URL url2) {
+					String urlPath1 = url1.getPath();
+					String urlPath2 = url2.getPath();
+
+					Matcher urlPathMatcher1 = _urlPathPattern.matcher(urlPath1);
+					Matcher urlPathMatcher2 = _urlPathPattern.matcher(urlPath2);
+
+					if (urlPathMatcher1.find() && urlPathMatcher2.find()) {
+						String fileType1 = urlPathMatcher1.group(1);
+						String fileType2 = urlPathMatcher2.group(1);
+
+						List<String> fileTypeList = Arrays.asList(
+							"action", "path", "function", "macro", "testcase",
+							"prose");
+
+						Integer fileTypeIndex1 = fileTypeList.indexOf(
+							StringUtil.toLowerCase(fileType1));
+						Integer fileTypeIndex2 = fileTypeList.indexOf(
+							StringUtil.toLowerCase(fileType2));
+
+						int indexCompareValue = fileTypeIndex1.compareTo(
+							fileTypeIndex2);
+
+						if (indexCompareValue == 0) {
+							return urlPath1.compareTo(urlPath2);
+						}
+
+						return indexCompareValue;
+					}
+
+					throw new RuntimeException("Unable to sort Poshi files");
+				}
+
+			});
 
 		for (URL url : urls) {
 			String filePath = url.getFile();
@@ -1276,8 +1309,6 @@ public class PoshiRunnerContext {
 
 	private static final Map<String, Element> _commandElements =
 		new HashMap<>();
-	private static final Map<String, List<String>> _commandReturns =
-		new HashMap<>();
 	private static final Map<String, String> _commandSummaries =
 		new HashMap<>();
 	private static final Set<String> _duplicateLocatorMessages =
@@ -1310,6 +1341,8 @@ public class PoshiRunnerContext {
 	private static final Set<String> _testToggleNames = new HashSet<>();
 	private static final SimpleDateFormat _toggleDateFormat =
 		new SimpleDateFormat("YYYY-MM-dd");
+	private static final Pattern _urlPathPattern = Pattern.compile(
+		".*\\.(\\w+)");
 
 	static {
 		String testCaseAvailablePropertyNames =

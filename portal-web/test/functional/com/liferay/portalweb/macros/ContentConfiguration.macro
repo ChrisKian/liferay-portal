@@ -1,9 +1,5 @@
 <definition>
 	<command name="checkContentNameList">
-		<execute macro="Panel#expandPanel">
-			<var name="panel" value="Content" />
-		</execute>
-
 		<for list="${checkContentNameList}" param="contentName">
 			<var name="key_contentName" value="${contentName}" />
 
@@ -82,9 +78,7 @@
 		<if>
 			<equals arg1="${contentDateRange}" arg2="All" />
 			<then>
-				<execute function="Click" locator1="Radio#CHOOSE_CONTENT_DATE_RANGE_CHANGE" />
-
-				<execute function="Check" locator1="Radio#RANGE_ALL" />
+				<execute function="Click" locator1="StagingPublishToLive#CONTENT_ALL" />
 
 				<execute function="Click" locator1="Link#REFRESH_COUNTS" />
 			</then>
@@ -93,7 +87,7 @@
 		<if>
 			<equals arg1="${contentDateRange}" arg2="Date Range" />
 			<then>
-				<execute function="Click" locator1="Radio#CHOOSE_CONTENT_DATE_RANGE_CHANGE" />
+				<execute function="Click" locator1="StagingPublishToLive#CONTENT_DATE_RANGE" />
 
 				<var name="key_contentDateRange" value="${contentDateRange}" />
 
@@ -107,9 +101,7 @@
 		<if>
 			<equals arg1="${contentDateRange}" arg2="Last" />
 			<then>
-				<execute function="Click" locator1="Radio#CHOOSE_CONTENT_DATE_RANGE_CHANGE" />
-
-				<execute function="Click" locator1="Radio#RANGE_LAST" />
+				<execute function="Click" locator1="StagingPublishToLive#CONTENT_LAST" />
 
 				<execute function="Click" locator1="Link#REFRESH_COUNTS" />
 			</then>
@@ -117,10 +109,6 @@
 	</command>
 
 	<command name="contentDeletion">
-		<execute macro="Panel#expandPanel">
-			<var name="panel" value="Deletions" />
-		</execute>
-
 		<execute function="Check" locator1="StagingPublishToLive#CONTENT_CHOOSE_CONTENT_DELETION_CHECKBOX" />
 	</command>
 
@@ -137,10 +125,6 @@
 	</command>
 
 	<command name="uncheckContentNameList">
-		<execute macro="Panel#expandPanel">
-			<var name="panel" value="Content" />
-		</execute>
-
 		<for list="${uncheckContentNameList}" param="contentName">
 			<execute function="Uncheck" locator1="PagesConfiguration#CONTENT_CHOOSE_CONTENT_CONTENT_CHECKBOX">
 				<var name="key_contentName" value="${contentName}" />
@@ -149,7 +133,7 @@
 	</command>
 
 	<command name="uncheckLogo">
-		<execute function="Uncheck" locator1="PagesConfiguration#PAGES_LOGO_CHECKBOX" />
+		<execute function="Uncheck#uncheckHiddenToggleSwitch" locator1="PagesConfiguration#PAGES_LOGO_CHECKBOX" />
 	</command>
 
 	<command name="uncheckSitePagesSettings">

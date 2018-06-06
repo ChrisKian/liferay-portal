@@ -93,10 +93,11 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 				throw new FragmentEntryContentException(
 					LanguageUtil.format(
 						_resourceBundle,
-						"there-is-no-portlet-available-for-alias-x", alias));
+						"there-is-no-widget-available-for-alias-x", alias));
 			}
 
-			Element runtimeTagElement = new Element("@liferay_portlet.runtime");
+			Element runtimeTagElement = new Element(
+				"@liferay_portlet.runtime", true);
 
 			FragmentEntryLink originalFragmentEntryLink =
 				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
@@ -176,7 +177,7 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 				throw new FragmentEntryContentException(
 					LanguageUtil.format(
 						_resourceBundle,
-						"there-is-no-portlet-available-for-alias-x", alias));
+						"there-is-no-widget-available-for-alias-x", alias));
 			}
 		}
 	}

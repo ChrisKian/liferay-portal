@@ -19,6 +19,8 @@
 <%
 UADExportProcessDisplayContext uadExportProcessDisplayContext = new UADExportProcessDisplayContext(request, renderResponse);
 
+UADExportProcessManagementToolbarDisplayContext uadExportProcessManagementToolbarDisplayContext = new UADExportProcessManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, request);
+
 portletDisplay.setShowBackIcon(true);
 
 LiferayPortletURL usersAdminURL = liferayPortletResponse.createLiferayPortletURL(UsersAdminPortletKeys.USERS_ADMIN, PortletRequest.RENDER_PHASE);
@@ -37,7 +39,7 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 					navigationItem -> {
 						navigationItem.setActive(true);
 						navigationItem.setHref(StringPool.BLANK);
-						navigationItem.setLabel(LanguageUtil.get(request, "processes"));
+						navigationItem.setLabel(LanguageUtil.get(request, "export-processes"));
 					});
 			}
 		}
@@ -45,14 +47,13 @@ renderResponse.setTitle(StringBundler.concat(selectedUser.getFullName(), " - ", 
 />
 
 <clay:management-toolbar
-	creationMenu="<%= uadExportProcessDisplayContext.getCreationMenu() %>"
-	filterDropdownItems="<%= uadExportProcessDisplayContext.getDropdownItems() %>"
-	namespace="<%= renderResponse.getNamespace() %>"
-	selectable="<%= false %>"
-	showCreationMenu="<%= true %>"
-	showSearch="<%= false %>"
-	sortingOrder='<%= ParamUtil.getString(request, "orderByType", "asc") %>'
-	sortingURL="<%= uadExportProcessDisplayContext.getSortingURL() %>"
+	creationMenu="<%= uadExportProcessManagementToolbarDisplayContext.getCreationMenu() %>"
+	filterDropdownItems="<%= uadExportProcessManagementToolbarDisplayContext.getFilterDropdownItems() %>"
+	selectable="<%= uadExportProcessManagementToolbarDisplayContext.isSelectable() %>"
+	showCreationMenu="<%= uadExportProcessManagementToolbarDisplayContext.isShowCreationMenu() %>"
+	showSearch="<%= uadExportProcessManagementToolbarDisplayContext.isShowSearch() %>"
+	sortingOrder="<%= uadExportProcessManagementToolbarDisplayContext.getSortingOrder() %>"
+	sortingURL="<%= uadExportProcessManagementToolbarDisplayContext.getSortingURL() %>"
 />
 
 <aui:form cssClass="container-fluid-1280">

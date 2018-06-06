@@ -18,10 +18,10 @@ import com.liferay.changeset.exception.NoSuchEntryException;
 import com.liferay.changeset.model.ChangesetCollection;
 import com.liferay.changeset.model.ChangesetEntry;
 import com.liferay.changeset.service.base.ChangesetEntryLocalServiceBaseImpl;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 
 /**
  * @author Brian Wing Shun Chan
@@ -57,6 +57,38 @@ public class ChangesetEntryLocalServiceImpl
 	}
 
 	@Override
+	public void deleteChangesetEntries(long changesetCollectionId)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"changesetCollectionId", changesetCollectionId)));
+
+		actionableDynamicQuery.setPerformActionMethod(
+			(ActionableDynamicQuery.PerformActionMethod<ChangesetEntry>)
+				changesetEntry ->
+					changesetEntryLocalService.deleteChangesetEntry(
+						changesetEntry));
+
+		actionableDynamicQuery.performActions();
+	}
+
+	@Override
+	public void deleteEntry(long changesetId, long classNameId, long classPK) {
+		ChangesetEntry changesetEntry =
+			changesetEntryLocalService.fetchChangesetEntry(
+				changesetId, classNameId, classPK);
+
+		if (changesetEntry != null) {
+			changesetEntryLocalService.deleteChangesetEntry(changesetEntry);
+		}
+	}
+
+	@Override
 	public ChangesetEntry fetchChangesetEntry(
 		long changesetCollectionId, long classNameId, long classPK) {
 
@@ -77,10 +109,12 @@ public class ChangesetEntryLocalServiceImpl
 			return changesetEntry;
 		}
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		ChangesetCollection changesetCollection =
+			changesetCollectionLocalService.getChangesetCollection(
+				changesetCollectionId);
 
-		User user = permissionChecker.getUser();
+		User user = userLocalService.getDefaultUser(
+			changesetCollection.getCompanyId());
 
 		return changesetEntryLocalService.addChangesetEntry(
 			user.getUserId(), changesetCollectionId, classNameId, classPK);

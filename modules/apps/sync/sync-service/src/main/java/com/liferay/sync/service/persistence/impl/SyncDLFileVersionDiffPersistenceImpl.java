@@ -696,7 +696,11 @@ public class SyncDLFileVersionDiffPersistenceImpl extends BasePersistenceImpl<Sy
 		Object[] finderArgs = null;
 
 		finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_EXPIRATIONDATE;
-		finderArgs = new Object[] { expirationDate, start, end, orderByComparator };
+		finderArgs = new Object[] {
+				_getTime(expirationDate),
+				
+				start, end, orderByComparator
+			};
 
 		List<SyncDLFileVersionDiff> list = null;
 
@@ -1091,7 +1095,7 @@ public class SyncDLFileVersionDiffPersistenceImpl extends BasePersistenceImpl<Sy
 	public int countByExpirationDate(Date expirationDate) {
 		FinderPath finderPath = FINDER_PATH_WITH_PAGINATION_COUNT_BY_EXPIRATIONDATE;
 
-		Object[] finderArgs = new Object[] { expirationDate };
+		Object[] finderArgs = new Object[] { _getTime(expirationDate) };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -1293,13 +1297,6 @@ public class SyncDLFileVersionDiffPersistenceImpl extends BasePersistenceImpl<Sy
 					result = syncDLFileVersionDiff;
 
 					cacheResult(syncDLFileVersionDiff);
-
-					if ((syncDLFileVersionDiff.getFileEntryId() != fileEntryId) ||
-							(syncDLFileVersionDiff.getSourceFileVersionId() != sourceFileVersionId) ||
-							(syncDLFileVersionDiff.getTargetFileVersionId() != targetFileVersionId)) {
-						finderCache.putResult(FINDER_PATH_FETCH_BY_F_S_T,
-							finderArgs, syncDLFileVersionDiff);
-					}
 				}
 			}
 			catch (Exception e) {
@@ -2167,6 +2164,15 @@ public class SyncDLFileVersionDiffPersistenceImpl extends BasePersistenceImpl<Sy
 	protected EntityCache entityCache;
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
+
+	private Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
+
 	private static final String _SQL_SELECT_SYNCDLFILEVERSIONDIFF = "SELECT syncDLFileVersionDiff FROM SyncDLFileVersionDiff syncDLFileVersionDiff";
 	private static final String _SQL_SELECT_SYNCDLFILEVERSIONDIFF_WHERE_PKS_IN = "SELECT syncDLFileVersionDiff FROM SyncDLFileVersionDiff syncDLFileVersionDiff WHERE syncDLFileVersionDiffId IN (";
 	private static final String _SQL_SELECT_SYNCDLFILEVERSIONDIFF_WHERE = "SELECT syncDLFileVersionDiff FROM SyncDLFileVersionDiff syncDLFileVersionDiff WHERE ";

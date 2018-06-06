@@ -19,7 +19,7 @@
 <liferay-ui:success key='<%= portletDisplay.getPortletName() + "layoutAdded" %>' message='<%= LanguageUtil.get(resourceBundle, "the-page-was-created-succesfully") %>' />
 <liferay-ui:success key='<%= portletDisplay.getPortletName() + "layoutUpdated" %>' message='<%= LanguageUtil.get(resourceBundle, "the-page-was-updated-succesfully") %>' />
 
-<liferay-ui:error exception="<%= GroupInheritContentException.class %>" message="this-page-cannot-be-deleted-and-cannot-have-child-pages-because-it-is-associated-to-a-site-template" />
+<liferay-ui:error embed="<%= false %>" exception="<%= GroupInheritContentException.class %>" message="this-page-cannot-be-deleted-and-cannot-have-child-pages-because-it-is-associated-to-a-site-template" />
 
 <clay:navigation-bar
 	inverted="<%= true %>"
@@ -37,7 +37,6 @@
 	showSearch="<%= false %>"
 	sortingOrder="<%= layoutsAdminDisplayContext.getOrderByType() %>"
 	sortingURL="<%= layoutsAdminDisplayContext.getSortingURL() %>"
-	viewTypeItems="<%= layoutsAdminDisplayContext.getViewTypeItems() %>"
 />
 
 <liferay-ui:error exception="<%= LayoutTypeException.class %>">
@@ -70,7 +69,7 @@
 			context.put("siteNavigationMenuNames", layoutsAdminDisplayContext.getAutoSiteNavigationMenuNames());
 			%>
 
-			<soy:template-renderer
+			<soy:component-renderer
 				context="<%= context %>"
 				module="layout-admin-web/js/miller_columns/Layout.es"
 				templateNamespace="com.liferay.layout.admin.web.Layout.render"
@@ -110,7 +109,7 @@
 				</liferay-ui:search-container-row>
 
 				<liferay-ui:search-iterator
-					displayStyle="<%= layoutsAdminDisplayContext.getDisplayStyle() %>"
+					displayStyle="list"
 					markupView="lexicon"
 				/>
 			</liferay-ui:search-container>
@@ -119,9 +118,28 @@
 </aui:form>
 
 <aui:script sandbox="<%= true %>">
-	window.<portlet:namespace />deleteSelectedPages = function() {
+	var deleteSelectedPages = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm($(document.<portlet:namespace />fm));
 		}
-	}
+	};
+
+	var ACTIONS = {
+		'deleteSelectedPages': deleteSelectedPages
+	};
+
+	Liferay.componentReady('pagesManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

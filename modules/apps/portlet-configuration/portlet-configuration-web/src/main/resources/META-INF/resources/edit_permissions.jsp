@@ -19,22 +19,20 @@
 <%
 PortletConfigurationPermissionsDisplayContext portletConfigurationPermissionsDisplayContext = new PortletConfigurationPermissionsDisplayContext(request, renderRequest);
 
+Resource resource = portletConfigurationPermissionsDisplayContext.getResource();
+SearchContainer roleSearchContainer = portletConfigurationPermissionsDisplayContext.getRoleSearchContainer();
+
 if (Validator.isNotNull(portletConfigurationPermissionsDisplayContext.getModelResource())) {
 	PortalUtil.addPortletBreadcrumbEntry(request, HtmlUtil.unescape(portletConfigurationPermissionsDisplayContext.getSelResourceDescription()), null);
 	PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(request, "permissions"), currentURL);
 }
-
-Resource resource = portletConfigurationPermissionsDisplayContext.getResource();
 %>
 
 <div class="edit-permissions portlet-configuration-edit-permissions">
 	<div class="portlet-configuration-body-content">
-		<clay:navigation-bar
-			navigationItems="<%= portletConfigurationPermissionsDisplayContext.getNavigationItems() %>"
-		/>
-
 		<clay:management-toolbar
 			clearResultsURL="<%= portletConfigurationPermissionsDisplayContext.getClearResultsURL() %>"
+			itemsTotal="<%= roleSearchContainer.getTotal() %>"
 			searchActionURL="<%= portletConfigurationPermissionsDisplayContext.getSearchActionURL() %>"
 			searchFormName="searchFm"
 			selectable="<%= false %>"
@@ -44,7 +42,7 @@ Resource resource = portletConfigurationPermissionsDisplayContext.getResource();
 			<aui:input name="resourceId" type="hidden" value="<%= resource.getResourceId() %>" />
 
 			<liferay-ui:search-container
-				searchContainer="<%= portletConfigurationPermissionsDisplayContext.getRoleSearchContainer() %>"
+				searchContainer="<%= roleSearchContainer %>"
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Role"
@@ -162,27 +160,38 @@ Resource resource = portletConfigurationPermissionsDisplayContext.getResource();
 	</aui:button-row>
 </div>
 
-<aui:script sandbox="<%= true %>">
-	var form = $(document.<portlet:namespace />fm);
+<aui:script require="metal-dom/src/all/dom as dom">
+	var form = document.getElementById('<portlet:namespace />fm');
 
-	$('#<portlet:namespace />fm').on(
+	var preSelectedHandler = dom.delegate(
+		form,
 		'mouseover',
 		'.lfr-checkbox-preselected',
 		function(event) {
-			var currentTarget = $(event.currentTarget);
+			var target = event.target;
 
-			Liferay.Portal.ToolTip.show(currentTarget, currentTarget.data('message'));
+			Liferay.Portal.ToolTip.show(target, target.getAttribute('data-message'));
 		}
 	);
+</aui:script>
 
-	$('#<portlet:namespace />saveButton').on(
-		'click',
-		function(event) {
-			event.preventDefault();
+<aui:script>
+	var <portlet:namespace />saveButton = document.getElementById('<portlet:namespace />saveButton');
 
-			if (<%= portletConfigurationPermissionsDisplayContext.getRoleSearchContainer().getTotal() != 0 %>) {
-				submitForm(form);
+	if (<portlet:namespace />saveButton) {
+		<portlet:namespace />saveButton.addEventListener(
+			'click',
+			function(event) {
+				event.preventDefault();
+
+				if (<%= portletConfigurationPermissionsDisplayContext.getRoleSearchContainer().getTotal() != 0 %>) {
+					var form = document.getElementById('<portlet:namespace />fm');
+
+					if (form) {
+						submitForm(form);
+					}
+				}
 			}
-		}
-	);
+		);
+	}
 </aui:script>

@@ -198,6 +198,24 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 					"'internal.security.permission.resource.definition' or ",
 					"'kernel.security.permission.resource.definition'"));
 		}
+
+		if (className.endsWith("OSGiCommands") &&
+			!packageName.endsWith(".osgi.commands")) {
+
+			addMessage(
+				fileName,
+				"Class '" + className +
+					"' should be in package ending with '.osgi.commands'");
+		}
+
+		if (className.matches(".*(?<!Display)Context") &&
+			packageName.endsWith(".display.context")) {
+
+			addMessage(
+				fileName,
+				"The name of Class '" + className +
+					"' should be ending with 'DisplayContext'");
+		}
 	}
 
 	private final List<String> _allowedInternalPackageDirNames =

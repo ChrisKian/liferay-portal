@@ -463,6 +463,20 @@
 		<execute macro="PortletEntry#save" />
 	</command>
 
+	<command name="enableOpenIDConnectCP">
+		<execute function="Check" locator1="PortalSettingsAuthentication#AUTHENTICATION_OPEN_ID_CONNECT_ENABLED_CHECKBOX" />
+
+		<execute macro="PortletEntry#save" />
+
+		<execute macro="Panel#expandPanel">
+			<var name="panel" value="Authentication" />
+		</execute>
+
+		<execute function="AssertClick" locator1="NavTab#OPENID_CONNECT" value1="OpenId Connect" />
+
+		<execute function="AssertChecked" locator1="PortalSettingsAuthentication#AUTHENTICATION_OPEN_ID_CONNECT_ENABLED_CHECKBOX" />
+	</command>
+
 	<command name="enableOpenIDCP">
 		<execute function="Check" locator1="PortalSettingsAuthentication#AUTHENTICATION_OPEN_ID_ENABLED_CHECKBOX" />
 
@@ -655,9 +669,9 @@
 	<command name="viewAuthenticationLDAPCP">
 		<execute macro="PortalSettingsNavigator#gotoLDAP" />
 
-		<for list="ldap--enabled,ldap--required,ldapImportEnabled,ldapExportEnabled,ldap--passwordPolicyEnabled" param="fieldName">
-			<execute function="AssertElementPresent" locator1="FormFields#CHECKBOX">
-				<var name="key_fieldName" value="${fieldName}" />
+		<for list="PortalSettingsPortlet_enabled,required,ldapImportEnabled,ldapExportEnabled,passwordPolicyEnabled" param="fieldName">
+			<execute macro="FormFields#viewCheckboxNotChecked">
+				<var name="fieldName" value="${fieldName}" />
 			</execute>
 		</for>
 

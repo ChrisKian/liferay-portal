@@ -328,7 +328,7 @@
 	<command name="saveElementSet">
 		<execute macro="Button#clickSave" />
 
-		<execute macro="Alert#waitForSuccessMessageHide" />
+		<execute macro="Alert#viewSuccessMessage" />
 	</command>
 
 	<command name="saveLocalized">
@@ -351,7 +351,7 @@
 			<var name="fieldValue" value="${fieldValue}" />
 		</execute>
 
-		<execute function="AssertClick" locator1="Button#SUBMIT" value1="Submit" />
+		<execute function="AssertClick" locator1="Button#MAIN_CONTENT_SUBMIT" value1="Submit" />
 
 		<execute macro="Alert#viewSuccessMessage" />
 	</command>

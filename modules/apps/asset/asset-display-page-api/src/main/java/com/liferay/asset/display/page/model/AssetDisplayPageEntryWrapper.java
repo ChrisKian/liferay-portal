@@ -60,7 +60,9 @@ public class AssetDisplayPageEntryWrapper implements AssetDisplayPageEntry,
 
 		attributes.put("assetDisplayPageEntryId", getAssetDisplayPageEntryId());
 		attributes.put("assetEntryId", getAssetEntryId());
-		attributes.put("layoutId", getLayoutId());
+		attributes.put("layoutPageTemplateEntryId",
+			getLayoutPageTemplateEntryId());
+		attributes.put("type", getType());
 
 		return attributes;
 	}
@@ -80,10 +82,17 @@ public class AssetDisplayPageEntryWrapper implements AssetDisplayPageEntry,
 			setAssetEntryId(assetEntryId);
 		}
 
-		Long layoutId = (Long)attributes.get("layoutId");
+		Long layoutPageTemplateEntryId = (Long)attributes.get(
+				"layoutPageTemplateEntryId");
 
-		if (layoutId != null) {
-			setLayoutId(layoutId);
+		if (layoutPageTemplateEntryId != null) {
+			setLayoutPageTemplateEntryId(layoutPageTemplateEntryId);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 	}
 
@@ -123,13 +132,13 @@ public class AssetDisplayPageEntryWrapper implements AssetDisplayPageEntry,
 	}
 
 	/**
-	* Returns the layout ID of this asset display page entry.
+	* Returns the layout page template entry ID of this asset display page entry.
 	*
-	* @return the layout ID of this asset display page entry
+	* @return the layout page template entry ID of this asset display page entry
 	*/
 	@Override
-	public long getLayoutId() {
-		return _assetDisplayPageEntry.getLayoutId();
+	public long getLayoutPageTemplateEntryId() {
+		return _assetDisplayPageEntry.getLayoutPageTemplateEntryId();
 	}
 
 	/**
@@ -145,6 +154,16 @@ public class AssetDisplayPageEntryWrapper implements AssetDisplayPageEntry,
 	@Override
 	public Serializable getPrimaryKeyObj() {
 		return _assetDisplayPageEntry.getPrimaryKeyObj();
+	}
+
+	/**
+	* Returns the type of this asset display page entry.
+	*
+	* @return the type of this asset display page entry
+	*/
+	@Override
+	public int getType() {
+		return _assetDisplayPageEntry.getType();
 	}
 
 	@Override
@@ -214,13 +233,13 @@ public class AssetDisplayPageEntryWrapper implements AssetDisplayPageEntry,
 	}
 
 	/**
-	* Sets the layout ID of this asset display page entry.
+	* Sets the layout page template entry ID of this asset display page entry.
 	*
-	* @param layoutId the layout ID of this asset display page entry
+	* @param layoutPageTemplateEntryId the layout page template entry ID of this asset display page entry
 	*/
 	@Override
-	public void setLayoutId(long layoutId) {
-		_assetDisplayPageEntry.setLayoutId(layoutId);
+	public void setLayoutPageTemplateEntryId(long layoutPageTemplateEntryId) {
+		_assetDisplayPageEntry.setLayoutPageTemplateEntryId(layoutPageTemplateEntryId);
 	}
 
 	@Override
@@ -241,6 +260,16 @@ public class AssetDisplayPageEntryWrapper implements AssetDisplayPageEntry,
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		_assetDisplayPageEntry.setPrimaryKeyObj(primaryKeyObj);
+	}
+
+	/**
+	* Sets the type of this asset display page entry.
+	*
+	* @param type the type of this asset display page entry
+	*/
+	@Override
+	public void setType(int type) {
+		_assetDisplayPageEntry.setType(type);
 	}
 
 	@Override

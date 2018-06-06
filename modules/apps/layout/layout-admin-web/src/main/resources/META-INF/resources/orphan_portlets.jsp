@@ -23,16 +23,12 @@ Layout selLayout = orphanPortletsDisplayContext.getSelLayout();
 
 List<Portlet> portlets = orphanPortletsDisplayContext.getOrphanPortlets();
 
-portletDisplay.setDescription(LanguageUtil.get(request, "orphan-portlets-description"));
+portletDisplay.setDescription(LanguageUtil.get(request, "orphan-widgets-description"));
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(orphanPortletsDisplayContext.getBackURL());
 
-renderResponse.setTitle(LanguageUtil.get(request, "orphan-portlets"));
+renderResponse.setTitle(LanguageUtil.get(request, "orphan-widgets"));
 %>
-
-<clay:navigation-bar
-	navigationItems="<%= orphanPortletsDisplayContext.getNavigationItems() %>"
-/>
 
 <clay:management-toolbar
 	actionDropdownItems="<%= orphanPortletsDisplayContext.getActionDropdownItems() %>"
@@ -50,10 +46,10 @@ renderResponse.setTitle(LanguageUtil.get(request, "orphan-portlets"));
 	<div class="text-muted">
 		<c:choose>
 			<c:when test="<%= selLayout.isLayoutPrototypeLinkActive() %>">
-				<liferay-ui:message key="layout-inherits-from-a-prototype-portlets-cannot-be-manipulated" />
+				<liferay-ui:message key="layout-inherits-from-a-prototype-widgets-cannot-be-manipulated" />
 			</c:when>
 			<c:otherwise>
-				<liferay-ui:message key="warning-preferences-of-selected-portlets-will-be-reset-or-deleted" />
+				<liferay-ui:message key="warning-preferences-of-selected-widgets-will-be-reset-or-deleted" />
 			</c:otherwise>
 		</c:choose>
 	</div>
@@ -108,28 +104,6 @@ renderResponse.setTitle(LanguageUtil.get(request, "orphan-portlets"));
 							path="/orphan_portlets_action.jsp"
 						/>
 					</c:when>
-					<c:when test='<%= Objects.equals(orphanPortletsDisplayContext.getDisplayStyle(), "icon") %>'>
-
-						<%
-						row.setCssClass("entry-card lfr-asset-item");
-						%>
-
-						<liferay-ui:search-container-column-text>
-							<liferay-frontend:icon-vertical-card
-								actionJsp="/orphan_portlets_action.jsp"
-								actionJspServletContext="<%= application %>"
-								icon="archive"
-								resultRow="<%= row %>"
-								rowChecker="<%= searchContainer.getRowChecker() %>"
-								subtitle="<%= portlet.getPortletId() %>"
-								title="<%= PortalUtil.getPortletTitle(portlet, application, locale) %>"
-							>
-								<liferay-frontend:vertical-card-footer>
-									<%= orphanPortletsDisplayContext.getStatus(portlet) %>
-								</liferay-frontend:vertical-card-footer>
-							</liferay-frontend:icon-vertical-card>
-						</liferay-ui:search-container-column-text>
-					</c:when>
 					<c:when test='<%= Objects.equals(orphanPortletsDisplayContext.getDisplayStyle(), "list") %>'>
 						<liferay-ui:search-container-column-text
 							name="title"
@@ -165,9 +139,28 @@ renderResponse.setTitle(LanguageUtil.get(request, "orphan-portlets"));
 </div>
 
 <aui:script sandbox="<%= true %>">
-	window.<portlet:namespace />deleteOrphanPortlets = function() {
+	var deleteOrphanPortlets = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm($(document.<portlet:namespace />fm));
 		}
 	}
+
+	var ACTIONS = {
+		'deleteOrphanPortlets': deleteOrphanPortlets
+	};
+
+	Liferay.componentReady('portletsManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

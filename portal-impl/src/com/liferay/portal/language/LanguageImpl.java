@@ -68,6 +68,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1001,6 +1002,13 @@ public class LanguageImpl implements Language, Serializable {
 		return getBCP47LanguageId(locale);
 	}
 
+	@Override
+	public Set<Locale> getCompanyAvailableLocales(long companyId) {
+		CompanyLocalesBag companyLocalesBag = _getCompanyLocalesBag(companyId);
+
+		return companyLocalesBag.getAvailableLocales();
+	}
+
 	/**
 	 * Returns the language ID that the request is served with. The language ID
 	 * is returned as a language code (e.g. <code>en</code>) or a specific
@@ -1185,10 +1193,16 @@ public class LanguageImpl implements Language, Serializable {
 
 			String x = description.substring(0, pos);
 
-			value = x.concat(StringPool.SPACE).concat(
-				get(
-					request,
-					StringUtil.toLowerCase(description.substring(pos + 1))));
+			String unit = get(
+				request,
+				StringUtil.toLowerCase(description.substring(pos + 1)));
+
+			if (Objects.equals(_getLocale(request), Locale.JAPAN)) {
+				value = x.concat(unit);
+			}
+			else {
+				value = x.concat(StringPool.SPACE).concat(unit);
+			}
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {

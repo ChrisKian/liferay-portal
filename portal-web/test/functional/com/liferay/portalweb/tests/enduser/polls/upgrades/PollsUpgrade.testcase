@@ -20,13 +20,6 @@
 		</execute>
 	</set-up>
 
-	<command name="ViewPollsArchive6012" priority="5">
-		<property name="data.archive.type" value="data-archive-polls" />
-		<property name="portal.version" value="6.0.12" />
-
-		<execute macro="Upgrade#viewPolls" />
-	</command>
-
 	<command name="ViewPollsArchive612" priority="5">
 		<property name="data.archive.type" value="data-archive-polls" />
 		<property name="portal.version" value="6.1.2" />
@@ -44,13 +37,6 @@
 	<command name="ViewPollsArchive621015" priority="5">
 		<property name="data.archive.type" value="data-archive-polls" />
 		<property name="portal.version" value="6.2.10.15" />
-
-		<execute macro="Upgrade#viewPolls" />
-	</command>
-
-	<command name="ViewPollsArchive623" priority="5">
-		<property name="data.archive.type" value="data-archive-polls" />
-		<property name="portal.version" value="6.2.3" />
 
 		<execute macro="Upgrade#viewPolls" />
 	</command>

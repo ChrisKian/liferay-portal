@@ -144,7 +144,9 @@
 
 		<execute macro="Button#clickSave" />
 
-		<execute function="AssertTextEquals" locator1="Message#ERROR_FIELD_REQUIRED" value1="This field is required." />
+		<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_2" value1="Please enter a valid name." />
+
+		<execute macro="Alert#viewRequestFailedToComplete" />
 	</command>
 
 	<command name="deleteByIconCP">
@@ -281,6 +283,12 @@
 		<execute function="Type" locator1="CategoriesEditCategory#PROPERTIES_VALUE_FIELD_1" value1="${propertiesValueFieldEdit}" />
 
 		<execute macro="PortletEntry#save" />
+	</command>
+
+	<command name="getAssetId" returns="assetId">
+		<var method="selenium#getAttribute('//table[contains(@class,\'table-list\')]//tr[contains(.,\'${assetName}\')]/td[1]//input@value')" name="assetId" />
+
+		<return name="assetId" value="${assetId}" />
 	</command>
 
 	<command name="moveViaEditCP">

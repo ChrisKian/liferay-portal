@@ -14,16 +14,16 @@
 
 package com.liferay.layout.admin.web.internal.display.context;
 
+import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.LayoutPrototype;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.LayoutTypeController;
-import com.liferay.portal.kernel.service.LayoutPrototypeServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PredicateFilter;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.util.LayoutTypeControllerTracker;
@@ -45,6 +45,26 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 
 		_themeDisplay = (ThemeDisplay)_request.getAttribute(
 			WebKeys.THEME_DISPLAY);
+	}
+
+	public List<LayoutPageTemplateEntry> getGlobalLayoutPageTemplateEntries() {
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator =
+			LayoutPageTemplatePortletUtil.
+				getLayoutPageTemplateEntryOrderByComparator("name", "asc");
+
+		return LayoutPageTemplateEntryServiceUtil.getLayoutPageTemplateEntries(
+			_themeDisplay.getCompanyGroupId(),
+			LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE,
+			WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, orderByComparator);
+	}
+
+	public int getGlobalLayoutPageTemplateEntriesCount() {
+		return LayoutPageTemplateEntryServiceUtil.
+			getLayoutPageTemplateEntriesCount(
+				_themeDisplay.getCompanyGroupId(),
+				LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE,
+				WorkflowConstants.STATUS_APPROVED);
 	}
 
 	public long getLayoutPageTemplateCollectionId() {
@@ -74,21 +94,28 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 				getLayoutPageTemplateCollectionId());
 	}
 
-	public List<LayoutPrototype> getLayoutPrototypes() throws PortalException {
-		if (_layoutPrototypes != null) {
-			return _layoutPrototypes;
+	public List<String> getPrimaryTypes() {
+		if (_primaryTypes != null) {
+			return _primaryTypes;
 		}
 
-		_layoutPrototypes = LayoutPrototypeServiceUtil.search(
-			_themeDisplay.getCompanyId(), Boolean.TRUE, null);
+		_primaryTypes = ListUtil.filter(
+			ListUtil.fromArray(LayoutTypeControllerTracker.getTypes()),
+			type -> {
+				LayoutTypeController layoutTypeController =
+					LayoutTypeControllerTracker.getLayoutTypeController(type);
 
-		return _layoutPrototypes;
+				return layoutTypeController.isInstanceable() &&
+					layoutTypeController.isPrimaryType();
+			});
+
+		return _primaryTypes;
 	}
 
-	public int getLayoutPrototypesCount() throws PortalException {
-		List<LayoutPrototype> layoutPrototypes = getLayoutPrototypes();
+	public int getPrimaryTypesCount() {
+		List<String> types = getPrimaryTypes();
 
-		return layoutPrototypes.size();
+		return types.size();
 	}
 
 	public String getSelectedTab() {
@@ -109,17 +136,12 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 
 		_types = ListUtil.filter(
 			ListUtil.fromArray(LayoutTypeControllerTracker.getTypes()),
-			new PredicateFilter<String>() {
+			type -> {
+				LayoutTypeController layoutTypeController =
+					LayoutTypeControllerTracker.getLayoutTypeController(type);
 
-				@Override
-				public boolean filter(String type) {
-					LayoutTypeController layoutTypeController =
-						LayoutTypeControllerTracker.getLayoutTypeController(
-							type);
-
-					return layoutTypeController.isInstanceable();
-				}
-
+				return layoutTypeController.isInstanceable() &&
+					!layoutTypeController.isPrimaryType();
 			});
 
 		return _types;
@@ -164,7 +186,7 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 	}
 
 	private Long _layoutPageTemplateCollectionId;
-	private List<LayoutPrototype> _layoutPrototypes;
+	private List<String> _primaryTypes;
 	private final HttpServletRequest _request;
 	private String _selectedTab;
 	private final ThemeDisplay _themeDisplay;

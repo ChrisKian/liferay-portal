@@ -47,7 +47,7 @@ BlogImagesDisplayContext blogImagesDisplayContext = new BlogImagesDisplayContext
 
 blogImagesDisplayContext.populateResults(blogImagesSearchContainer);
 
-BlogImagesManagementToolbarDisplayContext blogImagesManagementToolbarDisplayContext = new BlogImagesManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, currentURLObj);
+BlogImagesManagementToolbarDisplayContext blogImagesManagementToolbarDisplayContext = new BlogImagesManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, request, currentURLObj);
 
 String displayStyle = blogImagesManagementToolbarDisplayContext.getDisplayStyle();
 %>
@@ -55,6 +55,7 @@ String displayStyle = blogImagesManagementToolbarDisplayContext.getDisplayStyle(
 <clay:management-toolbar
 	actionDropdownItems="<%= blogImagesManagementToolbarDisplayContext.getActionDropdownItems() %>"
 	clearResultsURL="<%= blogImagesManagementToolbarDisplayContext.getSearchActionURL() %>"
+	componentId="blogImagesManagementToolbar"
 	disabled="<%= blogImagesSearchContainer.getTotal() <= 0 %>"
 	filterDropdownItems="<%= blogImagesManagementToolbarDisplayContext.getFilterDropdownItems() %>"
 	itemsTotal="<%= blogImagesSearchContainer.getTotal() %>"
@@ -102,14 +103,44 @@ String displayStyle = blogImagesManagementToolbarDisplayContext.getDisplayStyle(
 </div>
 
 <aui:script>
-	function <portlet:namespace />deleteImages() {
-		if (confirm('<%= UnicodeLanguageUtil.get(request, "are-you-sure-you-want-to-delete-the-selected-images") %>')) {
-			var form = AUI.$(document.<portlet:namespace />fm);
+	var deleteImages = function() {
+		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-the-selected-images" />')) {
+			var form = document.getElementById('<portlet:namespace />fm');
 
-			form.fm('<%= Constants.CMD %>').val('<%= Constants.DELETE %>');
-			form.fm('deleteFileEntryIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
+			if (form) {
+				var cmd = form.querySelector('#<portlet:namespace /><%= Constants.CMD %>');
 
-			submitForm(form);
+				if (cmd) {
+					cmd.setAttribute('value', '<%= Constants.DELETE %>');
+				}
+
+				var deleteFileEntryIds = form.querySelector('#<portlet:namespace />deleteFileEntryIds');
+
+				if (deleteFileEntryIds) {
+					deleteFileEntryIds.setAttribute('value', Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
+				}
+
+				submitForm(form);
+			}
 		}
-	}
+	};
+
+	var ACTIONS = {
+		'deleteImages': deleteImages
+	};
+
+	Liferay.componentReady('blogImagesManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

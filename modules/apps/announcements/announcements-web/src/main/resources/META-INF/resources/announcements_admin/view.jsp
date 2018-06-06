@@ -42,7 +42,7 @@ announcementsEntriesSearchContainer.setRowChecker(new AnnouncementsEntryChecker(
 announcementsEntriesSearchContainer.setTotal(AnnouncementsEntryLocalServiceUtil.getEntriesCount(themeDisplay.getCompanyId(), classNameId, classPK, navigation.equals("alerts")));
 announcementsEntriesSearchContainer.setResults(AnnouncementsEntryLocalServiceUtil.getEntries(themeDisplay.getCompanyId(), classNameId, classPK, navigation.equals("alerts"), announcementsEntriesSearchContainer.getStart(), announcementsEntriesSearchContainer.getEnd()));
 
-AnnouncementsAdminViewManagementToolbarDisplayContext announcementsAdminViewManagementToolbarDisplayContext = new AnnouncementsAdminViewManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, announcementsEntriesSearchContainer);
+AnnouncementsAdminViewManagementToolbarDisplayContext announcementsAdminViewManagementToolbarDisplayContext = new AnnouncementsAdminViewManagementToolbarDisplayContext(liferayPortletRequest, liferayPortletResponse, request, announcementsEntriesSearchContainer);
 %>
 
 <clay:navigation-bar
@@ -71,6 +71,7 @@ AnnouncementsAdminViewManagementToolbarDisplayContext announcementsAdminViewMana
 
 <clay:management-toolbar
 	actionDropdownItems="<%= announcementsAdminViewManagementToolbarDisplayContext.getActionDropdownItems() %>"
+	componentId="announcementsAdminViewManagementToolbar"
 	creationMenu="<%= announcementsAdminViewManagementToolbarDisplayContext.getCreationMenu() %>"
 	disabled="<%= announcementsAdminViewManagementToolbarDisplayContext.isDisabled() %>"
 	filterDropdownItems="<%= announcementsAdminViewManagementToolbarDisplayContext.getFilterDropdownItems() %>"
@@ -149,21 +150,40 @@ AnnouncementsAdminViewManagementToolbarDisplayContext announcementsAdminViewMana
 </div>
 
 <aui:script>
-	function <portlet:namespace />deleteEntries() {
+	var deleteEntries = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-the-selected-entries" />')) {
-			var form = document.querySelector('#<portlet:namespace />fm);
+			var form = document.getElementById('<portlet:namespace />fm');
 
 			if (form) {
 				form.setAttribute('method', 'post');
 
-				var cmd = form.querySelector('#<%= Constants.CMD %>');
+				var cmd = form.querySelector('#<portlet:namespace /><%= Constants.CMD %>');
 
 				if (cmd) {
-					cmd.value = '<%= Constants.DELETE %>';
+					cmd.setAttribute('value', '<%= Constants.DELETE %>');
 				}
 
 				submitForm(form, '<portlet:actionURL name="/announcements/edit_entry" />');
 			}
 		}
-	}
+	};
+
+	var ACTIONS = {
+		'deleteEntries': deleteEntries
+	};
+
+	Liferay.componentReady('announcementsAdminViewManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				'actionItemClicked',
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

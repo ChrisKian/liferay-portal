@@ -731,6 +731,17 @@ public class JenkinsResultsParserUtil {
 		return Float.parseFloat(matcher.group(1));
 	}
 
+	public static GitWorkingDirectory getJenkinsGitWorkingDirectory()
+		throws IOException {
+
+		Properties buildProperties = getBuildProperties();
+
+		String workingDirectoryPath = buildProperties.getProperty(
+			"base.repository.dir") + "/liferay-jenkins-ee";
+
+		return new GitWorkingDirectory("master", workingDirectoryPath);
+	}
+
 	public static List<JenkinsMaster> getJenkinsMasters(
 		Properties buildProperties, String prefix) {
 
@@ -920,6 +931,24 @@ public class JenkinsResultsParserUtil {
 		}
 	}
 
+	public static PortalGitWorkingDirectory getPortalGitWorkingDirectory(
+			String portalBranchName)
+		throws IOException {
+
+		Properties buildProperties = getBuildProperties();
+
+		String workingDirectoryPath = buildProperties.getProperty(
+			"base.repository.dir") + "/liferay-portal";
+
+		if (!portalBranchName.equals("master")) {
+			workingDirectoryPath = combine(
+				workingDirectoryPath, "-", portalBranchName);
+		}
+
+		return new PortalGitWorkingDirectory(
+			portalBranchName, workingDirectoryPath);
+	}
+
 	public static Properties getProperties(File... propertiesFiles) {
 		Properties properties = new Properties();
 
@@ -992,7 +1021,7 @@ public class JenkinsResultsParserUtil {
 
 	public static String getRegexLiteral(String string) {
 		if (string == null) {
-			throw new NullPointerException("String is NULL");
+			throw new NullPointerException("String is null");
 		}
 
 		String specialCharactersString = "\\^$.|?*+()[]{}";
@@ -1053,13 +1082,25 @@ public class JenkinsResultsParserUtil {
 		return getSlaves(getBuildProperties(), jenkinsMasterPatternString);
 	}
 
+	public static boolean isCINode() {
+		String hostName = getHostName("");
+
+		if (hostName.startsWith("cloud-10-0-") ||
+			hostName.startsWith("test-")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public static boolean isFileInDirectory(File directory, File file) {
 		if (directory == null) {
-			throw new IllegalArgumentException("Directory is NULL");
+			throw new IllegalArgumentException("Directory is null");
 		}
 
 		if (file == null) {
-			throw new IllegalArgumentException("File is NULL");
+			throw new IllegalArgumentException("File is null");
 		}
 
 		if (!directory.isDirectory()) {

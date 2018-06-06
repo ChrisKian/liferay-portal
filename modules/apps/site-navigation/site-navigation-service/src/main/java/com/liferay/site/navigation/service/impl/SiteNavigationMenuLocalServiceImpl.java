@@ -14,6 +14,8 @@
 
 package com.liferay.site.navigation.service.impl;
 
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
+import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -219,7 +221,8 @@ public class SiteNavigationMenuLocalServiceImpl
 		OrderByComparator orderByComparator) {
 
 		return siteNavigationMenuPersistence.findByG_N(
-			groupId, keywords, start, end, orderByComparator);
+			groupId, _customSQL.keywords(keywords, WildcardMode.SURROUND)[0],
+			start, end, orderByComparator);
 	}
 
 	@Override
@@ -229,7 +232,8 @@ public class SiteNavigationMenuLocalServiceImpl
 
 	@Override
 	public int getSiteNavigationMenusCount(long groupId, String keywords) {
-		return siteNavigationMenuPersistence.countByG_N(groupId, keywords);
+		return siteNavigationMenuPersistence.countByG_N(
+			groupId, _customSQL.keywords(keywords, WildcardMode.SURROUND)[0]);
 	}
 
 	@Override
@@ -245,10 +249,10 @@ public class SiteNavigationMenuLocalServiceImpl
 
 		User user = userLocalService.getUser(userId);
 
-		siteNavigationMenu.setModifiedDate(
-			serviceContext.getModifiedDate(new Date()));
 		siteNavigationMenu.setUserId(userId);
 		siteNavigationMenu.setUserName(user.getFullName());
+		siteNavigationMenu.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
 		siteNavigationMenu.setType(type);
 		siteNavigationMenu.setAuto(auto);
 
@@ -268,10 +272,10 @@ public class SiteNavigationMenuLocalServiceImpl
 		SiteNavigationMenu siteNavigationMenu = getSiteNavigationMenu(
 			siteNavigationMenuId);
 
-		siteNavigationMenu.setModifiedDate(
-			serviceContext.getModifiedDate(new Date()));
 		siteNavigationMenu.setUserId(userId);
 		siteNavigationMenu.setUserName(user.getFullName());
+		siteNavigationMenu.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
 		siteNavigationMenu.setName(name);
 
 		return siteNavigationMenuPersistence.update(siteNavigationMenu);
@@ -362,6 +366,9 @@ public class SiteNavigationMenuLocalServiceImpl
 
 		siteNavigationMenuPersistence.update(actualTypeSiteNavigationMenu);
 	}
+
+	@ServiceReference(type = CustomSQL.class)
+	private CustomSQL _customSQL;
 
 	@ServiceReference(type = SiteNavigationMenuItemTypeRegistry.class)
 	private SiteNavigationMenuItemTypeRegistry

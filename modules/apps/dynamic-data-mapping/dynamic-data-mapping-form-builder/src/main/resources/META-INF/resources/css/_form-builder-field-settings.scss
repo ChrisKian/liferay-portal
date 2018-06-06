@@ -101,16 +101,6 @@
 		display: none;
 	}
 
-	.liferay-ddm-form-field-checkbox,
-	.lfr-ddm-form-field-validation {
-		margin-bottom: 20px;
-
-		.form-group {
-			line-height: 0;
-			margin-bottom: 0;
-		}
-	}
-
 	.liferay-ddm-form-field-key-value {
 		.form-control {
 			padding-right: 30px;
@@ -133,7 +123,7 @@
 			font-size: 22px;
 			position: absolute;
 			right: 8px;
-			top: 8px;
+			top: 2px;
 			z-index: 5;
 		}
 

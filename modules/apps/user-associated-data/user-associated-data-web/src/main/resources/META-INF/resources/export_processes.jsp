@@ -29,15 +29,15 @@ UADExportProcessDisplayContext uadExportProcessDisplayContext = new UADExportPro
 		modelVar="backgroundTask"
 	>
 		<liferay-ui:search-container-column-text
-			cssClass="autofit-col-expand"
+			cssClass="lfr-title-column"
 		>
 			<div id="<portlet:namespace />exportStatus">
 				<h5>
-					<liferay-ui:message key="<%= UADLanguageUtil.getApplicationName(backgroundTask.getName(), locale) %>" />
+					<liferay-ui:message key="<%= UADLanguageUtil.getApplicationName(UADExportProcessUtil.getApplicationKey(backgroundTask), locale) %>" />
 				</h5>
 
 				<clay:label
-					label="<%= LanguageUtil.get(request, backgroundTask.getStatusLabel()) %>"
+					label="<%= StringUtil.toUpperCase(LanguageUtil.get(request, backgroundTask.getStatusLabel()), locale) %>"
 					style="<%= UADExportProcessUtil.getStatusStyle(backgroundTask.getStatus()) %>"
 				/>
 			</div>
@@ -48,9 +48,9 @@ UADExportProcessDisplayContext uadExportProcessDisplayContext = new UADExportPro
 		%>
 
 		<liferay-ui:search-container-column-text
-			cssClass="autofit-col-expand"
+			cssClass="lfr-create-date-column table-cell-expand"
 		>
-			<%= LanguageUtil.get(request, "create-date") + StringPool.COLON + dateFormat.format(backgroundTask.getCreateDate()) %>
+			<%= LanguageUtil.get(request, "create-date") + ": " + dateFormat.format(backgroundTask.getCreateDate()) %>
 
 			<c:if test="<%= backgroundTask.isInProgress() %>">
 
@@ -66,9 +66,9 @@ UADExportProcessDisplayContext uadExportProcessDisplayContext = new UADExportPro
 
 		<c:if test="<%= backgroundTask.isCompleted() %>">
 			<liferay-ui:search-container-column-text
-				cssClass="autofit-col-expand"
+				cssClass="lfr-completion-date-column table-cell-expand"
 			>
-				<%= LanguageUtil.get(request, "completion-date") + StringPool.COLON + dateFormat.format(backgroundTask.getCompletionDate()) %>
+				<%= LanguageUtil.get(request, "completion-date") + ": " + dateFormat.format(backgroundTask.getCompletionDate()) %>
 			</liferay-ui:search-container-column-text>
 		</c:if>
 
@@ -79,7 +79,6 @@ UADExportProcessDisplayContext uadExportProcessDisplayContext = new UADExportPro
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator
-		displayStyle="descriptive"
 		markupView="lexicon"
 		resultRowSplitter="<%= new UADExportProcessResultRowSplitter() %>"
 	/>

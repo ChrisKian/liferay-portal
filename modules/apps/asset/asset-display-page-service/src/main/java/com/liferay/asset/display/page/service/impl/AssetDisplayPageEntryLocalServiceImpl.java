@@ -14,6 +14,7 @@
 
 package com.liferay.asset.display.page.service.impl;
 
+import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.base.AssetDisplayPageEntryLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -26,7 +27,16 @@ public class AssetDisplayPageEntryLocalServiceImpl
 
 	@Override
 	public AssetDisplayPageEntry addAssetDisplayPageEntry(
-		long assetEntryId, long layoutId) {
+		long assetEntryId, long layoutPageTemplateEntryId) {
+
+		return addAssetDisplayPageEntry(
+			assetEntryId, layoutPageTemplateEntryId,
+			AssetDisplayPageConstants.TYPE_DEFAULT);
+	}
+
+	@Override
+	public AssetDisplayPageEntry addAssetDisplayPageEntry(
+		long assetEntryId, long layoutPageTemplateEntryId, int type) {
 
 		long assetDisplayPageEntryId = counterLocalService.increment();
 
@@ -34,7 +44,9 @@ public class AssetDisplayPageEntryLocalServiceImpl
 			assetDisplayPageEntryPersistence.create(assetDisplayPageEntryId);
 
 		assetDisplayPageEntry.setAssetEntryId(assetEntryId);
-		assetDisplayPageEntry.setLayoutId(layoutId);
+		assetDisplayPageEntry.setLayoutPageTemplateEntryId(
+			layoutPageTemplateEntryId);
+		assetDisplayPageEntry.setType(type);
 
 		assetDisplayPageEntryPersistence.update(assetDisplayPageEntry);
 
@@ -54,6 +66,14 @@ public class AssetDisplayPageEntryLocalServiceImpl
 
 		return assetDisplayPageEntryPersistence.fetchByAssetEntryId(
 			assetEntryId);
+	}
+
+	@Override
+	public int getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
+		long layoutPageTemplateEntryId) {
+
+		return assetDisplayPageEntryPersistence.
+			countByLayoutPageTemplateEntryId(layoutPageTemplateEntryId);
 	}
 
 }

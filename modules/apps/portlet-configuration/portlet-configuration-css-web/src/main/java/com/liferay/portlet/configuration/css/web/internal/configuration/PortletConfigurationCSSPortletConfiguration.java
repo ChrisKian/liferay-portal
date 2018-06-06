@@ -21,7 +21,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 /**
  * @author Jürgen Kappler
  */
-@ExtendedObjectClassDefinition(category = "portlet-configuration")
+@ExtendedObjectClassDefinition(category = "widget-tools")
 @Meta.OCD(
 	id = "com.liferay.portlet.configuration.css.web.internal.configuration.PortletConfigurationCSSPortletConfiguration",
 	localization = "content/Language",
@@ -29,7 +29,11 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface PortletConfigurationCSSPortletConfiguration {
 
-	@Meta.AD(deflt = "false", name = "show-link-to-page", required = false)
+	@Meta.AD(
+		deflt = "false",
+		description = "show-link-application-urls-to-page-description",
+		name = "show-link-application-urls-to-page-name", required = false
+	)
 	public boolean showLinkToPage();
 
 }

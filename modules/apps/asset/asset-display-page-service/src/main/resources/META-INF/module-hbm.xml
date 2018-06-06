@@ -8,6 +8,7 @@
 			<generator class="assigned" />
 		</id>
 		<property name="assetEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
-		<property name="layoutId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layoutPageTemplateEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property column="type_" name="type" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 </hibernate-mapping>

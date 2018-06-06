@@ -44,7 +44,7 @@ AssetCategoryUtil.addPortletBreadcrumbEntry(assetCategoriesDisplayContext.getVoc
 	showSearch="<%= assetCategoriesDisplayContext.isShowCategoriesSearch() %>"
 	sortingOrder="<%= assetCategoriesDisplayContext.getOrderByType() %>"
 	sortingURL="<%= assetCategoriesDisplayContext.getCategoriesSortingURL() %>"
-	viewTypeItems="<%= assetCategoriesDisplayContext.getCategoriesViewTypeItems() %>"
+	viewTypeItems="<%= !assetCategoriesDisplayContext.isFlattenedNavigationAllowed() ? assetCategoriesDisplayContext.getCategoriesViewTypeItems() : null %>"
 />
 
 <portlet:actionURL name="deleteCategory" var="deleteCategoryURL">
@@ -108,33 +108,6 @@ AssetCategoryUtil.addPortletBreadcrumbEntry(assetCategoriesDisplayContext.getVoc
 					<liferay-ui:search-container-column-jsp
 						path="/category_action.jsp"
 					/>
-				</c:when>
-				<c:when test='<%= Objects.equals(assetCategoriesDisplayContext.getDisplayStyle(), "icon") %>'>
-
-					<%
-					row.setCssClass("entry-card lfr-asset-item");
-					%>
-
-					<liferay-ui:search-container-column-text>
-						<liferay-frontend:icon-vertical-card
-							actionJsp="/category_action.jsp"
-							actionJspServletContext="<%= application %>"
-							icon="categories"
-							resultRow="<%= row %>"
-							rowChecker="<%= searchContainer.getRowChecker() %>"
-							subtitle="<%= curCategory.getDescription(locale) %>"
-							title="<%= curCategory.getName() %>"
-							url="<%= rowURL != null ? rowURL.toString() : null %>"
-						>
-							<liferay-frontend:vertical-card-header>
-								<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - curCategory.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
-							</liferay-frontend:vertical-card-header>
-
-							<liferay-frontend:vertical-card-footer>
-								<liferay-ui:message arguments="<%= subcategoriesCount %>" key="x-subcategories" />
-							</liferay-frontend:vertical-card-footer>
-						</liferay-frontend:icon-vertical-card>
-					</liferay-ui:search-container-column-text>
 				</c:when>
 				<c:when test='<%= Objects.equals(assetCategoriesDisplayContext.getDisplayStyle(), "list") %>'>
 					<c:choose>
@@ -205,7 +178,7 @@ AssetCategoryUtil.addPortletBreadcrumbEntry(assetCategoriesDisplayContext.getVoc
 </aui:form>
 
 <aui:script use="liferay-item-selector-dialog">
-	window.<portlet:namespace />selectCategory = function() {
+	var selectCategory = function() {
 		var itemSelectorDialog = new A.LiferayItemSelectorDialog(
 			{
 				eventName: '<portlet:namespace />selectCategory',
@@ -233,11 +206,31 @@ AssetCategoryUtil.addPortletBreadcrumbEntry(assetCategoriesDisplayContext.getVoc
 		);
 
 		itemSelectorDialog.open();
-	}
+	};
 
-	window.<portlet:namespace />deleteSelectedCategories = function() {
+	var deleteSelectedCategories = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm(document.querySelector('#<portlet:namespace />fm'));
 		}
-	}
+	};
+
+	var ACTIONS = {
+		'deleteSelectedCategories': deleteSelectedCategories,
+		'selectCategories': selectCategory
+	};
+
+	Liferay.componentReady('assetCategoriesManagementToolbar').then(
+		function(managementToolbar) {
+			managementToolbar.on(
+				['actionItemClicked', 'filterItemClicked'],
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
+		}
+	);
 </aui:script>

@@ -14,12 +14,12 @@
 
 package com.liferay.portal.search.web.internal.search.bar.portlet.shared.search;
 
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.generic.BooleanClauseImpl;
-import com.liferay.portal.kernel.search.generic.TermQueryImpl;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.search.constants.SearchContextAttributes;
+import com.liferay.portal.search.web.internal.display.context.Keywords;
 import com.liferay.portal.search.web.internal.display.context.SearchScope;
+import com.liferay.portal.search.web.internal.display.context.SearchScopePreference;
 import com.liferay.portal.search.web.internal.search.bar.constants.SearchBarPortletKeys;
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferences;
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferencesImpl;
@@ -58,17 +58,28 @@ public class SearchBarPortletSharedSearchContributor
 		SearchBarPortletPreferences searchBarPortletPreferences,
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
-		Optional<Long> groupIdOptional = getThisSiteGroupId(
+		SearchScope searchScope = getSearchScope(
 			searchBarPortletPreferences, portletSharedSearchSettings);
 
-		groupIdOptional.ifPresent(
-			groupId -> {
-				portletSharedSearchSettings.addCondition(
-					new BooleanClauseImpl(
-						new TermQueryImpl(
-							Field.GROUP_ID, String.valueOf(groupId)),
-						BooleanClauseOccur.MUST));
-			});
+		if (searchScope != SearchScope.THIS_SITE) {
+			return;
+		}
+
+		SearchContext searchContext =
+			portletSharedSearchSettings.getSearchContext();
+
+		searchContext.setGroupIds(
+			new long[] {getScopeGroupId(portletSharedSearchSettings)});
+	}
+
+	protected SearchScope getDefaultSearchScope() {
+		SearchBarPortletPreferences searchBarPortletPreferences =
+			new SearchBarPortletPreferencesImpl(Optional.empty());
+
+		SearchScopePreference searchScopePreference =
+			searchBarPortletPreferences.getSearchScopePreference();
+
+		return searchScopePreference.getSearchScope();
 	}
 
 	protected long getScopeGroupId(
@@ -80,49 +91,73 @@ public class SearchBarPortletSharedSearchContributor
 		return themeDisplay.getScopeGroupId();
 	}
 
-	protected Optional<SearchScope> getSearchScope(
+	protected SearchScope getSearchScope(
 		SearchBarPortletPreferences searchBarPortletPreferences,
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
-		String parameterName =
-			searchBarPortletPreferences.getScopeParameterName();
+		SearchScopePreference searchScopePreference =
+			searchBarPortletPreferences.getSearchScopePreference();
+
+		if (searchScopePreference !=
+				SearchScopePreference.LET_THE_USER_CHOOSE) {
+
+			return searchScopePreference.getSearchScope();
+		}
 
 		Optional<String> parameterValueOptional =
-			portletSharedSearchSettings.getParameter(parameterName);
+			portletSharedSearchSettings.getParameter(
+				searchBarPortletPreferences.getScopeParameterName());
 
-		Optional<SearchScope> searchScopeOptional = parameterValueOptional.map(
-			SearchScope::getSearchScope);
-
-		return searchScopeOptional;
+		return parameterValueOptional.map(
+			SearchScope::getSearchScope
+		).orElseGet(
+			this::getDefaultSearchScope
+		);
 	}
 
-	protected Optional<Long> getThisSiteGroupId(
+	protected boolean isLuceneSyntax(
 		SearchBarPortletPreferences searchBarPortletPreferences,
-		PortletSharedSearchSettings portletSharedSearchSettings) {
+		Keywords keywords) {
 
-		Optional<SearchScope> searchScopeOptional = getSearchScope(
-			searchBarPortletPreferences, portletSharedSearchSettings);
+		if (searchBarPortletPreferences.isUseAdvancedSearchSyntax() ||
+			keywords.isLuceneSyntax()) {
 
-		Optional<SearchScope> thisSiteSearchScopeOptional =
-			searchScopeOptional.filter(SearchScope.THIS_SITE::equals);
+			return true;
+		}
 
-		return thisSiteSearchScopeOptional.map(
-			searchScope -> getScopeGroupId(portletSharedSearchSettings));
+		return false;
 	}
 
 	protected void setKeywords(
 		SearchBarPortletPreferences searchBarPortletPreferences,
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
-		Optional<String> parameterValueOptional =
-			portletSharedSearchSettings.getParameter(
-				searchBarPortletPreferences.getKeywordsParameterName());
+		Optional<String> optional = portletSharedSearchSettings.getParameter(
+			searchBarPortletPreferences.getKeywordsParameterName());
 
-		parameterValueOptional.ifPresent(
-			portletSharedSearchSettings::setKeywords);
+		optional.ifPresent(
+			value -> {
+				Keywords keywords = new Keywords(value);
+
+				portletSharedSearchSettings.setKeywords(keywords.getKeywords());
+
+				if (isLuceneSyntax(searchBarPortletPreferences, keywords)) {
+					setLuceneSyntax(portletSharedSearchSettings);
+				}
+			});
 
 		portletSharedSearchSettings.setKeywordsParameterName(
 			searchBarPortletPreferences.getKeywordsParameterName());
+	}
+
+	protected void setLuceneSyntax(
+		PortletSharedSearchSettings portletSharedSearchSettings) {
+
+		SearchContext searchContext =
+			portletSharedSearchSettings.getSearchContext();
+
+		searchContext.setAttribute(
+			SearchContextAttributes.ATTRIBUTE_KEY_LUCENE_SYNTAX, Boolean.TRUE);
 	}
 
 }

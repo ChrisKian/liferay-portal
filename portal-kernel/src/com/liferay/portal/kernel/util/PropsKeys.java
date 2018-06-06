@@ -19,8 +19,6 @@ package com.liferay.portal.kernel.util;
  */
 public interface PropsKeys {
 
-	public static final String ADMIN_ANALYTICS_KEY = "admin.analytics.key";
-
 	public static final String ADMIN_ANALYTICS_TYPES = "admin.analytics.types";
 
 	public static final String ADMIN_DEFAULT_GROUP_NAMES = "admin.default.group.names";
@@ -54,6 +52,8 @@ public interface PropsKeys {
 	public static final String ADMIN_EMAIL_VERIFICATION_BODY = "admin.email.verification.body";
 
 	public static final String ADMIN_EMAIL_VERIFICATION_SUBJECT = "admin.email.verification.subject";
+
+	public static final String ADMIN_LIFERAY_ANALYTICS_KEY = "admin.liferay.analytics.key";
 
 	public static final String ADMIN_MAIL_HOST_NAMES = "admin.mail.host.names";
 
@@ -544,6 +544,8 @@ public interface PropsKeys {
 	public static final String CUSTOM_SQL_FUNCTION_ISNOTNULL = "custom.sql.function.isnotnull";
 
 	public static final String CUSTOM_SQL_FUNCTION_ISNULL = "custom.sql.function.isnull";
+
+	public static final String DATABASE_IN_MAX_PARAMETERS = "database.in.max.parameters";
 
 	public static final String DATABASE_INDEXES_UPDATE_ON_STARTUP = "database.indexes.update.on.startup";
 

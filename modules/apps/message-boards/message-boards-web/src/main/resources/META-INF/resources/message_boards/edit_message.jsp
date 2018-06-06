@@ -96,10 +96,10 @@ else {
 String headerTitle = LanguageUtil.get(request, "add-message");
 
 if (curParentMessage != null) {
-	headerTitle = LanguageUtil.format(request, "reply-to-x", curParentMessage.getSubject(), false);
+	headerTitle = LanguageUtil.format(request, "reply-to-x", HtmlUtil.escape(curParentMessage.getSubject()), false);
 }
 else if (message != null) {
-	headerTitle = LanguageUtil.format(request, "edit-x", message.getSubject(), false);
+	headerTitle = LanguageUtil.format(request, "edit-x", HtmlUtil.escape(message.getSubject()), false);
 }
 
 boolean portletTitleBasedNavigation = GetterUtil.getBoolean(portletConfig.getInitParameter("portlet-title-based-navigation"));
@@ -295,7 +295,7 @@ if (portletTitleBasedNavigation) {
 				</aui:fieldset>
 			</c:if>
 
-			<c:if test="<%= (curParentMessage == null) %>">
+			<c:if test="<%= curParentMessage == null %>">
 				<aui:fieldset collapsed="<%= true %>" collapsible="<%= true %>" label="categorization">
 					<aui:input name="tags" type="assetTags" />
 				</aui:fieldset>
@@ -365,7 +365,7 @@ if (portletTitleBasedNavigation) {
 								if (priorityValue > 0) {
 						%>
 
-									<aui:option label="<%= HtmlUtil.escape(priorityName) %>" selected="<%= (threadPriority == priorityValue) %>" value="<%= priorityValue %>" />
+									<aui:option label="<%= HtmlUtil.escape(priorityName) %>" selected="<%= threadPriority == priorityValue %>" value="<%= priorityValue %>" />
 
 						<%
 								}

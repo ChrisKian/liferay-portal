@@ -63,17 +63,19 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 	public static final Object[][] TABLE_COLUMNS = {
 			{ "assetDisplayPageEntryId", Types.BIGINT },
 			{ "assetEntryId", Types.BIGINT },
-			{ "layoutId", Types.BIGINT }
+			{ "layoutPageTemplateEntryId", Types.BIGINT },
+			{ "type_", Types.INTEGER }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
 	static {
 		TABLE_COLUMNS_MAP.put("assetDisplayPageEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("assetEntryId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("layoutId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("layoutPageTemplateEntryId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table AssetDisplayPageEntry (assetDisplayPageEntryId LONG not null primary key,assetEntryId LONG,layoutId LONG)";
+	public static final String TABLE_SQL_CREATE = "create table AssetDisplayPageEntry (assetDisplayPageEntryId LONG not null primary key,assetEntryId LONG,layoutPageTemplateEntryId LONG,type_ INTEGER)";
 	public static final String TABLE_SQL_DROP = "drop table AssetDisplayPageEntry";
 	public static final String ORDER_BY_JPQL = " ORDER BY assetDisplayPageEntry.assetDisplayPageEntryId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY AssetDisplayPageEntry.assetDisplayPageEntryId ASC";
@@ -90,7 +92,8 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 				"value.object.column.bitmask.enabled.com.liferay.asset.display.page.model.AssetDisplayPageEntry"),
 			true);
 	public static final long ASSETENTRYID_COLUMN_BITMASK = 1L;
-	public static final long ASSETDISPLAYPAGEENTRYID_COLUMN_BITMASK = 2L;
+	public static final long LAYOUTPAGETEMPLATEENTRYID_COLUMN_BITMASK = 2L;
+	public static final long ASSETDISPLAYPAGEENTRYID_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.asset.display.page.service.util.ServiceProps.get(
 				"lock.expiration.time.com.liferay.asset.display.page.model.AssetDisplayPageEntry"));
 
@@ -133,7 +136,9 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 
 		attributes.put("assetDisplayPageEntryId", getAssetDisplayPageEntryId());
 		attributes.put("assetEntryId", getAssetEntryId());
-		attributes.put("layoutId", getLayoutId());
+		attributes.put("layoutPageTemplateEntryId",
+			getLayoutPageTemplateEntryId());
+		attributes.put("type", getType());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -156,10 +161,17 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 			setAssetEntryId(assetEntryId);
 		}
 
-		Long layoutId = (Long)attributes.get("layoutId");
+		Long layoutPageTemplateEntryId = (Long)attributes.get(
+				"layoutPageTemplateEntryId");
 
-		if (layoutId != null) {
-			setLayoutId(layoutId);
+		if (layoutPageTemplateEntryId != null) {
+			setLayoutPageTemplateEntryId(layoutPageTemplateEntryId);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 	}
 
@@ -196,13 +208,35 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 	}
 
 	@Override
-	public long getLayoutId() {
-		return _layoutId;
+	public long getLayoutPageTemplateEntryId() {
+		return _layoutPageTemplateEntryId;
 	}
 
 	@Override
-	public void setLayoutId(long layoutId) {
-		_layoutId = layoutId;
+	public void setLayoutPageTemplateEntryId(long layoutPageTemplateEntryId) {
+		_columnBitmask |= LAYOUTPAGETEMPLATEENTRYID_COLUMN_BITMASK;
+
+		if (!_setOriginalLayoutPageTemplateEntryId) {
+			_setOriginalLayoutPageTemplateEntryId = true;
+
+			_originalLayoutPageTemplateEntryId = _layoutPageTemplateEntryId;
+		}
+
+		_layoutPageTemplateEntryId = layoutPageTemplateEntryId;
+	}
+
+	public long getOriginalLayoutPageTemplateEntryId() {
+		return _originalLayoutPageTemplateEntryId;
+	}
+
+	@Override
+	public int getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(int type) {
+		_type = type;
 	}
 
 	public long getColumnBitmask() {
@@ -238,7 +272,8 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 
 		assetDisplayPageEntryImpl.setAssetDisplayPageEntryId(getAssetDisplayPageEntryId());
 		assetDisplayPageEntryImpl.setAssetEntryId(getAssetEntryId());
-		assetDisplayPageEntryImpl.setLayoutId(getLayoutId());
+		assetDisplayPageEntryImpl.setLayoutPageTemplateEntryId(getLayoutPageTemplateEntryId());
+		assetDisplayPageEntryImpl.setType(getType());
 
 		assetDisplayPageEntryImpl.resetOriginalValues();
 
@@ -305,6 +340,10 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 
 		assetDisplayPageEntryModelImpl._setOriginalAssetEntryId = false;
 
+		assetDisplayPageEntryModelImpl._originalLayoutPageTemplateEntryId = assetDisplayPageEntryModelImpl._layoutPageTemplateEntryId;
+
+		assetDisplayPageEntryModelImpl._setOriginalLayoutPageTemplateEntryId = false;
+
 		assetDisplayPageEntryModelImpl._columnBitmask = 0;
 	}
 
@@ -316,21 +355,25 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 
 		assetDisplayPageEntryCacheModel.assetEntryId = getAssetEntryId();
 
-		assetDisplayPageEntryCacheModel.layoutId = getLayoutId();
+		assetDisplayPageEntryCacheModel.layoutPageTemplateEntryId = getLayoutPageTemplateEntryId();
+
+		assetDisplayPageEntryCacheModel.type = getType();
 
 		return assetDisplayPageEntryCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(7);
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("{assetDisplayPageEntryId=");
 		sb.append(getAssetDisplayPageEntryId());
 		sb.append(", assetEntryId=");
 		sb.append(getAssetEntryId());
-		sb.append(", layoutId=");
-		sb.append(getLayoutId());
+		sb.append(", layoutPageTemplateEntryId=");
+		sb.append(getLayoutPageTemplateEntryId());
+		sb.append(", type=");
+		sb.append(getType());
 		sb.append("}");
 
 		return sb.toString();
@@ -338,7 +381,7 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(16);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.asset.display.page.model.AssetDisplayPageEntry");
@@ -353,8 +396,12 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 		sb.append(getAssetEntryId());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>layoutId</column-name><column-value><![CDATA[");
-		sb.append(getLayoutId());
+			"<column><column-name>layoutPageTemplateEntryId</column-name><column-value><![CDATA[");
+		sb.append(getLayoutPageTemplateEntryId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>type</column-name><column-value><![CDATA[");
+		sb.append(getType());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
@@ -370,7 +417,10 @@ public class AssetDisplayPageEntryModelImpl extends BaseModelImpl<AssetDisplayPa
 	private long _assetEntryId;
 	private long _originalAssetEntryId;
 	private boolean _setOriginalAssetEntryId;
-	private long _layoutId;
+	private long _layoutPageTemplateEntryId;
+	private long _originalLayoutPageTemplateEntryId;
+	private boolean _setOriginalLayoutPageTemplateEntryId;
+	private int _type;
 	private long _columnBitmask;
 	private AssetDisplayPageEntry _escapedModel;
 }

@@ -880,7 +880,7 @@ public class JournalTestUtil {
 			article.getDDMTemplateKey(), article.getLayoutUuid(),
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0, true,
-			article.getIndexable(), article.isSmallImage(),
+			article.isIndexable(), article.isSmallImage(),
 			article.getSmallImageURL(), null, null, null, serviceContext);
 	}
 
@@ -1010,7 +1010,7 @@ public class JournalTestUtil {
 
 		if (journalServiceBundle == null) {
 			throw new ExceptionInInitializerError(
-				"Unable to find com.liferay.journal.service bundle.");
+				"Unable to find com.liferay.journal.service bundle");
 		}
 
 		BundleWiring bundleWiring = journalServiceBundle.adapt(

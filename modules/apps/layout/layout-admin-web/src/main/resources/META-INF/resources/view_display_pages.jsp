@@ -20,6 +20,8 @@
 DisplayPageDisplayContext displayPageDisplayContext = new DisplayPageDisplayContext(renderRequest, renderResponse, request);
 %>
 
+<liferay-ui:error key="<%= RequiredLayoutPageTemplateEntryException.class.getName() %>" message="you-cannot-delete-asset-display-pages-that-are-used-by-one-or-more-assets" />
+
 <clay:navigation-bar
 	inverted="<%= true %>"
 	navigationItems="<%= layoutsAdminDisplayContext.getNavigationItems() %>"
@@ -39,7 +41,6 @@ DisplayPageDisplayContext displayPageDisplayContext = new DisplayPageDisplayCont
 	showSearch="<%= displayPageDisplayContext.isShowDisplayPagesSearch() %>"
 	sortingOrder="<%= displayPageDisplayContext.getOrderByType() %>"
 	sortingURL="<%= displayPageDisplayContext.getSortingURL() %>"
-	viewTypeItems="<%= displayPageDisplayContext.getViewTypeItems() %>"
 />
 
 <portlet:actionURL name="/layout/delete_layout_page_template_entry" var="deleteDisplayPageURL">
@@ -207,7 +208,7 @@ DisplayPageDisplayContext displayPageDisplayContext = new DisplayPageDisplayCont
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator
-			displayStyle="<%= displayPageDisplayContext.getDisplayStyle() %>"
+			displayStyle="icon"
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>
@@ -262,15 +263,30 @@ DisplayPageDisplayContext displayPageDisplayContext = new DisplayPageDisplayCont
 		}
 	);
 
-	window.<portlet:namespace />deleteSelectedDisplayPages = function() {
+	var deleteSelectedDisplayPages = function() {
 		if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 			submitForm($(document.<portlet:namespace />fm));
 		}
 	}
 
+	var ACTIONS = {
+		'deleteSelectedDisplayPages': deleteSelectedDisplayPages
+	};
+
 	Liferay.componentReady('displayPagesManagementToolbar').then(
 		(managementToolbar) => {
 			managementToolbar.on('creationButtonClicked', handleAddDisplayPageMenuItemClick);
+
+			managementToolbar.on(
+				['actionItemClicked', 'filterItemClicked'],
+				function(event) {
+					var itemData = event.data.item.data;
+
+					if (itemData && itemData.action && ACTIONS[itemData.action]) {
+						ACTIONS[itemData.action]();
+					}
+				}
+			);
 		}
 	);
 

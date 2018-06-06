@@ -88,18 +88,32 @@ public interface AssetDisplayPageEntryModel extends BaseModel<AssetDisplayPageEn
 	public void setAssetEntryId(long assetEntryId);
 
 	/**
-	 * Returns the layout ID of this asset display page entry.
+	 * Returns the layout page template entry ID of this asset display page entry.
 	 *
-	 * @return the layout ID of this asset display page entry
+	 * @return the layout page template entry ID of this asset display page entry
 	 */
-	public long getLayoutId();
+	public long getLayoutPageTemplateEntryId();
 
 	/**
-	 * Sets the layout ID of this asset display page entry.
+	 * Sets the layout page template entry ID of this asset display page entry.
 	 *
-	 * @param layoutId the layout ID of this asset display page entry
+	 * @param layoutPageTemplateEntryId the layout page template entry ID of this asset display page entry
 	 */
-	public void setLayoutId(long layoutId);
+	public void setLayoutPageTemplateEntryId(long layoutPageTemplateEntryId);
+
+	/**
+	 * Returns the type of this asset display page entry.
+	 *
+	 * @return the type of this asset display page entry
+	 */
+	public int getType();
+
+	/**
+	 * Sets the type of this asset display page entry.
+	 *
+	 * @param type the type of this asset display page entry
+	 */
+	public void setType(int type);
 
 	@Override
 	public boolean isNew();

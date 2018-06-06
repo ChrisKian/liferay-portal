@@ -24,6 +24,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SCHEDULER_VIEW_DAY_RESIZER_ICON</td>
+	<td>portal/screenshots/calendar/scheduler_view_day_resizer_icon.png</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -805,7 +810,7 @@
 </tr>
 <tr>
 	<td>SCHEDULER_VIEW_YEARLY_EVENT_DAY_WEEK_AND_MONTH_VIEW</td>
-	<td>//td[contains(@class,'scheduler-view-day') and contains(.,'${key_eventTitle}')]//div[@class='scheduler-event-content']</td>
+	<td>//td[contains(@class,'scheduler-view') and contains(.,'${key_eventTitle}')]//div[@class='scheduler-event-content']</td>
 	<td></td>
 </tr>
 <tr>
