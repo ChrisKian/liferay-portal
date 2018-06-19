@@ -279,7 +279,7 @@ public class JenkinsResultsParserUtil {
 
 		processBuilder.directory(baseDir.getAbsoluteFile());
 
-		Process process = new BufferedProcess(1000000, processBuilder.start());
+		Process process = new BufferedProcess(2000000, processBuilder.start());
 
 		long duration = 0;
 		long start = System.currentTimeMillis();
@@ -748,9 +748,9 @@ public class JenkinsResultsParserUtil {
 		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
 
 		for (int i = 1;
-			buildProperties.containsKey(
-				"master.slaves(" + prefix + "-" + i + ")");
-			i++) {
+				buildProperties.containsKey(
+					"master.slaves(" + prefix + "-" + i + ")");
+				i++) {
 
 			jenkinsMasters.add(new JenkinsMaster(prefix + "-" + i));
 		}
@@ -1118,15 +1118,15 @@ public class JenkinsResultsParserUtil {
 		return false;
 	}
 
-	public static String merge(String... strings) {
+	public static String join(String delimiter, String... strings) {
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < strings.length; i++) {
-			sb.append(strings[i]);
-
-			if (i < (strings.length - 1)) {
-				sb.append(",");
+		for (String string : strings) {
+			if (sb.length() > 0) {
+				sb.append(delimiter);
 			}
+
+			sb.append(string);
 		}
 
 		return sb.toString();
@@ -1191,8 +1191,8 @@ public class JenkinsResultsParserUtil {
 					"Unable to get build properties", ioe);
 			}
 
-			for (int i =
-				1; properties.containsKey(_getRedactTokenKey(i)); i++) {
+			for (int i = 1; properties.containsKey(_getRedactTokenKey(i));
+					i++) {
 
 				String key = properties.getProperty(_getRedactTokenKey(i));
 

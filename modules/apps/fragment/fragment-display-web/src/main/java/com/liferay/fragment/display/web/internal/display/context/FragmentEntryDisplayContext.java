@@ -46,13 +46,13 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.soy.utils.SoyContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletPreferences;
@@ -94,7 +94,7 @@ public class FragmentEntryDisplayContext {
 
 		FragmentEntryLink fragmentEntryLink = getFragmentEntryLink();
 
-		if (Validator.isNotNull(fragmentEntryLink)) {
+		if (fragmentEntryLink != null) {
 			return FragmentEntryLocalServiceUtil.fetchFragmentEntry(
 				fragmentEntryLink.getFragmentEntryId());
 		}
@@ -154,9 +154,10 @@ public class FragmentEntryDisplayContext {
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
 		SoyContext soyContext = SoyContextFactoryUtil.createSoyContext();
+
+		soyContext.put(
+			"defaultEditorConfigurations", _getDefaultConfigurations());
 
 		PortletURL editFragmentEntryLinkURL = _renderResponse.createActionURL();
 
@@ -164,18 +165,9 @@ public class FragmentEntryDisplayContext {
 			ActionRequest.ACTION_NAME,
 			"/fragment_display/edit_fragment_entry_link");
 
-		EditorConfiguration editorConfiguration =
-			EditorConfigurationFactoryUtil.getEditorConfiguration(
-				PortletIdCodec.decodePortletName(portletDisplay.getId()),
-				"fragmenEntryLinkEditor", StringPool.BLANK,
-				Collections.<String, Object>emptyMap(), themeDisplay,
-				RequestBackedPortletURLFactoryUtil.create(_renderRequest));
-
-		soyContext.put(
-			"defaultEditorConfiguration", editorConfiguration.getData());
-
 		soyContext.put(
 			"editFragmentEntryLinkURL", editFragmentEntryLinkURL.toString());
+
 		soyContext.put("fragmentEntryLink", _getSoyContextFragmentEntryLink());
 
 		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
@@ -225,6 +217,35 @@ public class FragmentEntryDisplayContext {
 		return PortletPermissionUtil.contains(
 			themeDisplay.getPermissionChecker(), themeDisplay.getLayout(),
 			portletDisplay.getId(), ActionKeys.CONFIGURATION);
+	}
+
+	private Map<String, Object> _getDefaultConfigurations() {
+		Map<String, Object> configurations = new HashMap<>();
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		EditorConfiguration richTextEditorConfiguration =
+			EditorConfigurationFactoryUtil.getEditorConfiguration(
+				PortletIdCodec.decodePortletName(portletDisplay.getId()),
+				"fragmenEntryLinkRichTextEditor", StringPool.BLANK,
+				new HashMap<String, Object>(), themeDisplay,
+				RequestBackedPortletURLFactoryUtil.create(_renderRequest));
+
+		configurations.put("rich-text", richTextEditorConfiguration.getData());
+
+		EditorConfiguration editorConfiguration =
+			EditorConfigurationFactoryUtil.getEditorConfiguration(
+				PortletIdCodec.decodePortletName(portletDisplay.getId()),
+				"fragmenEntryLinkEditor", StringPool.BLANK,
+				new HashMap<String, Object>(), themeDisplay,
+				RequestBackedPortletURLFactoryUtil.create(_renderRequest));
+
+		configurations.put("text", editorConfiguration.getData());
+
+		return configurations;
 	}
 
 	private ItemSelectorCriterion _getImageItemSelectorCriterion() {

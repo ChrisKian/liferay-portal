@@ -18,8 +18,14 @@ import com.liferay.changeset.exception.NoSuchEntryException;
 import com.liferay.changeset.model.ChangesetCollection;
 import com.liferay.changeset.model.ChangesetEntry;
 import com.liferay.changeset.service.base.ChangesetEntryLocalServiceBaseImpl;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.SetUtil;
+
+import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
@@ -52,6 +58,38 @@ public class ChangesetEntryLocalServiceImpl
 		changesetEntry.setClassPK(classPK);
 
 		return changesetEntryPersistence.update(changesetEntry);
+	}
+
+	@Override
+	public void deleteChangesetEntries(long changesetCollectionId)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"changesetCollectionId", changesetCollectionId)));
+
+		actionableDynamicQuery.setPerformActionMethod(
+			(ActionableDynamicQuery.PerformActionMethod<ChangesetEntry>)
+				changesetEntry ->
+					changesetEntryLocalService.deleteChangesetEntry(
+						changesetEntry));
+
+		actionableDynamicQuery.performActions();
+	}
+
+	@Override
+	public void deleteEntry(long changesetId, long classNameId, long classPK) {
+		ChangesetEntry changesetEntry =
+			changesetEntryLocalService.fetchChangesetEntry(
+				changesetId, classNameId, classPK);
+
+		if (changesetEntry != null) {
+			changesetEntryLocalService.deleteChangesetEntry(changesetEntry);
+		}
 	}
 
 	@Override
@@ -98,6 +136,28 @@ public class ChangesetEntryLocalServiceImpl
 
 		return changesetEntryPersistence.countByC_C(
 			changesetCollectionId, classNameId);
+	}
+
+	@Override
+	public long getChangesetEntriesCount(
+		long changesetCollectionId, long classNameId, Set<Long> classPKs) {
+
+		DynamicQuery dynamicQuery = dynamicQuery();
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"changesetCollectionId", changesetCollectionId));
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq("classNameId", classNameId));
+
+		if (SetUtil.isNotEmpty(classPKs)) {
+			dynamicQuery.add(RestrictionsFactoryUtil.in("classPK", classPKs));
+		}
+		else {
+			return 0;
+		}
+
+		return dynamicQueryCount(dynamicQuery);
 	}
 
 	@Override

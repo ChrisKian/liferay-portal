@@ -3579,8 +3579,8 @@ version 2.2.4.
 ## 5.4.4 - 2018-05-16
 
 ### Added
-- [LPS-80944]: The `com.liferay.spring.boot.defaults` plugin now automatically
-adds the local Maven and [Liferay CDN] repositories to the project.
+- [LPS-80944]: Configure the `com.liferay.spring.boot.defaults` plugin to
+automatically add local Maven and [Liferay CDN] repositories to the project.
 
 ## 5.4.5 - 2018-05-16
 
@@ -3724,9 +3724,139 @@ of a module includes transitive dependencies.
 - [LPS-81336]: Update the [Liferay Gradle Plugins] dependency to version
 3.12.28.
 
+## 5.4.28 - 2018-06-05
+
+### Changed
+- [LPS-81336]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.29.
+
+## 5.4.29 - 2018-06-05
+
+### Changed
+- [LPS-82001]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.30.
+
+## 5.4.30 - 2018-06-06
+
+### Changed
+- [LPS-82001]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.31.
+
+## 5.4.31 - 2018-06-07
+
+### Changed
+- [LPS-81900]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.32.
+
+### Fixed
+- [LPS-80332]: Fix `suite.bnd` inclusion when running in sub-repositories.
+
+## 5.4.32 - 2018-06-08
+
+### Changed
+- [LPS-75530]: Update the [Liferay Gradle Plugins JSDoc] dependency to version
+2.0.7.
+- [LPS-82130]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.33.
+- [LPS-82178]: Update the [Liferay Gradle Plugins Patcher] dependency to version
+1.0.13.
+
+## 5.4.33 - 2018-06-11
+
+### Changed
+- [LPS-82209]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.34.
+
+## 5.4.34 - 2018-06-11
+
+### Changed
+- [LPS-81638]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.35.
+
+## 5.4.35 - 2018-06-11
+
+### Changed
+- [LPS-82121]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.36.
+
+## 5.4.36 - 2018-06-11
+
+### Changed
+- [LPS-77875]: Update the constant `DEFAULT_REPOSITORY_URL` in the
+`GradlePluginsDefaultsUtil` class to
+`https://repository-cdn.liferay.com/nexus/content/groups/public`.
+- [LPS-77875]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.37.
+
+## 5.4.37 - 2018-06-11
+
+### Changed
+- [LPS-82261]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.38.
+
+## 5.4.38 - 2018-06-12
+
+### Changed
+- [LPS-82261]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.39.
+
+## 5.4.39 - 2018-06-13
+
+### Changed
+- [LPS-82343]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.40.
+
+## 5.4.40 - 2018-06-13
+
+### Changed
+- [LPS-77425]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.41.
+
+## 5.4.41 - 2018-06-13
+
+### Changed
+- [LPS-77875]: Update the constant `DEFAULT_REPOSITORY_URL` in the
+`GradlePluginsDefaultsUtil` class to
+`https://repository.liferay.com/nexus/content/groups/public`.
+- [LPS-77875]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.42.
+
+## 5.4.42 - 2018-06-13
+
+### Changed
+- [LPS-77425]: Update the constant `DEFAULT_REPOSITORY_URL` in the
+`GradlePluginsDefaultsUtil` class to
+`https://repository-cdn.liferay.com/nexus/content/groups/public`.
+- [LPS-77425]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.43.
+
+## 5.4.43 - 2018-06-13
+
+### Changed
+- [LPS-77425]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.44.
+
+## 5.4.44 - 2018-06-14
+
+### Changed
+- [LPS-79679]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.45.
+
+## 5.4.45 - 2018-06-15
+
+### Changed
+- [LPS-82534]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.46.
+
+## 5.4.46 - 2018-06-15
+
+### Changed
+- [LPS-77143]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.47.
+
 [Find Security Bugs]: https://github.com/liferay/liferay-portal/tree/master/modules/third-party/com-h3xstream-findsecbugs
 [Gradle License Report]: https://github.com/jk1/Gradle-License-Report
-[Liferay CDN]: https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public
+[Liferay CDN]: https://repository-cdn.liferay.com/nexus/content/groups/public
 [Liferay Gradle Plugins]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins
 [Liferay Gradle Plugins App Javadoc Builder]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins-app-javadoc-builder
 [Liferay Gradle Plugins Baseline]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/gradle-plugins-baseline
@@ -4058,6 +4188,7 @@ of a module includes transitive dependencies.
 [LPS-77797]: https://issues.liferay.com/browse/LPS-77797
 [LPS-77836]: https://issues.liferay.com/browse/LPS-77836
 [LPS-77840]: https://issues.liferay.com/browse/LPS-77840
+[LPS-77875]: https://issues.liferay.com/browse/LPS-77875
 [LPS-77886]: https://issues.liferay.com/browse/LPS-77886
 [LPS-77916]: https://issues.liferay.com/browse/LPS-77916
 [LPS-77968]: https://issues.liferay.com/browse/LPS-77968
@@ -4137,8 +4268,18 @@ of a module includes transitive dependencies.
 [LPS-81404]: https://issues.liferay.com/browse/LPS-81404
 [LPS-81555]: https://issues.liferay.com/browse/LPS-81555
 [LPS-81635]: https://issues.liferay.com/browse/LPS-81635
+[LPS-81638]: https://issues.liferay.com/browse/LPS-81638
 [LPS-81795]: https://issues.liferay.com/browse/LPS-81795
 [LPS-81895]: https://issues.liferay.com/browse/LPS-81895
+[LPS-81900]: https://issues.liferay.com/browse/LPS-81900
+[LPS-82001]: https://issues.liferay.com/browse/LPS-82001
+[LPS-82121]: https://issues.liferay.com/browse/LPS-82121
+[LPS-82130]: https://issues.liferay.com/browse/LPS-82130
+[LPS-82178]: https://issues.liferay.com/browse/LPS-82178
+[LPS-82209]: https://issues.liferay.com/browse/LPS-82209
+[LPS-82261]: https://issues.liferay.com/browse/LPS-82261
+[LPS-82343]: https://issues.liferay.com/browse/LPS-82343
+[LPS-82534]: https://issues.liferay.com/browse/LPS-82534
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
 [LRDOCS-2981]: https://issues.liferay.com/browse/LRDOCS-2981

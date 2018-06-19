@@ -142,10 +142,17 @@ public interface FragmentEntryService extends BaseService {
 	public String[] getTempFileNames(long groupId, String folderName)
 		throws PortalException;
 
+	public FragmentEntry updateFragmentEntry(long fragmentEntryId,
+		long previewFileEntryId) throws PortalException;
+
 	public FragmentEntry updateFragmentEntry(long fragmentEntryId, String name)
 		throws PortalException;
 
 	public FragmentEntry updateFragmentEntry(long fragmentEntryId, String name,
-		String css, String html, String js, int status,
-		ServiceContext serviceContext) throws PortalException;
+		String css, String html, String js, int status)
+		throws PortalException;
+
+	public FragmentEntry updateFragmentEntry(long fragmentEntryId, String name,
+		String css, String html, String js, long previewFileEntryId, int status)
+		throws PortalException;
 }

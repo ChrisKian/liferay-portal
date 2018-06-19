@@ -48,7 +48,7 @@ SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplay
 				actionJspServletContext="<%= application %>"
 				cssClass='<%= renderResponse.getNamespace() + "add-layout-prototype-action-option" %>'
 				data="<%= addLayoutPrototypeData %>"
-				icon="page-set"
+				icon="page-template"
 				resultRow="<%= row %>"
 				rowChecker="<%= searchContainer.getRowChecker() %>"
 				title="<%= HtmlUtil.escape(layoutPageTemplateEntry.getName()) %>"
@@ -65,7 +65,6 @@ SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplay
 
 <portlet:actionURL name="/layout/add_content_layout" var="addContentLayoutURL">
 	<portlet:param name="mvcPath" value="/select_layout_page_template_entry.jsp" />
-	<portlet:param name="redirect" value="<%= layoutsAdminDisplayContext.getRedirect() %>" />
 	<portlet:param name="groupId" value="<%= String.valueOf(layoutsAdminDisplayContext.getGroupId()) %>" />
 	<portlet:param name="portletResource" value="<%= layoutsAdminDisplayContext.getPortletResource() %>" />
 	<portlet:param name="parentLayoutId" value="<%= String.valueOf(layoutsAdminDisplayContext.getParentLayoutId()) %>" />

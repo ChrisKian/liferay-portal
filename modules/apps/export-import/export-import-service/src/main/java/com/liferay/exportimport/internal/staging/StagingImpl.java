@@ -17,6 +17,7 @@ package com.liferay.exportimport.internal.staging;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.changeset.model.ChangesetCollection;
+import com.liferay.changeset.model.ChangesetEntry;
 import com.liferay.changeset.service.ChangesetCollectionLocalService;
 import com.liferay.changeset.service.ChangesetEntryLocalService;
 import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
@@ -38,6 +39,7 @@ import com.liferay.exportimport.kernel.exception.LARFileSizeException;
 import com.liferay.exportimport.kernel.exception.LARTypeException;
 import com.liferay.exportimport.kernel.exception.LayoutImportException;
 import com.liferay.exportimport.kernel.exception.MissingReferenceException;
+import com.liferay.exportimport.kernel.lar.ExportImportClassedModelUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -47,6 +49,8 @@ import com.liferay.exportimport.kernel.lar.MissingReferences;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
+import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
@@ -54,6 +58,7 @@ import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.kernel.staging.StagingConstants;
+import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
@@ -87,6 +92,7 @@ import com.liferay.portal.kernel.model.RecentLayoutSetBranch;
 import com.liferay.portal.kernel.model.StagedGroupedModel;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
+import com.liferay.portal.kernel.model.WorkflowedModel;
 import com.liferay.portal.kernel.model.adapter.StagedTheme;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.security.auth.HttpPrincipal;
@@ -115,6 +121,7 @@ import com.liferay.portal.kernel.servlet.ServletResponseConstants;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadRequestSizeException;
 import com.liferay.portal.kernel.upload.UploadServletRequestConfigurationHelperUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -190,6 +197,35 @@ public class StagingImpl implements Staging {
 		}
 
 		StagedGroupedModel stagedGroupedModel = (StagedGroupedModel)model;
+
+		if (_stagedModelRepositoryHelper.isStagedModelInTrash(
+				stagedGroupedModel)) {
+
+			removeModelFromChangesetCollection(model);
+
+			return;
+		}
+
+		if (stagedGroupedModel instanceof WorkflowedModel) {
+			WorkflowedModel workflowedModel =
+				(WorkflowedModel)stagedGroupedModel;
+
+			StagedModelDataHandler stagedModelDataHandler =
+				StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
+					ExportImportClassedModelUtil.getClassName(
+						stagedGroupedModel));
+
+			int[] exportableStatuses =
+				stagedModelDataHandler.getExportableStatuses();
+
+			if (!ArrayUtil.contains(
+					exportableStatuses, workflowedModel.getStatus())) {
+
+				removeModelFromChangesetCollection(model);
+
+				return;
+			}
+		}
 
 		long classNameId = _classNameLocalService.getClassNameId(
 			stagedGroupedModel.getModelClassName());
@@ -1126,10 +1162,13 @@ public class StagingImpl implements Staging {
 						TYPE_PUBLISH_LAYOUT_LOCAL) ||
 				(exportImportConfiguration.getType() ==
 					ExportImportConfigurationConstants.
-					TYPE_PUBLISH_LAYOUT_REMOTE) ||
+						TYPE_PUBLISH_LAYOUT_REMOTE) ||
 				(exportImportConfiguration.getType() ==
 					ExportImportConfigurationConstants.
-					TYPE_PUBLISH_PORTLET_LOCAL))) {
+						TYPE_PUBLISH_PORTLET_LOCAL) ||
+				(exportImportConfiguration.getType() !=
+					ExportImportConfigurationConstants.
+						TYPE_PUBLISH_PORTLET_REMOTE))) {
 
 				errorMessage = LanguageUtil.get(
 					locale,
@@ -1328,10 +1367,13 @@ public class StagingImpl implements Staging {
 						TYPE_PUBLISH_LAYOUT_LOCAL) ||
 				(exportImportConfiguration.getType() ==
 					ExportImportConfigurationConstants.
-					TYPE_PUBLISH_LAYOUT_REMOTE) ||
+						TYPE_PUBLISH_LAYOUT_REMOTE) ||
 				(exportImportConfiguration.getType() ==
 					ExportImportConfigurationConstants.
-					TYPE_PUBLISH_PORTLET_LOCAL))) {
+						TYPE_PUBLISH_PORTLET_LOCAL) ||
+				(exportImportConfiguration.getType() !=
+					ExportImportConfigurationConstants.
+						TYPE_PUBLISH_PORTLET_REMOTE))) {
 
 				errorMessage = LanguageUtil.get(
 					locale,
@@ -2656,6 +2698,8 @@ public class StagingImpl implements Staging {
 					publishLayoutRemoteSettingsMap, "remotePathContext");
 				secureConnection = MapUtil.getBoolean(
 					publishLayoutRemoteSettingsMap, "secureConnection");
+				remoteGroupId = MapUtil.getLong(
+					publishLayoutRemoteSettingsMap, "targetGroupId");
 				remotePrivateLayout = MapUtil.getBoolean(
 					publishLayoutRemoteSettingsMap, "remotePrivateLayout");
 
@@ -2734,6 +2778,43 @@ public class StagingImpl implements Staging {
 		return doCopyRemoteLayouts(
 			exportImportConfiguration, remoteAddress, remotePort,
 			remotePathContext, secureConnection, remotePrivateLayout);
+	}
+
+	@Override
+	public <T extends BaseModel> void removeModelFromChangesetCollection(
+			T model)
+		throws PortalException {
+
+		if (!(model instanceof StagedGroupedModel)) {
+			return;
+		}
+
+		StagedGroupedModel stagedGroupedModel = (StagedGroupedModel)model;
+
+		ChangesetCollection changesetCollection =
+			_changesetCollectionLocalService.fetchChangesetCollection(
+				stagedGroupedModel.getGroupId(),
+				StagingConstants.RANGE_FROM_LAST_PUBLISH_DATE_CHANGESET_NAME);
+
+		if (changesetCollection == null) {
+			return;
+		}
+
+		long classNameId = _classNameLocalService.getClassNameId(
+			stagedGroupedModel.getModelClassName());
+		long classPK = (long)stagedGroupedModel.getPrimaryKeyObj();
+
+		ChangesetEntry changesetEntry =
+			_changesetEntryLocalService.fetchChangesetEntry(
+				changesetCollection.getChangesetCollectionId(), classNameId,
+				classPK);
+
+		if (changesetEntry == null) {
+			return;
+		}
+
+		_changesetEntryLocalService.deleteChangesetEntry(
+			changesetEntry.getChangesetEntryId());
 	}
 
 	@Override
@@ -2840,6 +2921,10 @@ public class StagingImpl implements Staging {
 		int remotePort = 0;
 		String remotePathContext = null;
 		boolean secureConnection = false;
+		long remoteGroupId = ParamUtil.getLong(
+			portletRequest, "remoteGroupId",
+			GetterUtil.getLong(
+				groupTypeSettingsProperties.getProperty("remoteGroupId")));
 		boolean remotePrivateLayout = false;
 
 		long exportImportConfigurationId = ParamUtil.getLong(
@@ -2866,6 +2951,7 @@ public class StagingImpl implements Staging {
 					settingsMap, "remotePathContext");
 				secureConnection = MapUtil.getBoolean(
 					settingsMap, "secureConnection");
+				remoteGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
 				remotePrivateLayout = MapUtil.getBoolean(
 					settingsMap, "remotePrivateLayout");
 			}
@@ -2897,10 +2983,6 @@ public class StagingImpl implements Staging {
 		}
 
 		remoteAddress = stripProtocolFromRemoteAddress(remoteAddress);
-		long remoteGroupId = ParamUtil.getLong(
-			portletRequest, "remoteGroupId",
-			GetterUtil.getLong(
-				groupTypeSettingsProperties.getProperty("remoteGroupId")));
 
 		_groupLocalService.validateRemote(
 			groupId, remoteAddress, remotePort, remotePathContext,
@@ -3983,6 +4065,9 @@ public class StagingImpl implements Staging {
 	@Reference
 	private RecentLayoutSetBranchLocalService
 		_recentLayoutSetBranchLocalService;
+
+	@Reference
+	private StagedModelRepositoryHelper _stagedModelRepositoryHelper;
 
 	@Reference
 	private StagingLocalService _stagingLocalService;

@@ -368,6 +368,14 @@ public class LayoutRevisionLocalServiceImpl
 
 	@Override
 	public List<LayoutRevision> getLayoutRevisions(
+		long layoutSetBranchId, boolean head, int status) {
+
+		return layoutRevisionPersistence.findByL_H_S(
+			layoutSetBranchId, head, status);
+	}
+
+	@Override
+	public List<LayoutRevision> getLayoutRevisions(
 		long layoutSetBranchId, int status) {
 
 		return layoutRevisionPersistence.findByL_S(layoutSetBranchId, status);
@@ -478,10 +486,10 @@ public class LayoutRevisionLocalServiceImpl
 			layoutRevision.setUserName(user.getFullName());
 			layoutRevision.setLayoutSetBranchId(
 				oldLayoutRevision.getLayoutSetBranchId());
+			layoutRevision.setLayoutBranchId(layoutBranchId);
 			layoutRevision.setParentLayoutRevisionId(
 				oldLayoutRevision.getLayoutRevisionId());
 			layoutRevision.setHead(false);
-			layoutRevision.setLayoutBranchId(layoutBranchId);
 			layoutRevision.setPlid(oldLayoutRevision.getPlid());
 			layoutRevision.setPrivateLayout(
 				oldLayoutRevision.isPrivateLayout());

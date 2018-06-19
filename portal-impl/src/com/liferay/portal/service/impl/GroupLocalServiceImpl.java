@@ -348,11 +348,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					entry.getKey(), name.concat(ORGANIZATION_STAGING_SUFFIX));
 			}
 
+			friendlyURL = getFriendlyURL(friendlyURL.concat("-staging"));
+
 			friendlyURL = getValidatedFriendlyURL(
 				user.getCompanyId(), groupId, classNameId, classPK,
 				friendlyURL);
-
-			friendlyURL = getFriendlyURL(friendlyURL.concat("-staging"));
 		}
 
 		if (parentGroupId == GroupConstants.DEFAULT_PARENT_GROUP_ID) {
@@ -408,8 +408,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		group.setManualMembership(manualMembership);
 		group.setMembershipRestriction(membershipRestriction);
 		group.setFriendlyURL(friendlyURL);
-		group.setInheritContent(inheritContent);
 		group.setSite(site);
+		group.setInheritContent(inheritContent);
 		group.setActive(active);
 
 		if ((serviceContext != null) && (classNameId == groupClassNameId) &&
@@ -1111,7 +1111,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				if (ArrayUtil.isNotEmpty(userIds)) {
 					TransactionCommitCallbackUtil.registerCallback(
 						() -> {
-							reindex(group.getCompanyId(), userIds);
+							userLocalService.reindex(
+								group.getCompanyId(), userIds);
 
 							return null;
 						});
@@ -3618,7 +3619,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		String groupKey = group.getGroupKey();
 
-		List<String> names = new ArrayList(nameMap.values());
+		List<String> names = new ArrayList<>(nameMap.values());
 
 		if (ListUtil.isNull(names)) {
 			throw new GroupKeyException();
@@ -3680,7 +3681,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			TransactionCommitCallbackUtil.registerCallback(
 				() -> {
-					reindex(group.getCompanyId(), getUserPrimaryKeys(groupId));
+					userLocalService.reindex(
+						group.getCompanyId(), getUserPrimaryKeys(groupId));
 
 					return null;
 				});
@@ -4492,7 +4494,20 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				int type = gfurle.getType();
 
 				if (type == GroupFriendlyURLException.DUPLICATE) {
-					friendlyURL = friendlyURL + "-" + ++i;
+					if (friendlyURL.matches(".+-[0-9]+$")) {
+						int end = friendlyURL.lastIndexOf(CharPool.DASH);
+
+						long suffix = GetterUtil.getLong(
+							friendlyURL.substring(end + 1));
+
+						if (!(friendlyURL.contains("group") &&
+						 (groupId == suffix))) {
+
+							friendlyURL = friendlyURL.substring(0, end);
+						}
+					}
+
+					friendlyURL = friendlyURL + CharPool.DASH + ++i;
 				}
 				else if (type == GroupFriendlyURLException.ENDS_WITH_DASH) {
 					friendlyURL = StringUtil.replaceLast(

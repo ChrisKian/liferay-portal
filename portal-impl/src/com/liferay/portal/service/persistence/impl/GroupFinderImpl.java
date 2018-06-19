@@ -1292,7 +1292,7 @@ public class GroupFinderImpl
 				if (value instanceof Integer) {
 					Integer valueInteger = (Integer)value;
 
-					if (Validator.isNotNull(valueInteger)) {
+					if (valueInteger != null) {
 						qPos.add(valueInteger);
 					}
 				}

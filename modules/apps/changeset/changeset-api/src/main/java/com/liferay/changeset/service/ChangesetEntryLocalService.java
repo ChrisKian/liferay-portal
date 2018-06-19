@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides the local service interface for ChangesetEntry. Methods of this
@@ -84,6 +85,9 @@ public interface ChangesetEntryLocalService extends BaseLocalService,
 	@Transactional(enabled = false)
 	public ChangesetEntry createChangesetEntry(long changesetEntryId);
 
+	public void deleteChangesetEntries(long changesetCollectionId)
+		throws PortalException;
+
 	/**
 	* Deletes the changeset entry from the database. Also notifies the appropriate model listeners.
 	*
@@ -103,6 +107,8 @@ public interface ChangesetEntryLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.DELETE)
 	public ChangesetEntry deleteChangesetEntry(long changesetEntryId)
 		throws PortalException;
+
+	public void deleteEntry(long changesetId, long classNameId, long classPK);
 
 	/**
 	* @throws PortalException
@@ -212,6 +218,10 @@ public interface ChangesetEntryLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getChangesetEntriesCount(long changesetCollectionId,
 		long classNameId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public long getChangesetEntriesCount(long changesetCollectionId,
+		long classNameId, Set<Long> classPKs);
 
 	/**
 	* Returns the changeset entry with the primary key.

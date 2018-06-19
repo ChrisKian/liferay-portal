@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.Objects;
+
 /**
  * @author Leonardo Barros
  */
@@ -93,38 +95,46 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 
 					ddmFormInstance.setCompanyId(rs.getLong("companyId"));
 
-					ddmFormInstance.setCreateDate(
-						rs.getTimestamp("createDate"));
-					ddmFormInstance.setDescription(rs.getString("description"));
 					ddmFormInstance.setGroupId(rs.getLong("groupId"));
-					ddmFormInstance.setLastPublishDate(
-						rs.getTimestamp("lastPublishDate"));
-					ddmFormInstance.setModifiedDate(
-						rs.getTimestamp("modifiedDate"));
-					ddmFormInstance.setName(rs.getString("name"));
-					ddmFormInstance.setSettings(rs.getString("settings_"));
-					ddmFormInstance.setStructureId(ddmStructureId);
 					ddmFormInstance.setUserId(rs.getLong("userId"));
 					ddmFormInstance.setUserName(rs.getString("userName"));
-					ddmFormInstance.setVersion(rs.getString("version"));
 					ddmFormInstance.setVersionUserId(
 						rs.getLong("versionUserId"));
 					ddmFormInstance.setVersionUserName(
 						rs.getString("versionUserName"));
+					ddmFormInstance.setCreateDate(
+						rs.getTimestamp("createDate"));
+					ddmFormInstance.setModifiedDate(
+						rs.getTimestamp("modifiedDate"));
+					ddmFormInstance.setStructureId(ddmStructureId);
+					ddmFormInstance.setVersion(rs.getString("version"));
+					ddmFormInstance.setName(rs.getString("name"));
+					ddmFormInstance.setDescription(rs.getString("description"));
+					ddmFormInstance.setSettings(rs.getString("settings_"));
+					ddmFormInstance.setLastPublishDate(
+						rs.getTimestamp("lastPublishDate"));
 
 					updateDDMStructure(ddmStructureId);
 					updateDDMStructureLink(ddmStructureId);
 
 					upgradeResourcePermission(
-						recordSetId, ddmFormInstance.getFormInstanceId(),
+						recordSetId,
 						"com.liferay.dynamic.data.mapping.model." +
-							"DDMFormInstance");
+							"DDMFormInstance",
+						true);
 
 					upgradeResourcePermission(
-						ddmStructureId, ddmStructureId,
+						ddmStructureId,
 						"com.liferay.dynamic.data.mapping.model." +
 							"DDMFormInstance-com.liferay.dynamic.data." +
-								"mapping.model.DDMStructure");
+								"mapping.model.DDMStructure",
+						false);
+
+					upgradeResourcePermission(
+						"com_liferay_dynamic_data_lists_form_web_portlet_" +
+							"DDLFormAdminPortlet",
+						"com_liferay_dynamic_data_mapping_form_web_portlet_" +
+							"DDMFormAdminPortlet");
 
 					updateInstanceablePortletPreferences(
 						ddmFormInstance.getFormInstanceId(), recordSetId,
@@ -140,6 +150,19 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 				}
 			}
 		}
+	}
+
+	protected long getNewActionIds(long oldActionIds) {
+		long bit4 = (oldActionIds >> 3) & 1;
+		long bit5 = (oldActionIds >> 4) & 1;
+
+		if (bit4 == bit5) {
+			return oldActionIds;
+		}
+
+		int mask = (1 << 3) | (1 << 4);
+
+		return oldActionIds ^ mask;
 	}
 
 	protected void updateDDMStructure(long ddmStructureId) throws Exception {
@@ -233,7 +256,7 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 	}
 
 	protected void upgradeResourcePermission(
-			long oldPrimKeyId, long newPrimKeyId, String name)
+			long primKeyId, String name, boolean updateActionIds)
 		throws Exception {
 
 		ActionableDynamicQuery actionableDynamicQuery =
@@ -243,14 +266,47 @@ public class UpgradeDDLRecordSet extends UpgradeProcess {
 			dynamicQuery -> {
 				Property nameProperty = PropertyFactoryUtil.forName("primKey");
 
-				dynamicQuery.add(nameProperty.eq(String.valueOf(oldPrimKeyId)));
+				dynamicQuery.add(nameProperty.eq(String.valueOf(primKeyId)));
 			});
 		actionableDynamicQuery.setPerformActionMethod(
 			(ActionableDynamicQuery.PerformActionMethod<ResourcePermission>)
 				resourcePermission -> {
 					resourcePermission.setName(name);
-					resourcePermission.setPrimKey(String.valueOf(newPrimKeyId));
-					resourcePermission.setPrimKeyId(newPrimKeyId);
+
+					if (updateActionIds) {
+						resourcePermission.setActionIds(
+							getNewActionIds(resourcePermission.getActionIds()));
+					}
+
+					_resourcePermissionLocalService.updateResourcePermission(
+						resourcePermission);
+				});
+
+		actionableDynamicQuery.performActions();
+	}
+
+	protected void upgradeResourcePermission(String oldName, String newName)
+		throws Exception {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_resourcePermissionLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property nameProperty = PropertyFactoryUtil.forName("name");
+
+				dynamicQuery.add(nameProperty.eq(oldName));
+			});
+		actionableDynamicQuery.setPerformActionMethod(
+			(ActionableDynamicQuery.PerformActionMethod<ResourcePermission>)
+				resourcePermission -> {
+					resourcePermission.setName(newName);
+
+					if (Objects.equals(
+							resourcePermission.getPrimKey(), oldName)) {
+
+						resourcePermission.setPrimKey(newName);
+					}
 
 					_resourcePermissionLocalService.updateResourcePermission(
 						resourcePermission);

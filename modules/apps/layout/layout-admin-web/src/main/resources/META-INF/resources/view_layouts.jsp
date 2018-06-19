@@ -16,7 +16,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<liferay-ui:success key='<%= portletDisplay.getPortletName() + "layoutAdded" %>' message='<%= LanguageUtil.get(resourceBundle, "the-page-was-created-succesfully") %>' />
 <liferay-ui:success key='<%= portletDisplay.getPortletName() + "layoutUpdated" %>' message='<%= LanguageUtil.get(resourceBundle, "the-page-was-updated-succesfully") %>' />
 
 <liferay-ui:error embed="<%= false %>" exception="<%= GroupInheritContentException.class %>" message="this-page-cannot-be-deleted-and-cannot-have-child-pages-because-it-is-associated-to-a-site-template" />
@@ -30,13 +29,9 @@
 	actionDropdownItems="<%= layoutsAdminDisplayContext.getActionDropdownItems() %>"
 	componentId="pagesManagementToolbar"
 	creationMenu="<%= layoutsAdminDisplayContext.isShowAddRootLayoutButton() ? layoutsAdminDisplayContext.getCreationMenu() : null %>"
-	filterDropdownItems="<%= layoutsAdminDisplayContext.getFilterDropdownItems() %>"
 	itemsTotal="<%= layoutsAdminDisplayContext.getTotalItems() %>"
 	searchContainerId="pages"
-	searchFormName="searchFm"
 	showSearch="<%= false %>"
-	sortingOrder="<%= layoutsAdminDisplayContext.getOrderByType() %>"
-	sortingURL="<%= layoutsAdminDisplayContext.getSortingURL() %>"
 />
 
 <liferay-ui:error exception="<%= LayoutTypeException.class %>">
@@ -56,7 +51,7 @@
 
 <aui:form action="<%= deleteLayoutURL %>" cssClass="container-fluid-1280" name="fm">
 	<c:choose>
-		<c:when test="<%= layoutsAdminDisplayContext.isMillerColumnsEnabled() %>">
+		<c:when test="<%= layoutsAdminDisplayContext.hasLayouts() %>">
 
 			<%
 			Map<String, Object> context = new HashMap<>();
@@ -76,43 +71,11 @@
 			/>
 		</c:when>
 		<c:otherwise>
-			<liferay-ui:search-container
-				id="pages"
-				searchContainer="<%= layoutsAdminDisplayContext.getLayoutsSearchContainer() %>"
-			>
-				<liferay-ui:search-container-row
-					className="com.liferay.portal.kernel.model.Layout"
-					keyProperty="plid"
-					modelVar="curLayout"
-				>
-					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
-						name="page"
-						value="<%= HtmlUtil.escape(curLayout.getName(locale)) %>"
-					/>
-
-					<liferay-ui:search-container-column-text
-						cssClass="table-cell-content"
-						name="path"
-					>
-						<%= HtmlUtil.escape(layoutsAdminDisplayContext.getPath(curLayout, locale)) %> <strong><%= HtmlUtil.escape(curLayout.getName(locale)) %></strong>
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-date
-						name="create-date"
-						property="createDate"
-					/>
-
-					<liferay-ui:search-container-column-jsp
-						path="/layout_action.jsp"
-					/>
-				</liferay-ui:search-container-row>
-
-				<liferay-ui:search-iterator
-					displayStyle="list"
-					markupView="lexicon"
-				/>
-			</liferay-ui:search-container>
+			<liferay-frontend:empty-result-message
+				actionDropdownItems="<%= layoutsAdminDisplayContext.getAddLayoutDropdownItems() %>"
+				description='<%= LanguageUtil.get(request, "fortunately-it-is-very-easy-to-add-new-ones") %>'
+				elementType="pages"
+			/>
 		</c:otherwise>
 	</c:choose>
 </aui:form>

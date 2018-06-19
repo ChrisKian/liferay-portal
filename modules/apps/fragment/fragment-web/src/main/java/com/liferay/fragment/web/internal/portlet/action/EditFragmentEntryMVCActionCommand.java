@@ -21,8 +21,6 @@ import com.liferay.fragment.service.FragmentEntryService;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -62,14 +60,10 @@ public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 		String html = ParamUtil.getString(actionRequest, "htmlContent");
 		int status = ParamUtil.getInteger(actionRequest, "status");
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			actionRequest);
-
 		try {
 			FragmentEntry fragmentEntry =
 				_fragmentEntryService.updateFragmentEntry(
-					fragmentEntryId, name, css, html, js, status,
-					serviceContext);
+					fragmentEntryId, name, css, html, js, status);
 
 			String redirect = ParamUtil.getString(actionRequest, "redirect");
 
@@ -96,8 +90,7 @@ public class EditFragmentEntryMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private String _getSaveAndContinueRedirect(
-			ActionRequest actionRequest, FragmentEntry fragmentEntry)
-		throws Exception {
+		ActionRequest actionRequest, FragmentEntry fragmentEntry) {
 
 		PortletURL portletURL = PortletURLFactoryUtil.create(
 			actionRequest, FragmentPortletKeys.FRAGMENT,

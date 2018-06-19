@@ -16,6 +16,7 @@ package com.liferay.fragment.model.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.util.DLUtil;
+import com.liferay.fragment.constants.FragmentExportImportConstants;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.util.FragmentEntryRenderUtil;
 import com.liferay.petra.string.StringPool;
@@ -74,12 +75,15 @@ public class FragmentEntryImpl extends FragmentEntryBaseImpl {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		jsonObject.put("cssPath", path + "/src/index.css");
-		jsonObject.put("htmlPath", path + "/src/index.html");
-		jsonObject.put("jsPath", path + "/src/index.js");
+		jsonObject.put("cssPath", "src/index.css");
+		jsonObject.put("htmlPath", "src/index.html");
+		jsonObject.put("jsPath", "src/index.js");
 		jsonObject.put("name", getName());
 
-		zipWriter.addEntry(path + "/fragment.json", jsonObject.toString());
+		zipWriter.addEntry(
+			path + StringPool.SLASH +
+				FragmentExportImportConstants.FILE_NAME_FRAGMENT_CONFIG,
+			jsonObject.toString());
 
 		zipWriter.addEntry(path + "/src/index.css", getCss());
 		zipWriter.addEntry(path + "/src/index.js", getJs());
