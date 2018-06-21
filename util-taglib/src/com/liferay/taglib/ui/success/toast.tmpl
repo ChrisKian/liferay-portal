@@ -15,7 +15,14 @@ const clayToast = new ClayToast.default(
     {
         autoClose: true,
         destroyOnHide: true,
-        message: '$message$',
+        events: {
+            'disposed': function(event) {
+                if (!alertContainer.hasChildNodes()) {
+                    dom.exitDocument(alertContainer);
+                }
+            }
+        },
+        message: '$message$'.replace(/&amp;/g, '&'),
         spritemap: '$pathThemeImages$/lexicon/icons.svg',
         style: 'success',
         title: '$title$'

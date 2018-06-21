@@ -149,6 +149,24 @@ class FragmentsEditor extends Component {
 	}
 
 	/**
+	 * Gets a fragmentEntryLink index for the given fragmentEntryLinkId
+	 * @param {!string} fragmentEntryLinkId
+	 * @private
+	 * @return {number} fragmentEntryLink index or -1 if it's not found
+	 */
+
+	_getFragmentEntryLinkIndex(fragmentEntryLinkId) {
+		return this.fragmentEntryLinks.indexOf(
+			this.fragmentEntryLinks.find(
+				fragmentEntryLink => (
+					fragmentEntryLink.fragmentEntryLinkId ===
+					fragmentEntryLinkId
+				)
+			)
+		);
+	}
+
+	/**
 	 * Gets a new FragmentEntryLink position.
 	 * @returns {number}
 	 * @private
@@ -313,14 +331,21 @@ class FragmentsEditor extends Component {
 						response.fragmentEntryLinkId
 					).then(
 						content => {
-							const index = this.fragmentEntryLinks.findIndex(
-								_fragmentEntryLink => {
-									return _fragmentEntryLink.fragmentEntryLinkId === response.fragmentEntryLinkId;
-								}
+							const index = this._getFragmentEntryLinkIndex(
+								response.fragmentEntryLinkId
 							);
 
 							if (index !== -1) {
-								this.fragmentEntryLinks[index].content = content;
+								const newFragmentEntryLinks = [...this.fragmentEntryLinks];
+
+								const newFragmentEntryLink = Object.assign(
+									{},
+									newFragmentEntryLinks[index],
+									{content}
+								);
+
+								newFragmentEntryLinks[index] = newFragmentEntryLink;
+								this.fragmentEntryLinks = newFragmentEntryLinks;
 							}
 						}
 					).then(
@@ -357,8 +382,8 @@ class FragmentsEditor extends Component {
 
 	_handleFragmentMove(data) {
 		const direction = data.direction;
-		const index = this.fragmentEntryLinks.findIndex(
-			fragmentEntryLink => fragmentEntryLink.fragmentEntryLinkId === data.fragmentEntryLinkId
+		const index = this._getFragmentEntryLinkIndex(
+			data.fragmentEntryLinkId
 		);
 
 		if (
@@ -413,8 +438,8 @@ class FragmentsEditor extends Component {
 	 */
 
 	_handleFragmentRemove(data) {
-		const index = this.fragmentEntryLinks.findIndex(
-			fragmentEntryLink => fragmentEntryLink.fragmentEntryLinkId === data.fragmentEntryLinkId
+		const index = this._getFragmentEntryLinkIndex(
+			data.fragmentEntryLinkId
 		);
 
 		if (index !== -1) {
@@ -456,8 +481,10 @@ class FragmentsEditor extends Component {
 	 */
 
 	_handleMappeableFieldClicked(event) {
-		this._selectMappingDialogFragmentEntryLinkId = event.fragmentEntryLinkId;
 		this._selectMappingDialogEditableId = event.editableId;
+		this._selectMappingDialogEditableType = event.editableType;
+		this._selectMappingDialogFragmentEntryLinkId = event.fragmentEntryLinkId;
+		this._selectMappingDialogMappedFieldId = event.mappedFieldId;
 
 		if (this.selectedMappingTypes && this.selectedMappingTypes.type) {
 			this._selectMappingDialogVisible = true;
@@ -610,9 +637,8 @@ class FragmentsEditor extends Component {
 			fragmentEntryLinkId
 		);
 
-		const index = this.fragmentEntryLinks.findIndex(
-			fragmentEntryLink => fragmentEntryLinkId ===
-				fragmentEntryLink.fragmentEntryLinkId
+		const index = this._getFragmentEntryLinkIndex(
+			fragmentEntryLinkId
 		);
 
 		if (component && index !== -1) {
@@ -738,7 +764,7 @@ FragmentsEditor.STATE = {
 	classPK: Config.string().required(),
 
 	/**
-	 * Default configuration for AlloyEditor instances.
+	 * Default configurations for AlloyEditor instances.
 	 * @default {}
 	 * @instance
 	 * @memberOf FragmentsEditor
@@ -746,7 +772,7 @@ FragmentsEditor.STATE = {
 	 * @type {object}
 	 */
 
-	defaultEditorConfiguration: Config.object().value({}),
+	defaultEditorConfigurations: Config.object().value({}),
 
 	/**
 	 * Default language id.
@@ -808,6 +834,38 @@ FragmentsEditor.STATE = {
 	).required(),
 
 	/**
+	 * List of fragment instances being used, the order
+	 * of the elements in this array defines their position.
+	 * @default []
+	 * @instance
+	 * @memberOf FragmentsEditor
+	 * @review
+	 * @type {Array<{
+	 *   config: Object,
+	 *   content: string,
+	 *   editableValues: Object,
+	 *   fragmentEntryId: !string,
+	 *   fragmentEntryLinkId: !string,
+	 *   name: !string,
+	 *   position: !number
+	 * }>}
+	 */
+
+	fragmentEntryLinks: Config.arrayOf(
+		Config.shapeOf(
+			{
+				config: Config.object().value({}),
+				content: Config.any().value(''),
+				editableValues: Config.object().value({}),
+				fragmentEntryId: Config.string().required(),
+				fragmentEntryLinkId: Config.string().required(),
+				name: Config.string().required(),
+				position: Config.number().required()
+			}
+		)
+	).value([]),
+
+	/**
 	 * URL for obtaining the class types of an asset
 	 * created.
 	 * @default undefined
@@ -852,38 +910,6 @@ FragmentsEditor.STATE = {
 	 */
 
 	imageSelectorURL: Config.string().required(),
-
-	/**
-	 * List of fragment instances being used, the order
-	 * of the elements in this array defines their position.
-	 * @default []
-	 * @instance
-	 * @memberOf FragmentsEditor
-	 * @review
-	 * @type {Array<{
-	 *   config: Object,
-	 *   content: string,
-	 *   editableValues: Object,
-	 *   fragmentEntryId: !string,
-	 *   fragmentEntryLinkId: !string,
-	 *   name: !string,
-	 *   position: !number
-	 * }>}
-	 */
-
-	fragmentEntryLinks: Config.arrayOf(
-		Config.shapeOf(
-			{
-				config: Config.object().value({}),
-				content: Config.any().value(''),
-				editableValues: Config.object().value({}),
-				fragmentEntryId: Config.string().required(),
-				fragmentEntryLinkId: Config.string().required(),
-				name: Config.string().required(),
-				position: Config.number().required()
-			}
-		)
-	).value([]),
 
 	/**
 	 * URL for getting the list of mapping fields
@@ -1077,6 +1103,21 @@ FragmentsEditor.STATE = {
 		.value(''),
 
 	/**
+	 * Editable type of the field that is being mapped
+	 * @default ''
+	 * @instance
+	 * @memberOf FragmentsEditor
+	 * @private
+	 * @review
+	 * @type {string}
+	 */
+
+	_selectMappingDialogEditableType: Config
+		.string()
+		.internal()
+		.value(''),
+
+	/**
 	 * EditableId of the field that is being mapped
 	 * @default ''
 	 * @instance
@@ -1102,6 +1143,21 @@ FragmentsEditor.STATE = {
 	 */
 
 	_selectMappingDialogFragmentEntryLinkId: Config
+		.string()
+		.internal()
+		.value(''),
+
+	/**
+	 * Mapped field ID of the field that is being mapped
+	 * @default ''
+	 * @instance
+	 * @memberOf FragmentsEditor
+	 * @private
+	 * @review
+	 * @type {string}
+	 */
+
+	_selectMappingDialogMappedFieldId: Config
 		.string()
 		.internal()
 		.value(''),

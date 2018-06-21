@@ -142,7 +142,7 @@ public class JavaCombineLinesCheck extends BaseFileCheck {
 
 							if (Validator.isNull(indent)) {
 								for (int i = 0; i < lineLeadingTabCount - 1;
-									 i++) {
+										i++) {
 
 									indent += StringPool.TAB;
 								}
@@ -704,7 +704,7 @@ public class JavaCombineLinesCheck extends BaseFileCheck {
 			}
 		}
 
-		if (trimmedPreviousLine.matches("for \\(\\w+")) {
+		if (trimmedPreviousLine.matches("for \\(.*(?<!\\) \\{)$")) {
 			int x = trimmedLine.indexOf(" :");
 
 			if ((x != -1) &&

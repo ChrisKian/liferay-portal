@@ -43,6 +43,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -256,6 +257,7 @@ public class SourceFormatter {
 
 		_sourceProcessors.add(new BNDSourceProcessor());
 		_sourceProcessors.add(new CodeownersSourceProcessor());
+		_sourceProcessors.add(new ConfigSourceProcessor());
 		_sourceProcessors.add(new CQLSourceProcessor());
 		_sourceProcessors.add(new CSSSourceProcessor());
 		_sourceProcessors.add(new DockerfileSourceProcessor());
@@ -273,8 +275,8 @@ public class SourceFormatter {
 		_sourceProcessors.add(new SHSourceProcessor());
 		_sourceProcessors.add(new SoySourceProcessor());
 		_sourceProcessors.add(new SQLSourceProcessor());
-		_sourceProcessors.add(new TSSourceProcessor());
 		_sourceProcessors.add(new TLDSourceProcessor());
+		_sourceProcessors.add(new TSSourceProcessor());
 		_sourceProcessors.add(new XMLSourceProcessor());
 		_sourceProcessors.add(new YMLSourceProcessor());
 
@@ -396,6 +398,77 @@ public class SourceFormatter {
 		return _sourceMismatchExceptions;
 	}
 
+	private void _addDependentFileNames() {
+		List<String> recentChangesFileNames =
+			_sourceFormatterArgs.getRecentChangesFileNames();
+
+		if (recentChangesFileNames == null) {
+			return;
+		}
+
+		Set<String> dependentFileNames = new HashSet<>();
+
+		for (String recentChangesFileName : recentChangesFileNames) {
+			if (!recentChangesFileName.endsWith("ServiceImpl.java")) {
+				continue;
+			}
+
+			String dirName = recentChangesFileName.substring(
+				0, recentChangesFileName.lastIndexOf(CharPool.SLASH));
+
+			while (true) {
+				String serviceFileName = dirName + "/service.xml";
+
+				File file = new File(
+					_sourceFormatterArgs.getBaseDirName() + serviceFileName);
+
+				if (file.exists()) {
+					dependentFileNames.add(serviceFileName);
+
+					break;
+				}
+
+				int pos = dirName.lastIndexOf(CharPool.SLASH);
+
+				if (pos == -1) {
+					break;
+				}
+
+				dirName = dirName.substring(0, pos);
+			}
+		}
+
+		_sourceFormatterArgs.addRecentChangesFileNames(dependentFileNames);
+	}
+
+	private void _excludeWorkingDirCheckoutPrivateApps() throws Exception {
+		if (!_isPortalSource()) {
+			return;
+		}
+
+		File file = new File(_getPortalDir(), "working.dir.properties");
+
+		if (!file.exists()) {
+			return;
+		}
+
+		Properties properties = _getProperties(file);
+
+		for (Object key : properties.keySet()) {
+			String s = (String)key;
+
+			if (s.matches("working.dir.checkout.private.apps.(\\w)+.dirs")) {
+				List<String> dirs = ListUtil.fromString(
+					properties.getProperty(s), StringPool.COMMA);
+
+				for (String dir : dirs) {
+					_sourceFormatterExcludes.addDefaultExcludeSyntaxPatterns(
+						_getExcludeSyntaxPatterns("**/" + dir + "/**"));
+				}
+			}
+		}
+	}
+
 	private List<String> _getCheckNames() {
 		List<String> checkNames = new ArrayList<>();
 
@@ -476,6 +549,18 @@ public class SourceFormatter {
 		return pluginsInsideModulesDirectoryNames;
 	}
 
+	private File _getPortalDir() {
+		File portalImplDir = SourceFormatterUtil.getFile(
+			_sourceFormatterArgs.getBaseDirName(), "portal-impl",
+			ToolsUtil.PORTAL_MAX_DIR_LEVEL);
+
+		if (portalImplDir == null) {
+			return null;
+		}
+
+		return portalImplDir.getParentFile();
+	}
+
 	private String _getProjectPathPrefix() throws Exception {
 		if (!_subrepository) {
 			return null;
@@ -517,6 +602,8 @@ public class SourceFormatter {
 		_sourceFormatterExcludes = new SourceFormatterExcludes(
 			SetUtil.fromArray(DEFAULT_EXCLUDE_SYNTAX_PATTERNS));
 
+		_excludeWorkingDirCheckoutPrivateApps();
+
 		// Find properties file in any parent directory
 
 		String parentDirName = _sourceFormatterArgs.getBaseDirName();
@@ -546,6 +633,8 @@ public class SourceFormatter {
 		for (String modulePropertiesFileName : modulePropertiesFileNames) {
 			_readProperties(new File(modulePropertiesFileName));
 		}
+
+		_addDependentFileNames();
 
 		_pluginsInsideModulesDirectoryNames =
 			_getPluginsInsideModulesDirectoryNames();

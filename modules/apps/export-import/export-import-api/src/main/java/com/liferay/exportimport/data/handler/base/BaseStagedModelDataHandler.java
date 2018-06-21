@@ -16,13 +16,20 @@ package com.liferay.exportimport.data.handler.base;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.changeset.model.ChangesetCollection;
+import com.liferay.changeset.service.ChangesetCollectionLocalServiceUtil;
+import com.liferay.changeset.service.ChangesetEntryLocalServiceUtil;
 import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.content.processor.ExportImportContentProcessorRegistryUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
+import com.liferay.exportimport.kernel.staging.StagingConstants;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
+import com.liferay.portal.kernel.xml.Element;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,6 +75,44 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 		throws PortletDataException {
 
 		super.exportStagedModel(portletDataContext, stagedModel);
+
+		if (ExportImportThreadLocal.isStagingInProcess()) {
+			Element importDataRootElement =
+				portletDataContext.getImportDataRootElement();
+
+			Element importDataElement = null;
+
+			try {
+				portletDataContext.setImportDataRootElement(
+					portletDataContext.getExportDataRootElement());
+
+				importDataElement = portletDataContext.getImportDataElement(
+					stagedModel);
+			}
+			finally {
+				portletDataContext.setImportDataRootElement(
+					importDataRootElement);
+			}
+
+			if (importDataElement == null) {
+				return;
+			}
+
+			ChangesetCollection changesetCollection =
+				ChangesetCollectionLocalServiceUtil.fetchChangesetCollection(
+					portletDataContext.getScopeGroupId(),
+					StagingConstants.
+						RANGE_FROM_LAST_PUBLISH_DATE_CHANGESET_NAME);
+
+			if (changesetCollection != null) {
+				long classNameId = ClassNameLocalServiceUtil.getClassNameId(
+					stagedModel.getModelClassName());
+
+				ChangesetEntryLocalServiceUtil.deleteEntry(
+					changesetCollection.getChangesetCollectionId(), classNameId,
+					(long)stagedModel.getPrimaryKeyObj());
+			}
+		}
 	}
 
 	@Override

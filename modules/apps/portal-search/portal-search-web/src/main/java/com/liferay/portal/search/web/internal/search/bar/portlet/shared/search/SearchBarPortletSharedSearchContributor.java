@@ -16,12 +16,14 @@ package com.liferay.portal.search.web.internal.search.bar.portlet.shared.search;
 
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.web.internal.display.context.Keywords;
 import com.liferay.portal.search.web.internal.display.context.SearchScope;
 import com.liferay.portal.search.web.internal.display.context.SearchScopePreference;
 import com.liferay.portal.search.web.internal.search.bar.constants.SearchBarPortletKeys;
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferences;
 import com.liferay.portal.search.web.internal.search.bar.portlet.SearchBarPortletPreferencesImpl;
+import com.liferay.portal.search.web.internal.util.SearchOptionalUtil;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchContributor;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchSettings;
 
@@ -103,11 +105,10 @@ public class SearchBarPortletSharedSearchContributor
 			return searchScopePreference.getSearchScope();
 		}
 
-		Optional<String> parameterValueOptional =
-			portletSharedSearchSettings.getParameter(
-				searchBarPortletPreferences.getScopeParameterName());
+		Optional<String> optional = portletSharedSearchSettings.getParameter(
+			searchBarPortletPreferences.getScopeParameterName());
 
-		return parameterValueOptional.map(
+		return optional.map(
 			SearchScope::getSearchScope
 		).orElseGet(
 			this::getDefaultSearchScope
@@ -131,10 +132,13 @@ public class SearchBarPortletSharedSearchContributor
 		SearchBarPortletPreferences searchBarPortletPreferences,
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
-		Optional<String> optional = portletSharedSearchSettings.getParameter(
-			searchBarPortletPreferences.getKeywordsParameterName());
+		String parameterName =
+			searchBarPortletPreferences.getKeywordsParameterName();
 
-		optional.ifPresent(
+		portletSharedSearchSettings.setKeywordsParameterName(parameterName);
+
+		SearchOptionalUtil.copy(
+			() -> portletSharedSearchSettings.getParameter(parameterName),
 			value -> {
 				Keywords keywords = new Keywords(value);
 
@@ -144,9 +148,6 @@ public class SearchBarPortletSharedSearchContributor
 					setLuceneSyntax(portletSharedSearchSettings);
 				}
 			});
-
-		portletSharedSearchSettings.setKeywordsParameterName(
-			searchBarPortletPreferences.getKeywordsParameterName());
 	}
 
 	protected void setLuceneSyntax(
@@ -155,7 +156,8 @@ public class SearchBarPortletSharedSearchContributor
 		SearchContext searchContext =
 			portletSharedSearchSettings.getSearchContext();
 
-		searchContext.setAttribute("luceneSyntax", Boolean.TRUE);
+		searchContext.setAttribute(
+			SearchContextAttributes.ATTRIBUTE_KEY_LUCENE_SYNTAX, Boolean.TRUE);
 	}
 
 }

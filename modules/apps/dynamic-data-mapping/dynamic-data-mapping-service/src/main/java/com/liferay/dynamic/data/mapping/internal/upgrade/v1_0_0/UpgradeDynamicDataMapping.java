@@ -499,7 +499,7 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 		return templateModelResourceName;
 	}
 
-	protected long getTemplateResourceClassNameId(
+	protected Long getTemplateResourceClassNameId(
 		long classNameId, long classPK) {
 
 		if (classNameId != PortalUtil.getClassNameId(DDMStructure.class)) {
@@ -1345,8 +1345,14 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 
 				// Template resource class name ID
 
-				long resourceClassNameId = getTemplateResourceClassNameId(
+				Long resourceClassNameId = getTemplateResourceClassNameId(
 					classNameId, classPK);
+
+				if (resourceClassNameId == null) {
+					_log.error("Orphaned DDM template " + templateId);
+
+					continue;
+				}
 
 				ps2.setLong(1, resourceClassNameId);
 
@@ -2386,10 +2392,10 @@ public class UpgradeDynamicDataMapping extends UpgradeProcess {
 			dlFolder.setLastPostDate(lastPostDate);
 			dlFolder.setDefaultFileEntryTypeId(0);
 			dlFolder.setHidden(false);
+			dlFolder.setRestrictionType(0);
 			dlFolder.setStatus(WorkflowConstants.STATUS_APPROVED);
 			dlFolder.setStatusByUserId(0);
 			dlFolder.setStatusByUserName(StringPool.BLANK);
-			dlFolder.setRestrictionType(0);
 
 			_dlFolderLocalService.updateDLFolder(dlFolder);
 

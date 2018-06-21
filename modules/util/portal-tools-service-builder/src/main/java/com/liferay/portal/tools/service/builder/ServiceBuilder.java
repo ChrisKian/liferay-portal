@@ -119,6 +119,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
+import org.dom4j.DocumentType;
 import org.dom4j.Element;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
@@ -597,6 +598,20 @@ public class ServiceBuilder {
 				new XMLSafeReader(
 					ToolsUtil.getContent(_normalize(inputFileName))));
 
+			DocumentType documentType = document.getDocType();
+
+			Matcher matcher = _dtdVersionPattern.matcher(
+				documentType.getSystemID());
+
+			if (matcher.matches()) {
+				_dtdVersion = Version.getInstance(
+					StringUtil.replace(matcher.group(1), '_', '.'));
+			}
+			else {
+				throw new IllegalArgumentException(
+					"Unable to parse DTD version for " + inputFileName);
+			}
+
 			Element rootElement = document.getRootElement();
 
 			String packagePath = rootElement.attributeValue("package-path");
@@ -878,7 +893,6 @@ public class ServiceBuilder {
 
 					_createUADBnd(uadApplicationName);
 					_createUADConstants(uadApplicationName);
-					_createUADLanguageProperties(uadApplicationName);
 					_createUADTestBnd(uadApplicationName);
 				}
 
@@ -1841,6 +1855,16 @@ public class ServiceBuilder {
 		}
 
 		if (txRequiredMethodNames.contains(javaMethod.getName())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isVersionGTE_7_1_0() {
+		if (_dtdVersion.isSameVersionAs("7.1.0") ||
+			_dtdVersion.isLaterVersionThan("7.1.0")) {
+
 			return true;
 		}
 
@@ -4096,38 +4120,6 @@ public class ServiceBuilder {
 
 		if (!file.exists()) {
 			_write(file, content, _author, _jalopySettings, _modifiedFileNames);
-		}
-	}
-
-	private void _createUADLanguageProperties(String uadApplicationName)
-		throws Exception {
-
-		Map<String, Object> context = _getContext();
-
-		List<Entity> entities = _uadApplicationEntities.get(uadApplicationName);
-
-		Entity entity = entities.get(0);
-
-		context.put("uadApplicationName", uadApplicationName);
-		context.put("uadPackagePath", entity.getUADPackagePath());
-
-		// Content
-
-		String content = _processTemplate(_tplUADLangugageProperties, context);
-
-		// Write file
-
-		String uadOutputPath = entity.getUADOutputPath();
-
-		int index = uadOutputPath.indexOf("/src/");
-
-		String uadDirName = uadOutputPath.substring(0, index);
-
-		File file = new File(
-			uadDirName + "/src/main/resources/content/Language.properties");
-
-		if (!file.exists()) {
-			ToolsUtil.writeFileRaw(file, content, _modifiedFileNames);
 		}
 	}
 
@@ -7054,6 +7046,8 @@ public class ServiceBuilder {
 		"\\s+([^=]*)=\\s*\"([^\"]*)\"");
 	private static Pattern _beansPattern = Pattern.compile("<beans[^>]*>");
 	private static Configuration _configuration;
+	private static final Pattern _dtdVersionPattern = Pattern.compile(
+		".*service-builder_([^\\.]+)\\.dtd");
 	private static Pattern _getterPattern = Pattern.compile(
 		StringBundler.concat(
 			"public .* get.*", Pattern.quote("("), "|public boolean is.*",
@@ -7078,6 +7072,7 @@ public class ServiceBuilder {
 	private boolean _commercialPlugin;
 	private String _currentTplName;
 	private int _databaseNameMaxLength = 30;
+	private Version _dtdVersion;
 	private List<Entity> _entities;
 	private Map<String, EntityMapping> _entityMappings;
 	private Map<String, Entity> _entityPool = new HashMap<>();
@@ -7159,8 +7154,6 @@ public class ServiceBuilder {
 	private String _tplUADDisplayTest = _TPL_ROOT + "uad_display_test.ftl";
 	private String _tplUADExporter = _TPL_ROOT + "uad_exporter.ftl";
 	private String _tplUADExporterTest = _TPL_ROOT + "uad_exporter_test.ftl";
-	private String _tplUADLangugageProperties =
-		_TPL_ROOT + "uad_language_properties.ftl";
 	private String _tplUADTestBnd = _TPL_ROOT + "uad_test_bnd.ftl";
 	private String _tplUADTestHelper = _TPL_ROOT + "uad_test_helper.ftl";
 	private Map<String, List<Entity>> _uadApplicationEntities = new HashMap<>();

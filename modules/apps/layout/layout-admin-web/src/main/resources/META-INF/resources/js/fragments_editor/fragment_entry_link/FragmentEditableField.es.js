@@ -40,6 +40,7 @@ class FragmentEditableField extends Component {
 	created() {
 		this._handleBeforeNavigate = this._handleBeforeNavigate.bind(this);
 		this._handleEditableChanged = this._handleEditableChanged.bind(this);
+		this._handleEditableDestroyed = this._handleEditableDestroyed.bind(this);
 
 		this._beforeNavigateHandler = Liferay.on(
 			'beforeNavigate',
@@ -151,8 +152,11 @@ class FragmentEditableField extends Component {
 			this.fragmentEntryLinkId,
 			this.portletNamespace,
 			this.processorsOptions,
-			this._handleEditableChanged
+			this._handleEditableChanged,
+			this._handleEditableDestroyed
 		);
+
+		this._editing = true;
 	}
 
 	/**
@@ -205,7 +209,15 @@ class FragmentEditableField extends Component {
 		event.preventDefault();
 		event.stopPropagation();
 
-		if (getActiveEditableElement() !== this.refs.editable) {
+		if (this._tooltipLabel) {
+			this._showTooltip = false;
+			this._tooltipLabel = '';
+		}
+
+		if (
+			(this.showMapping && !this._editing) ||
+			(getActiveEditableElement() !== this.refs.editable)
+		) {
 			if (!this.showMapping) {
 				this._showTooltip = false;
 				this._enableEditor();
@@ -213,6 +225,50 @@ class FragmentEditableField extends Component {
 			else {
 				this._showTooltip = !this._showTooltip;
 			}
+
+			if (!this._showTooltip) {
+				this._handleEditableMouseEnter();
+			}
+		}
+	}
+
+	/**
+	 * Callback executed when the exiting editor is destroyed
+	 * @private
+	 * @review
+	 */
+
+	_handleEditableDestroyed() {
+		this._editing = false;
+	}
+
+	/**
+	 * Callback executed when cursor enters editable element
+	 * @private
+	 * @review
+	 */
+
+	_handleEditableMouseEnter() {
+		if (
+			!this._editing &&
+			this.editableValues.mappedField &&
+			!this._showTooltip
+		) {
+			this._showTooltip = true;
+			this._tooltipLabel = this.editableValues.mappedField;
+		}
+	}
+
+	/**
+	 * Callback executed when cursor leaves editable element
+	 * @private
+	 * @review
+	 */
+
+	_handleEditableMouseLeave() {
+		if (this._tooltipLabel && !this._editing) {
+			this._showTooltip = false;
+			this._tooltipLabel = '';
 		}
 	}
 
@@ -261,7 +317,11 @@ class FragmentEditableField extends Component {
 		else if (buttonId === TOOLTIP_BUTTONS.map.id) {
 			this.emit(
 				'mapButtonClicked',
-				{editableId: this.editableId}
+				{
+					editableId: this.editableId,
+					editableType: this.type,
+					mappedFieldId: this.editableValues.mappedField || ''
+				}
 			);
 		}
 
@@ -389,6 +449,18 @@ FragmentEditableField.STATE = {
 	showMapping: Config.bool().required(),
 
 	/**
+	 * Flag indicating if the editable editor is active.
+	 * @default false
+	 * @instance
+	 * @memberOf FragmentEditableField
+	 * @private
+	 * @review
+	 * @type {boolean}
+	 */
+
+	_editing: Config.internal().bool().value(false),
+
+	/**
 	 * Flag indicating if the editable editor should be enabled.
 	 * @default false
 	 * @instance
@@ -444,7 +516,22 @@ FragmentEditableField.STATE = {
 					label: Config.string().required()
 				}
 			)
-		)
+		),
+
+	/**
+	 * Label shown inside editable's tooltip instead of action buttons
+	 * @default ''
+	 * @instance
+	 * @memberOf FragmentEditableField
+	 * @private
+	 * @review
+	 * @type {string}
+	 */
+
+	_tooltipLabel: Config
+		.internal()
+		.string()
+		.value('')
 };
 
 Soy.register(FragmentEditableField, templates);

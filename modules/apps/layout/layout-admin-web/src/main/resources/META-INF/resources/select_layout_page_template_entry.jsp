@@ -46,7 +46,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 
 								<c:if test="<%= layoutPageTemplateEntriesCount > 0 %>">
 									<li class="nav-item">
-										<a class="nav-link truncate-text <%= (selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateCollectionId() == layoutPageTemplateCollection.getLayoutPageTemplateCollectionId()) ? "active" : StringPool.BLANK %>" href="<%= layoutsAdminDisplayContext.getSelectLayoutPageTemplateEntryURL(layoutPageTemplateCollection.getLayoutPageTemplateCollectionId()) %>">
+										<a class="nav-link truncate-text <%= (selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateCollectionId() == layoutPageTemplateCollection.getLayoutPageTemplateCollectionId()) ? "active" : StringPool.BLANK %>" href="<%= layoutsAdminDisplayContext.getSelectLayoutPageTemplateEntryURL(layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(), layoutsAdminDisplayContext.isPrivateLayout()) %>">
 											<%= layoutPageTemplateCollection.getName() %>
 										</a>
 									</li>
@@ -59,7 +59,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 							<li class="nav-item">
 
 								<%
-								String basicPagesURL = layoutsAdminDisplayContext.getSelectLayoutPageTemplateEntryURL(0, layoutsAdminDisplayContext.getSelPlid(), "basic-pages");
+								String basicPagesURL = layoutsAdminDisplayContext.getSelectLayoutPageTemplateEntryURL(0, layoutsAdminDisplayContext.getSelPlid(), "basic-pages", layoutsAdminDisplayContext.isPrivateLayout());
 								%>
 
 								<a class="nav-link truncate-text <%= selectLayoutPageTemplateEntryDisplayContext.isBasicPages() ? "active" : StringPool.BLANK %>" href="<%= basicPagesURL %>">
@@ -69,7 +69,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 							<li class="nav-item">
 
 								<%
-								String globalTemplatesURL = layoutsAdminDisplayContext.getSelectLayoutPageTemplateEntryURL(0, layoutsAdminDisplayContext.getSelPlid(), "global-templates");
+								String globalTemplatesURL = layoutsAdminDisplayContext.getSelectLayoutPageTemplateEntryURL(0, layoutsAdminDisplayContext.getSelPlid(), "global-templates", layoutsAdminDisplayContext.isPrivateLayout());
 								%>
 
 								<a class="nav-link truncate-text <%= selectLayoutPageTemplateEntryDisplayContext.isGlobalTemplates() ? "active" : StringPool.BLANK %>" href="<%= globalTemplatesURL %>">
@@ -108,7 +108,6 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 				<c:choose>
 					<c:when test="<%= selectLayoutPageTemplateEntryDisplayContext.isContentPages() %>">
 						<liferay-ui:search-container
-							id="layoutPageTemplateEntries"
 							total="<%= selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateEntriesCount() %>"
 						>
 							<liferay-ui:search-container-results
@@ -131,22 +130,39 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 									Map<String, Object> addLayoutData = new HashMap<>();
 
 									addLayoutData.put("layout-page-template-entry-id", layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+									String imagePreviewURL = layoutPageTemplateEntry.getImagePreviewURL(themeDisplay);
 									%>
 
-									<liferay-frontend:icon-vertical-card
-										actionJspServletContext="<%= application %>"
-										cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
-										data="<%= addLayoutData %>"
-										icon='<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) ? "page-template" : "page" %>'
-										resultRow="<%= row %>"
-										rowChecker="<%= searchContainer.getRowChecker() %>"
-										title="<%= layoutPageTemplateEntry.getName() %>"
-										url="javascript:;"
-									>
-										<liferay-frontend:vertical-card-header>
-											<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
-										</liferay-frontend:vertical-card-header>
-									</liferay-frontend:icon-vertical-card>
+									<c:choose>
+										<c:when test="<%= Validator.isNotNull(imagePreviewURL) %>">
+											<liferay-frontend:vertical-card
+												cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
+												data="<%= addLayoutData %>"
+												imageCSSClass="aspect-ratio-bg-contain"
+												imageUrl="<%= imagePreviewURL %>"
+												title="<%= layoutPageTemplateEntry.getName() %>"
+												url="javascript:;"
+											>
+												<liferay-frontend:vertical-card-header>
+													<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
+												</liferay-frontend:vertical-card-header>
+											</liferay-frontend:vertical-card>
+										</c:when>
+										<c:otherwise>
+											<liferay-frontend:icon-vertical-card
+												cssClass='<%= renderResponse.getNamespace() + "add-layout-action-option" %>'
+												data="<%= addLayoutData %>"
+												icon='<%= Objects.equals(layoutPageTemplateEntry.getType(), LayoutPageTemplateEntryTypeConstants.TYPE_WIDGET_PAGE) ? "page-template" : "page" %>'
+												title="<%= layoutPageTemplateEntry.getName() %>"
+												url="javascript:;"
+											>
+												<liferay-frontend:vertical-card-header>
+													<liferay-ui:message arguments="<%= LanguageUtil.getTimeDescription(request, System.currentTimeMillis() - layoutPageTemplateEntry.getCreateDate().getTime(), true) %>" key="x-ago" translateArguments="<%= false %>" />
+												</liferay-frontend:vertical-card-header>
+											</liferay-frontend:icon-vertical-card>
+										</c:otherwise>
+									</c:choose>
 								</liferay-ui:search-container-column-text>
 							</liferay-ui:search-container-row>
 
@@ -158,7 +174,6 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 
 						<portlet:actionURL name="/layout/add_content_layout" var="addLayoutURL">
 							<portlet:param name="mvcPath" value="/select_layout_page_template_entry.jsp" />
-							<portlet:param name="redirect" value="<%= layoutsAdminDisplayContext.getRedirect() %>" />
 							<portlet:param name="groupId" value="<%= String.valueOf(layoutsAdminDisplayContext.getGroupId()) %>" />
 							<portlet:param name="portletResource" value="<%= layoutsAdminDisplayContext.getPortletResource() %>" />
 							<portlet:param name="parentLayoutId" value="<%= String.valueOf(layoutsAdminDisplayContext.getParentLayoutId()) %>" />

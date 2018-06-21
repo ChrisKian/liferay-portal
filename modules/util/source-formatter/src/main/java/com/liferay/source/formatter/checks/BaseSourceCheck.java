@@ -34,16 +34,20 @@ import com.liferay.source.formatter.util.SourceFormatterUtil;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
-import java.util.ArrayList;
+import java.net.URL;
+
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -237,59 +241,18 @@ public abstract class BaseSourceCheck implements SourceCheck {
 			checkName, attributeName, _checkstyleConfiguration);
 	}
 
-	protected Map<String, String> getCompatClassNamesMap() throws Exception {
-		Map<String, String> compatClassNamesMap = new HashMap<>();
+	protected String getContent(String fileName, int level) throws Exception {
+		File file = getFile(fileName, level);
 
-		String[] includes =
-			{"**/portal-compat-shared/src/com/liferay/compat/**/*.java"};
-
-		String baseDirName = _baseDirName;
-
-		List<String> fileNames = new ArrayList<>();
-
-		for (int i = 0; i < ToolsUtil.PLUGINS_MAX_DIR_LEVEL; i++) {
-			File sharedDir = new File(baseDirName + "shared");
-
-			if (sharedDir.exists()) {
-				fileNames = getFileNames(baseDirName, new String[0], includes);
-
-				break;
-			}
-
-			baseDirName = baseDirName + "../";
-		}
-
-		for (String fileName : fileNames) {
-			File file = new File(fileName);
-
+		if (file != null) {
 			String content = FileUtil.read(file);
 
-			fileName = StringUtil.replace(
-				fileName, CharPool.BACK_SLASH, CharPool.SLASH);
-
-			fileName = StringUtil.replace(
-				fileName, CharPool.SLASH, CharPool.PERIOD);
-
-			int pos = fileName.indexOf("com.");
-
-			String compatClassName = fileName.substring(pos);
-
-			compatClassName = compatClassName.substring(
-				0, compatClassName.length() - 5);
-
-			String extendedClassName = StringUtil.replace(
-				compatClassName, "compat.", StringPool.BLANK);
-
-			if (content.contains("extends " + extendedClassName)) {
-				compatClassNamesMap.put(compatClassName, extendedClassName);
+			if (Validator.isNotNull(content)) {
+				return content;
 			}
 		}
 
-		return compatClassNamesMap;
-	}
-
-	protected String getContent(String fileName, int level) throws Exception {
-		return SourceFormatterUtil.getContent(_baseDirName, fileName, level);
+		return StringPool.BLANK;
 	}
 
 	protected Document getCustomSQLDocument(
@@ -423,11 +386,19 @@ public abstract class BaseSourceCheck implements SourceCheck {
 	}
 
 	protected String getPortalContent(String fileName) throws Exception {
-		String portalBranchName = SourceFormatterUtil.getPropertyValue(
-			SourceFormatterUtil.GIT_LIFERAY_PORTAL_BRANCH, _propertiesMap);
+		String content = getContent(fileName, ToolsUtil.PORTAL_MAX_DIR_LEVEL);
 
-		return SourceFormatterUtil.getPortalContent(
-			_baseDirName, portalBranchName, fileName);
+		if (Validator.isNotNull(content)) {
+			return content;
+		}
+
+		URL url = _getPortalGitURL(fileName);
+
+		if (url != null) {
+			return StringUtil.read(url.openStream());
+		}
+
+		return null;
 	}
 
 	protected Document getPortalCustomSQLDocument() throws Exception {
@@ -488,6 +459,24 @@ public abstract class BaseSourceCheck implements SourceCheck {
 		return portalImplDir.getParentFile();
 	}
 
+	protected InputStream getPortalInputStream(String fileName)
+		throws Exception {
+
+		File file = getFile(fileName, ToolsUtil.PORTAL_MAX_DIR_LEVEL);
+
+		if (file != null) {
+			return new FileInputStream(file);
+		}
+
+		URL url = _getPortalGitURL(fileName);
+
+		if (url != null) {
+			return url.openStream();
+		}
+
+		return null;
+	}
+
 	protected String getProjectName() {
 		if (_projectName != null) {
 			return _projectName;
@@ -518,6 +507,31 @@ public abstract class BaseSourceCheck implements SourceCheck {
 
 	protected SourceFormatterExcludes getSourceFormatterExcludes() {
 		return _sourceFormatterExcludes;
+	}
+
+	protected String getVariableTypeName(
+		String content, String fileContent, String variableName) {
+
+		if (variableName == null) {
+			return null;
+		}
+
+		Pattern pattern = Pattern.compile(
+			"\\W(\\w+)\\s+" + variableName + "\\W");
+
+		Matcher matcher = pattern.matcher(content);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+
+		matcher = pattern.matcher(fileContent);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+
+		return null;
 	}
 
 	protected boolean isExcludedPath(
@@ -716,6 +730,28 @@ public abstract class BaseSourceCheck implements SourceCheck {
 
 	protected static final String RUN_OUTSIDE_PORTAL_EXCLUDES =
 		"run.outside.portal.excludes";
+
+	private URL _getPortalGitURL(String fileName) {
+		String portalBranchName = SourceFormatterUtil.getPropertyValue(
+			SourceFormatterUtil.GIT_LIFERAY_PORTAL_BRANCH, _propertiesMap);
+
+		if (Validator.isNull(portalBranchName)) {
+			return null;
+		}
+
+		try {
+			return new URL(
+				StringBundler.concat(
+					_GIT_LIFERAY_PORTAL_URL, portalBranchName, StringPool.SLASH,
+					fileName));
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+
+	private static final String _GIT_LIFERAY_PORTAL_URL =
+		"https://raw.githubusercontent.com/liferay/liferay-portal/";
 
 	private String _baseDirName;
 	private final Map<String, BNDSettings> _bndSettingsMap =

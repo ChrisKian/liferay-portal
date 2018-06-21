@@ -1240,6 +1240,22 @@ public class JournalArticleLocalServiceImpl
 			}
 		}
 
+		// Friendly URL
+
+		long classNameId = classNameLocalService.getClassNameId(
+			JournalArticle.class);
+
+		List<FriendlyURLEntry> friendlyURLEntries =
+			friendlyURLEntryLocalService.getFriendlyURLEntries(
+				article.getGroupId(), classNameId,
+				article.getResourcePrimKey());
+
+		if (!friendlyURLEntries.isEmpty()) {
+			friendlyURLEntryLocalService.deleteFriendlyURLEntry(
+				article.getGroupId(), JournalArticle.class,
+				article.getResourcePrimKey());
+		}
+
 		// Article
 
 		journalArticlePersistence.remove(article);
@@ -5988,6 +6004,27 @@ public class JournalArticleLocalServiceImpl
 			userId, groupId, folderId, articleId, version,
 			article.getTitleMap(), article.getDescriptionMap(), content,
 			article.getLayoutUuid(), serviceContext);
+	}
+
+	/**
+	 * Updates the URL title of the web content article.
+	 *
+	 * @param  id the primary key of the web content article
+	 * @param  urlTitle the web content article's URL title
+	 * @return the updated web content article
+	 */
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public JournalArticle updateArticle(long id, String urlTitle)
+		throws PortalException {
+
+		JournalArticle article = journalArticlePersistence.findByPrimaryKey(id);
+
+		article.setUrlTitle(urlTitle);
+
+		journalArticlePersistence.update(article);
+
+		return article;
 	}
 
 	/**

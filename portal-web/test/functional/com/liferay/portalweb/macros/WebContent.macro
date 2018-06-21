@@ -150,7 +150,7 @@
 			<var name="panel" value="Metadata" />
 		</execute>
 
-		<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_2" value1="Please select at least one category for ${vocabularyName}." />
+		<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_1" value1="Please select at least one category for ${vocabularyName}." />
 	</command>
 
 	<command name="addFeed">
@@ -238,9 +238,7 @@
 
 		<execute function="AssertClick" locator1="Button#PUBLISH" value1="Publish" />
 
-		<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_2" value1="Please enter a valid title." />
-
-		<execute macro="Alert#viewRequestFailedToComplete" />
+		<execute macro="Alert#viewRequiredField" />
 
 		<if>
 			<isset var="webContentContent" />
@@ -902,8 +900,8 @@
 
 				<var name="key_webContentTitle" value="${webContentTitleEdit}" />
 
-				<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_DESCRIPTIVE_THUMBNAIL" />
-				<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_DESCRIPTIVE_TITLE" value1="${webContentTitleEdit}" />
+				<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_LIST_THUMBNAIL" />
+				<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_LIST_TITLE" value1="${webContentTitleEdit}" />
 			</else>
 		</if>
 	</command>
@@ -913,23 +911,37 @@
 			<var name="panel" value="Display Page" />
 		</execute>
 
+		<execute function="Click" locator1="WCSelectDisplayPage#USE_SPECIFIC_DISPLAY_PAGE" />
+
 		<execute function="AssertClick" locator1="Button#CHOOSE" value1="Choose" />
 
 		<execute function="Pause" locator1="5000" />
 
-		<execute function="SelectFrameTop" />
-
 		<execute function="SelectFrame" locator1="WCSelectDisplayPage#DISPLAY_PAGE_CONFIGURATION_IFRAME" />
 
-		<execute macro="Portlet#expandTree" />
+		<if>
+			<contains string="${pageType}" substring="{pageType}" />
+			<then>
+				<execute macro="Navigator#gotoNavItem">
+					<var name="navItem" value="Public Pages" />
+				</execute>
 
-		<execute macro="Navigator#gotoNavItem">
-			<var name="navItem" value="Public Pages" />
-		</execute>
+				<execute macro="Portlet#expandTree" />
 
-		<execute macro="Portlet#selectTreeNode">
-			<var name="nodeName" value="${pageName}" />
-		</execute>
+				<execute macro="Portlet#selectTreeNode">
+					<var name="nodeName" value="${pageName}" />
+				</execute>
+			</then>
+			<else>
+				<execute macro="Navigator#gotoNavItem">
+					<var name="navItem" value="${pageType}" />
+				</execute>
+
+				<execute function="AssertClick" locator1="Card#SPECIFIC_LARGE_TEXT" value1="${pageName}">
+					<var name="key_cardText" value="${pageName}" />
+				</execute>
+			</else>
+		</if>
 
 		<execute function="SelectFrameTop" />
 
@@ -944,7 +956,7 @@
 			</then>
 		</if>
 
-		<execute function="AssertTextEquals" locator1="WCEditWebContent#DISPLAY_PAGE_SELECTION" value1="Public Pages > ${pageName}" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="WCEditWebContent#DISPLAY_PAGE_SELECTION" value1="${pageName}" />
 
 		<execute macro="Button#clickPublish" />
 	</command>
@@ -1003,7 +1015,7 @@
 
 		<execute function="AssertClick" locator1="Button#PUBLISH" value1="Publish" />
 
-		<execute function="AssertTextEquals" locator1="Message#ERROR_FIELD_REQUIRED" value1="This field is required." />
+		<execute macro="Alert#viewRequiredField" />
 	</command>
 
 	<command name="editPGViaWCD">
@@ -1042,7 +1054,7 @@
 
 	<command name="expireCP">
 		<for list="${webContentTitleList}" param="webContentTitle">
-			<execute function="Check" locator1="WC#ENTRY_DESCRIPTIVE_CHECKBOX">
+			<execute function="Check" locator1="WC#ENTRY_LIST_CHECKBOX">
 				<var name="key_webContentTitle" value="${webContentTitle}" />
 			</execute>
 		</for>
@@ -1109,7 +1121,7 @@
 
 	<command name="moveArticlesToFolderCP">
 		<for list="${webContentArticlesList}" param="webContentTitle">
-			<execute function="Check" locator1="WC#ENTRY_DESCRIPTIVE_CHECKBOX">
+			<execute function="Check" locator1="WC#ENTRY_LIST_CHECKBOX">
 				<var name="key_webContentTitle" value="${webContentTitle}" />
 			</execute>
 		</for>
@@ -1220,7 +1232,7 @@
 			</else>
 		</if>
 
-		<execute function="Click" locator1="WC#ENTRY_DESCRIPTIVE_MENULIST_ICON" />
+		<execute function="Click" locator1="WC#ENTRY_LIST_MENULIST_ICON" />
 
 		<execute function="AssertClick#assertPartialTextClickAt" locator1="MenuItem#ANY_MENU_ITEM" value1="Move to Recycle Bin">
 			<var name="key_menuItem" value="Move to Recycle Bin" />
@@ -1442,7 +1454,7 @@
 		</execute>
 
 		<if>
-			<condition function="IsElementPresent#pauseIsElementPresent" locator1="WC#ENTRY_DESCRIPTIVE_THUMBNAIL_GENERIC" />
+			<condition function="IsElementPresent#pauseIsElementPresent" locator1="WC#ENTRY_LIST_THUMBNAIL_GENERIC" />
 			<then>
 				<execute macro="PortletEntry#selectAll" />
 
@@ -1500,7 +1512,7 @@
 			<var name="displayStyle" value="table" />
 		</execute>
 
-		<execute function="AssertTextEquals" locator1="WC#ENTRY_LIST_WORKFLOW_STATUS" value1="Approved" />
+		<execute function="AssertTextEquals" locator1="WC#ENTRY_TABLE_WORKFLOW_STATUS" value1="Approved" />
 	</command>
 
 	<command name="viewAudioViaWCD">
@@ -1564,12 +1576,12 @@
 			<var name="displayStyle" value="list" />
 		</execute>
 
-		<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_DESCRIPTIVE_THUMBNAIL">
+		<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_LIST_THUMBNAIL">
 			<var name="key_webContentTitle" value="${webContentTitle}" />
 		</execute>
 
 		<for list="${categoryNameList}" param="categoryName">
-			<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_DESCRIPTIVE_CATEGORY" value1="${categoryName}">
+			<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_LIST_CATEGORY" value1="${categoryName}">
 				<var name="key_categoryName" value="${categoryName}" />
 			</execute>
 		</for>
@@ -1677,8 +1689,8 @@
 
 		<var name="key_webContentTitle" value="${webContentTitle}" />
 
-		<execute function="AssertElementNotPresent" locator1="WC#ENTRY_DESCRIPTIVE_THUMBNAIL" />
-		<execute function="AssertElementNotPresent" locator1="WC#ENTRY_DESCRIPTIVE_TITLE" />
+		<execute function="AssertElementNotPresent" locator1="WC#ENTRY_LIST_THUMBNAIL" />
+		<execute function="AssertElementNotPresent" locator1="WC#ENTRY_LIST_TITLE" />
 	</command>
 
 	<command name="viewDefaultPGViaWCD">
@@ -1709,7 +1721,7 @@
 			<var name="displayStyle" value="cards" />
 		</execute>
 
-		<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_ICON_THUMBNAIL">
+		<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_CARDS_THUMBNAIL">
 			<var name="key_webContentTitle" value="${webContentTitle}" />
 		</execute>
 
@@ -1717,7 +1729,7 @@
 			<var name="displayStyle" value="list" />
 		</execute>
 
-		<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_DESCRIPTIVE_THUMBNAIL">
+		<execute function="AssertElementPresent#pauseAssertVisible" locator1="WC#ENTRY_LIST_THUMBNAIL">
 			<var name="key_webContentTitle" value="${webContentTitle}" />
 		</execute>
 
@@ -1725,7 +1737,7 @@
 			<var name="displayStyle" value="table" />
 		</execute>
 
-		<execute function="AssertElementPresent" locator1="WC#ENTRY_LIST_TITLE">
+		<execute function="AssertElementPresent" locator1="WC#ENTRY_TABLE_TITLE">
 			<var name="key_webContentTitle" value="${webContentTitle}" />
 		</execute>
 	</command>
@@ -1861,7 +1873,7 @@
 	</command>
 
 	<command name="viewPaginateRelatedAssets">
-		<execute function="AssertTextEquals" locator1="Pagination#ITEMS_PER_PAGE_SELECT" value1="${itemsPerPage}" />
+		<execute function="AssertTextEquals#assertPartialText" locator1="Pagination#ITEMS_PER_PAGE_SELECT" value1="${itemsPerPage}" />
 		<execute function="AssertTextEquals" locator1="Pagination#CURRENT_PAGE_SELECT" value1="${numberOfPages}" />
 	</command>
 
@@ -2029,10 +2041,10 @@
 		<if>
 			<equals arg1="${onLive}" arg2="true" />
 			<then>
-				<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_DESCRIPTIVE_TITLE_ON_LIVE" value1="${webContentTitle}" />
+				<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_LIST_TITLE_ON_LIVE" value1="${webContentTitle}" />
 			</then>
 			<else>
-				<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_DESCRIPTIVE_TITLE" value1="${webContentTitle}" />
+				<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_LIST_TITLE" value1="${webContentTitle}" />
 			</else>
 		</if>
 	</command>
@@ -2078,7 +2090,7 @@
 	</command>
 
 	<command name="viewUserEditCP">
-		<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_DESCRIPTIVE_LAST_MODIFIED" value1="${userFirstLast}">
+		<execute function="AssertTextEquals#assertPartialText" locator1="WC#ENTRY_LIST_LAST_MODIFIED" value1="${userFirstLast}">
 			<var name="key_webContentTitle" value="${webContentTitle}" />
 		</execute>
 

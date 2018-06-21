@@ -14,13 +14,11 @@
 
 package com.liferay.layout.admin.web.internal.portlet.action;
 
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Validator;
 
-import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletURL;
 
@@ -30,23 +28,55 @@ import javax.portlet.PortletURL;
 public abstract class BaseAddLayoutMVCActionCommand
 	extends BaseMVCActionCommand {
 
-	protected String getRedirectURL(
-		ActionRequest actionRequest, ActionResponse actionResponse) {
-
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
-		if (Validator.isNotNull(redirect)) {
-			return redirect;
-		}
+	protected String getContentRedirectURL(
+		ActionResponse actionResponse, Layout layout) {
 
 		LiferayPortletResponse liferayPortletResponse =
 			PortalUtil.getLiferayPortletResponse(actionResponse);
 
-		PortletURL portletURL = liferayPortletResponse.createRenderURL();
+		PortletURL editLayoutURL = liferayPortletResponse.createRenderURL();
 
-		portletURL.setParameter("mvcRenderCommandName", "/layout/view");
+		editLayoutURL.setParameter("mvcPath", "/edit_content_layout.jsp");
 
-		return portletURL.toString();
+		PortletURL redirectURL = liferayPortletResponse.createRenderURL();
+
+		redirectURL.setParameter("mvcRenderCommandName", "/layout/view");
+
+		editLayoutURL.setParameter("redirect", redirectURL.toString());
+
+		editLayoutURL.setParameter(
+			"groupId", String.valueOf(layout.getGroupId()));
+		editLayoutURL.setParameter("selPlid", String.valueOf(layout.getPlid()));
+
+		return editLayoutURL.toString();
+	}
+
+	protected String getRedirectURL(
+		ActionResponse actionResponse, Layout layout) {
+
+		LiferayPortletResponse liferayPortletResponse =
+			PortalUtil.getLiferayPortletResponse(actionResponse);
+
+		PortletURL configureLayoutURL =
+			liferayPortletResponse.createRenderURL();
+
+		configureLayoutURL.setParameter(
+			"mvcRenderCommandName", "/layout/edit_layout");
+
+		PortletURL redirectURL = liferayPortletResponse.createRenderURL();
+
+		redirectURL.setParameter("mvcRenderCommandName", "/layout/view");
+
+		configureLayoutURL.setParameter("redirect", redirectURL.toString());
+
+		configureLayoutURL.setParameter(
+			"groupId", String.valueOf(layout.getGroupId()));
+		configureLayoutURL.setParameter(
+			"selPlid", String.valueOf(layout.getPlid()));
+		configureLayoutURL.setParameter(
+			"privateLayout", String.valueOf(layout.isPrivateLayout()));
+
+		return configureLayoutURL.toString();
 	}
 
 }

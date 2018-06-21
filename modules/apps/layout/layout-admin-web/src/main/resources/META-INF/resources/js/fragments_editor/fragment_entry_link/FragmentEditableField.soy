@@ -7,7 +7,10 @@
 	{@param content: html}
 	{@param editableId: string}
 	{@param type: string}
+	{@param? _editing: bool}
 	{@param? _handleEditableClick: any}
+	{@param? _handleEditableMouseEnter: any}
+	{@param? _handleEditableMouseLeave: any}
 	{@param? _handleOutsideTooltipClick: any}
 	{@param? _handleTooltipButtonClick: any}
 	{@param? _showTooltip: bool}
@@ -16,16 +19,19 @@
 		id: string,
 		label: string
 	]>}
+	{@param? _tooltipLabel: string}
 
 	<lfr-editable
 		data-onclick="{$_handleEditableClick}"
+		data-onmouseenter="{$_handleEditableMouseEnter}"
+		data-onmouseleave="{$_handleEditableMouseLeave}"
 		id="{$editableId}"
 		ref="editable"
 		type="{$type}"
 	>
 		{$content}
 
-		{if $_showTooltip and $_tooltipAlignElement and $_tooltipButtons}
+		{if not $_editing and $_showTooltip and $_tooltipAlignElement and $_tooltipButtons}
 			{call com.liferay.layout.admin.web.FragmentEditableFieldTooltip.render}
 				{param alignElement: $_tooltipAlignElement /}
 				{param buttons: $_tooltipButtons /}
@@ -33,6 +39,7 @@
 					'buttonClick': $_handleTooltipButtonClick,
 					'outsideTooltipClick': $_handleOutsideTooltipClick
 				] /}
+				{param label: $_tooltipLabel /}
 				{param portalElement: 'body' /}
 			{/call}
 		{/if}

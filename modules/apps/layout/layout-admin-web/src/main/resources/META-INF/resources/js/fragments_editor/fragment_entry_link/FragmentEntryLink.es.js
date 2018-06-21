@@ -56,48 +56,51 @@ class FragmentEntryLink extends Component {
 	}
 
 	/**
-	 * After each render, script tags need to be reapended to the DOM
-	 * in order to trigger an execution (content changes do not trigger it).
+	 * Handle content changed
 	 * @inheritDoc
+	 * @param {string} newContent
 	 * @review
 	 */
 
-	rendered() {
+	syncContent(newContent) {
+		if (newContent) {
+			this._renderContent(newContent);
+		}
+	}
+
+	/**
+	 * Handle editableValues changed
+	 * @inheritDoc
+	 * @param {object} newEditableValues
+	 * @review
+	 */
+
+	syncEditableValues(newEditableValues) {
 		if (this._editables) {
 			this._editables.forEach(
-				editable => editable.dispose()
-			);
-		}
+				editable => {
+					const editableValues = (
+						newEditableValues[EDITABLE_FRAGMENT_ENTRY_PROCESSOR] &&
+						newEditableValues[EDITABLE_FRAGMENT_ENTRY_PROCESSOR][editable.editableId]
+					) ? newEditableValues[EDITABLE_FRAGMENT_ENTRY_PROCESSOR][editable.editableId] :
+						{defaultValue: editable.content};
 
-		if (this.refs.content) {
-			AUI().use(
-				'aui-parse-content',
-				A => {
-					const content = A.one(this.refs.content);
-					content.plug(A.Plugin.ParseContent);
-					content.setContent(this.content);
-
-					this._createEditables();
-
-					this._update(
-						this.languageId,
-						this.defaultLanguageId,
-						[this._updateEditableStatus]
-					);
+					editable.editableValues = editableValues;
 				}
 			);
 		}
 	}
 
 	/**
+	 * Callback executed when languageId property has changed
 	 * @inheritDoc
 	 * @review
 	 */
 
-	shouldUpdate(changes) {
-		return !!changes.content ||
-				!!changes.showMapping ||
-				!!changes.languageId;
+	syncLanguageId() {
+		if (this.content) {
+			this._renderContent(this.content);
+		}
 	}
 
 	/**
@@ -159,6 +162,10 @@ class FragmentEntryLink extends Component {
 				) ? this.editableValues[EDITABLE_FRAGMENT_ENTRY_PROCESSOR][editable.id] :
 					{defaultValue: editable.innerHTML};
 
+				const defaultEditorConfiguration = this
+					.defaultEditorConfigurations[editable.getAttribute('type')] ||
+					this.defaultEditorConfigurations.text;
+
 				return new FragmentEditableField(
 					{
 						content: editable.innerHTML,
@@ -177,7 +184,7 @@ class FragmentEntryLink extends Component {
 						portletNamespace: this.portletNamespace,
 
 						processorsOptions: {
-							defaultEditorConfiguration: this.defaultEditorConfiguration,
+							defaultEditorConfiguration,
 							imageSelectorURL: this.imageSelectorURL
 						},
 
@@ -307,9 +314,39 @@ class FragmentEntryLink extends Component {
 			'mappeableFieldClicked',
 			{
 				editableId: event.editableId,
-				fragmentEntryLinkId: this.fragmentEntryLinkId
+				editableType: event.editableType,
+				fragmentEntryLinkId: this.fragmentEntryLinkId,
+				mappedFieldId: event.mappedFieldId
 			}
 		);
+	}
+
+	/**
+	 * Renders the FragmentEntryLink content parsing with AUI
+	 * @param {string} content
+	 * @private
+	 * @review
+	 */
+
+	_renderContent(content) {
+		if (this.refs.content) {
+			AUI().use(
+				'aui-parse-content',
+				A => {
+					const contentNode = A.one(this.refs.content);
+					contentNode.plug(A.Plugin.ParseContent);
+					contentNode.setContent(content);
+
+					this._createEditables();
+
+					this._update(
+						this.languageId,
+						this.defaultLanguageId,
+						[this._updateEditableStatus]
+					);
+				}
+			);
+		}
 	}
 
 	/**
@@ -416,7 +453,7 @@ FragmentEntryLink.STATE = {
 		.value(''),
 
 	/**
-	 * Default configuration for AlloyEditor instances.
+	 * Default configurations for AlloyEditor instances.
 	 * @default {}
 	 * @instance
 	 * @memberOf FragmentEntryLink
@@ -424,7 +461,7 @@ FragmentEntryLink.STATE = {
 	 * @type {object}
 	 */
 
-	defaultEditorConfiguration: Config.object().value({}),
+	defaultEditorConfigurations: Config.object().value({}),
 
 	/**
 	 * Default language id.

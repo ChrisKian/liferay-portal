@@ -82,7 +82,7 @@
 					<var name="name" value="${siteName}" />
 				</execute>
 
-				<execute macro="Modal#submit" />
+				<execute macro="Modal#save" />
 			</then>
 		</if>
 
@@ -387,7 +387,7 @@
 
 		<execute macro="UserNavigator#gotoMemberships" />
 
-		<execute function="AssertClick" locator1="UsersAndOrganizationsEditUser#SITES_SELECT_LINK" value1="SELECT" />
+		<execute function="AssertClick" locator1="UsersAndOrganizationsEditUser#SITES_SELECT_LINK" value1="Select" />
 
 		<execute function="SelectFrame" locator1="IFrame#SELECT_USER_SITES" />
 
@@ -587,7 +587,7 @@
 			<then>
 				<execute macro="Alert#viewRequestFailedToComplete" />
 
-				<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_2" value1="The friendly URL has too many slashes." />
+				<execute function="AssertTextEquals#assertPartialText" locator1="Message#ERROR_1" value1="The friendly URL has too many slashes." />
 				<execute function="AssertTextEquals" locator1="TextInput#FRIENDLY_URL" value1="${siteFriendlyURLEdit}" />
 			</then>
 			<else>
@@ -1044,7 +1044,7 @@
 			<var name="name" value="${siteName}" />
 		</execute>
 
-		<execute macro="Button#clickModalSubmit" />
+		<execute macro="Button#clickSave" />
 
 		<if>
 			<equals arg1="${siteNameInvalid}" arg2="Duplicate" />

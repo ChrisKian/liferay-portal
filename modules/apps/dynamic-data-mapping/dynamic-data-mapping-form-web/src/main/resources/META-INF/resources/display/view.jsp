@@ -115,6 +115,18 @@ Locale displayLocale = LocaleUtil.fromLanguageId(languageId);
 							</div>
 						</c:if>
 
+						<c:if test="<%= !ddmFormDisplayContext.hasAddFormInstanceRecordPermission() %>">
+							<div class="ddm-form-basic-info">
+								<div class="container-fluid-1280">
+									<clay:alert
+										message='<%= LanguageUtil.get(resourceBundle, "you-do-not-have-the-permission-to-submit-this-form") %>'
+										style="warning"
+										title='<%= LanguageUtil.get(resourceBundle, "warning") %>'
+									/>
+								</div>
+							</div>
+						</c:if>
+
 						<div class="ddm-form-basic-info">
 							<div class="container-fluid-1280">
 								<h1 class="ddm-form-name"><%= HtmlUtil.escape(formInstance.getName(displayLocale)) %></h1>
@@ -154,6 +166,16 @@ Locale displayLocale = LocaleUtil.fromLanguageId(languageId);
 						document.title = '<%= HtmlUtil.escape(formInstance.getName(displayLocale)) %>';
 					</c:if>
 
+					function <portlet:namespace />fireFormView() {
+						Liferay.fire(
+							'ddmFormView',
+							{
+								formId: <%= formInstanceId %>,
+								title: '<%= HtmlUtil.escape(formInstance.getName(displayLocale)) %>'
+							}
+						);
+					}
+
 					<c:choose>
 						<c:when test="<%= ddmFormDisplayContext.isAutosaveEnabled() %>">
 							var <portlet:namespace />form;
@@ -182,24 +204,6 @@ Locale displayLocale = LocaleUtil.fromLanguageId(languageId);
 								}
 
 								<portlet:namespace />intervalId = setInterval(<portlet:namespace />autoSave, 60000);
-							}
-
-							function <portlet:namespace />fireFormView() {
-								Liferay.fire(
-									'ddmFormView',
-									{
-										formId: <%= formInstanceId %>,
-										title: '<%= HtmlUtil.escape(formInstance.getName(displayLocale)) %>'
-									}
-								);
-
-								Liferay.fire(
-									'ddmFormPageShow',
-									{
-										formId: <%= formInstanceId %>,
-										page: 1
-									}
-								);
 							}
 
 							<portlet:namespace />form = Liferay.component('<%= ddmFormDisplayContext.getContainerId() %>DDMForm');
@@ -242,6 +246,8 @@ Locale displayLocale = LocaleUtil.fromLanguageId(languageId);
 							}
 
 							<portlet:namespace />startAutoExtendSession();
+
+							<portlet:namespace />fireFormView();
 						</c:otherwise>
 					</c:choose>
 				</aui:script>
