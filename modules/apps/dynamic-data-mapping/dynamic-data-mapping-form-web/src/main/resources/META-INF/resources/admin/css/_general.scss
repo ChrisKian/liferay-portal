@@ -10,10 +10,32 @@
 	}
 }
 
+td.lfr-name-column {
+	font-weight: 600;
+}
+
 .ddm-form-builder-buttons .icon-spinner,
 .lfr-ddm-form-pagination-controls .icon-spinner,
 .ddm-form-settings-modal .btn-toolbar-button .icon-spinner {
 	margin-left: 10px;
+}
+
+.ddm-form-builder-buttons {
+	.btn-default {
+		margin-left: 12px;
+
+		&.btn-link {
+			font-weight: 600;
+
+			&:focus {
+				box-shadow: none;
+			}
+		}
+
+		&.btn-primary {
+			margin-left: 0;
+		}
+	}
 }
 
 .ddm-form-body-content {
@@ -47,6 +69,14 @@
 	.ddm-form-settings-modal-content {
 		.modal-body {
 			padding: 0;
+
+			.tab-pane.active {
+				padding: 24px 24px 0;
+			}
+
+			.tab a {
+				outline: none;
+			}
 		}
 	}
 
@@ -279,16 +309,23 @@
 		.form-builder-content,
 		.lfr-ddm-form-content {
 			background: #FFF;
-			border: 1px solid #DCE0E3;
-			border-radius: 1px;
-			box-shadow: 0 2px 4px rgba(188, 197, 204, 0.3);
+			border-color: #E7E7ED;
+			border-radius: 4px;
 			margin: 0 auto;
 			width: auto;
+		}
+
+		.form-builder-content {
+			overflow: hidden;
 		}
 
 		.form-builder-field-list-empty .form-builder-field-list-add-button {
 			padding: 16px 0;
 			position: relative;
+		}
+
+		.form-builder-field-list-container .lfr-ddm-form-field-container.form-builder-field .form-group {
+			margin-bottom: 0;
 		}
 
 		.hide {
@@ -313,6 +350,19 @@
 
 	.form-instance-id, .form-instance-modified-date {
 		margin-right: 20px;
+	}
+}
+
+.portlet-forms-admin {
+	#formsNavigationBar .nav-item {
+		.nav-link {
+			color: #CDCED9;
+			cursor: pointer;
+
+			&.active, &:hover {
+				color: #FFF;
+			}
+		}
 	}
 }
 

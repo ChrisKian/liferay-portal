@@ -72,7 +72,7 @@ import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portlet.InvokerPortletImpl;
+import com.liferay.portlet.InvokerPortletUtil;
 import com.liferay.portlet.admin.util.AdminUtil;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 import com.liferay.users.admin.kernel.util.UsersAdminUtil;
@@ -360,8 +360,8 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	/**
-	* @deprecated As of 2.5.0, with no direct replacement
-	*/
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
+	 */
 	@Deprecated
 	protected List<AnnouncementsDelivery> getAnnouncementsDeliveries(
 		ActionRequest actionRequest) {
@@ -370,8 +370,8 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	/**
-	* @deprecated As of 2.5.0, with no direct replacement
-	*/
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
+	 */
 	@Deprecated
 	protected List<AnnouncementsDelivery> getAnnouncementsDeliveries(
 			ActionRequest actionRequest, User user)
@@ -394,8 +394,8 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	/**
-	* @deprecated As of 2.5.0, with no direct replacement
-	*/
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
+	 */
 	@Deprecated
 	protected void setAnnouncementsDeliveryLocalService(
 		AnnouncementsDeliveryLocalService announcementsDeliveryLocalService) {
@@ -534,7 +534,7 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 
 			PortletSession portletSession = actionRequest.getPortletSession();
 
-			InvokerPortletImpl.clearResponses(portletSession);
+			InvokerPortletUtil.clearResponses(portletSession);
 
 			updateLanguageId = true;
 		}

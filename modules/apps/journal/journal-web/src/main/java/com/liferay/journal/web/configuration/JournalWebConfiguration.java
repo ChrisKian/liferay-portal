@@ -53,7 +53,7 @@ public interface JournalWebConfiguration {
 	public boolean journalArticleForceAutogenerateId();
 
 	/**
-	 * @deprecated As of 2.0.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Meta.AD(
@@ -95,5 +95,8 @@ public interface JournalWebConfiguration {
 		required = false
 	)
 	public boolean showAncestorScopesByDefault();
+
+	@Meta.AD(deflt = "false", name = "show-feeds", required = false)
+	public boolean showFeeds();
 
 }

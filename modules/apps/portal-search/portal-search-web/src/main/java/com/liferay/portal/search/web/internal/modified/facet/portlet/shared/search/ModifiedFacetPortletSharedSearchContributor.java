@@ -14,12 +14,16 @@
 
 package com.liferay.portal.search.web.internal.modified.facet.portlet.shared.search;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.util.CalendarFactory;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactory;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.search.facet.modified.ModifiedFacetFactory;
+import com.liferay.portal.search.web.internal.modified.facet.builder.DateRangeFactory;
 import com.liferay.portal.search.web.internal.modified.facet.builder.ModifiedFacetBuilder;
 import com.liferay.portal.search.web.internal.modified.facet.constants.ModifiedFacetPortletKeys;
 import com.liferay.portal.search.web.internal.modified.facet.portlet.ModifiedFacetPortletPreferences;
@@ -62,7 +66,12 @@ public class ModifiedFacetPortletSharedSearchContributor
 		PortletSharedSearchSettings portletSharedSearchSettings) {
 
 		ModifiedFacetBuilder modifiedFacetBuilder = new ModifiedFacetBuilder(
-			modifiedFacetFactory, getCalendarFactory(), getDateFormatFactory());
+			modifiedFacetFactory, getCalendarFactory(), getDateFormatFactory(),
+			getJSONFactory());
+
+		modifiedFacetBuilder.setRangesJSONArray(
+			replaceAliases(
+				modifiedFacetPortletPreferences.getRangesJSONArray()));
 
 		modifiedFacetBuilder.setSearchContext(
 			portletSharedSearchSettings.getSearchContext());
@@ -109,8 +118,38 @@ public class ModifiedFacetPortletSharedSearchContributor
 		return DateFormatFactoryUtil.getDateFormatFactory();
 	}
 
+	protected DateRangeFactory getDateRangeFactory() {
+		if (dateRangeFactory == null) {
+			dateRangeFactory = new DateRangeFactory(getDateFormatFactory());
+		}
+
+		return dateRangeFactory;
+	}
+
+	protected JSONFactory getJSONFactory() {
+
+		// See LPS-72507 and LPS-76500
+
+		if (jsonFactory != null) {
+			return jsonFactory;
+		}
+
+		return JSONFactoryUtil.getJSONFactory();
+	}
+
+	protected JSONArray replaceAliases(JSONArray rangesJSONArray) {
+		DateRangeFactory dateRangeFactory = getDateRangeFactory();
+
+		CalendarFactory calendarFactory = getCalendarFactory();
+
+		return dateRangeFactory.replaceAliases(
+			rangesJSONArray, calendarFactory.getCalendar(), getJSONFactory());
+	}
+
 	protected CalendarFactory calendarFactory;
 	protected DateFormatFactory dateFormatFactory;
+	protected DateRangeFactory dateRangeFactory;
+	protected JSONFactory jsonFactory;
 
 	@Reference
 	protected ModifiedFacetFactory modifiedFacetFactory;

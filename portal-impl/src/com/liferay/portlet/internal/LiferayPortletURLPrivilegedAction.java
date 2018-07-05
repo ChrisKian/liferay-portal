@@ -28,8 +28,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.struts.StrutsActionPortletURL;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.PortletResponseImpl;
-import com.liferay.portlet.PortletURLImpl;
 
 import java.lang.reflect.Constructor;
 
@@ -140,7 +138,7 @@ public class LiferayPortletURLPrivilegedAction
 		}
 		catch (SystemException se) {
 			if (_log.isWarnEnabled()) {
-				_log.warn(se);
+				_log.warn(se, se);
 			}
 		}
 

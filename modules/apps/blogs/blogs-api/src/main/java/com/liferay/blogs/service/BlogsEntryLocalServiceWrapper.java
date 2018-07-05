@@ -87,10 +87,10 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	/**
-	* @deprecated As of 1.1.0, replaced by {@link #addEntry(long, String,
-	String, String, String, int, int, int, int, int, boolean,
-	boolean, String[], String, ImageSelector, ImageSelector,
-	ServiceContext)}
+	* @deprecated As of Judson (7.1.x), replaced by {@link #addEntry(long,
+	String, String, String, String, int, int, int, int, int,
+	boolean, boolean, String[], String, ImageSelector,
+	ImageSelector, ServiceContext)}
 	*/
 	@Deprecated
 	@Override
@@ -601,7 +601,7 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	/**
-	* @deprecated As of 1.1.0, with no direct replacement
+	* @deprecated As of Judson (7.1.x), with no direct replacement
 	*/
 	@Deprecated
 	@Override
@@ -643,8 +643,7 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	@Override
-	public String getUniqueUrlTitle(com.liferay.blogs.model.BlogsEntry entry)
-		throws com.liferay.portal.kernel.exception.PortalException {
+	public String getUniqueUrlTitle(com.liferay.blogs.model.BlogsEntry entry) {
 		return _blogsEntryLocalService.getUniqueUrlTitle(entry);
 	}
 
@@ -741,9 +740,9 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	/**
-	* @deprecated As of 1.1.0, replaced by {@link #updateEntry(long, long,
-	String, String, String, String, int, int, int, int, int,
-	boolean, boolean, String[], String, ImageSelector,
+	* @deprecated As of Judson (7.1.x), replaced by {@link #updateEntry(long,
+	long, String, String, String, String, int, int, int, int,
+	int, boolean, boolean, String[], String, ImageSelector,
 	ImageSelector, ServiceContext)}
 	*/
 	@Deprecated
@@ -849,8 +848,8 @@ public class BlogsEntryLocalServiceWrapper implements BlogsEntryLocalService,
 	}
 
 	/**
-	* @deprecated As of 1.1.0, replaced by {@link #updateStatus(long, long,
-	int, ServiceContext, Map)}
+	* @deprecated As of Judson (7.1.x), replaced by {@link #updateStatus(long,
+	long, int, ServiceContext, Map)}
 	*/
 	@Deprecated
 	@Override

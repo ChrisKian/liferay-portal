@@ -27,8 +27,11 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionC
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Locale;
@@ -56,17 +59,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CopyFormInstanceMVCActionCommand
 	extends BaseTransactionalMVCActionCommand {
 
-	protected DDMStructure copyFormInstanceDDMStructure(
-			ActionRequest actionRequest, DDMFormInstance formInstance)
-		throws Exception {
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			DDMStructure.class.getName(), actionRequest);
-
-		return ddmStructureService.copyStructure(
-			formInstance.getStructureId(), serviceContext);
-	}
-
 	protected DDMFormValues createFormInstanceSettingsDDMFormValues(
 			DDMFormInstance formInstance)
 		throws Exception {
@@ -84,30 +76,30 @@ public class CopyFormInstanceMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		long groupId = ParamUtil.getLong(actionRequest, "groupId");
+
 		long formInstanceId = ParamUtil.getLong(
 			actionRequest, "formInstanceId");
 
 		DDMFormInstance formInstance = ddmFormInstanceService.getFormInstance(
 			formInstanceId);
 
-		DDMStructure ddmStructureCopy = copyFormInstanceDDMStructure(
-			actionRequest, formInstance);
+		DDMStructure ddmStructure = formInstance.getStructure();
 
 		Locale defaultLocale = LocaleUtil.fromLanguageId(
-			ddmStructureCopy.getDefaultLanguageId());
-
-		DDMFormInstance formInstanceCopy =
-			saveFormInstanceMVCCommandHelper.addFormInstance(
-				actionRequest, ddmStructureCopy.getStructureId(),
-				getNameMap(formInstance, defaultLocale),
-				formInstance.getDescriptionMap(),
-				formInstance.getSettingsDDMFormValues());
+			ddmStructure.getDefaultLanguageId());
 
 		DDMFormValues settingsDDMFormValues =
 			createFormInstanceSettingsDDMFormValues(formInstance);
 
-		ddmFormInstanceService.updateFormInstance(
-			formInstanceCopy.getFormInstanceId(), settingsDDMFormValues);
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			DDMFormInstance.class.getName(), actionRequest);
+
+		ddmFormInstanceService.addFormInstance(
+			groupId, getNameMap(formInstance, defaultLocale),
+			formInstance.getDescriptionMap(), ddmStructure.getDDMForm(),
+			ddmStructure.getDDMFormLayout(), settingsDDMFormValues,
+			serviceContext);
 	}
 
 	protected Map<Locale, String> getNameMap(
@@ -126,9 +118,17 @@ public class CopyFormInstanceMVCActionCommand
 	}
 
 	protected ResourceBundle getResourceBundle(Locale locale) {
-		Class<?> clazz = getClass();
+		ResourceBundleLoader portalResourceBundleLoader =
+			ResourceBundleLoaderUtil.getPortalResourceBundleLoader();
 
-		return ResourceBundleUtil.getBundle("content.Language", locale, clazz);
+		ResourceBundle portalResourceBundle =
+			portalResourceBundleLoader.loadResourceBundle(locale);
+
+		ResourceBundle moduleResourceBundle = ResourceBundleUtil.getBundle(
+			"content.Language", locale, getClass());
+
+		return new AggregateResourceBundle(
+			moduleResourceBundle, portalResourceBundle);
 	}
 
 	protected void setDefaultPublishedDDMFormFieldValue(

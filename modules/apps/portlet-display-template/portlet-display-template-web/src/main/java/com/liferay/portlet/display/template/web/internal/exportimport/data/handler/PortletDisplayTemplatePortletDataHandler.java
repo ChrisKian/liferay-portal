@@ -18,12 +18,14 @@ import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -97,6 +99,7 @@ public class PortletDisplayTemplatePortletDataHandler
 		setExportControls(
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "application-display-templates", true, true));
+		setStagingControls(getExportControls());
 	}
 
 	@Override
@@ -145,6 +148,15 @@ public class PortletDisplayTemplatePortletDataHandler
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
 		throws Exception {
+
+		if (ExportImportDateUtil.isRangeFromLastPublishDate(
+				portletDataContext)) {
+
+			_staging.populateLastPublishDateCounts(
+				portletDataContext, getStagedModelTypes());
+
+			return;
+		}
 
 		for (StagedModelType stagedModelType : getStagedModelTypes()) {
 			ActionableDynamicQuery actionableDynamicQuery =
@@ -237,5 +249,8 @@ public class PortletDisplayTemplatePortletDataHandler
 	private Portal _portal;
 
 	private StagedModelType[] _stagedModelTypes;
+
+	@Reference
+	private Staging _staging;
 
 }

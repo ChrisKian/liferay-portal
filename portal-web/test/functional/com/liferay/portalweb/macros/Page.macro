@@ -134,9 +134,19 @@
 	</command>
 
 	<command name="changeCurrentTheme">
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletOption" value="Configure" />
+		<execute function="Click#waitForMenuToggleJSClick" locator1="SitePages#LIST_GROUP_ITEM_ELLIPSIS_ICON">
+			<var name="key_pageName" value="${pageName}" />
 		</execute>
+
+		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Configure">
+			<var name="key_menuItem" value="Configure" />
+		</execute>
+
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="Look and Feel" />
+		</execute>
+
+		<execute function="Click" locator1="SitePagesEditPage#REGULAR_UNIQUE_LOOK_AND_FEEL" />
 
 		<execute function="Click" locator1="SitePagesEditPage#CHANGE_CURRENT_THEME_BUTTON" />
 
@@ -181,30 +191,18 @@
 			<var name="portlet" value="Pages" />
 		</execute>
 
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletOption" value="Configure" />
+		<execute macro="SitePages#gotoPageMenuItem">
+			<var name="menuItem" value="Configure" />
+			<var name="pageName" value="${pageName}" />
 		</execute>
 
-		<execute macro="Panel#expandPanel">
-			<var name="panel" value="Logo" />
+		<execute macro="Navigator#gotoNavTab">
+			<var name="navTab" value="Advanced" />
 		</execute>
 
 		<execute macro="Page#uploadFileForLogo">
 			<var name="logoFile" value="${logoFile}" />
 		</execute>
-	</command>
-
-	<command name="copyApplicationsFromPageToPage">
-		<execute macro="LexiconEntry#gotoHeaderMenuItem">
-			<var name="menuItem" value="Copy Applications" />
-		</execute>
-
-		<execute function="AssertTextEquals" locator1="Message#INFO" value1="The applications in page ${pageName} will be replaced with the ones in the page you select below." />
-		<execute function="AssertTextEquals" locator1="SitePagesEditPage#COPY_APPLICATIONS_COPY_FROM_PAGE_LABEL" value1="Copy from Page" />
-
-		<execute function="Select#selectPartialText" locator1="SitePagesEditPage#COPY_APPLICATIONS_COPY_FROM_PAGE_SELECT" value1="${pageNameCopy}" />
-
-		<execute macro="PortletEntry#save" />
 	</command>
 
 	<command name="deleteFriendlyURLPG">
@@ -389,6 +387,20 @@
 		<execute function="AssertTextEquals" locator1="SitePages#PAGE_TREE_PAGE_LINK" value1="${pageName}" />
 	</command>
 
+	<command name="getGroupIdFromHtmlSource" returns="groupId">
+		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
+
+		<var method="selenium#getAttribute('//li[@class=\'control-menu-nav-item\']/a[contains(@data-qa-id,\'editLayout\')]@href')" name="pageURL" />
+
+		<var method="StringUtil#stripBetween('${pageURL}', '${portalURL}', 'GroupPagesPortlet_groupId=')" name="partialPageURL" />
+
+		<var method="StringUtil#extractFirst('${partialPageURL}', '&amp;')" name="groupId" />
+
+		<echo>## * Group ID: ${groupId}</echo>
+
+		<return name="groupId" value="${groupId}" />
+	</command>
+
 	<command name="gotoChildPagePG">
 		<execute function="MouseOver" locator1="Home#PAGE">
 			<var name="key_pageName" value="${pageName}" />
@@ -450,8 +462,9 @@
 	</command>
 
 	<command name="manageDeviceFamilyActions">
-		<execute macro="LexiconEntry#gotoEllipsisMenuItem">
+		<execute macro="LexiconEntry#gotoEntryMenuItem">
 			<var name="menuItem" value="Manage Actions" />
+			<var name="rowEntry" value="${deviceFamilyName}" />
 		</execute>
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
@@ -636,7 +649,7 @@
 	</command>
 
 	<command name="viewChildPageDropdown">
-		<execute function="ClickNoError" locator1="Home#${viewChildPageDropdown}" />
+		<execute function="ClickNoError#clickNoMouseOver" locator1="Home#${viewChildPageDropdown}" />
 
 		<if>
 			<isset var="javaScriptPage" />
@@ -659,8 +672,12 @@
 			<var name="portlet" value="Pages" />
 		</execute>
 
-		<execute macro="Portlet#gotoPortletOptions">
-			<var name="portletOption" value="Configure" />
+		<execute function="Click#waitForMenuToggleJSClick" locator1="SitePages#LIST_GROUP_ITEM_ELLIPSIS_ICON">
+			<var name="key_pageName" value="${pageName}" />
+		</execute>
+
+		<execute function="Click" locator1="MenuItem#ANY_MENU_ITEM" value1="Configure">
+			<var name="key_menuItem" value="Configure" />
 		</execute>
 
 		<execute function="AssertTextPresent" locator1="SitePagesEditPage#VIEW_THEME" value1="${themeName}" />
@@ -1057,6 +1074,7 @@
 	<command name="viewSiteNameTranslationsPG">
 		<execute macro="LanguagePortlet#selectLanguagePG">
 			<var name="locale" value="${locale}" />
+			<var name="textIcon" value="${textIcon}" />
 		</execute>
 
 		<execute function="AssertTextEquals" locator1="Home#SITE_NAME" value1="${siteName}" />
@@ -1089,15 +1107,17 @@
 
 		<execute function="AssertLocation" value1="${sitePageURL}" />
 
-		<execute function="AssertTextEquals#assertPartialText" locator1="Home#PORTAL_LOCALIZATION_MESSAGE_INFO" value1="${pageLocalizationMessage}" />
-		<execute function="AssertTextEquals" locator1="Home#PORTAL_LOCALIZATION_PREFERRED_MESSAGE" value1="${pageLocalizationPreferredLanguage}" />
+		<execute macro="Alert#viewLocalizationMessage">
+			<var name="defaultLanguageLocalizationMessage" value="${pageLocalizationMessage}" />
+			<var name="preferredLanguageLocalizationMessage" value="${pageLocalizationPreferredLanguage}" />
+		</execute>
 	</command>
 
 	<command name="viewURLLocale">
 		<if>
 			<isset var="localizationOption" />
 			<then>
-				<execute function="AssertClick" locator1="Message#INFO_4" value1="${localizationOption}" />
+				<execute function="AssertClick" locator1="Home#PORTAL_LOCALIZATION_DEFAULT_LANGUAGE_MESSAGE" value1="${localizationOption}" />
 			</then>
 		</if>
 

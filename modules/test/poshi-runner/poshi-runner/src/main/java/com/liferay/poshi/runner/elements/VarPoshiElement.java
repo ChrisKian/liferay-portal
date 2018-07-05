@@ -15,11 +15,13 @@
 package com.liferay.poshi.runner.elements;
 
 import com.liferay.poshi.runner.util.Dom4JUtil;
+import com.liferay.poshi.runner.util.StringUtil;
 import com.liferay.poshi.runner.util.Validator;
 
 import java.io.IOException;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -44,10 +46,10 @@ public class VarPoshiElement extends PoshiElement {
 
 	@Override
 	public PoshiElement clone(
-		PoshiElement parentPoshiElement, String readableSyntax) {
+		PoshiElement parentPoshiElement, String poshiScript) {
 
-		if (_isElementType(readableSyntax)) {
-			return new VarPoshiElement(parentPoshiElement, readableSyntax);
+		if (_isElementType(poshiScript)) {
+			return new VarPoshiElement(parentPoshiElement, poshiScript);
 		}
 
 		return null;
@@ -72,29 +74,81 @@ public class VarPoshiElement extends PoshiElement {
 	}
 
 	@Override
-	public void parseReadableSyntax(String readableSyntax) {
-		if (readableSyntax.startsWith("static")) {
+	public void parsePoshiScript(String poshiScript) {
+		if (poshiScript.startsWith("static")) {
 			addAttribute("static", "true");
 
-			readableSyntax = readableSyntax.replaceFirst("static", "");
+			poshiScript = poshiScript.replaceFirst("static", "");
 
-			readableSyntax = readableSyntax.trim();
+			poshiScript = poshiScript.trim();
 		}
 
-		String name = getNameFromAssignment(readableSyntax);
+		String name = getNameFromAssignment(poshiScript);
+
+		if (name.contains(" ")) {
+			int index = name.indexOf(" ");
+
+			name = name.substring(index);
+		}
+
+		name = name.trim();
 
 		addAttribute("name", name);
 
-		String value = getValueFromAssignment(readableSyntax);
+		String value = getValueFromAssignment(poshiScript);
 
 		if (value.startsWith("\'\'\'")) {
-			addCDATA(getReadableEscapedContent(value));
+			addCDATA(getPoshiScriptEscapedContent(value));
+
+			return;
+		}
+
+		if (value.startsWith("new ")) {
+			addAttribute("from", getQuotedContent(value));
+
+			value = value.replace("new ", "");
+
+			int index = value.indexOf("(");
+
+			String type = value.substring(0, index);
+
+			addAttribute("type", type);
 
 			return;
 		}
 
 		if (value.endsWith("\"") && value.startsWith("\"")) {
 			value = getQuotedContent(value);
+
+			if (value.endsWith("}") && value.startsWith("${")) {
+				String bracedContent = getBracedContent(value);
+
+				if (bracedContent.contains(".hash(")) {
+					int index = bracedContent.indexOf(".");
+
+					String fromValue = StringUtil.combine(
+						"${", bracedContent.substring(0, index), "}");
+
+					addAttribute("from", fromValue);
+
+					addAttribute("hash", getSingleQuotedContent(bracedContent));
+
+					return;
+				}
+
+				if (bracedContent.contains("[")) {
+					int index = bracedContent.indexOf("[");
+
+					String fromValue = StringUtil.combine(
+						"${", bracedContent.substring(0, index), "}");
+
+					addAttribute("from", fromValue);
+
+					addAttribute("index", getBracketedContent(bracedContent));
+
+					return;
+				}
+			}
 
 			value = StringEscapeUtils.unescapeXml(value);
 
@@ -113,7 +167,7 @@ public class VarPoshiElement extends PoshiElement {
 	}
 
 	@Override
-	public String toReadableSyntax() {
+	public String toPoshiScript() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("\n\t");
@@ -131,6 +185,15 @@ public class VarPoshiElement extends PoshiElement {
 			sb.append(" ");
 		}
 
+		if (Validator.isNotNull(valueAttributeName)) {
+			if (valueAttributeName.equals("from")) {
+				if (attribute("type") != null) {
+					sb.append(attributeValue("type"));
+					sb.append(" ");
+				}
+			}
+		}
+
 		String name = attributeValue("name");
 
 		sb.append(name);
@@ -140,7 +203,33 @@ public class VarPoshiElement extends PoshiElement {
 		String value = getVarValue();
 
 		if (Validator.isNotNull(valueAttributeName)) {
-			if (valueAttributeName.equals("method")) {
+			if (valueAttributeName.equals("from")) {
+				if (attribute("hash") != null) {
+					String innerValue = getBracedContent(value);
+
+					String newInnerValue = StringUtil.combine(
+						innerValue, ".hash('", attributeValue("hash"), "')");
+
+					value = value.replace(innerValue, newInnerValue);
+
+					value = quoteContent(value);
+				}
+				else if (attribute("index") != null) {
+					String innerValue = getBracedContent(value);
+
+					String newInnerValue = StringUtil.combine(
+						innerValue, "[", attributeValue("index"), "]");
+
+					value = value.replace(innerValue, newInnerValue);
+
+					value = quoteContent(value);
+				}
+				else if (attribute("type") != null) {
+					value = StringUtil.combine(
+						"new ", attributeValue("type"), "(\"", value, "\")");
+				}
+			}
+			else if (valueAttributeName.equals("method")) {
 				if (isValidUtilClassName(value) ||
 					value.startsWith("selenium#") ||
 					value.startsWith("TestPropsUtil#")) {
@@ -180,9 +269,9 @@ public class VarPoshiElement extends PoshiElement {
 	}
 
 	protected VarPoshiElement(
-		PoshiElement parentPoshiElement, String readableSyntax) {
+		PoshiElement parentPoshiElement, String poshiScript) {
 
-		this(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
+		this(_ELEMENT_NAME, parentPoshiElement, poshiScript);
 	}
 
 	protected VarPoshiElement(String name, Element element) {
@@ -200,9 +289,9 @@ public class VarPoshiElement extends PoshiElement {
 	}
 
 	protected VarPoshiElement(
-		String name, PoshiElement parentPoshiElement, String readableSyntax) {
+		String name, PoshiElement parentPoshiElement, String poshiScript) {
 
-		super(name, parentPoshiElement, readableSyntax);
+		super(name, parentPoshiElement, poshiScript);
 	}
 
 	@Override
@@ -211,6 +300,12 @@ public class VarPoshiElement extends PoshiElement {
 	}
 
 	protected void initValueAttributeName(Element element) {
+		if (element.attribute("from") != null) {
+			valueAttributeName = "from";
+
+			return;
+		}
+
 		if (element.attribute("method") != null) {
 			valueAttributeName = "method";
 
@@ -242,30 +337,20 @@ public class VarPoshiElement extends PoshiElement {
 
 	protected String valueAttributeName;
 
-	private boolean _isElementType(String readableSyntax) {
-		readableSyntax = readableSyntax.trim();
+	private boolean _isElementType(String poshiScript) {
+		if (isValidPoshiScriptStatement(_statementPattern, poshiScript) ||
+			isVarAssignedToMacroInvocation(poshiScript)) {
 
-		if (!isBalancedReadableSyntax(readableSyntax)) {
-			return false;
+			return true;
 		}
 
-		if (!readableSyntax.endsWith(";")) {
-			return false;
-		}
-
-		if (!readableSyntax.startsWith("static var") &&
-			!readableSyntax.startsWith("var ")) {
-
-			return false;
-		}
-
-		if (isMacroReturnVar(readableSyntax)) {
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 
 	private static final String _ELEMENT_NAME = "var";
+
+	private static final Pattern _statementPattern = Pattern.compile(
+		"^" + VAR_NAME_REGEX + ASSIGNMENT_REGEX + ".*" + STATEMENT_END_REGEX,
+		Pattern.DOTALL);
 
 }

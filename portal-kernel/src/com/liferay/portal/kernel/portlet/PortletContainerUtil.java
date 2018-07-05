@@ -14,7 +14,7 @@
 
 package com.liferay.portal.kernel.portlet;
 
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Shuyang Zhou
  * @author Raymond Augé
+ * @author Neil Griffin
  */
 public class PortletContainerUtil {
 
@@ -59,8 +60,8 @@ public class PortletContainerUtil {
 					layout.getGroupId(), layout.isPrivateLayout(),
 					LayoutConstants.TYPE_PORTLET);
 			}
-			catch (SystemException se) {
-				throw new PortletContainerException(se);
+			catch (PortalException pe) {
+				throw new PortletContainerException(pe);
 			}
 
 			List<LayoutTypePortlet> layoutTypePortlets = new ArrayList<>(
@@ -170,6 +171,14 @@ public class PortletContainerUtil {
 		throws PortletContainerException {
 
 		getPortletContainer().render(request, response, portlet);
+	}
+
+	public static void renderHeaders(
+			HttpServletRequest request, HttpServletResponse response,
+			Portlet portlet)
+		throws PortletContainerException {
+
+		getPortletContainer().renderHeaders(request, response, portlet);
 	}
 
 	public static void serveResource(

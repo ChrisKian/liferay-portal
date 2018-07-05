@@ -624,6 +624,7 @@
 		</execute>
 
 		<execute macro="Page#changeCurrentTheme">
+			<var name="pageName" value="Test Page" />
 			<var name="themeName" value="Fjord" />
 		</execute>
 
@@ -835,6 +836,7 @@
 
 	<command name="ImportCorruptedFile" priority="5">
 		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.release" value="false" />
 
 		<execute macro="Navigator#openURL" />
 

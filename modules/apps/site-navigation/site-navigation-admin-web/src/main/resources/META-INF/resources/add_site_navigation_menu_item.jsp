@@ -43,7 +43,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenu
 	<liferay-ui:message arguments='<%= ModelHintsUtil.getMaxLength(SiteNavigationMenuItem.class.getName(), "name") %>' key="please-enter-a-name-with-fewer-than-x-characters" translateArguments="<%= false %>" />
 </liferay-ui:error>
 
-<aui:form action="<%= addURL.toString() %>" cssClass="container-fluid-1280">
+<aui:form action="<%= addURL.toString() %>" cssClass="container-fluid-1280" name="fm" onSubmit="event.preventDefault();">
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 	<aui:input name="siteNavigationMenuId" type="hidden" value="<%= siteNavigationMenuId %>" />
 	<aui:input name="type" type="hidden" value="<%= type %>" />
@@ -52,15 +52,82 @@ renderResponse.setTitle(LanguageUtil.format(request, "add-x", siteNavigationMenu
 		<aui:fieldset>
 
 			<%
-			siteNavigationMenuItemType.renderAddPage(request, response);
+			siteNavigationMenuItemType.renderAddPage(request, PipingServletResponse.createPipingServletResponse(pageContext));
 			%>
 
 		</aui:fieldset>
 	</aui:fieldset-group>
 
 	<aui:button-row>
-		<aui:button type="submit" value="add" />
+		<aui:button name="addButton" type="submit" value="add" />
 
 		<aui:button href="<%= redirect %>" type="cancel" />
 	</aui:button-row>
 </aui:form>
+
+<aui:script use="liferay-alert">
+	var addButton = $('#<portlet:namespace />addButton');
+
+	addButton.on(
+		'click',
+		function() {
+			var form = document.getElementById('<portlet:namespace />fm');
+			var formData = new FormData();
+
+			Array.prototype.slice.call(
+				form.querySelectorAll('input')
+			).forEach(
+				function(input) {
+					if (input.name && input.value) {
+						formData.append(input.name, input.value);
+					}
+				}
+			);
+
+			fetch(
+				form.action,
+				{
+					body: formData,
+					credentials: 'include',
+					method: 'POST'
+				}
+			).then(
+				function(response) {
+					return response.json();
+				}
+			).then(
+				function(response) {
+					if (response.siteNavigationMenuItemId) {
+						Liferay.fire(
+							'closeWindow',
+							{
+
+								<%
+								Portlet selPortlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), portletDisplay.getId());
+								%>
+
+								id: '_<%= HtmlUtil.escapeJS(selPortlet.getPortletId()) %>_addMenuItem',
+								portletAjaxable: <%= selPortlet.isAjaxable() %>,
+								refresh: '<%= HtmlUtil.escapeJS(selPortlet.getPortletId()) %>'
+							}
+						);
+					}
+					else {
+						new Liferay.Alert(
+							{
+								delay: {
+									hide: 500,
+									show: 0
+								},
+								duration: 500,
+								icon: 'exclamation-circle',
+								message: response.errorMessage,
+								type: 'danger'
+							}
+						).render();
+					}
+				}
+			);
+		}
+	);
+</aui:script>

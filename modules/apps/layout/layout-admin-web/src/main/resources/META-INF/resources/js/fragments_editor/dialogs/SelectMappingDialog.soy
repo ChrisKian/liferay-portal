@@ -7,13 +7,16 @@
 	{@param spritemap: string}
 	{@param visible: bool}
 	{@param? _handleCancelButtonClick: any}
+	{@param? _handleUnmapButtonClick: any}
 	{@param? _handleMappeableFieldLinkClick: any}
 	{@param? _handleVisibleChanged: any}
 	{@param? _loadingMappeableFields: bool}
 	{@param? _mappeableFields: list<[
+		enabled: bool,
 		label: string,
 		key: string
 	]>}
+	{@param? mappedFieldId: string}
 
 	{call liferay.frontend.Modal.render}
 		{param body kind="html"}
@@ -21,6 +24,8 @@
 				{if $_mappeableFields and not $_loadingMappeableFields}
 					{foreach $mappeableField in $_mappeableFields}
 						{call .mappeableField}
+							{param active: $mappeableField.key == $mappedFieldId /}
+							{param enabled: $mappeableField.enabled /}
 							{param handleLinkClick: $_handleMappeableFieldLinkClick /}
 							{param label: $mappeableField.label /}
 							{param key: $mappeableField.key /}
@@ -35,6 +40,21 @@
 
 		{param footer kind="html"}
 			<div class="btn-group">
+				{if $mappedFieldId and $mappedFieldId != ''}
+					<div class="btn-group-item">
+						<button
+							class="btn btn-secondary"
+							data-dismiss="modal"
+							data-onclick="{$_handleUnmapButtonClick}"
+							type="button"
+						>
+							{msg desc=""}unmap-area{/msg}
+						</button>
+					</div>
+				{/if}
+			</div>
+
+			<div class="btn-group">
 				<div class="btn-group-item">
 					<button
 						class="btn btn-secondary"
@@ -48,7 +68,7 @@
 			</div>
 		{/param}
 
-		{param dialogClasses: 'modal-lg select-mapping-dialog' /}
+		{param dialogClasses: 'modal-dialog-sm select-mapping-dialog' /}
 		{param events: ['visibleChanged': $_handleVisibleChanged] /}
 
 		{param header kind="html"}
@@ -66,34 +86,66 @@
 {/template}
 
 {template .mappeableField}
-	{@param label: string}
+	{@param active: bool}
+	{@param enabled: bool}
 	{@param key: string}
+	{@param label: string}
 	{@param spritemap: string}
 	{@param? handleLinkClick: any}
 
-	<a
-		class="list-group-item list-group-item-action list-group-item-flex"
-		data-key="{$key}"
-		data-onclick="{$handleLinkClick}"
-	>
-		<div class="autofit-col">
-			<div class="sticker sticker-secondary">
-				<svg class="lexicon-icon">
-					<use xlink:href="{$spritemap}#link"></use>
-				</svg>
-			</div>
-		</div>
+	{if $enabled}
+		{let $mappeableFieldClasses kind="text"}
+			list-group-item
+			{sp}list-group-item-action
+			{sp}list-group-item-flex
 
-		<div class="autofit-col autofit-col-expand">
-			<section class="autofit-section">
-				<h4 class="list-group-title">
-					<div class="text-truncate-inline">
-						<span class="text-truncate">
-							{$label}
-						</span>
-					</div>
-				</h4>
-			</section>
+			{if $active}
+				{sp}active
+			{/if}
+		{/let}
+
+		<a
+			class="{$mappeableFieldClasses}"
+			data-key="{$key}"
+			data-onclick="{$handleLinkClick}"
+			href="javascript:;"
+		>
+			{call .mappeableFieldContent}
+				{param label: $label /}
+				{param spritemap: $spritemap /}
+			{/call}
+		</a>
+	{else}
+		<span class="list-group-item list-group-item-flex list-group-item-light">
+			{call .mappeableFieldContent}
+				{param label: $label /}
+				{param spritemap: $spritemap /}
+			{/call}
+		</span>
+	{/if}
+{/template}
+
+{template .mappeableFieldContent}
+	{@param label: string}
+	{@param spritemap: string}
+
+	<div class="autofit-col">
+		<div class="sticker sticker-secondary">
+			<svg class="lexicon-icon">
+				<use xlink:href="{$spritemap}#link"></use>
+			</svg>
 		</div>
-	</a>
+	</div>
+
+	<div class="autofit-col autofit-col-expand">
+		<section class="autofit-section">
+			<h4 class="list-group-title">
+				<div class="text-truncate-inline">
+					<span class="text-truncate">
+						{$label}
+					</span>
+				</div>
+			</h4>
+		</section>
+	</div>
 {/template}

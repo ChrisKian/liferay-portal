@@ -73,6 +73,17 @@ public class ChangesetEntryLocalServiceUtil {
 		return getService().createChangesetEntry(changesetEntryId);
 	}
 
+	public static void deleteChangesetEntries(long changesetCollectionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().deleteChangesetEntries(changesetCollectionId);
+	}
+
+	public static void deleteChangesetEntries(
+		java.util.Set<Long> changesetEntryIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().deleteChangesetEntries(changesetEntryIds);
+	}
+
 	/**
 	* Deletes the changeset entry from the database. Also notifies the appropriate model listeners.
 	*
@@ -95,6 +106,11 @@ public class ChangesetEntryLocalServiceUtil {
 		long changesetEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteChangesetEntry(changesetEntryId);
+	}
+
+	public static void deleteEntry(long changesetId, long classNameId,
+		long classPK) {
+		getService().deleteEntry(changesetId, classNameId, classPK);
 	}
 
 	/**
@@ -224,6 +240,12 @@ public class ChangesetEntryLocalServiceUtil {
 		return getService().getChangesetEntries(start, end);
 	}
 
+	public static java.util.List<com.liferay.changeset.model.ChangesetEntry> getChangesetEntries(
+		long changesetCollectionId, long classNameId) {
+		return getService()
+				   .getChangesetEntries(changesetCollectionId, classNameId);
+	}
+
 	/**
 	* Returns the number of changeset entries.
 	*
@@ -241,6 +263,13 @@ public class ChangesetEntryLocalServiceUtil {
 		long classNameId) {
 		return getService()
 				   .getChangesetEntriesCount(changesetCollectionId, classNameId);
+	}
+
+	public static long getChangesetEntriesCount(long changesetCollectionId,
+		long classNameId, java.util.Set<Long> classPKs) {
+		return getService()
+				   .getChangesetEntriesCount(changesetCollectionId,
+			classNameId, classPKs);
 	}
 
 	/**

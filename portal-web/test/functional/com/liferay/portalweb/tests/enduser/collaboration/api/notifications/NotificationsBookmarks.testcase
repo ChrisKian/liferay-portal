@@ -1,5 +1,5 @@
 <definition component-name="portal-collaboration">
-	<property name="portal.release" value="true" />
+	<property name="portal.release" value="false" />
 	<property name="portal.upstream" value="true" />
 	<property name="custom.properties" value="default.layout.template.id=1_column" />
 	<property name="testray.main.component.name" value="Notifications" />
@@ -26,7 +26,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Bookmarks Page" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 

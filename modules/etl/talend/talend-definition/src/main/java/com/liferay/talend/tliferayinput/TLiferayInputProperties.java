@@ -37,8 +37,6 @@ import org.talend.daikon.properties.ValidationResult;
 import org.talend.daikon.properties.ValidationResult.Result;
 import org.talend.daikon.properties.presentation.Form;
 import org.talend.daikon.properties.presentation.Widget;
-import org.talend.daikon.properties.property.Property;
-import org.talend.daikon.properties.property.PropertyFactory;
 import org.talend.daikon.sandbox.SandboxedInstance;
 
 /**
@@ -58,7 +56,6 @@ public class TLiferayInputProperties
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				"Selected resource URL: " + resource.resourceURL.getValue());
-			_log.debug("Query string: " + queryString.getValue());
 		}
 
 		refreshLayout(getForm(Form.MAIN));
@@ -76,7 +73,6 @@ public class TLiferayInputProperties
 			formName.equals(LiferayConnectionProperties.FORM_WIZARD)) {
 
 			PropertiesUtils.setHidden(form, guessSchema, hideDevWidgets);
-			PropertiesUtils.setHidden(form, queryString, hideDevWidgets);
 		}
 	}
 
@@ -85,8 +81,6 @@ public class TLiferayInputProperties
 		super.setupLayout();
 
 		Form mainForm = getForm(Form.MAIN);
-
-		mainForm.addRow(queryString);
 
 		Widget guessButtonWidget = Widget.widget(guessSchema);
 
@@ -99,8 +93,6 @@ public class TLiferayInputProperties
 	@Override
 	public void setupProperties() {
 		super.setupProperties();
-
-		queryString.setValue("");
 	}
 
 	public ValidationResult validateGuessSchema() {
@@ -114,7 +106,7 @@ public class TLiferayInputProperties
 
 			ValidationResult validationResult =
 				liferaySourceOrSinkRuntime.initialize(
-					null, getEffectiveConnectionProperties());
+					null, getEffectiveLiferayConnectionProperties());
 
 			if (validationResult.getStatus() == Result.ERROR) {
 				return validationResult;
@@ -125,14 +117,13 @@ public class TLiferayInputProperties
 			if (validationResult.getStatus() == ValidationResult.Result.OK) {
 				try {
 					Schema runtimeSchema =
-						liferaySourceOrSinkRuntime.
-							getInputResourceCollectionSchema(
-								resource.resourceURL.getValue());
+						liferaySourceOrSinkRuntime.getResourceSchemaByType(
+							resource.resource.getValue());
 
 					resource.main.schema.setValue(runtimeSchema);
 				}
 				catch (IOException ioe) {
-					ExceptionUtils.exceptionToValidationResult(ioe);
+					return ExceptionUtils.exceptionToValidationResult(ioe);
 				}
 			}
 
@@ -142,8 +133,6 @@ public class TLiferayInputProperties
 
 	public transient PresentationItem guessSchema = new PresentationItem(
 		"guessSchema", "Guess Schema");
-	public Property<String> queryString = PropertyFactory.newProperty(
-		"queryString");
 
 	@Override
 	protected Set<PropertyPathConnector> getAllSchemaPropertiesConnectors(

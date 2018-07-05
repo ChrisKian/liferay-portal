@@ -15,6 +15,7 @@
 package com.liferay.layout.type.controller.asset.display.internal.controller;
 
 import com.liferay.asset.display.contributor.constants.AssetDisplayWebKeys;
+import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.kernel.model.AssetEntry;
@@ -30,7 +31,6 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.model.impl.BaseLayoutTypeControllerImpl;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.servlet.PipingServletResponse;
 
 import java.util.List;
@@ -87,8 +87,6 @@ public class AssetDisplayLayoutTypeController
 			request.setAttribute(
 				AssetDisplayLayoutTypeControllerWebKeys.LAYOUT_FRAGMENTS,
 				fragmentEntryLinks);
-
-			request.setAttribute(WebKeys.PORTLET_DECORATE, Boolean.FALSE);
 		}
 
 		return super.includeLayoutContent(request, response, layout);
@@ -153,11 +151,20 @@ public class AssetDisplayLayoutTypeController
 		long groupId, AssetEntry assetEntry) {
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
-			_assetDisplayPageEntryLocalService.
-				fetchAssetDisplayPageEntryByAssetEntryId(
-					assetEntry.getEntryId());
+			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+				assetEntry.getGroupId(), assetEntry.getClassNameId(),
+				assetEntry.getClassPK());
 
-		if (assetDisplayPageEntry != null) {
+		if ((assetDisplayPageEntry == null) ||
+			(assetDisplayPageEntry.getType() ==
+				AssetDisplayPageConstants.TYPE_NONE)) {
+
+			return 0;
+		}
+
+		if (assetDisplayPageEntry.getType() ==
+				AssetDisplayPageConstants.TYPE_SPECIFIC) {
+
 			return assetDisplayPageEntry.getLayoutPageTemplateEntryId();
 		}
 

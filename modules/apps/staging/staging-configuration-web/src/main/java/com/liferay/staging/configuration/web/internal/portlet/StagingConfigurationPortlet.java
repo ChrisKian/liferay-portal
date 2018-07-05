@@ -15,6 +15,7 @@
 package com.liferay.staging.configuration.web.internal.portlet;
 
 import com.liferay.exportimport.kernel.service.StagingLocalService;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.kernel.staging.StagingConstants;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
@@ -150,10 +151,20 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 
 			stagedGroup = liveGroup.isStagedRemotely();
 
-			_stagingLocalService.enableRemoteStaging(
-				themeDisplay.getUserId(), liveGroup, branchingPublic,
-				branchingPrivate, remoteAddress, remotePort, remotePathContext,
-				secureConnection, remoteGroupId, serviceContext);
+			try {
+				_staging.validateRemoteGroupIsSame(
+					liveGroup.getGroupId(), remoteGroupId, remoteAddress,
+					remotePort, remotePathContext, secureConnection);
+
+				_stagingLocalService.enableRemoteStaging(
+					themeDisplay.getUserId(), liveGroup, branchingPublic,
+					branchingPrivate, remoteAddress, remotePort,
+					remotePathContext, secureConnection, remoteGroupId,
+					serviceContext);
+			}
+			catch (Exception e) {
+				SessionErrors.add(actionRequest, Exception.class, e);
+			}
 		}
 		else if (stagingType == StagingConstants.TYPE_NOT_STAGED) {
 			_stagingLocalService.disableStaging(liveGroup, serviceContext);
@@ -172,12 +183,18 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 					actionRequest, liveGroup.getStagingGroup(),
 					StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0,
 					PortletRequest.RENDER_PHASE);
+
+				portletURL.setParameter(
+					"localStagingEnabled", Boolean.TRUE.toString());
 			}
 			else if (stagingType == StagingConstants.TYPE_REMOTE_STAGING) {
 				portletURL = _portal.getControlPanelPortletURL(
 					actionRequest, liveGroup,
 					StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0,
 					PortletRequest.RENDER_PHASE);
+
+				portletURL.setParameter(
+					"remoteStagingEnabled", Boolean.TRUE.toString());
 			}
 
 			if (portletURL != null) {
@@ -205,6 +222,9 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 			if (stagingType == StagingConstants.TYPE_NOT_STAGED) {
 				SessionMessages.add(actionRequest, "stagingDisabled");
 			}
+			else {
+				SessionMessages.add(actionRequest, "remoteStagingModified");
+			}
 		}
 		else {
 
@@ -221,6 +241,8 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 			if (portletURL != null) {
 				redirect = portletURL.toString();
 			}
+
+			SessionMessages.add(actionRequest, "localStagingModified");
 		}
 
 		actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
@@ -231,6 +253,11 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 	@Reference
 	protected void setGroupLocalService(GroupLocalService groupLocalService) {
 		_groupLocalService = groupLocalService;
+	}
+
+	@Reference(unbind = "-")
+	protected void setStaging(Staging staging) {
+		_staging = staging;
 	}
 
 	@Reference
@@ -258,6 +285,7 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 	@Reference
 	private Portal _portal;
 
+	private Staging _staging;
 	private StagingLocalService _stagingLocalService;
 
 }

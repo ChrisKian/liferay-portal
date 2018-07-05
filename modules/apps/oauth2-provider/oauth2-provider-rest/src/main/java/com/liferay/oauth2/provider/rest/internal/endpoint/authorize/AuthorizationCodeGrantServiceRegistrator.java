@@ -17,11 +17,16 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.authorize;
 import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.Dictionary;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
+import org.apache.cxf.rs.security.oauth2.common.OOBAuthorizationResponse;
 import org.apache.cxf.rs.security.oauth2.provider.SubjectCreator;
 import org.apache.cxf.rs.security.oauth2.services.AuthorizationCodeGrantService;
 
@@ -56,7 +61,23 @@ public class AuthorizationCodeGrantServiceRegistrator {
 		}
 
 		AuthorizationCodeGrantService authorizationCodeGrantService =
-			new AuthorizationCodeGrantService();
+			new AuthorizationCodeGrantService() {
+
+				@Override
+				protected Response deliverOOBResponse(
+					OOBAuthorizationResponse oobAuthorizationResponse) {
+
+					_log.error(
+						"The parameter \"redirect_uri\" was not found in the " +
+							"request for client " +
+								oobAuthorizationResponse.getClientId());
+
+					return Response.status(
+						500
+					).build();
+				}
+
+			};
 
 		authorizationCodeGrantService.setCanSupportPublicClients(
 			oAuth2ProviderConfiguration.allowAuthorizationCodePKCEGrant());
@@ -70,6 +91,8 @@ public class AuthorizationCodeGrantServiceRegistrator {
 		authorizationCodeGrantProperties.put(
 			"osgi.jaxrs.application.select",
 			"(osgi.jaxrs.name=Liferay.OAuth2.Application)");
+		authorizationCodeGrantProperties.put(
+			"osgi.jaxrs.name", "Liferay.Authorization.Code.Grant.Service");
 		authorizationCodeGrantProperties.put("osgi.jaxrs.resource", true);
 
 		_serviceRegistration = bundleContext.registerService(
@@ -83,6 +106,9 @@ public class AuthorizationCodeGrantServiceRegistrator {
 			_serviceRegistration.unregister();
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AuthorizationCodeGrantServiceRegistrator.class);
 
 	@Reference
 	private LiferayOAuthDataProvider _liferayOAuthDataProvider;

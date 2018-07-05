@@ -42,8 +42,8 @@ public class TeamLocalServiceUtil {
 	 */
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link #addTeam(long, long, String,
-	String, ServiceContext)}
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link #addTeam(long,
+	long, String, String, ServiceContext)}
 	*/
 	@Deprecated
 	public static com.liferay.portal.kernel.model.Team addTeam(long userId,
@@ -311,6 +311,10 @@ public class TeamLocalServiceUtil {
 	public static java.util.List<com.liferay.portal.kernel.model.Team> getGroupTeams(
 		long groupId) {
 		return getService().getGroupTeams(groupId);
+	}
+
+	public static int getGroupTeamsCount(long groupId) {
+		return getService().getGroupTeamsCount(groupId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery getIndexableActionableDynamicQuery() {

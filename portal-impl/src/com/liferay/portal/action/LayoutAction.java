@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.PortletContainerUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -42,7 +43,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.sso.SSOUtil;
 import com.liferay.portal.struts.ActionConstants;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.PortletRequestImpl;
+import com.liferay.portlet.LiferayPortletUtil;
 import com.liferay.portlet.RenderParametersPool;
 import com.liferay.portlet.internal.RenderData;
 import com.liferay.portlet.internal.RenderStateUtil;
@@ -232,7 +233,8 @@ public class LayoutAction extends Action {
 
 	protected String getRenderStateJSON(
 			HttpServletRequest request, HttpServletResponse response,
-			ThemeDisplay themeDisplay, LayoutTypePortlet layoutTypePortlet)
+			ThemeDisplay themeDisplay, String portletId,
+			LayoutTypePortlet layoutTypePortlet)
 		throws Exception {
 
 		Map<String, RenderData> renderDataMap = new HashMap<>();
@@ -240,19 +242,25 @@ public class LayoutAction extends Action {
 		List<Portlet> allPortlets = layoutTypePortlet.getAllPortlets();
 
 		for (Portlet curPortlet : allPortlets) {
-			BufferCacheServletResponse bufferCacheServletResponse =
-				new BufferCacheServletResponse(response);
+			String curPortletId = curPortlet.getPortletId();
 
-			PortletContainerUtil.preparePortlet(request, curPortlet);
+			if (curPortletId.equals(portletId) ||
+				curPortlet.isPartialActionServeResource()) {
 
-			PortletContainerUtil.serveResource(
-				request, bufferCacheServletResponse, curPortlet);
+				BufferCacheServletResponse bufferCacheServletResponse =
+					new BufferCacheServletResponse(response);
 
-			RenderData renderData = new RenderData(
-				bufferCacheServletResponse.getContentType(),
-				bufferCacheServletResponse.getString());
+				PortletContainerUtil.preparePortlet(request, curPortlet);
 
-			renderDataMap.put(curPortlet.getPortletId(), renderData);
+				PortletContainerUtil.serveResource(
+					request, bufferCacheServletResponse, curPortlet);
+
+				RenderData renderData = new RenderData(
+					bufferCacheServletResponse.getContentType(),
+					bufferCacheServletResponse.getString());
+
+				renderDataMap.put(curPortletId, renderData);
+			}
 		}
 
 		return RenderStateUtil.generateJSON(
@@ -354,7 +362,7 @@ public class LayoutAction extends Action {
 						if (layoutTypePortlet != null) {
 							renderStateJSON = getRenderStateJSON(
 								request, response, themeDisplay,
-								layoutTypePortlet);
+								portlet.getPortletId(), layoutTypePortlet);
 						}
 					}
 
@@ -381,6 +389,9 @@ public class LayoutAction extends Action {
 
 			if (layout != null) {
 				if (themeDisplay.isStateExclusive()) {
+					PortletContainerUtil.renderHeaders(
+						request, response, portlet);
+
 					PortletContainerUtil.render(request, response, portlet);
 
 					return null;
@@ -411,11 +422,11 @@ public class LayoutAction extends Action {
 						JavaConstants.JAVAX_PORTLET_REQUEST);
 
 				if (portletRequest != null) {
-					PortletRequestImpl portletRequestImpl =
-						PortletRequestImpl.getPortletRequestImpl(
+					LiferayPortletRequest liferayPortletRequest =
+						LiferayPortletUtil.getLiferayPortletRequest(
 							portletRequest);
 
-					portletRequestImpl.cleanUp();
+					liferayPortletRequest.cleanUp();
 				}
 			}
 		}

@@ -1150,7 +1150,7 @@ describe(
 					}
 				);
 
-				it(
+				xit(
 					'is passed a type parameter with value "portlet.onStateChange"',
 					done => {
 						const handle = hubA.addEventListener(eventType, onStateChange);
@@ -1170,7 +1170,7 @@ describe(
 					}
 				);
 
-				it(
+				xit(
 					'is not passed a RenderData object',
 					done => {
 						const handle = hubA.addEventListener(eventType, onStateChange);

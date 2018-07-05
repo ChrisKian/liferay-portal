@@ -15,11 +15,13 @@
 package com.liferay.mobile.device.rules.web.internal.exportimport.data.handler;
 
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.mobile.device.rules.constants.MDRConstants;
 import com.liferay.mobile.device.rules.constants.MDRPortletKeys;
 import com.liferay.mobile.device.rules.model.MDRAction;
@@ -80,9 +82,9 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "actions", true, false, null,
 				MDRAction.class.getName(), Layout.class.getName()));
-		setImportControls(getExportControls());
 		setPublishToLiveByDefault(
 			PropsValues.MOBILE_DEVICE_RULES_PUBLISH_TO_LIVE_BY_DEFAULT);
+		setStagingControls(getExportControls());
 	}
 
 	@Override
@@ -178,6 +180,24 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences)
 		throws Exception {
 
+		if (ExportImportDateUtil.isRangeFromLastPublishDate(
+				portletDataContext)) {
+
+			_staging.populateLastPublishDateCounts(
+				portletDataContext,
+				new StagedModelType[] {
+					new StagedModelType(
+						MDRAction.class.getName(), Layout.class.getName()),
+					new StagedModelType(MDRRule.class.getName()),
+					new StagedModelType(MDRRuleGroup.class.getName()),
+					new StagedModelType(
+						MDRRuleGroupInstance.class.getName(),
+						Layout.class.getName())
+				});
+
+			return;
+		}
+
 		ExportActionableDynamicQuery actionsExportActionableDynamicQuery =
 			_mdrActionLocalService.getExportActionableDynamicQuery(
 				portletDataContext);
@@ -252,5 +272,8 @@ public class MDRPortletDataHandler extends BasePortletDataHandler {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private Staging _staging;
 
 }

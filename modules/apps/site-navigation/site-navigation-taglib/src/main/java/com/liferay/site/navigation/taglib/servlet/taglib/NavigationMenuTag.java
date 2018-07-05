@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.NavItem;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
@@ -34,6 +35,7 @@ import com.liferay.site.navigation.taglib.internal.portlet.display.template.Port
 import com.liferay.site.navigation.taglib.internal.servlet.NavItemClassNameIdUtil;
 import com.liferay.site.navigation.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.site.navigation.taglib.internal.util.SiteNavigationMenuNavItem;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -232,6 +235,11 @@ public class NavigationMenuTag extends IncludeTag {
 
 		long parentSiteNavigationMenuItemId = GetterUtil.getLong(_rootItemId);
 
+		if (_rootItemType.equals("relative")) {
+			parentSiteNavigationMenuItemId =
+				_getRelativeSiteNavigationMenuItemId(themeDisplay.getLayout());
+		}
+
 		List<SiteNavigationMenuItem> siteNavigationMenuItems =
 			SiteNavigationMenuItemLocalServiceUtil.getSiteNavigationMenuItems(
 				_siteNavigationMenuId, parentSiteNavigationMenuItemId);
@@ -239,9 +247,27 @@ public class NavigationMenuTag extends IncludeTag {
 		for (SiteNavigationMenuItem siteNavigationMenuItem :
 				siteNavigationMenuItems) {
 
-			navItems.add(
-				new SiteNavigationMenuNavItem(
-					request, themeDisplay, siteNavigationMenuItem));
+			SiteNavigationMenuItemType siteNavigationMenuItemType =
+				ServletContextUtil.getSiteNavigationMenuItemType(
+					siteNavigationMenuItem.getType());
+
+			try {
+				if (!siteNavigationMenuItemType.hasPermission(
+						themeDisplay.getPermissionChecker(),
+						siteNavigationMenuItem)) {
+
+					continue;
+				}
+
+				navItems.add(
+					new SiteNavigationMenuNavItem(
+						request, themeDisplay, siteNavigationMenuItem));
+			}
+			catch (PortalException pe) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(pe, pe);
+				}
+			}
 		}
 
 		return navItems;
@@ -303,6 +329,29 @@ public class NavigationMenuTag extends IncludeTag {
 
 	@Override
 	protected void setAttributes(HttpServletRequest request) {
+	}
+
+	private long _getRelativeSiteNavigationMenuItemId(Layout layout) {
+		List<SiteNavigationMenuItem> siteNavigationMenuItems =
+			SiteNavigationMenuItemLocalServiceUtil.getSiteNavigationMenuItems(
+				_siteNavigationMenuId);
+
+		for (SiteNavigationMenuItem siteNavigationMenuItem :
+				siteNavigationMenuItems) {
+
+			UnicodeProperties unicodeProperties = new UnicodeProperties();
+
+			unicodeProperties.fastLoad(
+				siteNavigationMenuItem.getTypeSettings());
+
+			String itemLayoutUuid = unicodeProperties.getProperty("layoutUuid");
+
+			if (Objects.equals(layout.getUuid(), itemLayoutUuid)) {
+				return siteNavigationMenuItem.getSiteNavigationMenuItemId();
+			}
+		}
+
+		return 0;
 	}
 
 	private static final String _PAGE = "/navigation/page.jsp";

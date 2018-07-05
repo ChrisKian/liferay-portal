@@ -16,20 +16,25 @@ package com.liferay.fragment.service;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
+
 import com.liferay.fragment.model.FragmentCollection;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -98,6 +103,7 @@ public interface FragmentCollectionLocalService extends BaseLocalService,
 	* @throws PortalException
 	*/
 	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public FragmentCollection deleteFragmentCollection(
 		FragmentCollection fragmentCollection) throws PortalException;
 
@@ -185,8 +191,23 @@ public interface FragmentCollectionLocalService extends BaseLocalService,
 	public FragmentCollection fetchFragmentCollection(long groupId,
 		String fragmentCollectionKey);
 
+	/**
+	* Returns the fragment collection matching the UUID and group.
+	*
+	* @param uuid the fragment collection's UUID
+	* @param groupId the primary key of the group
+	* @return the matching fragment collection, or <code>null</code> if a matching fragment collection could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FragmentCollection fetchFragmentCollectionByUuidAndGroupId(
+		String uuid, long groupId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
+		PortletDataContext portletDataContext);
 
 	/**
 	* Returns the fragment collection with the primary key.
@@ -198,6 +219,18 @@ public interface FragmentCollectionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public FragmentCollection getFragmentCollection(long fragmentCollectionId)
 		throws PortalException;
+
+	/**
+	* Returns the fragment collection matching the UUID and group.
+	*
+	* @param uuid the fragment collection's UUID
+	* @param groupId the primary key of the group
+	* @return the matching fragment collection
+	* @throws PortalException if a matching fragment collection could not be found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FragmentCollection getFragmentCollectionByUuidAndGroupId(
+		String uuid, long groupId) throws PortalException;
 
 	/**
 	* Returns a range of all the fragment collections.
@@ -225,6 +258,32 @@ public interface FragmentCollectionLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<FragmentCollection> getFragmentCollections(long groupId,
 		String name, int start, int end,
+		OrderByComparator<FragmentCollection> orderByComparator);
+
+	/**
+	* Returns all the fragment collections matching the UUID and company.
+	*
+	* @param uuid the UUID of the fragment collections
+	* @param companyId the primary key of the company
+	* @return the matching fragment collections, or an empty list if no matches were found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentCollection> getFragmentCollectionsByUuidAndCompanyId(
+		String uuid, long companyId);
+
+	/**
+	* Returns a range of fragment collections matching the UUID and company.
+	*
+	* @param uuid the UUID of the fragment collections
+	* @param companyId the primary key of the company
+	* @param start the lower bound of the range of fragment collections
+	* @param end the upper bound of the range of fragment collections (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the range of matching fragment collections, or an empty list if no matches were found
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<FragmentCollection> getFragmentCollectionsByUuidAndCompanyId(
+		String uuid, long companyId, int start, int end,
 		OrderByComparator<FragmentCollection> orderByComparator);
 
 	/**

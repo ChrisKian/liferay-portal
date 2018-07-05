@@ -15,6 +15,7 @@
 package com.liferay.poshi.runner.elements;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -36,27 +37,27 @@ public class EchoPoshiElement extends PoshiElement {
 
 	@Override
 	public PoshiElement clone(
-		PoshiElement parentPoshiElement, String readableSyntax) {
+		PoshiElement parentPoshiElement, String poshiScript) {
 
-		if (_isElementType(readableSyntax)) {
-			return new EchoPoshiElement(parentPoshiElement, readableSyntax);
+		if (_isElementType(poshiScript)) {
+			return new EchoPoshiElement(parentPoshiElement, poshiScript);
 		}
 
 		return null;
 	}
 
 	@Override
-	public void parseReadableSyntax(String readableSyntax) {
-		String content = getQuotedContent(readableSyntax);
+	public void parsePoshiScript(String poshiScript) {
+		String content = getQuotedContent(poshiScript);
 
 		addAttribute("message", content);
 	}
 
 	@Override
-	public String toReadableSyntax() {
+	public String toPoshiScript() {
 		String message = attributeValue("message");
 
-		return createReadableBlock(message);
+		return createPoshiScriptSnippet(message);
 	}
 
 	protected EchoPoshiElement() {
@@ -71,9 +72,9 @@ public class EchoPoshiElement extends PoshiElement {
 	}
 
 	protected EchoPoshiElement(
-		PoshiElement parentPoshiElement, String readableSyntax) {
+		PoshiElement parentPoshiElement, String poshiScript) {
 
-		super(_ELEMENT_NAME, parentPoshiElement, readableSyntax);
+		super(_ELEMENT_NAME, parentPoshiElement, poshiScript);
 	}
 
 	protected EchoPoshiElement(String name, Element element) {
@@ -87,20 +88,20 @@ public class EchoPoshiElement extends PoshiElement {
 	}
 
 	protected EchoPoshiElement(
-		String name, PoshiElement parentPoshiElement, String readableSyntax) {
+		String name, PoshiElement parentPoshiElement, String poshiScript) {
 
-		super(name, parentPoshiElement, readableSyntax);
+		super(name, parentPoshiElement, poshiScript);
 	}
 
 	@Override
-	protected String createReadableBlock(String content) {
+	protected String createPoshiScriptSnippet(String content) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("\n\n");
 		sb.append(getPad());
 		sb.append(getBlockName());
 		sb.append("(\"");
-		sb.append(content.trim());
+		sb.append(content);
 		sb.append("\");");
 
 		return sb.toString();
@@ -111,24 +112,15 @@ public class EchoPoshiElement extends PoshiElement {
 		return "echo";
 	}
 
-	private boolean _isElementType(String readableSyntax) {
-		readableSyntax = readableSyntax.trim();
-
-		if (!isBalancedReadableSyntax(readableSyntax)) {
-			return false;
-		}
-
-		if (!readableSyntax.endsWith(");")) {
-			return false;
-		}
-
-		if (!readableSyntax.startsWith("echo(")) {
-			return false;
-		}
-
-		return true;
+	private boolean _isElementType(String poshiScript) {
+		return isValidPoshiScriptStatement(_statementPattern, poshiScript);
 	}
 
 	private static final String _ELEMENT_NAME = "echo";
+
+	private static final String _POSHI_SCRIPT_KEYWORD = _ELEMENT_NAME;
+
+	private static final Pattern _statementPattern = Pattern.compile(
+		"^" + _POSHI_SCRIPT_KEYWORD + PARAMETER_REGEX + STATEMENT_END_REGEX);
 
 }

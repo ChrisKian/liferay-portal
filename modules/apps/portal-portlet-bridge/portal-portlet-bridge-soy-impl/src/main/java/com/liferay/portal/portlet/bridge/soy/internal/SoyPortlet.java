@@ -20,7 +20,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
+import com.liferay.portal.kernel.portlet.LiferayActionRequest;
+import com.liferay.portal.kernel.portlet.LiferayActionResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
+import com.liferay.portal.kernel.portlet.LiferayRenderRequest;
+import com.liferay.portal.kernel.portlet.LiferayRenderResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCCommandCache;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -50,10 +54,6 @@ import com.liferay.portal.portlet.bridge.soy.internal.util.SoyContextFactoryUtil
 import com.liferay.portal.portlet.bridge.soy.internal.util.SoyTemplateResourcesProviderUtil;
 import com.liferay.portal.template.soy.constants.SoyTemplateConstants;
 import com.liferay.portal.template.soy.utils.SoyContext;
-import com.liferay.portlet.ActionRequestImpl;
-import com.liferay.portlet.ActionResponseImpl;
-import com.liferay.portlet.PortletRequestImpl;
-import com.liferay.portlet.RenderRequestImpl;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -86,6 +86,7 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * @author Miroslav Ligas
  * @author Bruno Basto
+ * @author Neil Griffin
  */
 public class SoyPortlet extends MVCPortlet {
 
@@ -98,8 +99,8 @@ public class SoyPortlet extends MVCPortlet {
 	}
 
 	/**
-	 * @deprecated As of 1.0.0, use {@link SoyPortlet#init(PortletConfig)}}
-	 *             instead
+	 * @deprecated As of Judson (7.1.x), use {@link
+	 *             SoyPortlet#init(PortletConfig)}} instead
 	 */
 	@Deprecated
 	@Override
@@ -125,7 +126,8 @@ public class SoyPortlet extends MVCPortlet {
 		_bundle = FrameworkUtil.getBundle(clazz);
 
 		try {
-			MVCCommandCache mvcRenderCommandCache = getRenderMVCCommandCache();
+			MVCCommandCache<?> mvcRenderCommandCache =
+				getRenderMVCCommandCache();
 
 			FriendlyURLMapper friendlyURLMapper = _getFriendlyURLMapper();
 
@@ -341,7 +343,7 @@ public class SoyPortlet extends MVCPortlet {
 	protected boolean propagateRequestParameters;
 
 	/**
-	 * @deprecated As of 1.0.0, use {@link
+	 * @deprecated As of Judson (7.1.x), use {@link
 	 *             SoyPortlet#getTemplate(PortletRequest)}} instead
 	 */
 	@Deprecated
@@ -355,22 +357,22 @@ public class SoyPortlet extends MVCPortlet {
 		SoyPortletRequestFactory soyPortletRequestFactory =
 			new SoyPortletRequestFactory(portlet);
 
-		ActionRequestImpl actionRequestImpl =
+		LiferayActionRequest liferayActionRequest =
 			soyPortletRequestFactory.createActionRequest(resourceRequest);
 
-		ActionResponseImpl actionResponseImpl =
+		LiferayActionResponse liferayActionResponse =
 			soyPortletRequestFactory.createActionResponse(
-				actionRequestImpl, resourceResponse);
+				liferayActionRequest, resourceResponse);
 
-		processAction(actionRequestImpl, actionResponseImpl);
+		processAction(liferayActionRequest, liferayActionResponse);
 
-		_copyRequestAttributes(actionRequestImpl, resourceRequest);
+		_copyRequestAttributes(liferayActionRequest, resourceRequest);
 
 		String portletNamespace = resourceResponse.getNamespace();
 
 		String redirect = HttpUtil.setParameter(
-			actionResponseImpl.getRedirectLocation(), portletNamespace + "pjax",
-			"true");
+			liferayActionResponse.getRedirectLocation(),
+			portletNamespace + "pjax", "true");
 
 		redirect = HttpUtil.setParameter(redirect, "p_p_lifecycle", "2");
 
@@ -385,17 +387,17 @@ public class SoyPortlet extends MVCPortlet {
 		SoyPortletRequestFactory soyPortletRequestFactory =
 			new SoyPortletRequestFactory(portlet);
 
-		RenderRequestImpl renderRequestImpl =
+		LiferayRenderRequest liferayRenderRequest =
 			soyPortletRequestFactory.createRenderRequest(
 				resourceRequest, resourceResponse);
 
-		RenderResponse renderResponse =
+		LiferayRenderResponse liferayRenderResponse =
 			soyPortletRequestFactory.createRenderResponse(
-				renderRequestImpl, resourceResponse);
+				liferayRenderRequest, resourceResponse);
 
-		render(renderRequestImpl, renderResponse);
+		render(liferayRenderRequest, liferayRenderResponse);
 
-		_copyRequestAttributes(renderRequestImpl, resourceRequest);
+		_copyRequestAttributes(liferayRenderRequest, resourceRequest);
 
 		String mvcRenderCommandName = ParamUtil.getString(
 			resourceRequest, "mvcRenderCommandName", "/");
@@ -406,13 +408,15 @@ public class SoyPortlet extends MVCPortlet {
 		String path = getPath(resourceRequest, resourceResponse);
 
 		if (mvcRenderCommand != MVCRenderCommand.EMPTY) {
-			path = mvcRenderCommand.render(renderRequestImpl, renderResponse);
+			path = mvcRenderCommand.render(
+				liferayRenderRequest, liferayRenderResponse);
 
-			_copyRequestAttributes(renderRequestImpl, resourceRequest);
+			_copyRequestAttributes(liferayRenderRequest, resourceRequest);
 		}
 
 		resourceRequest.setAttribute(
-			getMVCPathAttributeName(renderResponse.getNamespace()), path);
+			getMVCPathAttributeName(liferayRenderResponse.getNamespace()),
+			path);
 	}
 
 	private void _clearSessionMessages(PortletRequest portletRequest) {
@@ -422,17 +426,15 @@ public class SoyPortlet extends MVCPortlet {
 	}
 
 	private void _copyRequestAttributes(
-		PortletRequestImpl portletRequestImpl,
-		ResourceRequest resourceRequest) {
+		PortletRequest portletRequest, ResourceRequest resourceRequest) {
 
-		Enumeration<String> attributeNames =
-			portletRequestImpl.getAttributeNames();
+		Enumeration<String> attributeNames = portletRequest.getAttributeNames();
 
 		while (attributeNames.hasMoreElements()) {
 			String attributeName = attributeNames.nextElement();
 
 			resourceRequest.setAttribute(
-				attributeName, portletRequestImpl.getAttribute(attributeName));
+				attributeName, portletRequest.getAttribute(attributeName));
 		}
 	}
 
@@ -456,10 +458,10 @@ public class SoyPortlet extends MVCPortlet {
 	}
 
 	private MVCRenderCommand _getMVCRenderCommand(String mvcRenderCommandName) {
-		MVCCommandCache mvcRenderCommandCache = getRenderMVCCommandCache();
+		MVCCommandCache<MVCRenderCommand> mvcRenderCommandCache =
+			getRenderMVCCommandCache();
 
-		return (MVCRenderCommand)mvcRenderCommandCache.getMVCCommand(
-			mvcRenderCommandName);
+		return mvcRenderCommandCache.getMVCCommand(mvcRenderCommandName);
 	}
 
 	private Portlet _getPortlet() {
@@ -494,7 +496,7 @@ public class SoyPortlet extends MVCPortlet {
 			SoyTemplateResourcesProviderUtil.getBundleTemplateResources(
 				_bundle, templatePath));
 
-		MVCCommandCache mvcCommandCache = getRenderMVCCommandCache();
+		MVCCommandCache<?> mvcCommandCache = getRenderMVCCommandCache();
 
 		for (String mvcCommandName : mvcCommandCache.getMVCCommandNames()) {
 			MVCCommand mvcCommand = _getMVCRenderCommand(mvcCommandName);

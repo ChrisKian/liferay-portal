@@ -5,10 +5,81 @@ import Soy from 'metal-soy';
 import templates from './SelectMappingDialog.soy';
 
 /**
+ * List of editable types and their compatibilities
+ * with the corresponding mappeable types
+ * @review
+ * @see DDMStructureClassType.java for compatible types
+ * @type {!object}
+ */
+
+const COMPATIBLE_TYPES = {
+	html: [
+		'ddm-date',
+		'ddm-decimal',
+		'ddm-integer',
+		'ddm-number',
+		'ddm-text-html',
+		'text'
+	],
+
+	image: [
+		'ddm-image',
+		'image'
+	],
+
+	'rich-text': [
+		'ddm-date',
+		'ddm-decimal',
+		'ddm-integer',
+		'ddm-number',
+		'ddm-text-html',
+		'text'
+	],
+
+	text: [
+		'ddm-date',
+		'ddm-decimal',
+		'ddm-integer',
+		'ddm-number',
+		'text'
+	]
+};
+
+/**
  * SelectMappingDialog
  */
 
 class SelectMappingDialog extends PortletBase {
+
+	/**
+	 * @inheritDoc
+	 * @review
+	 */
+
+	prepareStateForRender(state) {
+		const editableType = state.editableType;
+
+		const mappeableFields = state._mappeableFields ?
+			state._mappeableFields.map(
+				mappeableField => (
+					{
+						enabled: (
+							COMPATIBLE_TYPES[editableType] &&
+							COMPATIBLE_TYPES[editableType]
+								.indexOf(mappeableField.type) !== -1
+						),
+						key: mappeableField.key,
+						label: mappeableField.label
+					}
+				)
+			) : null;
+
+		return Object.assign(
+			{},
+			state,
+			{_mappeableFields: mappeableFields}
+		);
+	}
 
 	/**
 	 * @inheritDoc
@@ -26,25 +97,13 @@ class SelectMappingDialog extends PortletBase {
 	}
 
 	/**
-	 * Changes visible property to false
+	 * Emit a mappeableFieldSelected event
+	 * @param {string} [key='']
 	 * @private
 	 * @review
 	 */
 
-	_handleCancelButtonClick() {
-		this.visible = false;
-	}
-
-	/**
-	 * Handle a mappeable field click and propagate it's selection
-	 * @param {Event} event
-	 * @private
-	 * @review
-	 */
-
-	_handleMappeableFieldLinkClick(event) {
-		const key = event.delegateTarget.dataset.key;
-
+	_emitMappeableFieldSelected(key = '') {
 		this.emit(
 			'mappeableFieldSelected',
 			{
@@ -55,6 +114,39 @@ class SelectMappingDialog extends PortletBase {
 		);
 
 		this.visible = false;
+	}
+
+	/**
+	 * Changes visible property to false
+	 * @private
+	 * @review
+	 */
+
+	_handleCancelButtonClick() {
+		this.visible = false;
+	}
+
+	/**
+	 * Unmaps the existing editable field
+	 * @private
+	 * @review
+	 */
+
+	_handleUnmapButtonClick() {
+		this._emitMappeableFieldSelected('');
+	}
+
+	/**
+	 * Handle a mappeable field click and propagate it's selection
+	 * @param {Event} event
+	 * @private
+	 * @review
+	 */
+
+	_handleMappeableFieldLinkClick(event) {
+		this._emitMappeableFieldSelected(
+			event.delegateTarget.dataset.key
+		);
 	}
 
 	/**
@@ -126,6 +218,21 @@ SelectMappingDialog.STATE = {
 		.value(''),
 
 	/**
+	 * Editable type that is being mapped.
+	 * This should match the corresponding mappeableField type in order
+	 * to be available.
+	 * @default ''
+	 * @instance
+	 * @memberOf SelectMappingDialog
+	 * @review
+	 * @type {string}
+	 */
+
+	editableType: Config
+		.string()
+		.value(''),
+
+	/**
 	 * FragmentEntryLinkId of the field that is being mapped
 	 * @default ''
 	 * @instance
@@ -135,6 +242,20 @@ SelectMappingDialog.STATE = {
 	 */
 
 	fragmentEntryLinkId: Config
+		.string()
+		.value(''),
+
+	/**
+	 * Mapped field ID of the field that is being mapped
+	 * @default ''
+	 * @instance
+	 * @memberOf SelectMappingDialog
+	 * @private
+	 * @review
+	 * @type {string}
+	 */
+
+	mappedFieldId: Config
 		.string()
 		.value(''),
 
@@ -244,7 +365,8 @@ SelectMappingDialog.STATE = {
 			Config.shapeOf(
 				{
 					key: Config.string().required(),
-					label: Config.string().required()
+					label: Config.string().required(),
+					type: Config.string().required()
 				}
 			)
 		)

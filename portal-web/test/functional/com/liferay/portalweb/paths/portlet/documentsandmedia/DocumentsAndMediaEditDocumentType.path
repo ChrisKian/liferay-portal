@@ -19,13 +19,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SELECT_METADATA_SET_BUTTON</td>
-	<td>//span[contains(.,'Select Metadata Set')]/a/span</td>
+	<td>SELECT_BUTTON</td>
+	<td>//span[contains(.,'Select')]/a/span</td>
 	<td></td>
 </tr>
 <tr>
 	<td>REMOVE_METADATA_SET_BUTTON</td>
-	<td>//tbody[contains(.,'${key_metadataSetName}')]/tr/td[contains(.,'Remove')]//a/span/span</td>
+	<td>//tbody/tr[contains(.,'${key_metadataSetName}')]/td/a[contains(.,Remove)]</td>
 	<td></td>
 </tr>
 <tr>

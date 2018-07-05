@@ -31,8 +31,8 @@ public class TeamLocalServiceWrapper implements TeamLocalService,
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link #addTeam(long, long, String,
-	String, ServiceContext)}
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link #addTeam(long,
+	long, String, String, ServiceContext)}
 	*/
 	@Deprecated
 	@Override
@@ -338,6 +338,11 @@ public class TeamLocalServiceWrapper implements TeamLocalService,
 	public java.util.List<com.liferay.portal.kernel.model.Team> getGroupTeams(
 		long groupId) {
 		return _teamLocalService.getGroupTeams(groupId);
+	}
+
+	@Override
+	public int getGroupTeamsCount(long groupId) {
+		return _teamLocalService.getGroupTeamsCount(groupId);
 	}
 
 	@Override

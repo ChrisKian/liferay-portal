@@ -14,6 +14,7 @@
 
 package com.liferay.site.navigation.menu.item.layout.internal.model.listener;
 
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -47,10 +48,21 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 
 	@Override
 	public void onAfterCreate(Layout layout) throws ModelListenerException {
-		boolean addToAutoMenus = GetterUtil.getBoolean(
-			layout.getTypeSettingsProperty("addToAutoMenus"));
+		if (ExportImportThreadLocal.isStagingInProcess() ||
+			ExportImportThreadLocal.isImportInProcess()) {
 
-		if (layout.isHidden() || !addToAutoMenus) {
+			return;
+		}
+
+		UnicodeProperties typeSettingsProperties =
+			layout.getTypeSettingsProperties();
+
+		boolean addToAutoMenus = GetterUtil.getBoolean(
+			typeSettingsProperties.getProperty("addToAutoMenus"));
+		boolean visible = GetterUtil.getBoolean(
+			typeSettingsProperties.getProperty("visible"), true);
+
+		if (layout.isHidden() || !addToAutoMenus || !visible) {
 			return;
 		}
 

@@ -24,7 +24,6 @@ import com.liferay.blogs.exception.EntrySmallImageNameException;
 import com.liferay.blogs.exception.EntrySmallImageScaleException;
 import com.liferay.blogs.exception.EntryTitleException;
 import com.liferay.blogs.exception.EntryUrlTitleException;
-import com.liferay.blogs.exception.NoSuchEntryException;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.base.BlogsEntryLocalServiceBaseImpl;
 import com.liferay.blogs.settings.BlogsGroupServiceSettings;
@@ -40,7 +39,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -187,8 +185,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 				entry.getUserId(), entry.getGroupId(), entryId, imageSelector);
 		}
 
-		entry.setCoverImageURL(coverImageURL);
 		entry.setCoverImageFileEntryId(coverImageFileEntryId);
+		entry.setCoverImageURL(coverImageURL);
 
 		blogsEntryPersistence.update(entry);
 	}
@@ -218,10 +216,10 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, replaced by {@link #addEntry(long, String,
-	 *             String, String, String, int, int, int, int, int, boolean,
-	 *             boolean, String[], String, ImageSelector, ImageSelector,
-	 *             ServiceContext)}
+	 * @deprecated As of Judson (7.1.x), replaced by {@link #addEntry(long,
+	 *             String, String, String, String, int, int, int, int, int,
+	 *             boolean, boolean, String[], String, ImageSelector,
+	 *             ImageSelector, ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -234,7 +232,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			InputStream smallImageInputStream, ServiceContext serviceContext)
 		throws PortalException {
 
-		ImageSelector coverImageImageSelector = null;
 		ImageSelector smallImageImageSelector = null;
 
 		if (smallImage) {
@@ -261,8 +258,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			userId, title, StringPool.BLANK, description, content,
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, allowPingbacks, allowTrackbacks, trackbacks,
-			StringPool.BLANK, coverImageImageSelector, smallImageImageSelector,
-			serviceContext);
+			StringPool.BLANK, null, smallImageImageSelector, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -612,7 +608,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			blogsEntryLocalService.updateStatus(
 				entry.getStatusByUserId(), entry.getEntryId(),
 				WorkflowConstants.STATUS_APPROVED, serviceContext,
-				new HashMap<String, Serializable>());
+				new HashMap<>());
 		}
 	}
 
@@ -637,6 +633,13 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public BlogsEntry deleteEntry(BlogsEntry entry) throws PortalException {
+
+		// Order is important. See LPS-81826.
+
+		// Ratings
+
+		ratingsStatsLocalService.deleteStats(
+			BlogsEntry.class.getName(), entry.getEntryId());
 
 		// Entry
 
@@ -697,11 +700,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		friendlyURLEntryLocalService.deleteFriendlyURLEntry(
 			entry.getGroupId(), BlogsEntry.class, entry.getEntryId());
 
-		// Ratings
-
-		ratingsStatsLocalService.deleteStats(
-			BlogsEntry.class.getName(), entry.getEntryId());
-
 		// Trash
 
 		trashEntryLocalService.deleteEntry(
@@ -735,14 +733,15 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 				groupId, BlogsConstants.SERVICE_NAME);
 
 		try {
-			Folder folder = PortletFileRepositoryUtil.getPortletFolder(
+			return PortletFileRepositoryUtil.getPortletFolder(
 				repository.getRepositoryId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 				BlogsConstants.SERVICE_NAME);
-
-			return folder;
 		}
 		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
 		}
 
 		return null;
@@ -954,7 +953,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -981,7 +980,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public String getUniqueUrlTitle(BlogsEntry entry) throws PortalException {
+	public String getUniqueUrlTitle(BlogsEntry entry) {
 		return _getUniqueUrlTitle(entry);
 	}
 
@@ -1025,7 +1024,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 
 		entry = updateStatus(
 			userId, entry.getEntryId(), WorkflowConstants.STATUS_IN_TRASH,
-			new ServiceContext());
+			new ServiceContext(), new HashMap<>());
 
 		// Social
 
@@ -1090,7 +1089,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			BlogsEntry.class.getName(), entryId);
 
 		entry = updateStatus(
-			userId, entryId, trashEntry.getStatus(), new ServiceContext());
+			userId, entryId, trashEntry.getStatus(), new ServiceContext(),
+			new HashMap<>());
 
 		// Social
 
@@ -1161,9 +1161,9 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, replaced by {@link #updateEntry(long, long,
-	 *             String, String, String, String, int, int, int, int, int,
-	 *             boolean, boolean, String[], String, ImageSelector,
+	 * @deprecated As of Judson (7.1.x), replaced by {@link #updateEntry(long,
+	 *             long, String, String, String, String, int, int, int, int,
+	 *             int, boolean, boolean, String[], String, ImageSelector,
 	 *             ImageSelector, ServiceContext)}
 	 */
 	@Deprecated
@@ -1178,7 +1178,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		ImageSelector coverImageImageSelector = null;
 		ImageSelector smallImageImageSelector = null;
 
 		if (smallImage) {
@@ -1208,8 +1207,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			userId, entryId, title, StringPool.BLANK, description, content,
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
 			displayDateMinute, allowPingbacks, allowTrackbacks, trackbacks,
-			StringPool.BLANK, coverImageImageSelector, smallImageImageSelector,
-			serviceContext);
+			StringPool.BLANK, null, smallImageImageSelector, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1471,8 +1469,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, replaced by {@link #updateStatus(long, long,
-	 *             int, ServiceContext, Map)}
+	 * @deprecated As of Judson (7.1.x), replaced by {@link #updateStatus(long,
+	 *             long, int, ServiceContext, Map)}
 	 */
 	@Deprecated
 	@Override
@@ -1482,8 +1480,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		throws PortalException {
 
 		return updateStatus(
-			userId, entryId, status, serviceContext,
-			new HashMap<String, Serializable>());
+			userId, entryId, status, serviceContext, new HashMap<>());
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1697,7 +1694,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	protected void addDiscussion(BlogsEntry entry, long userId, long groupId)
@@ -1787,12 +1784,10 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
 			groupId, BlogsConstants.SERVICE_NAME, serviceContext);
 
-		Folder folder = PortletFileRepositoryUtil.addPortletFolder(
+		return PortletFileRepositoryUtil.addPortletFolder(
 			userId, repository.getRepositoryId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, folderName,
 			serviceContext);
-
-		return folder;
 	}
 
 	protected String getEntryURL(
@@ -1848,34 +1843,22 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			ThemeDisplay themeDisplay, ServiceContext serviceContext)
 		throws PortalException {
 
-		String layoutFullURL = null;
-
 		if (themeDisplay != null) {
-			layoutFullURL = PortalUtil.getLayoutFullURL(themeDisplay);
+			return PortalUtil.getLayoutFullURL(themeDisplay);
 		}
 
-		if (Validator.isNull(layoutFullURL)) {
-			layoutFullURL = serviceContext.getLayoutFullURL();
-		}
-
-		return layoutFullURL;
+		return serviceContext.getLayoutFullURL();
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	protected String getUniqueUrlTitle(
 		long entryId, long groupId, String title) {
 
-		try {
-			BlogsEntry entry = blogsEntryPersistence.fetchByPrimaryKey(entryId);
-
-			return _getUniqueUrlTitle(entry);
-		}
-		catch (PortalException pe) {
-			throw new SystemException(pe);
-		}
+		return _getUniqueUrlTitle(
+			blogsEntryPersistence.fetchByPrimaryKey(entryId));
 	}
 
 	protected void notifySubscribers(
@@ -1921,8 +1904,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		String fromName = blogsGroupServiceSettings.getEmailFromName();
 		String fromAddress = blogsGroupServiceSettings.getEmailFromAddress();
 
-		LocalizedValuesMap subjectLocalizedValuesMap = null;
-		LocalizedValuesMap bodyLocalizedValuesMap = null;
+		final LocalizedValuesMap subjectLocalizedValuesMap;
+		final LocalizedValuesMap bodyLocalizedValuesMap;
 
 		if (serviceContext.isCommandUpdate()) {
 			subjectLocalizedValuesMap =
@@ -2186,7 +2169,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		parts.put("title", entry.getTitle());
 		parts.put("url", url);
 
-		Set<String> trackbacksSet = null;
+		final Set<String> trackbacksSet;
 
 		if (ArrayUtil.isNotEmpty(trackbacks)) {
 			trackbacksSet = SetUtil.fromArray(trackbacks);
@@ -2297,8 +2280,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, replaced by {@link #validate(String, String,
-	 *             String, int)}
+	 * @deprecated As of Judson (7.1.x), replaced by {@link #validate(String,
+	 *             String, String, int)}
 	 */
 	@Deprecated
 	protected void validate(String title, String urlTitle, String content)
@@ -2457,13 +2440,11 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 				" in folder ", String.valueOf(folderId)));
 	}
 
-	private String _getUniqueUrlTitle(BlogsEntry entry) throws PortalException {
+	private String _getUniqueUrlTitle(BlogsEntry entry) {
 		return _getUniqueUrlTitle(entry, entry.getTitle());
 	}
 
-	private String _getUniqueUrlTitle(BlogsEntry entry, String newTitle)
-		throws PortalException {
-
+	private String _getUniqueUrlTitle(BlogsEntry entry, String newTitle) {
 		long entryId = entry.getEntryId();
 
 		String urlTitle = null;
@@ -2496,7 +2477,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			entry.getGroupId(), classNameId, entry.getEntryId(), urlTitle);
 	}
 
-	private String _getURLTitle(long entryId) throws NoSuchEntryException {
+	private String _getURLTitle(long entryId) {
 		BlogsEntry entry = blogsEntryPersistence.fetchByPrimaryKey(entryId);
 
 		if (entry != null) {

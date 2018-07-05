@@ -348,11 +348,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					entry.getKey(), name.concat(ORGANIZATION_STAGING_SUFFIX));
 			}
 
+			friendlyURL = getFriendlyURL(friendlyURL.concat("-staging"));
+
 			friendlyURL = getValidatedFriendlyURL(
 				user.getCompanyId(), groupId, classNameId, classPK,
 				friendlyURL);
-
-			friendlyURL = getFriendlyURL(friendlyURL.concat("-staging"));
 		}
 
 		if (parentGroupId == GroupConstants.DEFAULT_PARENT_GROUP_ID) {
@@ -408,8 +408,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		group.setManualMembership(manualMembership);
 		group.setMembershipRestriction(membershipRestriction);
 		group.setFriendlyURL(friendlyURL);
-		group.setInheritContent(inheritContent);
 		group.setSite(site);
+		group.setInheritContent(inheritContent);
 		group.setActive(active);
 
 		if ((serviceContext != null) && (classNameId == groupClassNameId) &&
@@ -503,9 +503,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 *             names for the group, and whether the group is for staging.
 	 * @return     the group
 	 * @throws     PortalException if a portal exception occured
-	 * @deprecated As of 7.0.0, replaced by {@link #addGroup(long, long, String,
-	 *             long, long, Map, Map, int, boolean, int, String, boolean,
-	 *             boolean, ServiceContext)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link #addGroup(long,
+	 *             long, String, long, long, Map, Map, int, boolean, int,
+	 *             String, boolean, boolean, ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -1568,7 +1568,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             Group#getDescriptiveName(Locale)}
 	 */
 	@Deprecated
@@ -1580,7 +1580,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             Group#getDescriptiveName(Locale)}
 	 */
 	@Deprecated
@@ -1946,9 +1946,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 * Returns all non-system groups having <code>null</code> or empty friendly
 	 * URLs.
 	 *
-	 * @return the non-system groups having <code>null</code> or empty friendly
-	 *         URLs
-	 * @deprecated As of 7.0.0, with no direct replacement
+	 * @return     the non-system groups having <code>null</code> or empty
+	 *             friendly URLs
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -3618,7 +3618,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		String groupKey = group.getGroupKey();
 
-		List<String> names = new ArrayList(nameMap.values());
+		List<String> names = new ArrayList<>(nameMap.values());
 
 		if (ListUtil.isNull(names)) {
 			throw new GroupKeyException();
@@ -3752,9 +3752,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	 *             names for the group.
 	 * @return     the group
 	 * @throws     PortalException if a portal exception occurred
-	 * @deprecated As of 7.0.0, replaced by {@link #updateGroup(long, long, Map,
-	 *             Map, int, boolean, int, String, boolean, boolean,
-	 *             ServiceContext)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #updateGroup(long, long, Map, Map, int, boolean, int, String,
+	 *             boolean, boolean, ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -4492,7 +4492,20 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				int type = gfurle.getType();
 
 				if (type == GroupFriendlyURLException.DUPLICATE) {
-					friendlyURL = friendlyURL + "-" + ++i;
+					if (friendlyURL.matches(".+-[0-9]+$")) {
+						int end = friendlyURL.lastIndexOf(CharPool.DASH);
+
+						long suffix = GetterUtil.getLong(
+							friendlyURL.substring(end + 1));
+
+						if (!(friendlyURL.contains("group") &&
+							  (groupId == suffix))) {
+
+							friendlyURL = friendlyURL.substring(0, end);
+						}
+					}
+
+					friendlyURL = friendlyURL + CharPool.DASH + ++i;
 				}
 				else if (type == GroupFriendlyURLException.ENDS_WITH_DASH) {
 					friendlyURL = StringUtil.replaceLast(

@@ -14,12 +14,14 @@
 
 package com.liferay.oauth2.provider.test.internal;
 
+import com.liferay.oauth2.provider.scope.RequiresNoScope;
 import com.liferay.oauth2.provider.scope.RequiresScope;
 
 import java.util.Collections;
 import java.util.Set;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 
 /**
@@ -33,9 +35,16 @@ public class TestAnnotatedApplication extends Application {
 	}
 
 	@GET
-	@RequiresScope("everything.readonly")
+	@RequiresScope("everything.read")
 	public String getString() {
-		return "everything.readonly";
+		return "everything.read";
+	}
+
+	@GET
+	@Path("/no-scope")
+	@RequiresNoScope
+	public String getStringNoScope() {
+		return "no-scope";
 	}
 
 }

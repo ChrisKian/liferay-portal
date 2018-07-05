@@ -14,6 +14,7 @@
 
 package com.liferay.journal.web.internal.portlet;
 
+import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.kernel.exception.AssetCategoryException;
@@ -71,6 +72,8 @@ import com.liferay.journal.web.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
 import com.liferay.journal.web.util.JournalPortletUtil;
 import com.liferay.journal.web.util.JournalUtil;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.diff.CompareVersionsException;
@@ -125,6 +128,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -738,13 +742,21 @@ public class JournalPortlet extends MVCPortlet {
 			uploadPortletRequest, "ddmTemplateKey");
 		long assetDisplayPageId = ParamUtil.getLong(
 			uploadPortletRequest, "assetDisplayPageId");
+		int displayPageType = ParamUtil.getInteger(
+			uploadPortletRequest, "displayPageType");
 		String layoutUuid = ParamUtil.getString(
 			uploadPortletRequest, "layoutUuid");
 
 		Layout targetLayout = _journalHelper.getArticleLayout(
 			layoutUuid, groupId);
 
-		if ((assetDisplayPageId != 0) || (targetLayout == null)) {
+		if (displayPageType == AssetDisplayPageConstants.TYPE_SPECIFIC) {
+			if ((assetDisplayPageId != 0) || (targetLayout == null)) {
+				layoutUuid = null;
+			}
+		}
+		else {
+			assetDisplayPageId = 0;
 			layoutUuid = null;
 		}
 
@@ -914,7 +926,12 @@ public class JournalPortlet extends MVCPortlet {
 
 		// Asset display page
 
-		_updateAssetDisplayPage(article, assetDisplayPageId);
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		_updateAssetDisplayPage(
+			themeDisplay.getUserId(), groupId, article, assetDisplayPageId,
+			displayPageType, serviceContext);
 
 		sendEditArticleRedirect(
 			actionRequest, actionResponse, article, oldUrlTitle);
@@ -1462,26 +1479,46 @@ public class JournalPortlet extends MVCPortlet {
 	}
 
 	private void _updateAssetDisplayPage(
-			JournalArticle article, long assetDisplayPageId)
+			long userId, long groupId, JournalArticle article,
+			long assetDisplayPageId, int displayPageType,
+			ServiceContext serviceContext)
 		throws PortalException {
 
-		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-			JournalArticle.class.getName(), article.getResourcePrimKey());
+		long classNameId = _portal.getClassNameId(JournalArticle.class);
+		long classPK = article.getResourcePrimKey();
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
-			_assetDisplayPageEntryLocalService.
-				fetchAssetDisplayPageEntryByAssetEntryId(
-					assetEntry.getEntryId());
+			_assetDisplayPageEntryLocalService.fetchAssetDisplayPageEntry(
+				groupId, classNameId, classPK);
 
-		if (assetDisplayPageEntry != null) {
-			_assetDisplayPageEntryLocalService.
-				deleteAssetDisplayPageEntryByAssetEntryId(
-					assetEntry.getEntryId());
+		if (displayPageType == AssetDisplayPageConstants.TYPE_NONE) {
+			if (assetDisplayPageEntry != null) {
+				_assetDisplayPageEntryLocalService.deleteAssetDisplayPageEntry(
+					groupId, classNameId, classPK);
+			}
+		}
+		else if (assetDisplayPageEntry == null) {
+			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
+				userId, groupId, classNameId, classPK, assetDisplayPageId,
+				displayPageType, serviceContext);
+		}
+		else {
+			_assetDisplayPageEntryLocalService.updateAssetDisplayPageEntry(
+				assetDisplayPageEntry.getAssetDisplayPageEntryId(),
+				assetDisplayPageId, displayPageType);
 		}
 
 		if (assetDisplayPageId > 0) {
-			_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
-				assetEntry.getEntryId(), assetDisplayPageId);
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+					assetDisplayPageId);
+
+			if (layoutPageTemplateEntry != null) {
+				layoutPageTemplateEntry.setModifiedDate(new Date());
+
+				_layoutPageTemplateEntryLocalService.
+					updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
+			}
 		}
 	}
 
@@ -1528,6 +1565,10 @@ public class JournalPortlet extends MVCPortlet {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private Portal _portal;

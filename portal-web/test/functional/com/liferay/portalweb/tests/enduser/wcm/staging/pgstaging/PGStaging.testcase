@@ -532,7 +532,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Staging Test Page" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -805,7 +805,7 @@
 
 		<execute macro="Page#view">
 			<var name="pageName" value="Private Staging Page" />
-			<var name="privacy" value="Private" />
+			<var name="privacy" value="Private Pages" />
 		</execute>
 	</command>
 
@@ -829,8 +829,6 @@
 		</execute>
 
 		<execute macro="DMNavigator#gotoURLDetail" />
-
-		<execute function="AssertClick" locator1="Link#URL" value1="URL" />
 
 		<var method="selenium#getElementValue('//input[contains(@id,\'url\')]')" name="dmDocumentURL" />
 

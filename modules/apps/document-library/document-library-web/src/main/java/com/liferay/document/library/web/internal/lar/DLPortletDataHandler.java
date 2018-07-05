@@ -30,6 +30,7 @@ import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.document.library.kernel.service.DLFileShortcutLocalService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
@@ -38,6 +39,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.string.StringPool;
@@ -147,6 +149,7 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 				DLFileShortcutConstants.getClassName()));
 		setPublishToLiveByDefault(PropsValues.DL_PUBLISH_TO_LIVE_BY_DEFAULT);
 		setRank(90);
+		setStagingControls(getExportControls());
 
 		_dlExportableRepositoryPublishers = ServiceTrackerListFactory.open(
 			bundleContext, DLExportableRepositoryPublisher.class);
@@ -326,6 +329,22 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
 		throws Exception {
+
+		if (ExportImportDateUtil.isRangeFromLastPublishDate(
+				portletDataContext)) {
+
+			_staging.populateLastPublishDateCounts(
+				portletDataContext,
+				new StagedModelType[] {
+					new StagedModelType(DLFileEntry.class.getName()),
+					new StagedModelType(DLFileEntryType.class.getName()),
+					new StagedModelType(DLFileShortcut.class.getName()),
+					new StagedModelType(DLFolder.class.getName()),
+					new StagedModelType(Repository.class.getName())
+				});
+
+			return;
+		}
 
 		ActionableDynamicQuery dlFileShortcutActionableDynamicQuery =
 			getDLFileShortcutActionableDynamicQuery(portletDataContext);
@@ -653,5 +672,8 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 
 	@Reference
 	private RepositoryLocalService _repositoryLocalService;
+
+	@Reference
+	private Staging _staging;
 
 }

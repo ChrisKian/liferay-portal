@@ -69,11 +69,11 @@ public class ModifiedFacetDisplayBuilder implements Serializable {
 				buildCustomRangeModifiedTermDisplayContext());
 		modifiedFacetDisplayContext.setDefaultModifiedFacetTermDisplayContext(
 			buildDefaultModifiedFacetTermDisplayContext());
-		modifiedFacetDisplayContext.setRenderNothing(isRenderNothing());
-		modifiedFacetDisplayContext.setNothingSelected(isNothingSelected());
-		modifiedFacetDisplayContext.setParameterName(_parameterName);
 		modifiedFacetDisplayContext.setModifiedFacetTermDisplayContexts(
 			buildTermDisplayContexts());
+		modifiedFacetDisplayContext.setNothingSelected(isNothingSelected());
+		modifiedFacetDisplayContext.setParameterName(_parameterName);
+		modifiedFacetDisplayContext.setRenderNothing(isRenderNothing());
 
 		return modifiedFacetDisplayContext;
 	}
@@ -94,17 +94,13 @@ public class ModifiedFacetDisplayBuilder implements Serializable {
 		_locale = locale;
 	}
 
-	public void setParameterName(String paramName) {
-		_parameterName = paramName;
+	public void setParameterName(String parameterName) {
+		_parameterName = parameterName;
 	}
 
 	public void setParameterValues(String... parameterValues) {
 		_selectedRanges = Arrays.asList(
 			Objects.requireNonNull(parameterValues));
-	}
-
-	public void setRangesJSONArray(JSONArray rangesJSONArray) {
-		_rangesJSONArray = rangesJSONArray;
 	}
 
 	public void setTimeZone(TimeZone timeZone) {
@@ -187,7 +183,7 @@ public class ModifiedFacetDisplayBuilder implements Serializable {
 		modifiedFacetTermDisplayContext.setFrequency(
 			getFrequency(getTermCollector(range)));
 		modifiedFacetTermDisplayContext.setLabel(label);
-		modifiedFacetTermDisplayContext.setRange(label);
+		modifiedFacetTermDisplayContext.setRange(range);
 		modifiedFacetTermDisplayContext.setRangeURL(getLabeledRangeURL(label));
 		modifiedFacetTermDisplayContext.setSelected(
 			_selectedRanges.contains(label));
@@ -199,8 +195,10 @@ public class ModifiedFacetDisplayBuilder implements Serializable {
 		List<ModifiedFacetTermDisplayContext> modifiedFacetTermDisplayContexts =
 			new ArrayList<>();
 
-		for (int i = 0; i < _rangesJSONArray.length(); i++) {
-			JSONObject jsonObject = _rangesJSONArray.getJSONObject(i);
+		JSONArray rangesJSONArray = getRangesJSONArray();
+
+		for (int i = 0; i < rangesJSONArray.length(); i++) {
+			JSONObject jsonObject = rangesJSONArray.getJSONObject(i);
 
 			modifiedFacetTermDisplayContexts.add(
 				buildTermDisplayContext(
@@ -255,6 +253,14 @@ public class ModifiedFacetDisplayBuilder implements Serializable {
 		return _http.setParameter(rangeURL, "modified", label);
 	}
 
+	protected JSONArray getRangesJSONArray() {
+		FacetConfiguration facetConfiguration = _facet.getFacetConfiguration();
+
+		JSONObject dataJSONObject = facetConfiguration.getData();
+
+		return dataJSONObject.getJSONArray("ranges");
+	}
+
 	protected TermCollector getTermCollector(String range) {
 		FacetCollector facetCollector = _facet.getFacetCollector();
 
@@ -302,7 +308,6 @@ public class ModifiedFacetDisplayBuilder implements Serializable {
 	private final Http _http;
 	private Locale _locale;
 	private String _parameterName;
-	private JSONArray _rangesJSONArray;
 	private List<String> _selectedRanges = Collections.emptyList();
 	private TimeZone _timeZone;
 	private String _to;

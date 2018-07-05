@@ -63,8 +63,8 @@ public interface TeamLocalService extends BaseLocalService,
 	 */
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link #addTeam(long, long, String,
-	String, ServiceContext)}
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link #addTeam(long,
+	long, String, String, ServiceContext)}
 	*/
 	@Deprecated
 	public Team addTeam(long userId, long groupId, String name,
@@ -241,6 +241,9 @@ public interface TeamLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Team> getGroupTeams(long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getGroupTeamsCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();

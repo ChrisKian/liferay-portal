@@ -24,11 +24,13 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -76,10 +78,11 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "records", true, false, null,
 				DDLRecord.class.getName()));
+		setStagingControls(getExportControls());
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected DynamicQuery createRecordSetDynamicQuery() {
@@ -87,7 +90,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected DynamicQuery createRecordVersionDynamicQuery() {
@@ -95,7 +98,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected void deleteDDMStructures(Set<Long> ddmStructureIds)
@@ -103,7 +106,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected void deleteRecordSets(PortletDataContext portletDataContext)
@@ -224,6 +227,19 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences)
 		throws Exception {
 
+		if (ExportImportDateUtil.isRangeFromLastPublishDate(
+				portletDataContext)) {
+
+			_staging.populateLastPublishDateCounts(
+				portletDataContext,
+				new StagedModelType[] {
+					new StagedModelType(DDLRecord.class.getName()),
+					new StagedModelType(DDLRecordSet.class.getName())
+				});
+
+			return;
+		}
+
 		ActionableDynamicQuery recordSetActionableDynamicQuery =
 			_ddlRecordSetStagedModelRepository.getExportActionableDynamicQuery(
 				portletDataContext);
@@ -238,7 +254,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected ActionableDynamicQuery getRecordActionableDynamicQuery(
@@ -249,7 +265,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected ActionableDynamicQuery getRecordSetActionableDynamicQuery(
@@ -260,7 +276,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected void setDDLRecordLocalService(
@@ -268,7 +284,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected void setDDLRecordSetLocalService(
@@ -296,7 +312,7 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected void setDDMStructureLocalService(
@@ -311,5 +327,8 @@ public class DDLPortletDataHandler extends BasePortletDataHandler {
 	private StagedModelRepository<DDLRecordSet>
 		_ddlRecordSetStagedModelRepository;
 	private StagedModelRepository<DDLRecord> _ddlRecordStagedModelRepository;
+
+	@Reference
+	private Staging _staging;
 
 }

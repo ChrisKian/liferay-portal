@@ -80,7 +80,7 @@ public class AssetTagsDisplayContext {
 				add(
 					dropdownItem -> {
 						dropdownItem.putData("action", "mergeTags");
-						dropdownItem.setIcon("change");
+						dropdownItem.setIcon("merge");
 						dropdownItem.setLabel(
 							LanguageUtil.get(_request, "merge"));
 						dropdownItem.setQuickAction(true);
@@ -407,7 +407,7 @@ public class AssetTagsDisplayContext {
 				themeDisplay.getPermissionChecker(),
 				AssetTagsPermission.RESOURCE_NAME,
 				AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
-				themeDisplay.getSiteGroupId(), ActionKeys.ADD_TAG)) {
+				themeDisplay.getSiteGroupId(), ActionKeys.MANAGE_TAG)) {
 
 			return isShowTagsActionMenu();
 		}

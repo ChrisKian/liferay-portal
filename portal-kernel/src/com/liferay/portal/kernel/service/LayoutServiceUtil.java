@@ -203,7 +203,7 @@ public class LayoutServiceUtil {
 	* @param endDate the export's end date
 	* @return the layouts as a byte array
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static byte[] exportLayouts(long groupId, boolean privateLayout,
@@ -228,7 +228,7 @@ public class LayoutServiceUtil {
 	* @param endDate the export's end date
 	* @return the layout as a byte array
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static byte[] exportLayouts(long groupId, boolean privateLayout,
@@ -241,7 +241,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#exportLayoutsAsFile(
 	ExportImportConfiguration)}
 	*/
@@ -267,7 +267,7 @@ public class LayoutServiceUtil {
 	* @param endDate the export's end date
 	* @return the layouts as a File
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static java.io.File exportLayoutsAsFile(long groupId,
@@ -281,7 +281,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#exportLayoutsAsFileInBackground(
 	ExportImportConfiguration)}
 	*/
@@ -294,7 +294,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#exportLayoutsAsFileInBackground(
 	long)}
 	*/
@@ -307,7 +307,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long exportLayoutsAsFileInBackground(String taskName,
@@ -321,7 +321,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long exportLayoutsAsFileInBackground(String taskName,
@@ -349,7 +349,7 @@ public class LayoutServiceUtil {
 	* @param endDate the export's end date
 	* @return the portlet information as a byte array
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static byte[] exportPortletInfo(long plid, long groupId,
@@ -362,7 +362,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static byte[] exportPortletInfo(long companyId, String portletId,
@@ -375,7 +375,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#exportPortletInfoAsFile(
 	ExportImportConfiguration)}
 	*/
@@ -401,7 +401,7 @@ public class LayoutServiceUtil {
 	* @param endDate the export's end date
 	* @return the portlet information as a file
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static java.io.File exportPortletInfoAsFile(long plid, long groupId,
@@ -414,7 +414,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static java.io.File exportPortletInfoAsFile(String portletId,
@@ -427,7 +427,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long exportPortletInfoAsFileInBackground(String taskName,
@@ -441,7 +441,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long exportPortletInfoAsFileInBackground(String taskName,
@@ -463,6 +463,29 @@ public class LayoutServiceUtil {
 	public static java.util.List<com.liferay.portal.kernel.model.Layout> getAncestorLayouts(
 		long plid) throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getAncestorLayouts(plid);
+	}
+
+	/**
+	* Returns the control panel layout's plid.
+	*
+	* @return the control panel layout's plid
+	* @throws PortalException if a portal exception is occured
+	*/
+	public static long getControlPanelLayoutPlid()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getControlPanelLayoutPlid();
+	}
+
+	/**
+	* Returns primary key of the matching default layout for the group.
+	*
+	* @param groupId the primary key of the group
+	* @param privateLayout whether the layout is private to the group
+	* @return the primary key of the default layout for the group; {@link
+	LayoutConstants#DEFAULT_PLID}) otherwise
+	*/
+	public static long getDefaultPlid(long groupId, boolean privateLayout) {
+		return getService().getDefaultPlid(groupId, privateLayout);
 	}
 
 	/**
@@ -523,6 +546,21 @@ public class LayoutServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .getLayoutName(groupId, privateLayout, layoutId, languageId);
+	}
+
+	/**
+	* Returns the layout's plid that matches the parameters.
+	*
+	* @param uuid the layout's UUID
+	* @param groupId the primary key of the group
+	* @param privateLayout whether the layout is private to the group
+	* @return the matching layout's plid
+	* @throws PortalException if a portal exception occurred
+	*/
+	public static long getLayoutPlid(String uuid, long groupId,
+		boolean privateLayout)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getLayoutPlid(uuid, groupId, privateLayout);
 	}
 
 	/**
@@ -625,8 +663,13 @@ public class LayoutServiceUtil {
 		return getService().hasLayout(uuid, groupId, privateLayout);
 	}
 
+	public static boolean hasPortletId(long plid, String portletId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().hasPortletId(plid, portletId);
+	}
+
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#importLayouts(
 	ExportImportConfiguration, File)}
 	*/
@@ -639,7 +682,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#importLayouts(
 	ExportImportConfiguration, InputStream)}
 	*/
@@ -663,7 +706,7 @@ public class LayoutServiceUtil {
 	* @param bytes the byte array with the data
 	* @throws PortalException if a portal exception occurred
 	* @see com.liferay.exportimport.kernel.lar.LayoutImporter
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importLayouts(long groupId, boolean privateLayout,
@@ -684,7 +727,7 @@ public class LayoutServiceUtil {
 	* @param file the LAR file with the data
 	* @throws PortalException if a portal exception occurred
 	* @see com.liferay.exportimport.kernel.lar.LayoutImporter
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importLayouts(long groupId, boolean privateLayout,
@@ -705,7 +748,7 @@ public class LayoutServiceUtil {
 	* @param is the input stream
 	* @throws PortalException if a portal exception occurred
 	* @see com.liferay.exportimport.kernel.lar.LayoutImporter
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importLayouts(long groupId, boolean privateLayout,
@@ -715,7 +758,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long importLayoutsInBackground(String taskName, long groupId,
@@ -728,7 +771,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long importLayoutsInBackground(String taskName, long groupId,
@@ -741,7 +784,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#importPortletInfo(
 	ExportImportConfiguration, File)} (
 	*/
@@ -754,7 +797,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#importPortletInfo(
 	ExportImportConfiguration, InputStream)} (
 	*/
@@ -779,7 +822,7 @@ public class LayoutServiceUtil {
 	com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys}.
 	* @param file the LAR file with the data
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importPortletInfo(long plid, long groupId,
@@ -803,7 +846,7 @@ public class LayoutServiceUtil {
 	com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys}.
 	* @param is the input stream
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importPortletInfo(long plid, long groupId,
@@ -815,7 +858,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importPortletInfo(String portletId,
@@ -825,7 +868,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importPortletInfo(String portletId,
@@ -835,7 +878,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long importPortletInfoInBackground(String taskName,
@@ -848,7 +891,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static long importPortletInfoInBackground(String taskName,
@@ -861,7 +904,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importPortletInfoInBackground(String taskName,
@@ -874,7 +917,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static void importPortletInfoInBackground(String taskName,
@@ -910,9 +953,9 @@ public class LayoutServiceUtil {
 	* @param schedulerEndDate the scheduler end date
 	* @param description the scheduler description
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, replaced by {@link #schedulePublishToLive(long,
-	long, boolean, long[], Map, String, String, Date, Date,
-	String)}
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	#schedulePublishToLive(long, long, boolean, long[], Map,
+	String, String, Date, Date, String)}
 	*/
 	@Deprecated
 	public static void schedulePublishToLive(long sourceGroupId,
@@ -986,9 +1029,9 @@ public class LayoutServiceUtil {
 	* @param schedulerEndDate the scheduler end date
 	* @param description the scheduler description
 	* @throws PortalException if a portal exception occurred
-	* @deprecated As of 7.0.0, replaced by {@link #schedulePublishToLive(long,
-	long, boolean, long[], Map, String, Date, Date, String,
-	String, Date, Date, String)}
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	#schedulePublishToLive(long, long, boolean, long[], Map,
+	String, Date, Date, String, String, Date, Date, String)}
 	*/
 	@Deprecated
 	public static void schedulePublishToLive(long sourceGroupId,
@@ -1340,7 +1383,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#validateImportLayoutsFile(
 	ExportImportConfiguration, File)}
 	*/
@@ -1354,7 +1397,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#validateImportLayoutsFile(
 	ExportImportConfiguration, InputStream)}
 	*/
@@ -1369,7 +1412,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static com.liferay.exportimport.kernel.lar.MissingReferences validateImportLayoutsFile(
@@ -1382,7 +1425,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static com.liferay.exportimport.kernel.lar.MissingReferences validateImportLayoutsFile(
@@ -1396,7 +1439,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#validateImportPortletInfo(
 	ExportImportConfiguration, File)}
 	*/
@@ -1410,7 +1453,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, replaced by {@link
+	* @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	com.liferay.exportimport.kernel.service.ExportImportService#validateImportPortletInfo(
 	ExportImportConfiguration, InputStream)}
 	*/
@@ -1425,7 +1468,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static com.liferay.exportimport.kernel.lar.MissingReferences validateImportPortletInfo(
@@ -1438,7 +1481,7 @@ public class LayoutServiceUtil {
 	}
 
 	/**
-	* @deprecated As of 7.0.0, with no direct replacement
+	* @deprecated As of Wilberforce (7.0.x), with no direct replacement
 	*/
 	@Deprecated
 	public static com.liferay.exportimport.kernel.lar.MissingReferences validateImportPortletInfo(

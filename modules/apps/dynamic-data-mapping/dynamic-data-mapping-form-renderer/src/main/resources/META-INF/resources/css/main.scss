@@ -35,6 +35,16 @@ body .ddm-user-view-content {
 	.multi-step-indicator-label {
 		margin-top: -28px;
 	}
+
+	.form-group {
+		.form-check-inline {
+			margin-right: 16px;
+		}
+
+		.custom-control-inline + .custom-control-inline {
+			margin-left: 16px;
+		}
+	}
 }
 
 .portlet-forms .ddm-form-basic-info .ddm-form-name {
@@ -209,6 +219,10 @@ body .ddm-user-view-content {
 		margin-bottom: 0.1rem;
 	}
 
+	&.table-responsive {
+		margin-bottom: 0;
+	}
+
 	th, td:not(:first-child) {
 		text-align: center;
 	}
@@ -272,6 +286,10 @@ body .ddm-user-view-content {
 				color: #A7A9BC;
 			}
 		}
+
+		.custom-control {
+			padding-bottom: 0;
+		}
 	}
 
 	.select-arrow-down-container {
@@ -297,7 +315,7 @@ body .ddm-user-view-content {
 		border-bottom: 2px solid #65B6F0;
 	}
 
-	.form-control[disabled] + a {
+	.form-control[disabled] > a.select-arrow-down-container {
 		cursor: not-allowed;
 		opacity: 0.5;
 	}
@@ -456,4 +474,26 @@ body .ddm-user-view-content {
 
 .form-check-inline .custom-control-label {
 	line-height: 24px;
+}
+
+.liferay-ddm-form-field-radio {
+	.custom-control-inline {
+		&.custom-control {
+			padding-bottom: 0;
+		}
+
+		+ .custom-control-inline {
+			margin-left: 11px;
+		}
+	}
+}
+
+.liferay-ddm-form-field-checkbox-multiple {
+	.custom-control {
+		padding-bottom: 9px;
+	}
+
+	.form-check-inline {
+		margin-right: 11px;
+	}
 }

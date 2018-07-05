@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.HitsImpl;
 import com.liferay.portal.kernel.search.IndexSearcherHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerPostProcessor;
@@ -29,16 +30,16 @@ import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
 import com.liferay.portal.kernel.search.SearchException;
-import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.faceted.searcher.FacetedSearcher;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
-import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MatchAllQuery;
 import com.liferay.portal.kernel.search.generic.StringQuery;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.internal.expando.ExpandoQueryContributorHelper;
 import com.liferay.portal.search.internal.indexer.PreFilterContributorHelper;
 
@@ -84,12 +85,14 @@ public class FacetedSearcherImpl
 	}
 
 	protected void addSearchKeywords(
-			BooleanQuery searchQuery, String keywords, boolean luceneSyntax,
+			BooleanQuery searchQuery, boolean luceneSyntax,
 			Map<String, Indexer<?>> entryClassNameIndexerMap,
 			SearchContext searchContext)
 		throws Exception {
 
-		if (Validator.isNull(keywords)) {
+		String keywords = searchContext.getKeywords();
+
+		if (Validator.isBlank(keywords)) {
 			return;
 		}
 
@@ -100,13 +103,15 @@ public class FacetedSearcherImpl
 			addSearchLocalizedTerm(
 				searchQuery, searchContext, Field.ASSET_CATEGORY_TITLES, false);
 
-			searchQuery.addTerm(Field.ASSET_TAG_NAMES, keywords);
+			if (!Validator.isBlank(keywords)) {
+				searchQuery.addTerm(Field.ASSET_TAG_NAMES, keywords);
 
-			searchQuery.addTerms(Field.KEYWORDS, keywords);
+				searchQuery.addTerms(Field.KEYWORDS, keywords);
 
-			addSearchExpando(
-				searchQuery, searchContext, keywords,
-				entryClassNameIndexerMap.keySet());
+				addSearchExpando(
+					searchQuery, searchContext, keywords,
+					entryClassNameIndexerMap.keySet());
+			}
 		}
 	}
 
@@ -117,10 +122,9 @@ public class FacetedSearcherImpl
 
 		BooleanQuery searchQuery = new BooleanQueryImpl();
 
-		String keywords = searchContext.getKeywords();
-
 		boolean luceneSyntax = GetterUtil.getBoolean(
-			searchContext.getAttribute("luceneSyntax"));
+			searchContext.getAttribute(
+				SearchContextAttributes.ATTRIBUTE_KEY_LUCENE_SYNTAX));
 
 		Map<String, Indexer<?>> entryClassNameIndexerMap =
 			_getEntryClassNameIndexerMap(
@@ -128,8 +132,7 @@ public class FacetedSearcherImpl
 				searchContext.getSearchEngineId());
 
 		addSearchKeywords(
-			searchQuery, keywords, luceneSyntax, entryClassNameIndexerMap,
-			searchContext);
+			searchQuery, luceneSyntax, entryClassNameIndexerMap, searchContext);
 
 		_addSearchTerms(
 			searchQuery, fullQueryBooleanFilter, luceneSyntax,
@@ -138,26 +141,7 @@ public class FacetedSearcherImpl
 		_addPreFilters(
 			fullQueryBooleanFilter, entryClassNameIndexerMap, searchContext);
 
-		Map<String, Facet> facets = searchContext.getFacets();
-
-		BooleanFilter facetBooleanFilter = new BooleanFilter();
-
-		for (Facet facet : facets.values()) {
-			BooleanClause<Filter> facetClause =
-				facet.getFacetFilterBooleanClause();
-
-			if (facetClause != null) {
-				facetBooleanFilter.add(
-					facetClause.getClause(),
-					facetClause.getBooleanClauseOccur());
-			}
-		}
-
 		BooleanQuery fullQuery = new BooleanQueryImpl();
-
-		if (facetBooleanFilter.hasClauses()) {
-			fullQuery.setPostFilter(facetBooleanFilter);
-		}
 
 		if (fullQueryBooleanFilter.hasClauses()) {
 			fullQuery.setPreBooleanFilter(fullQueryBooleanFilter);
@@ -188,31 +172,32 @@ public class FacetedSearcherImpl
 	protected Hits doSearch(SearchContext searchContext)
 		throws SearchException {
 
+		String keywords = StringUtil.trim(searchContext.getKeywords());
+
+		if (Validator.isBlank(keywords) &&
+			!GetterUtil.getBoolean(
+				searchContext.getAttribute(
+					SearchContextAttributes.ATTRIBUTE_KEY_EMPTY_SEARCH))) {
+
+			return new HitsImpl();
+		}
+
 		try {
 			searchContext.setSearchEngineId(getSearchEngineId());
 
-			BooleanFilter queryBooleanFilter = new BooleanFilter();
+			BooleanFilter booleanFilter = new BooleanFilter();
 
-			queryBooleanFilter.addRequiredTerm(
+			booleanFilter.addRequiredTerm(
 				Field.COMPANY_ID, searchContext.getCompanyId());
 
-			Query fullQuery = createFullQuery(
-				queryBooleanFilter, searchContext);
-
-			if (!fullQuery.hasChildren()) {
-				BooleanFilter preBooleanFilter =
-					fullQuery.getPreBooleanFilter();
-
-				fullQuery = new MatchAllQuery();
-
-				fullQuery.setPreBooleanFilter(preBooleanFilter);
-			}
+			Query query = _getFinalQuery(
+				createFullQuery(booleanFilter, searchContext));
 
 			QueryConfig queryConfig = searchContext.getQueryConfig();
 
-			fullQuery.setQueryConfig(queryConfig);
+			query.setQueryConfig(queryConfig);
 
-			return _indexSearcherHelper.search(searchContext, fullQuery);
+			return _indexSearcherHelper.search(searchContext, query);
 		}
 		catch (Exception e) {
 			throw new SearchException(e);
@@ -317,6 +302,19 @@ public class FacetedSearcherImpl
 		}
 
 		return _searchEngineHelper.getEntryClassNames();
+	}
+
+	private Query _getFinalQuery(Query query) {
+		if (query.hasChildren()) {
+			return query;
+		}
+
+		MatchAllQuery matchAllQuery = new MatchAllQuery();
+
+		matchAllQuery.setPostFilter(query.getPostFilter());
+		matchAllQuery.setPreBooleanFilter(query.getPreBooleanFilter());
+
+		return matchAllQuery;
 	}
 
 	private void _postProcessFullQuery(

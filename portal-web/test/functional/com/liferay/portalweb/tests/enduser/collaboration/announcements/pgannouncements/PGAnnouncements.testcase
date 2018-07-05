@@ -26,7 +26,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Announcements Page" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -144,8 +144,6 @@
 			<var name="portlet" value="Announcements and Alerts" />
 		</execute>
 
-		<execute function="AssertTextEquals#assertPartialText" locator1="Dropdown#FILTER_AND_ORDER" value1="General" />
-
 		<execute function="AssertTextEquals" locator1="Message#NO_ENTRIES" value1="No entries were found." />
 	</command>
 
@@ -199,7 +197,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Announcements Page" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 

@@ -619,7 +619,7 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -902,7 +902,7 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 
 			Object value = entry.getValue();
 
-			if (Validator.isNotNull(value)) {
+			if (value != null) {
 				sb.append(getJoin(key, value));
 			}
 		}
@@ -1238,7 +1238,7 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 
 			Object value = entry.getValue();
 
-			if (Validator.isNotNull(value)) {
+			if (value != null) {
 				sb.append(getWhere(key, value));
 			}
 		}

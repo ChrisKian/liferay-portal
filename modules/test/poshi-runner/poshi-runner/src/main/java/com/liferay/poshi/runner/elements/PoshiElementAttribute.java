@@ -256,12 +256,18 @@ public class PoshiElementAttribute implements Attribute {
 		return _attribute.supportsParent();
 	}
 
-	public String toReadableSyntax() {
+	public String toPoshiScript() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getName());
 		sb.append(" = \"");
-		sb.append(getValue());
+
+		String value = getValue();
+
+		value = value.replaceAll("\"", "&quot;");
+
+		sb.append(value);
+
 		sb.append("\"");
 
 		return sb.toString();

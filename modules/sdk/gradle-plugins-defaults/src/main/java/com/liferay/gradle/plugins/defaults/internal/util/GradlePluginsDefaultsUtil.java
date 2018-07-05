@@ -18,7 +18,9 @@ import com.liferay.gradle.util.Validator;
 
 import java.io.File;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.dm.gradle.plugins.bundle.BundleExtension;
@@ -37,8 +39,7 @@ import org.gradle.internal.authentication.DefaultBasicAuthentication;
 public class GradlePluginsDefaultsUtil {
 
 	public static final String DEFAULT_REPOSITORY_URL =
-		"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups" +
-			"/public";
+		"https://repository-cdn.liferay.com/nexus/content/groups/public";
 
 	public static final String[] JSON_VERSION_FILE_NAMES =
 		{"npm-shrinkwrap.json", "package-lock.json", "package.json"};
@@ -135,6 +136,33 @@ public class GradlePluginsDefaultsUtil {
 		}
 	}
 
+	public static Set<String> getBuildProfileFileNames(
+		String buildProfile, boolean publicBranch) {
+
+		if (Validator.isNull(buildProfile)) {
+			return null;
+		}
+
+		String suffix = "private";
+
+		if (publicBranch) {
+			suffix = "public";
+		}
+
+		Set<String> fileNames = new HashSet<>();
+
+		fileNames.add(
+			_BUILD_PROFILE_FILE_NAME_PREFIX + buildProfile + "-" + suffix);
+		fileNames.add(_BUILD_PROFILE_FILE_NAME_PREFIX + buildProfile);
+
+		if (buildProfile.equals("portal-all")) {
+			fileNames.add(_BUILD_PROFILE_FILE_NAME_PREFIX + "portal-" + suffix);
+			fileNames.add(_BUILD_PROFILE_FILE_NAME_PREFIX + "portal");
+		}
+
+		return fileNames;
+	}
+
 	public static String getBundleInstruction(Project project, String key) {
 		Map<String, String> bundleInstructions = getBundleInstructions(project);
 
@@ -223,6 +251,8 @@ public class GradlePluginsDefaultsUtil {
 			project.setVersion(version + SNAPSHOT_VERSION_SUFFIX);
 		}
 	}
+
+	private static final String _BUILD_PROFILE_FILE_NAME_PREFIX = ".lfrbuild-";
 
 	private static final String _TEST_PROJECT_SUFFIX = "-test";
 

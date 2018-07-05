@@ -409,8 +409,8 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 	}
 
 	protected boolean hasGeneratedTag(String content) {
-		if ((content.contains("@generated") || content.contains("$ANTLR")) &&
-			!content.contains("hasGeneratedTag")) {
+		if (_containsUnquoted(content, "@generated") ||
+			_containsUnquoted(content, "$ANTLR")) {
 
 			return true;
 		}
@@ -589,6 +589,22 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 		return false;
 	}
 
+	private boolean _containsUnquoted(String s, String text) {
+		int x = -1;
+
+		while (true) {
+			x = s.indexOf(text, x + 1);
+
+			if (x == -1) {
+				return false;
+			}
+
+			if (!ToolsUtil.isInsideQuotes(s, x)) {
+				return true;
+			}
+		}
+	}
+
 	private void _format(String fileName) throws Exception {
 		if (!_isMatchPath(fileName)) {
 			addProgressStatusUpdate(
@@ -647,8 +663,6 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 		sourceCheck.setPropertiesMap(_propertiesMap);
 		sourceCheck.setSourceFormatterExcludes(_sourceFormatterExcludes);
 		sourceCheck.setSubrepository(_subrepository);
-
-		sourceCheck.init();
 	}
 
 	private boolean _isMatchPath(String fileName) {

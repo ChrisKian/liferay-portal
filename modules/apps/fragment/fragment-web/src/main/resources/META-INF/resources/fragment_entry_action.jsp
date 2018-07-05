@@ -63,20 +63,19 @@ FragmentEntry fragmentEntry = (FragmentEntry)row.getObject();
 		/>
 	</c:if>
 
-	<c:if test="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, ActionKeys.PERMISSIONS) %>">
-		<liferay-security:permissionsURL
-			modelResource="<%= FragmentEntry.class.getName() %>"
-			modelResourceDescription="<%= fragmentEntry.getName() %>"
-			resourcePrimKey="<%= String.valueOf(fragmentEntry.getFragmentEntryId()) %>"
-			var="fragmentEntryPermissionsURL"
-			windowState="<%= LiferayWindowState.POP_UP.toString() %>"
-		/>
+	<c:if test="<%= FragmentPermission.contains(permissionChecker, scopeGroupId, FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES) %>">
+
+		<%
+		Map<String, Object> data = new HashMap<>();
+
+		data.put("fragment-entry-id", fragmentEntry.getFragmentEntryId());
+		%>
 
 		<liferay-ui:icon
-			message="permissions"
-			method="get"
-			url="<%= fragmentEntryPermissionsURL %>"
-			useDialog="<%= true %>"
+			cssClass="update-fragment-preview"
+			data="<%= data %>"
+			message="change-thumbnail"
+			url="javascript:;"
 		/>
 	</c:if>
 

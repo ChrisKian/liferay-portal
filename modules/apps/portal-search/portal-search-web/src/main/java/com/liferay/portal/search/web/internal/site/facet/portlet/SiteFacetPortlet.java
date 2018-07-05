@@ -50,7 +50,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"com.liferay.fragment.entry.processor.portlet.alias=search-facet-site",
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.css-class-wrapper=portlet-site-facet",
 		"com.liferay.portlet.display-category=category.search",
@@ -174,11 +173,11 @@ public class SiteFacetPortlet extends MVCPortlet {
 		PortletSharedSearchResponse portletSharedSearchResponse,
 		RenderRequest renderRequest) {
 
-		Optional<String[]> parameterValuesOptional =
+		Optional<String[]> optional =
 			portletSharedSearchResponse.getParameterValues(
 				parameterName, renderRequest);
 
-		return parameterValuesOptional.map(Arrays::asList);
+		return optional.map(Arrays::asList);
 	}
 
 	@Reference

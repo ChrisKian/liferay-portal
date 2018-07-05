@@ -21,13 +21,16 @@ import com.liferay.fragment.service.base.FragmentEntryLinkLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
@@ -91,6 +94,8 @@ public class FragmentEntryLinkLocalServiceImpl
 			serviceContext.getCreateDate(new Date()));
 		fragmentEntryLink.setNamespace(StringUtil.randomId());
 
+		_updateClassModel(classNameId, classPK);
+
 		fragmentEntryLinkPersistence.update(fragmentEntryLink);
 
 		return fragmentEntryLink;
@@ -124,7 +129,8 @@ public class FragmentEntryLinkLocalServiceImpl
 			fragmentEntryLinkPersistence.findByGroupId(groupId);
 
 		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			deleteFragmentEntryLink(fragmentEntryLink);
+			fragmentEntryLinkLocalService.deleteFragmentEntryLink(
+				fragmentEntryLink);
 		}
 	}
 
@@ -143,7 +149,8 @@ public class FragmentEntryLinkLocalServiceImpl
 		}
 
 		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			fragmentEntryLinkPersistence.remove(fragmentEntryLink);
+			fragmentEntryLinkLocalService.deleteFragmentEntryLink(
+				fragmentEntryLink);
 
 			deletedFragmentEntryLinks.add(fragmentEntryLink);
 		}
@@ -213,12 +220,16 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Override
 	public FragmentEntryLink updateFragmentEntryLink(
-		long fragmentEntryLinkId, int position) {
+			long fragmentEntryLinkId, int position)
+		throws PortalException {
 
 		FragmentEntryLink fragmentEntryLink = fetchFragmentEntryLink(
 			fragmentEntryLinkId);
 
 		fragmentEntryLink.setPosition(position);
+
+		_updateClassModel(
+			fragmentEntryLink.getClassNameId(), fragmentEntryLink.getClassPK());
 
 		fragmentEntryLinkPersistence.update(fragmentEntryLink);
 
@@ -260,12 +271,16 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Override
 	public FragmentEntryLink updateFragmentEntryLink(
-		long fragmentEntryLinkId, String editableValues) {
+			long fragmentEntryLinkId, String editableValues)
+		throws PortalException {
 
 		FragmentEntryLink fragmentEntryLink = fetchFragmentEntryLink(
 			fragmentEntryLinkId);
 
 		fragmentEntryLink.setEditableValues(editableValues);
+
+		_updateClassModel(
+			fragmentEntryLink.getClassNameId(), fragmentEntryLink.getClassPK());
 
 		fragmentEntryLinkPersistence.update(fragmentEntryLink);
 
@@ -314,8 +329,9 @@ public class FragmentEntryLinkLocalServiceImpl
 			oldFragmentEntryLink.getFragmentEntryId());
 
 		List<FragmentEntryLink> fragmentEntryLinks =
-			fragmentEntryLinkPersistence.findByG_C_C(
+			fragmentEntryLinkPersistence.findByG_F_C_C(
 				oldFragmentEntryLink.getGroupId(),
+				oldFragmentEntryLink.getFragmentEntryId(),
 				oldFragmentEntryLink.getClassNameId(),
 				oldFragmentEntryLink.getClassPK());
 
@@ -326,8 +342,30 @@ public class FragmentEntryLinkLocalServiceImpl
 
 			fragmentEntryLink.setLastPropagationDate(new Date());
 
+			_updateClassModel(
+				fragmentEntryLink.getClassNameId(),
+				fragmentEntryLink.getClassPK());
+
 			fragmentEntryLinkPersistence.update(fragmentEntryLink);
 		}
+	}
+
+	private void _updateClassModel(long classNameId, long classPK)
+		throws PortalException {
+
+		if (classNameId != _portal.getClassNameId(Layout.class)) {
+			return;
+		}
+
+		Layout layout = _layoutLocalService.fetchLayout(classPK);
+
+		if (layout == null) {
+			return;
+		}
+
+		_layoutLocalService.updateLayout(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			layout.getTypeSettings());
 	}
 
 	@ServiceReference(type = FragmentEntryProcessorRegistry.class)
@@ -335,5 +373,11 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@ServiceReference(type = JSONFactory.class)
 	private JSONFactory _jsonFactory;
+
+	@ServiceReference(type = LayoutLocalService.class)
+	private LayoutLocalService _layoutLocalService;
+
+	@ServiceReference(type = Portal.class)
+	private Portal _portal;
 
 }

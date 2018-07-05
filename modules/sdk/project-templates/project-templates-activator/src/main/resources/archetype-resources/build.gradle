@@ -5,7 +5,7 @@
 
 	repositories {
 		maven {
-			url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+			url "https://repository-cdn.liferay.com/nexus/content/groups/public"
 		}
 	}
 }
@@ -14,12 +14,16 @@ apply plugin: "com.liferay.plugin"
 
 #end
 dependencies {
+#if (${dependencyManagementEnabled} == "true")
+	compileOnly group: "org.osgi", name: "org.osgi.core"
+#else
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
+#end
 }
 #if (${projectType} != "workspace")
 
 repositories {
 	maven {
-		url "https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public"
+		url "https://repository-cdn.liferay.com/nexus/content/groups/public"
 	}
 }#end

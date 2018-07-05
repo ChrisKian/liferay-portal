@@ -15,6 +15,7 @@
 package com.liferay.source.formatter.checkstyle.util;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.source.formatter.SourceFormatterArgs;
@@ -138,10 +139,6 @@ public class CheckstyleUtil {
 			configuration = _filterCheck(configuration, checkName);
 		}
 
-		configuration = _addAttribute(
-			configuration, "baseDirName", sourceFormatterArgs.getBaseDirName(),
-			"com.liferay.source.formatter.checkstyle.checks." +
-				"GetterMethodCallCheck");
 		configuration = _addAttribute(
 			configuration, "maxLineLength",
 			String.valueOf(sourceFormatterArgs.getMaxLineLength()),
@@ -338,7 +335,9 @@ public class CheckstyleUtil {
 			copyConfiguration.addMessage(entry.getKey(), entry.getValue());
 		}
 
-		for (String name : defaultChildConfiguration.getAttributeNames()) {
+		String[] attributeNames = defaultChildConfiguration.getAttributeNames();
+
+		for (String name : attributeNames) {
 			if (name.equals(attributeName)) {
 				copyConfiguration.addAttribute(name, value);
 			}
@@ -346,6 +345,10 @@ public class CheckstyleUtil {
 				copyConfiguration.addAttribute(
 					name, defaultChildConfiguration.getAttribute(name));
 			}
+		}
+
+		if (!ArrayUtil.contains(attributeNames, attributeName)) {
+			copyConfiguration.addAttribute(attributeName, value);
 		}
 
 		treeWalkerConfiguration.removeChild(defaultChildConfiguration);

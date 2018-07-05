@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -68,7 +67,7 @@ import org.osgi.service.component.annotations.Reference;
 public class DDLImpl implements DDL {
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	@Override
@@ -229,7 +228,7 @@ public class DDLImpl implements DDL {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	@Override
@@ -243,7 +242,7 @@ public class DDLImpl implements DDL {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	@Override
@@ -280,7 +279,7 @@ public class DDLImpl implements DDL {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -293,7 +292,7 @@ public class DDLImpl implements DDL {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -358,7 +357,7 @@ public class DDLImpl implements DDL {
 	}
 
 	/**
-	 * @deprecated As of 1.1.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	@Override
@@ -390,7 +389,7 @@ public class DDLImpl implements DDL {
 	protected Object[] getFieldValues(Field field, Locale locale) {
 		Object fieldValue = field.getValue(locale);
 
-		if (Validator.isNull(fieldValue)) {
+		if (fieldValue == null) {
 			return new Object[0];
 		}
 

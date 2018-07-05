@@ -29,9 +29,10 @@ import com.liferay.petra.string.StringPool;
  */
 @DDMForm
 @DDMFormLayout(
-	{
+	paginationMode = com.liferay.dynamic.data.mapping.model.DDMFormLayout.TABBED_MODE,
+	value = {
 		@DDMFormLayoutPage(
-			title = "basic",
+			title = "%basic",
 			value = {
 				@DDMFormLayoutRow(
 					{
@@ -45,15 +46,15 @@ import com.liferay.petra.string.StringPool;
 			}
 		),
 		@DDMFormLayoutPage(
-			title = "properties",
+			title = "%properties",
 			value = {
 				@DDMFormLayoutRow(
 					{
 						@DDMFormLayoutColumn(
 							size = 12,
 							value = {
-								"showLabel", "repeatable", "validation",
-								"visibilityExpression"
+								"dataType", "name", "showLabel", "repeatable",
+								"type", "validation", "visibilityExpression"
 							}
 						)
 					}
@@ -89,7 +90,10 @@ public interface DefaultDDMFormFieldTypeSettings
 	)
 	public LocalizedValue label();
 
-	@DDMFormField(label = "%localizable", visibilityExpression = "FALSE")
+	@DDMFormField(
+		label = "%localizable", predefinedValue = "true",
+		visibilityExpression = "FALSE"
+	)
 	public boolean localizable();
 
 	@DDMFormField(
@@ -133,7 +137,7 @@ public interface DefaultDDMFormFieldTypeSettings
 	public DDMFormFieldValidation validation();
 
 	/**
-	 * @deprecated As of 2.0.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@DDMFormField(
 		label = "%field-visibility-expression",

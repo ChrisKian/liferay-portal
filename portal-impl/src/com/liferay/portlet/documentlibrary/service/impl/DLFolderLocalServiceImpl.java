@@ -151,7 +151,8 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #deleteAllByGroup(long)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #deleteAllByGroup(long)}
 	 */
 	@Deprecated
 	@Override
@@ -379,8 +380,8 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getGroupFolderIds(long,
-	 *             long)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #getGroupFolderIds(long, long)}
 	 */
 	@Deprecated
 	@Override
@@ -592,8 +593,8 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getGroupSubfolderIds(List,
-	 *             long, long)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #getGroupSubfolderIds(List, long, long)}
 	 */
 	@Deprecated
 	@Override
@@ -772,8 +773,9 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #updateFolder(long, long,
-	 *             String, String, long, List, int, ServiceContext)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #updateFolder(long, long, String, String, long, List, int,
+	 *             ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -915,8 +917,9 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced {@link #updateFolder(long, long,
-	 *             String, String, long, List, int, ServiceContext)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced {@link
+	 *             #updateFolder(long, long, String, String, long, List, int,
+	 *             ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -962,7 +965,7 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link #
 	 *             updateFolderAndFileEntryTypes(long, long, long, String,
 	 *             String, long, List, int, ServiceContext)}
 	 */
@@ -1044,8 +1047,8 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 			dlFolder.setName(name);
 			dlFolder.setDescription(description);
 			dlFolder.setExpandoBridgeAttributes(serviceContext);
-			dlFolder.setRestrictionType(restrictionType);
 			dlFolder.setDefaultFileEntryTypeId(defaultFileEntryTypeId);
+			dlFolder.setRestrictionType(restrictionType);
 
 			dlFolderPersistence.update(dlFolder);
 

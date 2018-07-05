@@ -59,7 +59,9 @@ import com.liferay.portal.template.soy.utils.SoyContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.PortletURL;
@@ -92,8 +94,6 @@ public class FragmentsEditorDisplayContext {
 	}
 
 	public SoyContext getEditorContext() throws PortalException {
-		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
-
 		SoyContext soyContext = SoyContextFactoryUtil.createSoyContext();
 
 		soyContext.put(
@@ -127,17 +127,8 @@ public class FragmentsEditorDisplayContext {
 
 		soyContext.put("classNameId", _classNameId);
 		soyContext.put("classPK", _classPK);
-
-		EditorConfiguration editorConfiguration =
-			EditorConfigurationFactoryUtil.getEditorConfiguration(
-				PortletIdCodec.decodePortletName(portletDisplay.getId()),
-				"fragmenEntryLinkEditor", StringPool.BLANK,
-				Collections.emptyMap(), _themeDisplay,
-				RequestBackedPortletURLFactoryUtil.create(_request));
-
 		soyContext.put(
-			"defaultEditorConfiguration", editorConfiguration.getData());
-
+			"defaultEditorConfigurations", _getDefaultConfigurations());
 		soyContext.put("defaultLanguageId", _themeDisplay.getLanguageId());
 		soyContext.put(
 			"deleteFragmentEntryLinkURL",
@@ -173,10 +164,16 @@ public class FragmentsEditorDisplayContext {
 		}
 
 		soyContext.put("portletNamespace", _renderResponse.getNamespace());
-		soyContext.put(
-			"publishLayoutPageTemplateEntryURL",
-			_getFragmentEntryActionURL(
-				"/layout/publish_layout_page_template_entry"));
+
+		if (_classNameId ==
+				PortalUtil.getClassNameId(LayoutPageTemplateEntry.class)) {
+
+			soyContext.put(
+				"publishLayoutPageTemplateEntryURL",
+				_getFragmentEntryActionURL(
+					"/layout/publish_layout_page_template_entry"));
+		}
+
 		soyContext.put(
 			"renderFragmentEntryURL",
 			_getFragmentEntryActionURL("/layout/render_fragment_entry"));
@@ -217,6 +214,32 @@ public class FragmentsEditorDisplayContext {
 				"/layout/update_layout_page_template_entry_asset_type"));
 
 		return soyContext;
+	}
+
+	private Map<String, Object> _getDefaultConfigurations() {
+		Map<String, Object> configurations = new HashMap<>();
+
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+
+		EditorConfiguration richTextEditorConfiguration =
+			EditorConfigurationFactoryUtil.getEditorConfiguration(
+				PortletIdCodec.decodePortletName(portletDisplay.getId()),
+				"fragmenEntryLinkRichTextEditor", StringPool.BLANK,
+				Collections.emptyMap(), _themeDisplay,
+				RequestBackedPortletURLFactoryUtil.create(_request));
+
+		configurations.put("rich-text", richTextEditorConfiguration.getData());
+
+		EditorConfiguration editorConfiguration =
+			EditorConfigurationFactoryUtil.getEditorConfiguration(
+				PortletIdCodec.decodePortletName(portletDisplay.getId()),
+				"fragmenEntryLinkEditor", StringPool.BLANK,
+				Collections.emptyMap(), _themeDisplay,
+				RequestBackedPortletURLFactoryUtil.create(_request));
+
+		configurations.put("text", editorConfiguration.getData());
+
+		return configurations;
 	}
 
 	private List<SoyContext> _getFragmentEntriesSoyContext(
@@ -405,13 +428,15 @@ public class FragmentsEditorDisplayContext {
 	private List<SoyContext> _getSoyContextFragmentCollections() {
 		List<SoyContext> soyContexts = new ArrayList<>();
 
+		long groupId = _getGroupId();
+
 		List<FragmentCollection> fragmentCollections =
-			FragmentCollectionServiceUtil.getFragmentCollections(_getGroupId());
+			FragmentCollectionServiceUtil.getFragmentCollections(groupId);
 
 		for (FragmentCollection fragmentCollection : fragmentCollections) {
 			List<FragmentEntry> fragmentEntries =
 				FragmentEntryServiceUtil.getFragmentEntries(
-					_getGroupId(), fragmentCollection.getFragmentCollectionId(),
+					groupId, fragmentCollection.getFragmentCollectionId(),
 					WorkflowConstants.STATUS_APPROVED);
 
 			if (ListUtil.isEmpty(fragmentEntries)) {
@@ -469,7 +494,7 @@ public class FragmentsEditorDisplayContext {
 					"fragmentEntryId", fragmentEntry.getFragmentEntryId());
 				soyContext.put(
 					"fragmentEntryLinkId",
-					fragmentEntryLink.getFragmentEntryLinkId());
+					String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()));
 				soyContext.put("name", fragmentEntry.getName());
 				soyContext.put("position", fragmentEntryLink.getPosition());
 

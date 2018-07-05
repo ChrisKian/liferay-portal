@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
@@ -74,7 +75,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portlet.PortletURLImpl;
 import com.liferay.portlet.asset.service.permission.AssetCategoryPermission;
 import com.liferay.portlet.asset.service.permission.AssetVocabularyPermission;
 
@@ -100,7 +100,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author     Brian Wing Shun Chan
  * @author     Jorge Ferrer
- * @deprecated As of 7.0.0, replaced by {@link
+ * @deprecated As of Judson (7.1.x), replaced by {@link
  *             com.liferay.asset.util.impl.AssetUtil}
  */
 @Deprecated
@@ -384,7 +384,7 @@ public class AssetUtil {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             #getAddPortletURL(LiferayPortletRequest,
 	 *             LiferayPortletResponse, long, String, long, long[], String[],
 	 *             String)}
@@ -408,7 +408,7 @@ public class AssetUtil {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 *             #getAssetPublisherAddItemHolders(LiferayPortletRequest,
 	 *             LiferayPortletResponse, long, long[], long[], long[],
 	 *             String[], String)}
@@ -442,7 +442,7 @@ public class AssetUtil {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             #getAssetPublisherAddItemHolders(LiferayPortletRequest,
 	 *             LiferayPortletResponse, long, long[], long[], long[],
 	 *             String[], String)}
@@ -478,12 +478,13 @@ public class AssetUtil {
 			addPortletURL.setParameter("layoutUuid", layout.getUuid());
 		}
 
-		if (addPortletURL instanceof PortletURLImpl) {
-			PortletURLImpl portletURLImpl = (PortletURLImpl)addPortletURL;
+		if (addPortletURL instanceof LiferayPortletURL) {
+			LiferayPortletURL liferayPortletURL =
+				(LiferayPortletURL)addPortletURL;
 
-			portletURLImpl.setRefererPlid(plid);
+			liferayPortletURL.setRefererPlid(plid);
 
-			return portletURLImpl.toString();
+			return liferayPortletURL.toString();
 		}
 
 		return HttpUtil.addParameter(
@@ -491,8 +492,8 @@ public class AssetUtil {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, replaced by {@link #getAddURLPopUp(long, long,
-	 *             PortletURL, boolean, Layout)}
+	 * @deprecated As of Judson (7.1.x), replaced by {@link
+	 *             #getAddURLPopUp(long, long, PortletURL, boolean, Layout)}
 	 */
 	@Deprecated
 	public static String getAddURLPopUp(
@@ -661,7 +662,7 @@ public class AssetUtil {
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	public static String getClassNameMessage(String className, Locale locale) {

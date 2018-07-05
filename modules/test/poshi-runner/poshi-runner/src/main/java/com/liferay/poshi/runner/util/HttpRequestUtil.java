@@ -113,6 +113,8 @@ public class HttpRequestUtil {
 
 		while (true) {
 			try {
+				System.out.println("Generating HTTP request for URL: " + url);
+
 				URL urlObject = new URL(url);
 
 				URLConnection urlConnection = urlObject.openConnection();
@@ -125,9 +127,14 @@ public class HttpRequestUtil {
 				HttpURLConnection httpURLConnection =
 					(HttpURLConnection)urlConnection;
 
+				System.out.println("Setting request method: " + requestMethod);
+
 				httpURLConnection.setRequestMethod(requestMethod);
 
 				if (httpAuthorizationHeader != null) {
+					System.out.println(
+						"Setting authorization: " + httpAuthorizationHeader);
+
 					httpURLConnection.setRequestProperty(
 						"Authorization", httpAuthorizationHeader.toString());
 				}
@@ -135,6 +142,11 @@ public class HttpRequestUtil {
 				if (requestHeaders != null) {
 					for (Map.Entry<String, String> requestHeader :
 							requestHeaders.entrySet()) {
+
+						System.out.println(
+							"Setting request header key \"" +
+								requestHeader.getKey() + "\" with value \"" +
+									requestHeader.getValue() + "\"");
 
 						httpURLConnection.setRequestProperty(
 							requestHeader.getKey(), requestHeader.getValue());
@@ -146,6 +158,8 @@ public class HttpRequestUtil {
 						throw new IllegalArgumentException(
 							"Request method 'GET' cannot have a request body");
 					}
+
+					System.out.println("Setting request body: " + requestBody);
 
 					if ((requestHeaders != null) &&
 						requestHeaders.containsKey("Content-Type")) {

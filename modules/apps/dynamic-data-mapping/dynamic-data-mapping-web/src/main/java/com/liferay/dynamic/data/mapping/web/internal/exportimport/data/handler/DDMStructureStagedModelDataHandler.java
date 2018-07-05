@@ -41,9 +41,12 @@ import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -179,7 +182,7 @@ public class DDMStructureStagedModelDataHandler
 		boolean preloaded = GetterUtil.getBoolean(
 			referenceElement.attributeValue("preloaded"));
 
-		DDMStructure existingStructure = fetchExistingStructure(
+		DDMStructure existingStructure = fetchExistingStructureWithParentGroups(
 			uuid, groupId, classNameId, structureKey, preloaded);
 
 		if (existingStructure == null) {
@@ -252,9 +255,7 @@ public class DDMStructureStagedModelDataHandler
 		boolean preloaded = GetterUtil.getBoolean(
 			referenceElement.attributeValue("preloaded"));
 
-		DDMStructure existingStructure = null;
-
-		existingStructure = fetchExistingStructure(
+		DDMStructure existingStructure = fetchExistingStructureWithParentGroups(
 			uuid, groupId, classNameId, structureKey, preloaded);
 
 		Map<Long, Long> structureIds =
@@ -478,6 +479,26 @@ public class DDMStructureStagedModelDataHandler
 		return existingStructure;
 	}
 
+	protected DDMStructure fetchExistingStructureWithParentGroups(
+		String uuid, long groupId, long classNameId, String structureKey,
+		boolean preloaded) {
+
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		while (group != null) {
+			DDMStructure existingStructure = fetchExistingStructure(
+				uuid, group.getGroupId(), classNameId, structureKey, preloaded);
+
+			if (existingStructure != null) {
+				return existingStructure;
+			}
+
+			group = group.getParentGroup();
+		}
+
+		return null;
+	}
+
 	protected DDMForm getImportDDMForm(
 			PortletDataContext portletDataContext, Element structureElement)
 		throws PortalException {
@@ -502,6 +523,17 @@ public class DDMStructureStagedModelDataHandler
 
 		return _ddmFormLayoutJSONDeserializer.deserialize(
 			serializedDDMFormLayout);
+	}
+
+	protected long getJSONArrayFirstValue(String value) {
+		try {
+			JSONArray jsonArray = jsonFactory.createJSONArray(value);
+
+			return jsonArray.getLong(0);
+		}
+		catch (Exception e) {
+			return GetterUtil.getLong(value);
+		}
 	}
 
 	protected void importDDMDataProviderInstances(
@@ -541,8 +573,8 @@ public class DDMStructureStagedModelDataHandler
 				continue;
 			}
 
-			long oldDDMDataProviderInstanceId = Long.valueOf(
-				String.valueOf(
+			long oldDDMDataProviderInstanceId = getJSONArrayFirstValue(
+				GetterUtil.getString(
 					ddmFormField.getProperty("ddmDataProviderInstanceId")));
 
 			long newDDMDataProviderInstanceId = MapUtil.getLong(
@@ -633,6 +665,9 @@ public class DDMStructureStagedModelDataHandler
 		_userLocalService = userLocalService;
 	}
 
+	@Reference
+	protected JSONFactory jsonFactory;
+
 	private static final String _DDM_DATA_PROVIDER_INSTANCE_IDS =
 		"ddm-data-provider-instance-ids";
 
@@ -651,6 +686,9 @@ public class DDMStructureStagedModelDataHandler
 	private DDMFormLayoutJSONDeserializer _ddmFormLayoutJSONDeserializer;
 	private DDMStructureLayoutLocalService _ddmStructureLayoutLocalService;
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Portal _portal;

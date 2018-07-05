@@ -141,6 +141,8 @@
 	</command>
 
 	<command name="RecycleBinBookmarks" priority="3">
+		<property name="portal.release" value="false" />
+
 		<execute macro="Navigator#gotoSitePage">
 			<var name="pageName" value="Test Page" />
 			<var name="siteName" value="Site Name" />
@@ -541,8 +543,8 @@
 			<var name="siteName" value="Site Name" />
 		</execute>
 
-		<execute macro="Portlet#changeDisplayStyle">
-			<var name="displayStyle" value="descriptive" />
+		<execute macro="LexiconEntry#changeDisplayStyle">
+			<var name="displayStyle" value="list" />
 		</execute>
 
 		<execute macro="DMFolder#addPG">

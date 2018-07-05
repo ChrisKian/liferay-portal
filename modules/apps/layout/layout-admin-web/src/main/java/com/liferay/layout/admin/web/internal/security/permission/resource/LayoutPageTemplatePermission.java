@@ -14,7 +14,6 @@
 
 package com.liferay.layout.admin.web.internal.security.permission.resource;
 
-import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 
@@ -35,7 +34,7 @@ public class LayoutPageTemplatePermission {
 	}
 
 	@Reference(
-		target = "(resource.name=" + LayoutPageTemplateConstants.RESOURCE_NAME + ")",
+		target = "(component.name=com.liferay.layout.page.template.internal.security.permission.resource.LayoutPageTemplatePortletResourcePermission)",
 		unbind = "-"
 	)
 	protected void setPortletResourcePermission(

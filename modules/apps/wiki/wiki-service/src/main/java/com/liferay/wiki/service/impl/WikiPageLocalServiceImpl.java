@@ -452,8 +452,9 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.2.0, replaced by {@link #addTempFileEntry(long, long,
-	 *             String, String, InputStream, String)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #addTempFileEntry(long, long, String, String, InputStream,
+	 *             String)}
 	 */
 	@Deprecated
 	@Override
@@ -1133,7 +1134,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 2.0.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -1578,8 +1579,8 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.2.0, replaced by {@link #renamePage(long, long,
-	 *             String, String, ServiceContext)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #renamePage(long, long, String, String, ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -1644,8 +1645,8 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.2.0, replaced by {@link #movePageFromTrash(long,
-	 *             long, String, long, String)} *
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #movePageFromTrash(long, long, String, long, String)} *
 	 */
 	@Deprecated
 	@Override
@@ -2087,8 +2088,8 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.2.0, replaced by {@link #updateStatus(long, WikiPage,
-	 *             int, ServiceContext, Map)}
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
+	 *             #updateStatus(long, WikiPage, int, ServiceContext, Map)}
 	 */
 	@Deprecated
 	@Override
@@ -2289,7 +2290,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	/**
-	 * @deprecated As of 1.2.0, replaced by {@link
+	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             WikiPageTitleValidator#validate(String)}
 	 */
 	@Deprecated
@@ -2332,8 +2333,8 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		}
 
 		for (WikiPage versionPage : versionPages) {
-			versionPage.setRedirectTitle(page.getRedirectTitle());
 			versionPage.setTitle(newTitle);
+			versionPage.setRedirectTitle(page.getRedirectTitle());
 
 			wikiPagePersistence.update(versionPage);
 		}
@@ -2650,9 +2651,9 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 			// Version page
 
-			versionPage.setParentTitle(newParentTitle);
 			versionPage.setNodeId(newNodeId);
 			versionPage.setTitle(page.getTitle());
+			versionPage.setParentTitle(newParentTitle);
 
 			trashVersion = trashVersionLocalService.fetchVersion(
 				WikiPage.class.getName(), versionPage.getPageId());
@@ -2896,9 +2897,9 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			page.getResourcePrimKey(), oldNodeId, false);
 
 		for (WikiPage pageVersion : pageVersions) {
-			pageVersion.setParentTitle(newParentTitle);
 			pageVersion.setNodeId(newNodeId);
 			pageVersion.setTitle(originalTitle);
+			pageVersion.setParentTitle(newParentTitle);
 
 			wikiPagePersistence.update(pageVersion);
 		}

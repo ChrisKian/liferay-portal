@@ -12,6 +12,14 @@
 
 		readyCounter: 0,
 
+		destroyComponents: function(portletId) {
+			Liferay.destroyComponents(
+				function(component, destroyConfig) {
+					return portletId === destroyConfig.portletId;
+				}
+			);
+		},
+
 		isStatic: function(portletId) {
 			var instance = this;
 
@@ -420,13 +428,17 @@
 			portlet = A.one(portlet);
 
 			if (portlet && (skipConfirm || confirm(Liferay.Language.get('are-you-sure-you-want-to-remove-this-component')))) {
-				var portletIndex = instance.list.indexOf(portlet.portletId);
+				var portletId = portlet.portletId;
+
+				var portletIndex = instance.list.indexOf(portletId);
 
 				if (portletIndex >= 0) {
 					instance.list.splice(portletIndex, 1);
 				}
 
 				options = Portlet._mergeOptions(portlet, options);
+
+				Portlet.destroyComponents(portletId);
 
 				Liferay.fire('destroyPortlet', options);
 
@@ -446,6 +458,10 @@
 			portlet = A.one(portlet);
 
 			if (portlet) {
+				var portletId = portlet.portletId || Util.getPortletId(portlet.attr('id'));
+
+				Portlet.destroyComponents(portletId);
+
 				Liferay.fire('destroyPortlet', Portlet._mergeOptions(portlet, options));
 			}
 		},
@@ -644,6 +660,8 @@
 					portlet.placeBefore(placeHolder);
 
 					portlet.remove(true);
+
+					Portlet.destroyComponents(portlet.portletId);
 
 					var params = {};
 

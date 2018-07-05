@@ -60,7 +60,7 @@
 	<command name="AddPagesFullPageApplication" priority="4">
 		<property name="testray.component.names" value="Site Pages Administration" />
 
-		<for list="Blogs,Documents and Media,Wiki,Media Gallery,Message Boards,Dynamic Data Mapping Form,Hello Soy Portlet,RSS" param="portlet">
+		<for list="Blogs,Documents and Media,Wiki,Media Gallery,Message Boards,Form,Hello Soy Portlet,RSS Publisher,OAuth2 Authorize Portlet" param="portlet">
 			<execute macro="ProductMenu#gotoPortlet">
 				<var name="category" value="Build" />
 				<var name="panel" value="Site Administration" />
@@ -75,7 +75,7 @@
 			<execute macro="SitePages#configurePage">
 				<var name="pageName" value="${portlet} Full Page Application" />
 				<var name="portlet" value="${portlet}" />
-				<var name="privacy" value="Public" />
+				<var name="privacy" value="Public Pages" />
 				<var name="sitePageType" value="Full Page Application" />
 			</execute>
 
@@ -83,46 +83,12 @@
 				<var name="pageName" value="${portlet} Full Page Application" />
 			</execute>
 
-			<if>
-				<equals arg1="${portlet}" arg2="Dynamic Data Mapping Form" />
-				<then>
-					<execute function="AssertTextEquals#assertTextCaseInsensitive" locator1="Home#PAGE_COLUMN_PORTLET_COLUMN_1_PORTLET_TITLE" value1="Form">
-						<var name="key_portletTitleName" value="Form" />
-					</execute>
-				</then>
-				<elseif>
-					<equals arg1="${portlet}" arg2="RSS" />
-					<then>
-						<execute function="AssertTextEquals#assertTextCaseInsensitive" locator1="Home#PAGE_COLUMN_PORTLET_COLUMN_1_PORTLET_TITLE" value1="RSS Publisher">
-							<var name="key_portletTitleName" value="RSS Publisher" />
-						</execute>
-					</then>
-				</elseif>
-				<else>
-					<execute function="AssertTextEquals#assertTextCaseInsensitive" locator1="Home#PAGE_COLUMN_PORTLET_COLUMN_1_PORTLET_TITLE" value1="${portlet}">
-						<var name="key_portletTitleName" value="${portlet}" />
-					</execute>
-				</else>
-			</if>
+			<execute function="AssertTextEquals#assertTextCaseInsensitive" locator1="Home#PAGE_COLUMN_PORTLET_COLUMN_1_PORTLET_TITLE" value1="${portlet}">
+				<var name="key_portletTitleName" value="${portlet}" />
+			</execute>
 
 			<execute function="AssertElementNotPresent" locator1="ControlMenu#ADD" />
 		</for>
-	</command>
-
-	<command name="AddPageViaNavigationMenu" priority="4">
-		<var method="TestPropsUtil#get('portal.url')" name="portalURL" />
-
-		<execute macro="NavigationMenu#gotoAddPage" />
-
-		<execute macro="SitePages#_addPage">
-			<var name="pageName" value="Test Page Name" />
-		</execute>
-
-		<execute macro="Navigator#gotoPage">
-			<var name="pageName" value="Test Page Name" />
-		</execute>
-
-		<execute function="AssertLocation" value1="${portalURL}/web/guest/test-page-name" />
 	</command>
 
 	<command name="AddPageWithEscapeCharacter" priority="3">
@@ -171,9 +137,9 @@
 
 		<for list="Site Child Page 1,Site Child Page 2,Site Child Page 3" param="childPageName">
 			<execute macro="Page#view">
-				<var name="depth" value="1" />
+				<var name="depth" value="2" />
 				<var name="pageName" value="${childPageName}" />
-				<var name="privacy" value="Public" />
+				<var name="privacy" value="Public Pages" />
 			</execute>
 		</for>
 	</command>
@@ -214,9 +180,9 @@
 		</execute>
 
 		<execute macro="Page#view">
-			<var name="depth" value="1" />
+			<var name="depth" value="2" />
 			<var name="pageName" value="Site Child Page" />
-			<var name="privacy" value="Private" />
+			<var name="privacy" value="Private Pages" />
 		</execute>
 	</command>
 
@@ -252,7 +218,7 @@
 
 		<execute macro="Page#view">
 			<var name="pageName" value="Site Page" />
-			<var name="privacy" value="Private" />
+			<var name="privacy" value="Private Pages" />
 		</execute>
 	</command>
 
@@ -331,9 +297,9 @@
 		</execute>
 
 		<execute macro="Page#view">
-			<var name="depth" value="1" />
+			<var name="depth" value="2" />
 			<var name="pageName" value="Site Child Page" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 		</execute>
 	</command>
 
@@ -369,7 +335,7 @@
 
 		<execute macro="Page#view">
 			<var name="pageName" value="Site Page" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 		</execute>
 	</command>
 
@@ -440,7 +406,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1 Column" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -461,7 +427,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1-2-1 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -486,7 +452,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="Freeform" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -507,7 +473,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="2 Columns (50/50)" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -528,7 +494,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="2 Columns (70/30)" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -549,7 +515,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="3 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -570,7 +536,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1-2 Columns (30/70)" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -595,7 +561,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1-2 Columns (70/30)" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -616,7 +582,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="2-2 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -637,7 +603,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1-3-1 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -658,7 +624,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="1-3-2 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -679,7 +645,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="2-1-2 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -700,7 +666,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="columnName" value="3-2-3 Columns" />
 			<var name="pageName" value="Site Page Name" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Widget Page" />
 		</execute>
 
@@ -710,63 +676,6 @@
 
 		<execute macro="Portlet#viewPG">
 			<var name="portletName" value="Web Content Display" />
-		</execute>
-	</command>
-
-	<command name="CopyApplicationsFromPageToPage" priority="4">
-		<property name="testray.component.names" value="Site Pages Administration" />
-
-		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Sites" />
-			<var name="panel" value="Control Panel" />
-			<var name="portlet" value="Sites" />
-		</execute>
-
-		<execute macro="Site#addBlankCP">
-			<var name="siteName" value="Site Name" />
-		</execute>
-
-		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Build" />
-			<var name="panel" value="Site Administration" />
-			<var name="portlet" value="Pages" />
-		</execute>
-
-		<execute macro="SitePages#addPublicPage">
-			<var name="pageName" value="Site Page" />
-		</execute>
-
-		<execute macro="SitePages#addPublicPage">
-			<var name="pageName" value="Blog Page" />
-		</execute>
-
-		<execute macro="Navigator#gotoSitePage">
-			<var name="pageName" value="Blog Page" />
-			<var name="siteName" value="Site Name" />
-		</execute>
-
-		<execute macro="Portlet#addPG">
-			<var name="portletName" value="Blogs" />
-		</execute>
-
-		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Build" />
-			<var name="panel" value="Site Administration" />
-			<var name="portlet" value="Pages" />
-		</execute>
-
-		<execute macro="Page#copyApplicationsFromPageToPage">
-			<var name="pageName" value="Blog Page" />
-			<var name="pageNameCopy" value="Site Page" />
-		</execute>
-
-		<execute macro="Navigator#gotoSitePage">
-			<var name="pageName" value="Blog Page" />
-			<var name="siteName" value="Site Name" />
-		</execute>
-
-		<execute macro="Portlet#viewNoSpecificPG">
-			<var name="portletName" value="Blogs" />
 		</execute>
 	</command>
 
@@ -832,7 +741,7 @@
 
 		<execute macro="Page#view">
 			<var name="pageName" value="Site Page Edit" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 		</execute>
 
 		<execute macro="ProductMenu#gotoPortlet">
@@ -860,7 +769,7 @@
 
 		<execute macro="Page#view">
 			<var name="pageName" value="Home" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 		</execute>
 	</command>
 
@@ -904,7 +813,7 @@
 		<execute macro="SitePages#configurePage">
 			<var name="pageName" value="Site Page" />
 			<var name="pageTypeURL" value="https://www.liferay.com" />
-			<var name="privacy" value="Public" />
+			<var name="privacy" value="Public Pages" />
 			<var name="sitePageType" value="Embedded" />
 		</execute>
 

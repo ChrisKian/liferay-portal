@@ -166,7 +166,7 @@ if (!CKEDITOR.plugins.get('embedurl')) {
 	const resizeElement = function(el, width, height) {
 		const wrapperElement = el.parentElement;
 
-		if (wrapperElement) {
+		if (wrapperElement && (width > 0) && (height > 0)) {
 			const rect = wrapperElement.getBoundingClientRect();
 
 			const pwidth = width >= rect.width ? 100 : Math.floor((width / rect.width) * 100);
@@ -200,15 +200,15 @@ if (!CKEDITOR.plugins.get('embedurl')) {
 				const selection = editor.getSelection();
 
 				if (selection) {
-					const startElement = selection.getStartElement();
+					const wrapperElement = selection.root.find('[data-cke-widget-wrapper]');
 
-					if (startElement) {
-						const wrapperElement = startElement.findOne('[data-cke-widget-wrapper]') ||
-							startElement.is('[data-cke-widget-wrapper]');
+					if (wrapperElement) {
+						const elementList = wrapperElement.$;
+						if (elementList.length > 0) {
+							const lastElement = new CKEDITOR.dom.element(elementList[elementList.length - 1]);
 
-						if (wrapperElement) {
-							const imageElement = wrapperElement.findOne('img');
-							const widgetElement = wrapperElement.findOne('[data-widget="embedurl"]');
+							const imageElement = lastElement.findOne('img');
+							const widgetElement = lastElement.findOne('[data-widget="embedurl"]');
 
 							if (imageElement && widgetElement) {
 								const range = editor.createRange();
@@ -217,7 +217,7 @@ if (!CKEDITOR.plugins.get('embedurl')) {
 								range.setEnd(imageElement, 1);
 
 								selection.selectRanges([range]);
-								selection.selectElement(wrapperElement);
+								selection.selectElement(lastElement);
 							}
 						}
 					}
@@ -384,16 +384,12 @@ if (!CKEDITOR.plugins.get('embedurl')) {
 							if (!styles) {
 								const iframe = instance.wrapper.findOne('iframe');
 
-								const height = iframe.getAttribute('height');
+								const bounds = instance.wrapper.$.getBoundingClientRect();
 								const width = iframe.getAttribute('width');
 
-								const bounds = instance.wrapper.$.getBoundingClientRect();
-
-								const pheight = height >= bounds.height ? 100 : Math.round((height / bounds.height) * 100);
 								const pwidth = width >= bounds.width ? 100 : Math.round((width / bounds.width) * 100);
 
 								styles = {
-									height: `${pheight}%`,
 									width: `${pwidth}%`
 								};
 							}
@@ -401,7 +397,7 @@ if (!CKEDITOR.plugins.get('embedurl')) {
 							instance.wrapper.setAttribute('style', CKEDITOR.tools.writeCssText(styles));
 
 							if (editor._selectEmbedWidget === event.data.url) {
-								selectWidget();
+								selectWidget(editor);
 							}
 						},
 

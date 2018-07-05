@@ -20,11 +20,13 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.xml.Element;
@@ -71,6 +73,7 @@ public class AssetCategoryPortletDataHandler extends BasePortletDataHandler {
 				AssetVocabulary.class.getName()));
 		setPublishToLiveByDefault(true);
 		setRank(110);
+		setStagingControls(getExportControls());
 	}
 
 	@Override
@@ -162,6 +165,19 @@ public class AssetCategoryPortletDataHandler extends BasePortletDataHandler {
 			PortletPreferences portletPreferences)
 		throws Exception {
 
+		if (ExportImportDateUtil.isRangeFromLastPublishDate(
+				portletDataContext)) {
+
+			_staging.populateLastPublishDateCounts(
+				portletDataContext,
+				new StagedModelType[] {
+					new StagedModelType(AssetCategory.class.getName()),
+					new StagedModelType(AssetVocabulary.class.getName())
+				});
+
+			return;
+		}
+
 		ActionableDynamicQuery categoryActionableDynamicQuery =
 			_assetCategoryLocalService.getExportActionableDynamicQuery(
 				portletDataContext);
@@ -176,7 +192,7 @@ public class AssetCategoryPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.0.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected ActionableDynamicQuery getCategoryActionableDynamicQuery(
@@ -194,7 +210,7 @@ public class AssetCategoryPortletDataHandler extends BasePortletDataHandler {
 	}
 
 	/**
-	 * @deprecated As of 1.0.0
+	 * @deprecated As of Judson (7.1.x)
 	 */
 	@Deprecated
 	protected ActionableDynamicQuery getVocabularyActionableDynamicQuery(
@@ -232,5 +248,8 @@ public class AssetCategoryPortletDataHandler extends BasePortletDataHandler {
 
 	private AssetCategoryLocalService _assetCategoryLocalService;
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private Staging _staging;
 
 }

@@ -1,7 +1,7 @@
 import {closest, getClosestAssetElement} from '../utils/assets.js';
 import {onReady} from '../utils/events.js';
 
-const applicationId = 'Documents';
+const applicationId = 'Document';
 
 /**
  * Returns analytics payload with Document information.
@@ -73,7 +73,7 @@ function trackDocumentPreviewed(analytics) {
 					payload = {title, ...payload};
 				}
 
-				analytics.send('documentViewed', applicationId, payload);
+				analytics.send('documentPreviewed', applicationId, payload);
 			});
 	});
 	return () => stopTrackingOnReady();

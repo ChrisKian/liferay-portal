@@ -269,7 +269,7 @@ public class LayoutRevisionLocalServiceImpl
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -315,7 +315,7 @@ public class LayoutRevisionLocalServiceImpl
 	}
 
 	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	@Override
@@ -364,6 +364,14 @@ public class LayoutRevisionLocalServiceImpl
 		long layoutSetBranchId, boolean head) {
 
 		return layoutRevisionPersistence.findByL_H(layoutSetBranchId, head);
+	}
+
+	@Override
+	public List<LayoutRevision> getLayoutRevisions(
+		long layoutSetBranchId, boolean head, int status) {
+
+		return layoutRevisionPersistence.findByL_H_S(
+			layoutSetBranchId, head, status);
 	}
 
 	@Override
@@ -478,10 +486,10 @@ public class LayoutRevisionLocalServiceImpl
 			layoutRevision.setUserName(user.getFullName());
 			layoutRevision.setLayoutSetBranchId(
 				oldLayoutRevision.getLayoutSetBranchId());
+			layoutRevision.setLayoutBranchId(layoutBranchId);
 			layoutRevision.setParentLayoutRevisionId(
 				oldLayoutRevision.getLayoutRevisionId());
 			layoutRevision.setHead(false);
-			layoutRevision.setLayoutBranchId(layoutBranchId);
 			layoutRevision.setPlid(oldLayoutRevision.getPlid());
 			layoutRevision.setPrivateLayout(
 				oldLayoutRevision.isPrivateLayout());

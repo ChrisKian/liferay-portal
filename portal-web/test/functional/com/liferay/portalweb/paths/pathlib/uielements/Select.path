@@ -100,7 +100,7 @@
 </tr>
 <tr>
 	<td>GENERIC_SELECT_FIELD</td>
-	<td>//div[label[contains(.,'${key_fieldLabel}')]//select</td>
+	<td>//div[label[contains(.,'${key_fieldLabel}')]]/select</td>
 	<td></td>
 </tr>
 <tr>
@@ -211,11 +211,6 @@
 <tr>
 	<td>TYPE</td>
 	<td>//div[label[contains(.,'Type')]]/select</td>
-	<td></td>
-</tr>
-<tr>
-	<td>USER_STATUS</td>
-	<td>//select[contains(@id,'StatusSelect')]</td>
 	<td></td>
 </tr>
 <tr>

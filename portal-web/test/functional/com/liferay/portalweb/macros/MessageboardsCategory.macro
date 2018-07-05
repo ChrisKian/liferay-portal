@@ -28,7 +28,7 @@
 
 		<execute function="Click" locator1="Button#SAVE" />
 
-		<execute function="AssertTextEquals" locator1="TextInput#REQUIRED_ALERT" value1="This field is required." />
+		<execute macro="Alert#viewRequiredField" />
 	</command>
 
 	<command name="addPG">
@@ -109,7 +109,7 @@
 
 		<execute function="Click" locator1="Button#SAVE" />
 
-		<execute function="AssertTextEquals" locator1="TextInput#REQUIRED_ALERT" value1="This field is required." />
+		<execute macro="Alert#viewRequiredField" />
 	</command>
 
 	<command name="addSubcategoryNullPG">
@@ -174,11 +174,11 @@
 
 	<command name="deleteCP">
 		<if>
-			<condition function="IsElementPresent" locator1="Checkbox#SELECT_ALL" />
+			<condition function="IsElementPresent" locator1="Checkbox#LEXICON_SELECT_ALL_CONTAINER" />
 			<then>
 				<execute macro="PortletEntry#selectAll" />
 
-				<execute function="Click" locator1="Button#RECYCLE_BIN" />
+				<execute function="Click" locator1="Icon#DELETE" />
 
 				<execute function="AssertElementPresent" locator1="Message#SUCCESS" />
 			</then>

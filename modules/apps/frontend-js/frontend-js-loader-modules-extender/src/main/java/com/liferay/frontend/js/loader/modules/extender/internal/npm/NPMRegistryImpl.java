@@ -27,6 +27,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -37,13 +38,13 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.osgi.framework.Bundle;
@@ -151,43 +152,44 @@ public class NPMRegistryImpl implements NPMRegistry {
 		JSPackageDependency jsPackageDependency) {
 
 		String packageName = jsPackageDependency.getPackageName();
+		String versionConstraints = jsPackageDependency.getVersionConstraints();
 
-		List<JSPackage> jsPackages = new ArrayList<>();
+		String cacheKey = StringBundler.concat(
+			packageName, StringPool.UNDERLINE, versionConstraints);
 
-		for (JSPackage jsPackage : _jsPackages.values()) {
-			if (packageName.equals(jsPackage.getName())) {
-				jsPackages.add(jsPackage);
+		JSPackage jsPackage = _dependencyJSPackages.get(cacheKey);
+
+		if (jsPackage != null) {
+			if (jsPackage == _NULL_JS_PACKAGE) {
+				return null;
+			}
+
+			return jsPackage;
+		}
+
+		Range range = Range.from(versionConstraints, true);
+
+		for (JSPackageVersion jsPackageVersion : _jsPackageVersions) {
+			JSPackage innerJSPackage = jsPackageVersion._jsPackage;
+			Version version = jsPackageVersion._version;
+
+			if (packageName.equals(innerJSPackage.getName()) &&
+				range.test(version)) {
+
+				jsPackage = innerJSPackage;
+
+				break;
 			}
 		}
 
-		Collections.sort(
-			jsPackages,
-			new Comparator<JSPackage>() {
-
-				@Override
-				public int compare(JSPackage jsPackage1, JSPackage jsPackage2) {
-					Version version1 = Version.from(
-						jsPackage1.getVersion(), true);
-					Version version2 = Version.from(
-						jsPackage2.getVersion(), true);
-
-					return version2.compareTo(version1);
-				}
-
-			});
-
-		Range range = Range.from(
-			jsPackageDependency.getVersionConstraints(), true);
-
-		for (JSPackage jsPackage : jsPackages) {
-			Version version = Version.from(jsPackage.getVersion(), true);
-
-			if (range.test(version)) {
-				return jsPackage;
-			}
+		if (jsPackage == null) {
+			_dependencyJSPackages.put(cacheKey, _NULL_JS_PACKAGE);
+		}
+		else {
+			_dependencyJSPackages.put(cacheKey, jsPackage);
 		}
 
-		return null;
+		return jsPackage;
 	}
 
 	@Activate
@@ -282,7 +284,8 @@ public class NPMRegistryImpl implements NPMRegistry {
 	}
 
 	private void _processLegacyBridges(Bundle bundle) {
-		Dictionary<String, String> headers = bundle.getHeaders();
+		Dictionary<String, String> headers = bundle.getHeaders(
+			StringPool.BLANK);
 
 		String jsSubmodulesBridge = GetterUtil.getString(
 			headers.get("Liferay-JS-Submodules-Bridge"));
@@ -309,14 +312,18 @@ public class NPMRegistryImpl implements NPMRegistry {
 	}
 
 	private synchronized void _refreshJSModuleCaches() {
+		_dependencyJSPackages.clear();
+
 		Map<String, JSModule> jsModules = new HashMap<>();
 		Map<String, JSPackage> jsPackages = new HashMap<>();
+		List<JSPackageVersion> jsPackageVersions = new ArrayList<>();
 		Map<String, JSModule> resolvedJSModules = new HashMap<>();
 		Map<String, JSPackage> resolvedJSPackages = new HashMap<>();
 
 		for (JSBundle jsBundle : _jsBundles) {
 			for (JSPackage jsPackage : jsBundle.getJSPackages()) {
 				jsPackages.put(jsPackage.getId(), jsPackage);
+				jsPackageVersions.add(new JSPackageVersion(jsPackage));
 				resolvedJSPackages.put(jsPackage.getResolvedId(), jsPackage);
 
 				for (JSModule jsModule : jsPackage.getJSModules()) {
@@ -326,8 +333,14 @@ public class NPMRegistryImpl implements NPMRegistry {
 			}
 		}
 
+		Comparator<JSPackageVersion> comparator = Comparator.comparing(
+			JSPackageVersion::getVersion);
+
+		jsPackageVersions.sort(comparator.reversed());
+
 		_jsModules = jsModules;
 		_jsPackages = jsPackages;
+		_jsPackageVersions = jsPackageVersions;
 		_resolvedJSModules = resolvedJSModules;
 		_resolvedJSPackages = resolvedJSPackages;
 	}
@@ -349,8 +362,13 @@ public class NPMRegistryImpl implements NPMRegistry {
 		}
 	}
 
+	private static final JSPackage _NULL_JS_PACKAGE =
+		ProxyFactory.newDummyInstance(JSPackage.class);
+
 	private BundleContext _bundleContext;
 	private BundleTracker<JSBundle> _bundleTracker;
+	private final Map<String, JSPackage> _dependencyJSPackages =
+		new ConcurrentHashMap<>();
 	private final Map<String, String> _globalAliases = new HashMap<>();
 	private final List<JSBundleProcessor> _jsBundleProcessors =
 		new ArrayList<>();
@@ -374,8 +392,26 @@ public class NPMRegistryImpl implements NPMRegistry {
 	private JSONFactory _jsonFactory;
 
 	private Map<String, JSPackage> _jsPackages = new HashMap<>();
+	private List<JSPackageVersion> _jsPackageVersions = new ArrayList<>();
 	private Map<String, JSModule> _resolvedJSModules = new HashMap<>();
 	private Map<String, JSPackage> _resolvedJSPackages = new HashMap<>();
+
+	private static class JSPackageVersion {
+
+		public Version getVersion() {
+			return _version;
+		}
+
+		private JSPackageVersion(JSPackage jsPackage) {
+			_jsPackage = jsPackage;
+
+			_version = Version.from(jsPackage.getVersion(), true);
+		}
+
+		private final JSPackage _jsPackage;
+		private final Version _version;
+
+	}
 
 	private class NPMRegistryBundleTrackerCustomizer
 		implements BundleTrackerCustomizer<JSBundle> {

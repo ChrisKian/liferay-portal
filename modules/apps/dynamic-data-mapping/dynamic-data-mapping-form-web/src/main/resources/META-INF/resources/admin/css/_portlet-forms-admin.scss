@@ -70,6 +70,7 @@
 	.autosave-feedback {
 		display: block;
 		padding-bottom: 18.071px;
+		padding-left: 124px;
 		padding-top: 18.071px;
 		text-align: center;
 		width: 100%;
@@ -136,6 +137,7 @@
 		border-width: 0;
 		box-shadow: none;
 		margin: 0;
+		padding: 16px 10px 16px 10px;
 
 		&:hover {
 			background-color: #F0F8FE;
@@ -299,7 +301,7 @@
 	.form-builder-pages-header {
 		margin-bottom: 0;
 		margin-top: 0;
-		padding-left: 34px;
+		padding-left: 24px;
 		padding-right: 0;
 		width: auto;
 
@@ -343,7 +345,7 @@
 	}
 
 	.form-builder-pages-header .form-builder-controls-trigger {
-		padding: 32px;
+		padding: 32px 16px;
 		position: absolute;
 		right: 0;
 		top: 0;

@@ -15,7 +15,7 @@
 package com.liferay.portal.search.web.internal.modified.facet.builder;
 
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.facet.config.FacetConfiguration;
@@ -27,6 +27,7 @@ import com.liferay.portal.search.facet.Facet;
 import com.liferay.portal.search.facet.modified.ModifiedFacetFactory;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,10 +37,12 @@ public class ModifiedFacetBuilder {
 
 	public ModifiedFacetBuilder(
 		ModifiedFacetFactory modifiedFacetFactory,
-		CalendarFactory calendarFactory, DateFormatFactory dateFormatFactory) {
+		CalendarFactory calendarFactory, DateFormatFactory dateFormatFactory,
+		JSONFactory jsonFactory) {
 
 		_modifiedFacetFactory = modifiedFacetFactory;
 		_calendarFactory = calendarFactory;
+		_jsonFactory = jsonFactory;
 
 		_dateRangeFactory = new DateRangeFactory(dateFormatFactory);
 	}
@@ -66,6 +69,10 @@ public class ModifiedFacetBuilder {
 		_customRangeTo = customRangeTo;
 	}
 
+	public void setRangesJSONArray(JSONArray rangesJSONArray) {
+		_rangesJSONArray = rangesJSONArray;
+	}
+
 	public void setSearchContext(SearchContext searchContext) {
 		_searchContext = searchContext;
 	}
@@ -76,6 +83,8 @@ public class ModifiedFacetBuilder {
 
 	protected FacetConfiguration buildFacetConfiguration(Facet facet) {
 		FacetConfiguration facetConfiguration = new FacetConfiguration();
+
+		facetConfiguration.setDataJSONObject(_jsonFactory.createJSONObject());
 
 		facetConfiguration.setFieldName(facet.getFieldName());
 		facetConfiguration.setLabel("any-time");
@@ -92,14 +101,14 @@ public class ModifiedFacetBuilder {
 		return facetConfiguration;
 	}
 
-	protected JSONArray getRangesJSONArray(Calendar calendar) {
-		JSONArray rangesJSONArray = JSONFactoryUtil.createJSONArray();
+	protected JSONArray getDefaultRangesJSONArray(Calendar calendar) {
+		JSONArray rangesJSONArray = _jsonFactory.createJSONArray();
 
 		Map<String, String> map = _dateRangeFactory.getRangeStrings(calendar);
 
 		map.forEach(
 			(key, value) -> {
-				JSONObject range = JSONFactoryUtil.createJSONObject();
+				JSONObject range = _jsonFactory.createJSONObject();
 
 				range.put("label", key);
 				range.put("range", value);
@@ -108,6 +117,28 @@ public class ModifiedFacetBuilder {
 			});
 
 		return rangesJSONArray;
+	}
+
+	protected JSONArray getRangesJSONArray(Calendar calendar) {
+		if (_rangesJSONArray == null) {
+			_rangesJSONArray = getDefaultRangesJSONArray(calendar);
+		}
+
+		return _rangesJSONArray;
+	}
+
+	protected Map<String, String> getRangesMap(JSONArray rangesJSONArray) {
+		Map<String, String> rangesMap = new HashMap<>();
+
+		for (int i = 0; i < rangesJSONArray.length(); i++) {
+			JSONObject rangeJSONObject = rangesJSONArray.getJSONObject(i);
+
+			rangesMap.put(
+				rangeJSONObject.getString("label"),
+				rangeJSONObject.getString("range"));
+		}
+
+		return rangesMap;
 	}
 
 	private String _getSelectedRangeString() {
@@ -119,9 +150,17 @@ public class ModifiedFacetBuilder {
 		}
 
 		if (!ArrayUtil.isEmpty(_selectedRanges)) {
-			return _dateRangeFactory.getRangeString(
-				_selectedRanges[_selectedRanges.length - 1],
-				_calendarFactory.getCalendar());
+			Map<String, String> rangesMap = getRangesMap(_rangesJSONArray);
+
+			String selectedRange = _selectedRanges[_selectedRanges.length - 1];
+
+			if (rangesMap.containsKey(selectedRange)) {
+				return rangesMap.get(selectedRange);
+			}
+			else {
+				return _dateRangeFactory.getRangeString(
+					selectedRange, _calendarFactory.getCalendar());
+			}
 		}
 
 		return null;
@@ -131,7 +170,9 @@ public class ModifiedFacetBuilder {
 	private String _customRangeFrom;
 	private String _customRangeTo;
 	private final DateRangeFactory _dateRangeFactory;
+	private final JSONFactory _jsonFactory;
 	private final ModifiedFacetFactory _modifiedFacetFactory;
+	private JSONArray _rangesJSONArray;
 	private SearchContext _searchContext;
 	private String[] _selectedRanges;
 

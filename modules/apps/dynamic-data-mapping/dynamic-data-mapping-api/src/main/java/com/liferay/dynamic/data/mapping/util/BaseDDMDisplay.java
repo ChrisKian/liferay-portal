@@ -168,8 +168,8 @@ public abstract class BaseDDMDisplay implements DDMDisplay {
 				TemplateHandlerRegistryUtil.getTemplateHandler(classNameId);
 
 			if (templateHandler != null) {
-				return LanguageUtil.get(locale, "new") + StringPool.SPACE +
-					templateHandler.getName(locale);
+				return LanguageUtil.format(
+					locale, "new-x", templateHandler.getName(locale), false);
 			}
 		}
 
@@ -350,7 +350,7 @@ public abstract class BaseDDMDisplay implements DDMDisplay {
 	}
 
 	/**
-	 * @deprecated As of 3.4.0
+	 * @deprecated As of Wilberforce (7.0.x)
 	 */
 	@Deprecated
 	@Override
@@ -455,7 +455,7 @@ public abstract class BaseDDMDisplay implements DDMDisplay {
 	}
 
 	/**
-	 * @deprecated As of 3.6.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	protected ResourceBundle getBaseDDMDisplayResourceBundle(
@@ -469,7 +469,7 @@ public abstract class BaseDDMDisplay implements DDMDisplay {
 	}
 
 	/**
-	 * @deprecated As of 3.6.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	protected ResourceBundle getDDMDisplayResourceBundle(String languageId) {
@@ -498,7 +498,7 @@ public abstract class BaseDDMDisplay implements DDMDisplay {
 	}
 
 	/**
-	 * @deprecated As of 3.6.0, with no direct replacement
+	 * @deprecated As of Judson (7.1.x), with no direct replacement
 	 */
 	@Deprecated
 	protected ResourceBundle getPortalResourceBundle(String languageId) {

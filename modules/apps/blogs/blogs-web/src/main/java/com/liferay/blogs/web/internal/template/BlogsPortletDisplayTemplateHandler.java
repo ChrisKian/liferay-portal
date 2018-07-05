@@ -21,7 +21,6 @@ import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.blogs.service.BlogsEntryService;
 import com.liferay.blogs.web.internal.security.permission.resource.BlogsEntryPermission;
 import com.liferay.blogs.web.internal.util.BlogsEntryUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -78,8 +77,7 @@ public class BlogsPortletDisplayTemplateHandler
 		String portletTitle = _portal.getPortletTitle(
 			BlogsPortletKeys.BLOGS, locale);
 
-		return portletTitle.concat(StringPool.SPACE).concat(
-			LanguageUtil.get(locale, "template"));
+		return LanguageUtil.format(locale, "x-template", portletTitle, false);
 	}
 
 	@Override
@@ -154,7 +152,7 @@ public class BlogsPortletDisplayTemplateHandler
 	private Portal _portal;
 
 	@Reference(
-		target = "(&(release.bundle.symbolic.name=com.liferay.blogs.service)(release.schema.version=1.1.0))"
+		target = "(&(release.bundle.symbolic.name=com.liferay.blogs.service)(release.schema.version=1.1.1))"
 	)
 	private Release _release;
 

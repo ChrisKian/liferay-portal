@@ -144,6 +144,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>APPLY</td>
+	<td>//button[contains(.,'Apply')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>APPLY_EFFECTS</td>
 	<td>//div[contains(@class,'controls-container') and contains(@class,'open')]//button[contains(@class,'btn') and contains(.,'Apply')]</td>
 	<td></td>
@@ -455,7 +460,12 @@
 </tr>
 <tr>
 	<td>LOCALIZATION</td>
-	<td>//div[label[contains(.,'${key_fieldName}')]]//div[contains(@class,'localized')]//button[contains(@class,'localized')]</td>
+	<td>//div[label[contains(.,'${key_fieldName}')]]//div[contains(@class,'localized')]//button[contains(@class,'localized')] | //div[contains(@class,'ddm-container')]//div[contains(@class,'localized')]//button[contains(@class,'localized')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>MAP_TO</td>
+	<td>//button[contains(.,'Map to')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -761,11 +771,6 @@
 <tr>
 	<td>MAIN_CONTENT_SUBMIT</td>
 	<td>//div[@id='main-content']//button[@type='submit']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MODAL_CONTENT_SUBMIT</td>
-	<td>//div[@class='modal-content']//button[contains(.,'Submit')]</td>
 	<td></td>
 </tr>
 <tr>

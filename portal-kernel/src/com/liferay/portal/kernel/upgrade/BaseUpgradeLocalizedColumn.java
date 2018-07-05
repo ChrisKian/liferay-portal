@@ -24,8 +24,7 @@ import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 
-import java.io.IOException;
-
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.HashSet;
@@ -78,9 +77,11 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 	}
 
 	/**
-	* @deprecated As of 7.0.0,
-	* use {@link BaseUpgradeLocalizedColumn#upgradeLocalizedColumn(ResourceBundleLoader, Class, String, String, String, String, long[])}
-	*/
+	 * @deprecated As of Judson (7.1.x), use {@link
+	 *             BaseUpgradeLocalizedColumn#upgradeLocalizedColumn(
+	 *             ResourceBundleLoader, Class, String, String, String, String,
+	 *             long[])}
+	 */
 	@Deprecated
 	protected void upgradeLocalizedColumn(
 			ResourceBundleLoader resourceBundleLoader, String tableName,
@@ -101,11 +102,6 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 				resourceBundleLoader, tableName, columnName, originalContent,
 				localizationMapKey, localizationXMLKey, companyId);
 		}
-	}
-
-	private String _escape(String string) {
-		return string.replace(
-			StringPool.APOSTROPHE, StringPool.DOUBLE_APOSTROPHE);
 	}
 
 	private String _getLocalizationXML(
@@ -157,16 +153,18 @@ public abstract class BaseUpgradeLocalizedColumn extends UpgradeProcess {
 			resourceBundleLoader);
 
 		String sql = StringBundler.concat(
-			"update ", tableName, " set ", columnName, " = '",
-			_escape(localizationXML), "' where CAST_CLOB_TEXT(", columnName,
-			") = '", _escape(originalContent), "' and companyId = ",
-			String.valueOf(companyId));
+			"update ", tableName, " set ", columnName, " = ? where ",
+			columnName, " like ? and companyId = ?");
 
-		try {
-			runSQL(sql);
+		try (PreparedStatement ps = connection.prepareStatement(sql)) {
+			ps.setString(1, localizationXML);
+			ps.setString(2, originalContent);
+			ps.setLong(3, companyId);
+
+			ps.executeUpdate();
 		}
-		catch (IOException ioe) {
-			throw new SystemException(ioe);
+		catch (SQLException sqle) {
+			throw new SystemException(sqle);
 		}
 	}
 

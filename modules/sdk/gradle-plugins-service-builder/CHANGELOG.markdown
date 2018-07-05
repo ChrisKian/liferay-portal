@@ -544,6 +544,78 @@ version 1.0.221.
 - [LPS-81336]: Update the [Liferay Portal Tools Service Builder] dependency to
 version 1.0.222.
 
+## 2.1.40 - 2018-06-05
+
+### Changed
+- [LPS-81336]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.223.
+
+## 2.1.41 - 2018-06-07
+
+### Changed
+- [LPS-78940]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.224.
+
+## 2.1.42 - 2018-06-08
+
+### Changed
+- [LPS-72445]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.225.
+
+## 2.1.43 - 2018-06-11
+
+### Changed
+- [LPS-80927]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.226.
+
+## 2.1.44 - 2018-06-11
+
+### Changed
+- [LPS-82261]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.227.
+
+## 2.1.45 - 2018-06-12
+
+### Changed
+- [LPS-82261]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.228.
+
+## 2.1.46 - 2018-06-20
+
+### Changed
+- [LPS-82433]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.229.
+
+## 2.1.47 - 2018-06-21
+
+### Changed
+- [LPS-76509]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.230.
+
+## 2.1.48 - 2018-06-22
+
+### Changed
+- [LPS-82815]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.231.
+
+## 2.1.49 - 2018-06-25
+
+### Changed
+- [LPS-82828]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.232.
+
+## 2.1.50 - 2018-06-25
+
+### Changed
+- [LPS-74608]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.233.
+
+## 2.1.51 - 2018-07-02
+
+### Changed
+- [LPS-82828]: Update the [Liferay Portal Tools Service Builder] dependency to
+version 1.0.234.
+
 [Liferay Portal Tools Service Builder]: https://github.com/liferay/liferay-portal/tree/master/modules/util/portal-tools-service-builder
 [LPS-53392]: https://issues.liferay.com/browse/LPS-53392
 [LPS-58672]: https://issues.liferay.com/browse/LPS-58672
@@ -565,6 +637,7 @@ version 1.0.222.
 [LPS-71722]: https://issues.liferay.com/browse/LPS-71722
 [LPS-71925]: https://issues.liferay.com/browse/LPS-71925
 [LPS-72347]: https://issues.liferay.com/browse/LPS-72347
+[LPS-72445]: https://issues.liferay.com/browse/LPS-72445
 [LPS-73156]: https://issues.liferay.com/browse/LPS-73156
 [LPS-73408]: https://issues.liferay.com/browse/LPS-73408
 [LPS-73967]: https://issues.liferay.com/browse/LPS-73967
@@ -574,6 +647,7 @@ version 1.0.222.
 [LPS-74278]: https://issues.liferay.com/browse/LPS-74278
 [LPS-74348]: https://issues.liferay.com/browse/LPS-74348
 [LPS-74544]: https://issues.liferay.com/browse/LPS-74544
+[LPS-74608]: https://issues.liferay.com/browse/LPS-74608
 [LPS-74824]: https://issues.liferay.com/browse/LPS-74824
 [LPS-75009]: https://issues.liferay.com/browse/LPS-75009
 [LPS-75010]: https://issues.liferay.com/browse/LPS-75010
@@ -581,12 +655,14 @@ version 1.0.222.
 [LPS-75399]: https://issues.liferay.com/browse/LPS-75399
 [LPS-75859]: https://issues.liferay.com/browse/LPS-75859
 [LPS-76018]: https://issues.liferay.com/browse/LPS-76018
+[LPS-76509]: https://issues.liferay.com/browse/LPS-76509
 [LPS-76626]: https://issues.liferay.com/browse/LPS-76626
 [LPS-77639]: https://issues.liferay.com/browse/LPS-77639
 [LPS-77645]: https://issues.liferay.com/browse/LPS-77645
 [LPS-78023]: https://issues.liferay.com/browse/LPS-78023
 [LPS-78477]: https://issues.liferay.com/browse/LPS-78477
 [LPS-78901]: https://issues.liferay.com/browse/LPS-78901
+[LPS-78940]: https://issues.liferay.com/browse/LPS-78940
 [LPS-78971]: https://issues.liferay.com/browse/LPS-78971
 [LPS-79262]: https://issues.liferay.com/browse/LPS-79262
 [LPS-79336]: https://issues.liferay.com/browse/LPS-79336
@@ -611,6 +687,11 @@ version 1.0.222.
 [LPS-80723]: https://issues.liferay.com/browse/LPS-80723
 [LPS-80840]: https://issues.liferay.com/browse/LPS-80840
 [LPS-80920]: https://issues.liferay.com/browse/LPS-80920
+[LPS-80927]: https://issues.liferay.com/browse/LPS-80927
 [LPS-81106]: https://issues.liferay.com/browse/LPS-81106
 [LPS-81336]: https://issues.liferay.com/browse/LPS-81336
 [LPS-81404]: https://issues.liferay.com/browse/LPS-81404
+[LPS-82261]: https://issues.liferay.com/browse/LPS-82261
+[LPS-82433]: https://issues.liferay.com/browse/LPS-82433
+[LPS-82815]: https://issues.liferay.com/browse/LPS-82815
+[LPS-82828]: https://issues.liferay.com/browse/LPS-82828

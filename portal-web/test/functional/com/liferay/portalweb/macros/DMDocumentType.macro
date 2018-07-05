@@ -123,7 +123,7 @@
 					<var name="panel" value="Additional Metadata Fields" />
 				</execute>
 
-				<execute function="AssertClick" locator1="DocumentsAndMediaEditDocumentType#REMOVE_METADATA_SET_BUTTON" value1="Remove" />
+				<execute function="Click" locator1="DocumentsAndMediaEditDocumentType#REMOVE_METADATA_SET_BUTTON" />
 			</then>
 		</if>
 
@@ -152,7 +152,7 @@
 	</command>
 
 	<command name="selectPGMetadataSet">
-		<execute function="AssertClick" locator1="DocumentsAndMediaEditDocumentType#SELECT_METADATA_SET_BUTTON" value1="Select Metadata Set" />
+		<execute function="AssertClick" locator1="DocumentsAndMediaEditDocumentType#SELECT_BUTTON" value1="Select" />
 
 		<execute function="SelectFrameTop" value1="relative=top" />
 
