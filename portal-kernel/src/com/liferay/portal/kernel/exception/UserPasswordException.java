@@ -79,6 +79,12 @@ public class UserPasswordException extends PortalException {
 	@Deprecated
 	public static final int PASSWORDS_DO_NOT_MATCH = 10;
 
+	private static final int PASSWORDS_MUST_HAVE_MORE_ALPHANUMERIC = 11;
+	private static final int PASSWORDS_MUST_HAVE_MORE_LOWERCASE = 12;
+	private static final int PASSWORDS_MUST_HAVE_MORE_NUMBERS= 13;
+	private static final int PASSWORDS_MUST_HAVE_MORE_SYMBOLS = 14;
+	private static final int PASSWORDS_MUST_HAVE_MORE_UPPERCASE = 15;
+
 	/**
 	 * @deprecated As of Wilberforce (7.0.x), replaced by the inner classes
 	 */
@@ -268,6 +274,81 @@ public class UserPasswordException extends PortalException {
 				String.format(
 					"Password for user %s must not be too trivial", userId),
 				PASSWORD_TOO_TRIVIAL);
+
+			this.userId = userId;
+		}
+
+		public long userId;
+
+	}
+
+	public static class MustHaveMoreAlphanumeric extends UserPasswordException {
+
+		public MustHaveMoreAlphanumeric(long userId) {
+			super(
+				String.format(
+					"Password for user %s does not have sufficient alphanumeric characters", userId),
+				PASSWORDS_MUST_HAVE_MORE_ALPHANUMERIC);
+
+			this.userId = userId;
+		}
+
+		public long userId;
+
+	}
+
+	public static class MustHaveMoreLowercase extends UserPasswordException {
+
+		public MustHaveMoreLowercase(long userId) {
+			super(
+				String.format(
+					"Password for user %s does not have sufficient lowercase characters", userId),
+				PASSWORDS_MUST_HAVE_MORE_LOWERCASE);
+
+			this.userId = userId;
+		}
+
+		public long userId;
+
+	}
+
+	public static class MustHaveMoreNumbers extends UserPasswordException {
+
+		public MustHaveMoreNumbers(long userId) {
+			super(
+				String.format(
+					"Password for user %s does not have sufficient number characters", userId),
+				PASSWORDS_MUST_HAVE_MORE_NUMBERS);
+
+			this.userId = userId;
+		}
+
+		public long userId;
+
+	}
+
+	public static class MustHaveMoreSymbols extends UserPasswordException {
+
+		public MustHaveMoreSymbols(long userId) {
+			super(
+				String.format(
+					"Password for user %s does not have sufficient symbol characters", userId),
+				PASSWORDS_MUST_HAVE_MORE_SYMBOLS);
+
+			this.userId = userId;
+		}
+
+		public long userId;
+
+	}
+
+	public static class MustHaveMoreUppercase extends UserPasswordException {
+
+		public MustHaveMoreUppercase(long userId) {
+			super(
+				String.format(
+					"Password for user %s does not have sufficient uppercase characters", userId),
+				PASSWORDS_MUST_HAVE_MORE_UPPERCASE);
 
 			this.userId = userId;
 		}
