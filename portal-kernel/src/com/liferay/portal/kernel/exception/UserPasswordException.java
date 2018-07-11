@@ -155,8 +155,10 @@ public class UserPasswordException extends PortalException {
 		public MustHaveMoreAlphanumeric(long userId) {
 			super(
 				String.format(
-					"Password for user %s does not have sufficient alphanumeric characters", userId),
-				PASSWORDS_MUST_HAVE_MORE_ALPHANUMERIC);
+					"Password for user %s does not have sufficient " +
+						"alphanumeric characters",
+					userId),
+				_PASSWORDS_MUST_HAVE_MORE_ALPHANUMERIC);
 
 			this.userId = userId;
 		}
@@ -170,8 +172,10 @@ public class UserPasswordException extends PortalException {
 		public MustHaveMoreLowercase(long userId) {
 			super(
 				String.format(
-					"Password for user %s does not have sufficient lowercase characters", userId),
-				PASSWORDS_MUST_HAVE_MORE_LOWERCASE);
+					"Password for user %s does not have sufficient lowercase " +
+						"characters",
+					userId),
+				_PASSWORDS_MUST_HAVE_MORE_LOWERCASE);
 
 			this.userId = userId;
 		}
@@ -185,8 +189,10 @@ public class UserPasswordException extends PortalException {
 		public MustHaveMoreNumbers(long userId) {
 			super(
 				String.format(
-					"Password for user %s does not have sufficient number characters", userId),
-				PASSWORDS_MUST_HAVE_MORE_NUMBERS);
+					"Password for user %s does not have sufficient number " +
+						"characters",
+					userId),
+				_PASSWORDS_MUST_HAVE_MORE_NUMBERS);
 
 			this.userId = userId;
 		}
@@ -200,8 +206,10 @@ public class UserPasswordException extends PortalException {
 		public MustHaveMoreSymbols(long userId) {
 			super(
 				String.format(
-					"Password for user %s does not have sufficient symbol characters", userId),
-				PASSWORDS_MUST_HAVE_MORE_SYMBOLS);
+					"Password for user %s does not have sufficient symbol " +
+						"characters",
+					userId),
+				_PASSWORDS_MUST_HAVE_MORE_SYMBOLS);
 
 			this.userId = userId;
 		}
@@ -215,8 +223,10 @@ public class UserPasswordException extends PortalException {
 		public MustHaveMoreUppercase(long userId) {
 			super(
 				String.format(
-					"Password for user %s does not have sufficient uppercase characters", userId),
-				PASSWORDS_MUST_HAVE_MORE_UPPERCASE);
+					"Password for user %s does not have sufficient uppercase " +
+						"characters",
+					userId),
+				_PASSWORDS_MUST_HAVE_MORE_UPPERCASE);
 
 			this.userId = userId;
 		}
@@ -392,15 +402,15 @@ public class UserPasswordException extends PortalException {
 		_type = type;
 	}
 
-	private static final int PASSWORDS_MUST_HAVE_MORE_ALPHANUMERIC = 11;
+	private static final int _PASSWORDS_MUST_HAVE_MORE_ALPHANUMERIC = 11;
 
-	private static final int PASSWORDS_MUST_HAVE_MORE_LOWERCASE = 12;
+	private static final int _PASSWORDS_MUST_HAVE_MORE_LOWERCASE = 12;
 
-	private static final int PASSWORDS_MUST_HAVE_MORE_NUMBERS = 13;
+	private static final int _PASSWORDS_MUST_HAVE_MORE_NUMBERS = 13;
 
-	private static final int PASSWORDS_MUST_HAVE_MORE_SYMBOLS = 14;
+	private static final int _PASSWORDS_MUST_HAVE_MORE_SYMBOLS = 14;
 
-	private static final int PASSWORDS_MUST_HAVE_MORE_UPPERCASE = 15;
+	private static final int _PASSWORDS_MUST_HAVE_MORE_UPPERCASE = 15;
 
 	private final int _type;
 
