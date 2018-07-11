@@ -81,6 +81,11 @@ else {
 <liferay-ui:error exception="<%= UserPasswordException.MustNotBeNull.class %>" message="the-password-cannot-be-blank" />
 <liferay-ui:error exception="<%= UserPasswordException.MustNotBeRecentlyUsed.class %>" message="that-password-has-already-been-used-please-enter-a-different-password" />
 <liferay-ui:error exception="<%= UserPasswordException.MustNotBeTrivial.class %>" message="that-password-uses-common-words-please-enter-a-password-that-is-harder-to-guess-i-e-contains-a-mix-of-numbers-and-letters" />
+<liferay-ui:error exception="<%= UserPasswordException.MustHaveMoreAlphanumeric.class %>" message="that-password-must-have-more-alphanumeric-characters" />
+<liferay-ui:error exception="<%= UserPasswordException.MustHaveMoreLowercase.class %>" message="that-password-must-have-more-lowercase-characters" />
+<liferay-ui:error exception="<%= UserPasswordException.MustHaveMoreNumbers.class %>" message="that-password-must-have-more-number-characters" />
+<liferay-ui:error exception="<%= UserPasswordException.MustHaveMoreSymbols.class %>" message="that-password-must-have-more-symbol-characters" />
+<liferay-ui:error exception="<%= UserPasswordException.MustHaveMoreUppercase.class %>" message="that-password-must-have-more-uppercase-characters" />
 <liferay-ui:error exception="<%= UserPasswordException.MustNotContainDictionaryWords.class %>" message="that-password-uses-common-dictionary-words" />
 
 <aui:fieldset>
