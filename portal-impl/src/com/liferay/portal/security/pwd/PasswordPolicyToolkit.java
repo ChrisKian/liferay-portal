@@ -14,10 +14,6 @@
 
 package com.liferay.portal.security.pwd;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Random;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.model.PasswordPolicy;
@@ -33,6 +29,10 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.words.WordsUtil;
 import com.liferay.portal.util.PropsValues;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * @author Scott Lee
@@ -128,28 +128,34 @@ public class PasswordPolicyToolkit extends BasicToolkit {
 					userId, passwordPolicy.getMinLength());
 			}
 
-			if (getUsageCount(password1, _validatorAlphanumericCharsetArray) < 
+			if (getUsageCount(password1, _validatorAlphanumericCharsetArray) <
 					passwordPolicy.getMinAlphanumeric()) {
-				throw new UserPasswordException.MustHaveMoreAlphanumeric(userId);
+
+				throw new UserPasswordException.MustHaveMoreAlphanumeric(
+					userId);
 			}
 
-			if (getUsageCount(password1, _validatorLowerCaseCharsetArray) < 
+			if (getUsageCount(password1, _validatorLowerCaseCharsetArray) <
 					passwordPolicy.getMinLowerCase()) {
+
 				throw new UserPasswordException.MustHaveMoreLowercase(userId);
 			}
 
-			if (getUsageCount(password1, _validatorNumbersCharsetArray) < 
+			if (getUsageCount(password1, _validatorNumbersCharsetArray) <
 					passwordPolicy.getMinNumbers()) {
+
 				throw new UserPasswordException.MustHaveMoreNumbers(userId);
 			}
 
-			if (getUsageCount(password1, _validatorSymbolsCharsetArray) < 
+			if (getUsageCount(password1, _validatorSymbolsCharsetArray) <
 					passwordPolicy.getMinSymbols()) {
+
 				throw new UserPasswordException.MustHaveMoreSymbols(userId);
 			}
 
-			if (getUsageCount(password1, _validatorUpperCaseCharsetArray) < 
+			if (getUsageCount(password1, _validatorUpperCaseCharsetArray) <
 					passwordPolicy.getMinUpperCase()) {
+
 				throw new UserPasswordException.MustHaveMoreUppercase(userId);
 			}
 
