@@ -21,6 +21,7 @@ import com.liferay.apio.architect.resource.CollectionResource;
 import com.liferay.apio.architect.routes.CollectionRoutes;
 import com.liferay.apio.architect.routes.ItemRoutes;
 import com.liferay.content.space.apio.architect.identifier.ContentSpaceIdentifier;
+import com.liferay.content.space.apio.architect.util.ContentSpaceUtil;
 import com.liferay.person.apio.architect.identifier.PersonIdentifier;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -91,7 +92,7 @@ public class WebSiteCollectionResource
 		).addLocalizedStringByLocale(
 			"description", Group::getDescription
 		).addLocalizedStringByLocale(
-			"name", Group::getName
+			"name", ContentSpaceUtil::getName
 		).addRelatedCollection(
 			"members", PersonIdentifier.class
 		).addString(

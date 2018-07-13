@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ServiceProxyFactory;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -859,7 +860,7 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	@Override
 	public String getDisplayName() {
-		return _displayName;
+		return GetterUtil.getString(_displayName);
 	}
 
 	/**

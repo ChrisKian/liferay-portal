@@ -26,7 +26,6 @@
 		</execute>
 
 		<execute macro="Alert#viewSuccessMessage" />
-		<execute function="AssertTextEquals" locator1="Message#EMPTY_INFO" value1="No users were found." />
 
 		<execute macro="ProductMenu#gotoPortlet">
 			<var name="category" value="Users" />
@@ -57,7 +56,7 @@
 	</command>
 
 	<command name="addAddressViaMyAccount">
-		<execute function="Click" locator1="NavListItem#ADDRESSES" />
+		<execute function="Click" locator1="NavBar#ADDRESSES" />
 
 		<execute function="Type" locator1="TextInput#STREET_1" value1="${userAddressStreet1}" />
 
@@ -1676,6 +1675,9 @@
 
 		<execute function="SelectWindow#selectWindowNoSPARefresh" locator1="title=Welcome - ${siteName}" />
 
+		<!-- LPS-83431-->
+		<execute function="Refresh" />
+
 		<execute function="AssertElementPresent" locator1="UserBar#USER_AVATAR_IMAGE" />
 	</command>
 
@@ -1695,6 +1697,9 @@
 				<execute macro="GoogleLogin#acceptConditions" />
 			</then>
 		</if>
+
+		<!-- LPS-83431-->
+		<execute function="Refresh" />
 
 		<execute function="AssertElementPresent" locator1="UserBar#USER_AVATAR_IMAGE" />
 	</command>

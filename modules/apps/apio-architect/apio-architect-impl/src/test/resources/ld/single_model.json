@@ -76,8 +76,8 @@
 		"numberList": [1, 2],
 		"operation": [
 			{
-				"@id": "_:delete-operation",
-				"@type": "Operation",
+				"@id": "_:resource/delete",
+				"@type": ["DeleteAction", "Operation"],
 				"method": "DELETE"
 			}
 		],
@@ -135,13 +135,13 @@
 	"numberList2": [6, 7, 8, 9, 10],
 	"operation": [
 		{
-			"@id": "_:delete-operation",
-			"@type": "Operation",
+			"@id": "_:resource/delete",
+			"@type": ["DeleteAction", "Operation"],
 			"method": "DELETE"
 		},
 		{
-			"@id": "_:update-operation",
-			"@type": "Operation",
+			"@id": "_:resource/update",
+			"@type": ["ReplaceAction", "Operation"],
 			"expects": "localhost/o/api/f/u/r",
 			"method": "PUT"
 		}

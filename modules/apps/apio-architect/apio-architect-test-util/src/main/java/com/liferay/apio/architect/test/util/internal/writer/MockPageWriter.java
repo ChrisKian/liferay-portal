@@ -14,19 +14,14 @@
 
 package com.liferay.apio.architect.test.util.internal.writer;
 
-import static com.liferay.apio.architect.operation.HTTPMethod.POST;
 import static com.liferay.apio.architect.test.util.form.MockFormCreator.createForm;
 import static com.liferay.apio.architect.test.util.writer.MockWriterUtil.getRequestInfo;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import com.liferay.apio.architect.impl.internal.message.json.PageMessageMapper;
-import com.liferay.apio.architect.impl.internal.operation.OperationImpl;
-import com.liferay.apio.architect.impl.internal.pagination.PageImpl;
-import com.liferay.apio.architect.impl.internal.pagination.PaginationImpl;
-import com.liferay.apio.architect.impl.internal.request.RequestInfo;
-import com.liferay.apio.architect.impl.internal.writer.PageWriter;
+import com.liferay.apio.architect.impl.message.json.PageMessageMapper;
+import com.liferay.apio.architect.impl.operation.CreateOperation;
+import com.liferay.apio.architect.impl.pagination.PageImpl;
+import com.liferay.apio.architect.impl.pagination.PaginationImpl;
+import com.liferay.apio.architect.impl.writer.PageWriter;
 import com.liferay.apio.architect.operation.Operation;
 import com.liferay.apio.architect.pagination.Page;
 import com.liferay.apio.architect.pagination.PageItems;
@@ -56,14 +51,12 @@ public class MockPageWriter {
 	 * Writes a Collection of {@link RootModel}, with the hierarchy of embedded
 	 * models and multiple fields.
 	 *
-	 * @param pageMessageMapper the {@link PageMessageMapper} to use for writing
-	 *        the JSON object
+	 * @param  pageMessageMapper the {@link PageMessageMapper} to use for
+	 *         writing the JSON object
+	 * @return the {@code String} containing the JSON Object.
+	 * @review
 	 */
-	public static JsonObject write(
-		PageMessageMapper<RootModel> pageMessageMapper) {
-
-		RequestInfo requestInfo = getRequestInfo();
-
+	public static String write(PageMessageMapper<RootModel> pageMessageMapper) {
 		Collection<RootModel> items = Arrays.asList(
 			() -> "1", () -> "2", () -> "3");
 
@@ -74,7 +67,7 @@ public class MockPageWriter {
 		Path path = new Path("name", "id");
 
 		List<Operation> operations = Collections.singletonList(
-			new OperationImpl(createForm("c", "p"), POST, "create-operation"));
+			new CreateOperation(createForm("c", "p"), "resource"));
 
 		Page<RootModel> page = new PageImpl<>(
 			"root", pageItems, pagination, path, operations);
@@ -91,12 +84,12 @@ public class MockPageWriter {
 			).representorFunction(
 				MockWriterUtil::getRepresentorOptional
 			).requestInfo(
-				requestInfo
+				getRequestInfo()
 			).singleModelFunction(
 				MockWriterUtil::getSingleModel
 			).build());
 
-		return new Gson().fromJson(pageWriter.write(), JsonObject.class);
+		return pageWriter.write();
 	}
 
 	private MockPageWriter() {

@@ -3266,6 +3266,10 @@ app.server.type=@{app.server.type}]]></echo>
 		<run-functional-test app.server.type="tomcat" database.type="sybase" />
 	</target>
 
+	<target name="functional-upgrade-tomcat90-db2105-jdk8">
+		<run-functional-test app.server.type="tomcat" database.type="db2" />
+	</target>
+
 	<target name="functional-upgrade-tomcat90-mariadb100-jdk8">
 		<run-functional-test app.server.type="tomcat" database.type="mariadb" />
 	</target>
