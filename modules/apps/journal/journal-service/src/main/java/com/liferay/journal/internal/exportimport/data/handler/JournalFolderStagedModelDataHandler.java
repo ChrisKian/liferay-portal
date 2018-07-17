@@ -136,38 +136,31 @@ public class JournalFolderStagedModelDataHandler
 
 		long groupId = portletDataContext.getScopeGroupId();
 
+		JournalFolder existingFolder = null;
+
 		if (portletDataContext.isDataStrategyMirror()) {
-			JournalFolder existingFolder = fetchStagedModelByUuidAndGroupId(
+			existingFolder = fetchStagedModelByUuidAndGroupId(
 				folder.getUuid(), groupId);
 
-			if (existingFolder == null) {
-				String name = _journalFolderLocalService.getUniqueFolderName(
-					null, groupId, parentFolderId, folder.getName(), 2);
-
-				serviceContext.setUuid(folder.getUuid());
-
-				importedFolder = _journalFolderLocalService.addFolder(
-					userId, groupId, parentFolderId, name,
-					folder.getDescription(), serviceContext);
-			}
-			else {
-				String name = _journalFolderLocalService.getUniqueFolderName(
-					folder.getUuid(), groupId, parentFolderId, folder.getName(),
-					2);
-
-				importedFolder = _journalFolderLocalService.updateFolder(
-					userId, serviceContext.getScopeGroupId(),
-					existingFolder.getFolderId(), parentFolderId, name,
-					folder.getDescription(), false, serviceContext);
-			}
+			serviceContext.setUuid(folder.getUuid());
 		}
-		else {
+
+		if (existingFolder == null) {
 			String name = _journalFolderLocalService.getUniqueFolderName(
 				null, groupId, parentFolderId, folder.getName(), 2);
 
 			importedFolder = _journalFolderLocalService.addFolder(
 				userId, groupId, parentFolderId, name, folder.getDescription(),
 				serviceContext);
+		}
+		else {
+			String name = _journalFolderLocalService.getUniqueFolderName(
+				folder.getUuid(), groupId, parentFolderId, folder.getName(), 2);
+
+			importedFolder = _journalFolderLocalService.updateFolder(
+				userId, serviceContext.getScopeGroupId(),
+				existingFolder.getFolderId(), parentFolderId, name,
+				folder.getDescription(), false, serviceContext);
 		}
 
 		importFolderDDMStructures(portletDataContext, folder, importedFolder);
