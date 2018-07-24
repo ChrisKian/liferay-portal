@@ -196,12 +196,14 @@ public class ModulesStructureTest {
 											"plugin\""));
 						}
 
-						Path buildExtGradlePath = dirPath.resolve(
-							"build-ext.gradle");
+						if (!liferaySpringBootDefaultsPlugin) {
+							Path buildExtGradlePath = dirPath.resolve(
+								"build-ext.gradle");
 
-						Assert.assertFalse(
-							"Forbidden " + buildExtGradlePath,
-							Files.deleteIfExists(buildExtGradlePath));
+							Assert.assertFalse(
+								"Forbidden " + buildExtGradlePath,
+								Files.deleteIfExists(buildExtGradlePath));
+						}
 					}
 
 					if (Files.exists(dirPath.resolve("package.json"))) {
@@ -378,7 +380,7 @@ public class ModulesStructureTest {
 						_testAntPluginIgnoreFiles(dirPath);
 					}
 					else if (StringUtil.startsWith(
-								dirName, "frontend-theme-") &&
+								 dirName, "frontend-theme-") &&
 							 Files.exists(dirPath.resolve("gulpfile.js"))) {
 
 						_testThemeIgnoreFiles(
@@ -1068,7 +1070,7 @@ public class ModulesStructureTest {
 
 				repositoryPrivateUsername = value;
 			}
-			else {
+			else if (!key.equals(_GIT_REPO_GRADLE_JIRA_PROJECT_KEYS)) {
 				Matcher matcher = gradlePropertiesPattern.matcher(key);
 
 				if (!_gitRepoGradlePropertiesKeys.contains(key) &&
@@ -1086,6 +1088,7 @@ public class ModulesStructureTest {
 					List<String> allowedKeys = new ArrayList<>(
 						_gitRepoGradlePropertiesKeys);
 
+					allowedKeys.add(_GIT_REPO_GRADLE_JIRA_PROJECT_KEYS);
 					allowedKeys.add(_GIT_REPO_GRADLE_PROJECT_GROUP_KEY);
 					allowedKeys.add(_GIT_REPO_GRADLE_PROJECT_PATH_PREFIX_KEY);
 
@@ -1398,6 +1401,9 @@ public class ModulesStructureTest {
 	private static final String[] _GIT_IGNORE_LINE_PREFIXES = {"/wedeploy/"};
 
 	private static final String _GIT_REPO_FILE_NAME = ".gitrepo";
+
+	private static final String _GIT_REPO_GRADLE_JIRA_PROJECT_KEYS =
+		"jira.project.keys";
 
 	private static final String _GIT_REPO_GRADLE_PROJECT_GROUP_KEY =
 		"project.group";

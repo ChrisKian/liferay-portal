@@ -95,15 +95,13 @@ public class FormStructureNestedCollectionResource
 		ClassName className = _classNameService.fetchClassName(
 			DDLRecordSet.class.getName());
 
-		Long classNameId = className.getClassNameId();
-
 		List<DDMStructure> ddmStructures =
 			_ddmStructureLocalService.getStructures(
-				groupId, classNameId, pagination.getStartPosition(),
-				pagination.getEndPosition(), null);
-
+				groupId, className.getClassNameId(),
+				pagination.getStartPosition(), pagination.getEndPosition(),
+				null);
 		int count = _ddmStructureLocalService.getStructuresCount(
-			groupId, classNameId);
+			groupId, className.getClassNameId());
 
 		return new PageItems<>(ddmStructures, count);
 	}

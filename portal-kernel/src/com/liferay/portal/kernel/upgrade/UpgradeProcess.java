@@ -82,12 +82,16 @@ public abstract class UpgradeProcess
 
 		String message = "Completed upgrade process ";
 
-		if (_log.isInfoEnabled()) {
-			_log.info("Upgrading " + ClassUtil.getClassName(this));
-		}
-
 		try (Connection con = DataAccess.getConnection()) {
 			connection = con;
+
+			if (isSkipUpgradeProcess()) {
+				return;
+			}
+
+			if (_log.isInfoEnabled()) {
+				_log.info("Upgrading " + ClassUtil.getClassName(this));
+			}
 
 			doUpgrade();
 		}
@@ -571,6 +575,10 @@ public abstract class UpgradeProcess
 
 	protected boolean isPortal62TableName(String tableName) {
 		return _portal62TableNames.contains(StringUtil.toLowerCase(tableName));
+	}
+
+	protected boolean isSkipUpgradeProcess() throws Exception {
+		return false;
 	}
 
 	protected boolean isSupportsAlterColumnName() {

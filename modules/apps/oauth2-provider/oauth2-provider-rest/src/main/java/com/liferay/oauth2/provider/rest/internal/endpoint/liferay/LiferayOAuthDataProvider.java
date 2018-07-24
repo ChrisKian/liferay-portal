@@ -20,6 +20,7 @@ import com.liferay.oauth2.provider.constants.OAuth2ProviderConstants;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.model.OAuth2ApplicationScopeAliases;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.rest.internal.endpoint.authorize.configuration.OAuth2AuthorizationFlowConfiguration;
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRestEndpointConstants;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider.AccessToken;
@@ -76,7 +77,6 @@ import org.apache.cxf.rs.security.oauth2.tokens.refresh.RefreshToken;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -88,7 +88,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Tomas Polesovsky
  */
 @Component(
-	configurationPid = "com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration",
+	configurationPid = {
+		"com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration",
+		"com.liferay.oauth2.provider.rest.internal.endpoint.authorize.configuration.OAuth2AuthorizationFlowConfiguration"
+	},
 	service = LiferayOAuthDataProvider.class
 )
 public class LiferayOAuthDataProvider
@@ -331,8 +334,7 @@ public class LiferayOAuthDataProvider
 						clientId));
 			}
 
-			throw new SystemException(
-				"Nonexistent OAuth 2 client ID " + clientId);
+			return null;
 		}
 
 		MessageContext messageContext = getMessageContext();
@@ -620,8 +622,7 @@ public class LiferayOAuthDataProvider
 						client.getClientId()));
 			}
 
-			throw new SystemException(
-				"Nonexistent OAuth 2 client ID " + client.getClientId());
+			return null;
 		}
 
 		return oAuth2Application;
@@ -634,14 +635,17 @@ public class LiferayOAuthDataProvider
 
 	@Activate
 	@SuppressWarnings("unchecked")
-	protected void activate(
-		BundleContext bundleContext, Map<String, Object> properties) {
-
+	protected void activate(Map<String, Object> properties) {
 		_codeGrantsPortalCache =
 			(PortalCache<String, ServerAuthorizationCodeGrant>)
 				_multiVMPool.getPortalCache("oauth2-provider-code-grants");
+		_oAuth2AuthorizeFlowConfiguration = ConfigurableUtil.createConfigurable(
+			OAuth2AuthorizationFlowConfiguration.class, properties);
 		_oAuth2ProviderConfiguration = ConfigurableUtil.createConfigurable(
 			OAuth2ProviderConfiguration.class, properties);
+
+		setGrantLifetime(
+			_oAuth2AuthorizeFlowConfiguration.authorizationCodeGrantTTL());
 	}
 
 	@Override
@@ -858,7 +862,7 @@ public class LiferayOAuthDataProvider
 				clientGrantTypes.add(OAuthConstants.AUTHORIZATION_CODE_GRANT);
 			}
 			else if (_oAuth2ProviderConfiguration.
-						allowAuthorizationCodePKCEGrant() &&
+						 allowAuthorizationCodePKCEGrant() &&
 					 (allowedGrantType == GrantType.AUTHORIZATION_CODE_PKCE)) {
 
 				clientGrantTypes.add(OAuthConstants.AUTHORIZATION_CODE_GRANT);
@@ -867,13 +871,13 @@ public class LiferayOAuthDataProvider
 						AUTHORIZATION_CODE_PKCE_GRANT);
 			}
 			else if (_oAuth2ProviderConfiguration.
-						allowClientCredentialsGrant() &&
+						 allowClientCredentialsGrant() &&
 					 (allowedGrantType == GrantType.CLIENT_CREDENTIALS)) {
 
 				clientGrantTypes.add(OAuthConstants.CLIENT_CREDENTIALS_GRANT);
 			}
 			else if (_oAuth2ProviderConfiguration.
-						allowResourceOwnerPasswordCredentialsGrant() &&
+						 allowResourceOwnerPasswordCredentialsGrant() &&
 					 (allowedGrantType == GrantType.RESOURCE_OWNER_PASSWORD)) {
 
 				clientGrantTypes.add(OAuthConstants.RESOURCE_OWNER_GRANT);
@@ -1145,6 +1149,8 @@ public class LiferayOAuthDataProvider
 	@Reference
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
+	private OAuth2AuthorizationFlowConfiguration
+		_oAuth2AuthorizeFlowConfiguration;
 	private OAuth2ProviderConfiguration _oAuth2ProviderConfiguration;
 
 	@Reference

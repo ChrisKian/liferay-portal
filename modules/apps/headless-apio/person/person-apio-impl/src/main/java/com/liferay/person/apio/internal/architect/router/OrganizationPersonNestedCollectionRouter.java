@@ -74,7 +74,6 @@ public class OrganizationPersonNestedCollectionRouter implements
 		).collect(
 			Collectors.toList()
 		);
-
 		int count = _userService.getOrganizationUsersCount(
 			organizationId, WorkflowConstants.STATUS_APPROVED);
 
