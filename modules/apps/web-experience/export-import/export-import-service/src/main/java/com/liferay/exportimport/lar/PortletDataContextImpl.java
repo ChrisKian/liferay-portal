@@ -32,6 +32,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextListener;
+import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
@@ -2688,14 +2689,18 @@ public class PortletDataContextImpl implements PortletDataContext {
 		return parentElement.attributeValue("self-path");
 	}
 
-	private void _importWorkflowDefinitionLink(ClassedModel newClassedModel)
+	private void _importWorkflowDefinitionLink(ClassedModel classedModel)
 		throws PortletDataException {
 
-		Element workflowElements = getImportDataGroupElement(
-			StagedWorkflowDefinitionLink.class);
+		Element stagedWorkflowDefinitionLinkElements =
+			getImportDataGroupElement(StagedWorkflowDefinitionLink.class);
 
-		for (Element workflowElement : workflowElements.elements()) {
-			String displayName = workflowElement.attributeValue("display-name");
+		for (Element stagedWorkflowDefinitionLinkElement :
+				stagedWorkflowDefinitionLinkElements.elements()) {
+
+			String displayName =
+				stagedWorkflowDefinitionLinkElement.attributeValue(
+					"display-name");
 
 			WorkflowDefinition workflowDefinition = null;
 
@@ -2714,43 +2719,39 @@ public class PortletDataContextImpl implements PortletDataContext {
 				return;
 			}
 
-			Element referencesElement = workflowElement.element("references");
+			Element referencesElement =
+				stagedWorkflowDefinitionLinkElement.element("references");
 
 			List<Element> referenceElements = referencesElement.elements(
 				"reference");
 
 			for (Element referenceElement : referenceElements) {
-				long classPK = GetterUtil.getLong(
-					referenceElement.attributeValue("class-pk"));
-
 				String className = referenceElement.attributeValue(
 					"class-name");
-
-				PermissionChecker permissionChecker =
-					PermissionThreadLocal.getPermissionChecker();
-
-				long userId = permissionChecker.getUserId();
-
-				long typePK = -1;
+				long classPK = GetterUtil.getLong(
+					referenceElement.attributeValue("class-pk"));
 
 				WorkflowDefinitionLink workflowDefinitionLink =
 					WorkflowDefinitionLinkLocalServiceUtil.
 						fetchWorkflowDefinitionLink(
 							getCompanyId(), getScopeGroupId(), className,
-							classPK, typePK);
+							classPK, -1);
 
 				if ((workflowDefinition != null) &&
 					(workflowDefinitionLink == null)) {
 
 					try {
 						long importedClassPK = GetterUtil.getLong(
-							newClassedModel.getPrimaryKeyObj());
+							classedModel.getPrimaryKeyObj());
+
+						PermissionChecker permissionChecker =
+							PermissionThreadLocal.getPermissionChecker();
 
 						WorkflowDefinitionLinkLocalServiceUtil.
 							addWorkflowDefinitionLink(
-								userId, getCompanyId(), getScopeGroupId(),
-								className, importedClassPK, typePK,
-								workflowDefinition.getName(),
+								permissionChecker.getUserId(), getCompanyId(),
+								getScopeGroupId(), className, importedClassPK,
+								-1, workflowDefinition.getName(),
 								workflowDefinition.getVersion());
 					}
 					catch (PortalException pe) {
