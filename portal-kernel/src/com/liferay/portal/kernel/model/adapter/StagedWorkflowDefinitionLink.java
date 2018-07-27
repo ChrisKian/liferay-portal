@@ -21,5 +21,5 @@ import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
  * @author Zoltan Csaszi
  */
 public interface StagedWorkflowDefinitionLink
-	extends WorkflowDefinitionLink, StagedModel {
+	extends StagedModel, WorkflowDefinitionLink {
 }
