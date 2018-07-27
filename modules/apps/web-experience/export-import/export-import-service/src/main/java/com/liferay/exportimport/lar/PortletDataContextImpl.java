@@ -2713,7 +2713,8 @@ public class PortletDataContextImpl implements PortletDataContext {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"Could not find workflow definition with name " +
-							displayName);
+							displayName,
+						we);
 				}
 
 				return;
