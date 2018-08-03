@@ -2936,6 +2936,16 @@ public class PortletDataContextImpl implements PortletDataContext {
 		}
 	}
 
+	private long _getOldPrimaryKey(Map<Long, Long> map, long value) {
+		for (Map.Entry<Long, Long> entry : map.entrySet()) {
+			if (entry.getValue() == value) {
+				return entry.getKey();
+			}
+		}
+
+		return 0;
+	}
+
 	private void _importWorkflowDefinitionLink(ClassedModel classedModel)
 		throws PortletDataException {
 
@@ -2960,7 +2970,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 			long newPrimaryKey = GetterUtil.getLong(
 				classedModel.getPrimaryKeyObj());
 
-			long oldPrimaryKey = _getKeyFromMap(primaryKeys, newPrimaryKey);
+			long oldPrimaryKey = _getOldPrimaryKey(primaryKeys, newPrimaryKey);
 
 			if (!referrerClassName.equals(className) ||
 				(referrerClassPK != oldPrimaryKey)) {
