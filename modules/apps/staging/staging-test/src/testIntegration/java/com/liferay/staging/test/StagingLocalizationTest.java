@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -94,6 +95,13 @@ public class StagingLocalizationTest {
 			TestPropsValues.getCompanyId(), _locales, Locale.US);
 
 		_sourceGroup = GroupTestUtil.addGroup();
+
+		UnicodeProperties typeSettingsProperties =
+			_sourceGroup.getTypeSettingsProperties();
+
+		typeSettingsProperties.setProperty(
+			GroupConstants.TYPE_SETTINGS_KEY_INHERIT_LOCALES, "false");
+
 		_targetGroup = GroupTestUtil.addGroup();
 	}
 
