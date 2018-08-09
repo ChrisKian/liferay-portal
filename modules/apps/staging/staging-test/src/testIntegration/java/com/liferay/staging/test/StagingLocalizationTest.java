@@ -46,8 +46,10 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
 import java.io.Serializable;
@@ -60,6 +62,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -86,6 +89,12 @@ public class StagingLocalizationTest {
 		_availableLocales = LanguageUtil.getAvailableLocales(
 			TestPropsValues.getCompanyId());
 		_defaultLocale = LocaleThreadLocal.getDefaultLocale();
+		_localesEnabled = PropsValues.LOCALES_ENABLED;
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		PropsValues.LOCALES_ENABLED = _localesEnabled;
 	}
 
 	@Before
@@ -95,6 +104,8 @@ public class StagingLocalizationTest {
 
 		_sourceGroup = GroupTestUtil.addGroup();
 		_targetGroup = GroupTestUtil.addGroup();
+
+		PropsValues.LOCALES_ENABLED = new String[] {"en_US", "de_DE", "es_ES"};
 	}
 
 	@After
@@ -189,6 +200,8 @@ public class StagingLocalizationTest {
 
 		CompanyTestUtil.resetCompanyLocales(
 			TestPropsValues.getCompanyId(), languageIds, defaultLanguageId);
+
+		PropsValues.LOCALES_ENABLED = StringUtil.split(languageIds);
 
 		ExportImportLocalServiceUtil.importLayouts(
 			exportImportConfiguration, file);
@@ -309,6 +322,7 @@ public class StagingLocalizationTest {
 
 	private static Set<Locale> _availableLocales;
 	private static Locale _defaultLocale;
+	private static String[] _localesEnabled;
 
 	private final List<Locale> _locales = Arrays.asList(
 		LocaleUtil.US, LocaleUtil.GERMANY, LocaleUtil.SPAIN);
