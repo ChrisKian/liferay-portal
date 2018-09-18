@@ -15,9 +15,9 @@
 package com.liferay.portal.workflow.web.internal.model.adapter.builder;
 
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
-import com.liferay.portal.kernel.model.adapter.StagedWorkflowDefinitionLink;
+import com.liferay.portal.kernel.model.adapter.StagedGroupedWorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.adapter.builder.ModelAdapterBuilder;
-import com.liferay.portal.model.adapter.impl.StagedWorkflowDefinitionLinkImpl;
+import com.liferay.portal.model.adapter.impl.StagedGroupedWorkflowDefinitionLinkImpl;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -25,14 +25,16 @@ import org.osgi.service.component.annotations.Component;
  * @author Zoltan Csaszi
  */
 @Component(immediate = true, service = ModelAdapterBuilder.class)
-public class StagedWorkflowDefinitionLinkModelAdapterBuilder implements
-	ModelAdapterBuilder<WorkflowDefinitionLink, StagedWorkflowDefinitionLink> {
+public class StagedGroupedWorkflowDefinitionLinkModelAdapterBuilder
+	implements ModelAdapterBuilder
+		<WorkflowDefinitionLink, StagedGroupedWorkflowDefinitionLink> {
 
 	@Override
-	public StagedWorkflowDefinitionLink build(
+	public StagedGroupedWorkflowDefinitionLink build(
 		WorkflowDefinitionLink workflowDefinitionLink) {
 
-		return new StagedWorkflowDefinitionLinkImpl(workflowDefinitionLink);
+		return new StagedGroupedWorkflowDefinitionLinkImpl(
+			workflowDefinitionLink);
 	}
 
 }
