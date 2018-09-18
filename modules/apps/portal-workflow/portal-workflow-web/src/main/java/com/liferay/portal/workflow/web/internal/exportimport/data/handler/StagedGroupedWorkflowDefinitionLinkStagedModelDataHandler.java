@@ -81,16 +81,16 @@ public class StagedGroupedWorkflowDefinitionLinkStagedModelDataHandler
 			"display-name",
 			stagedGroupedWorkflowDefinitionLink.getWorkflowDefinitionName());
 		element.addAttribute(
-			"version",
-			String.valueOf(
-				stagedGroupedWorkflowDefinitionLink.
-					getWorkflowDefinitionVersion()));
-		element.addAttribute(
 			"referrer-class-pk",
 			String.valueOf(stagedGroupedWorkflowDefinitionLink.getClassPK()));
 		element.addAttribute(
 			"referrer-class-name",
 			String.valueOf(stagedGroupedWorkflowDefinitionLink.getClassName()));
+		element.addAttribute(
+			"version",
+			String.valueOf(
+				stagedGroupedWorkflowDefinitionLink.
+					getWorkflowDefinitionVersion()));
 	}
 
 	@Override
