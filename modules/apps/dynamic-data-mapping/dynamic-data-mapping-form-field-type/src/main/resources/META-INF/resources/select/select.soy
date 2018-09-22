@@ -109,7 +109,7 @@
 						{/if}
 					{/if}
 
-					<a class="select-arrow-down-container" href="javascript:;">
+					<a class="select-arrow-down-container" {if not $readOnly} href="javascript:;"{/if}>
 						{if $selectCaretDoubleIcon}
 							{$selectCaretDoubleIcon}
 						{/if}
@@ -200,7 +200,7 @@
 
 			{if $required}
 				<svg aria-hidden="true"
-					 class="lexicon-icon lexicon-icon-asterisk reference-mark">
+					class="lexicon-icon lexicon-icon-asterisk reference-mark">
 					<use xlink:href="{$pathThemeImages}/lexicon/icons.svg#asterisk"/>
 				</svg>
 			{/if}

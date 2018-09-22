@@ -15,17 +15,37 @@
 package com.liferay.sharing.service.impl;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
+import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
+import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
+import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 import com.liferay.sharing.constants.SharingEntryActionKey;
 import com.liferay.sharing.exception.InvalidSharingEntryActionKeyException;
+import com.liferay.sharing.exception.InvalidSharingEntryExpirationDateException;
 import com.liferay.sharing.exception.InvalidSharingEntryUserException;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.service.base.SharingEntryLocalServiceBaseImpl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -36,16 +56,40 @@ public class SharingEntryLocalServiceImpl
 	extends SharingEntryLocalServiceBaseImpl {
 
 	@Override
+	public SharingEntry addOrUpdateSharingEntry(
+			long fromUserId, long toUserId, long classNameId, long classPK,
+			long groupId, boolean shareable,
+			Collection<SharingEntryActionKey> sharingEntryActionKeys,
+			Date expirationDate, ServiceContext serviceContext)
+		throws PortalException {
+
+		SharingEntry sharingEntry = sharingEntryPersistence.fetchByFU_TU_C_C(
+			fromUserId, toUserId, classNameId, classPK);
+
+		if (sharingEntry == null) {
+			return addSharingEntry(
+				fromUserId, toUserId, classNameId, classPK, groupId, shareable,
+				sharingEntryActionKeys, expirationDate, serviceContext);
+		}
+
+		return updateSharingEntry(
+			sharingEntry.getSharingEntryId(), sharingEntryActionKeys, shareable,
+			expirationDate);
+	}
+
+	@Override
 	public SharingEntry addSharingEntry(
 			long fromUserId, long toUserId, long classNameId, long classPK,
-			long groupId,
+			long groupId, boolean shareable,
 			Collection<SharingEntryActionKey> sharingEntryActionKeys,
-			ServiceContext serviceContext)
+			Date expirationDate, ServiceContext serviceContext)
 		throws PortalException {
 
 		_validateSharingEntryActionKeys(sharingEntryActionKeys);
 
 		_validateUsers(fromUserId, toUserId);
+
+		_validateExpirationDate(expirationDate);
 
 		long sharingEntryId = counterLocalService.increment();
 
@@ -63,19 +107,34 @@ public class SharingEntryLocalServiceImpl
 		sharingEntry.setToUserId(toUserId);
 		sharingEntry.setClassNameId(classNameId);
 		sharingEntry.setClassPK(classPK);
+		sharingEntry.setShareable(shareable);
+		sharingEntry.setExpirationDate(expirationDate);
 
 		Stream<SharingEntryActionKey> sharingEntryActionKeyStream =
 			sharingEntryActionKeys.stream();
 
 		sharingEntryActionKeyStream.map(
-			SharingEntryActionKey::getBitwiseVaue
+			SharingEntryActionKey::getBitwiseValue
 		).reduce(
 			(bitwiseValue1, bitwiseValue2) -> bitwiseValue1 | bitwiseValue2
 		).ifPresent(
 			actionIds -> sharingEntry.setActionIds(actionIds)
 		);
 
-		return sharingEntryPersistence.update(sharingEntry);
+		SharingEntry newSharingEntry = sharingEntryPersistence.update(
+			sharingEntry);
+
+		String className = _portal.getClassName(classNameId);
+
+		Indexer<Object> indexer = _indexerRegistry.getIndexer(className);
+
+		if (indexer != null) {
+			indexer.reindex(className, classPK);
+		}
+
+		_sendNotificationEvent(newSharingEntry);
+
+		return newSharingEntry;
 	}
 
 	@Override
@@ -84,8 +143,21 @@ public class SharingEntryLocalServiceImpl
 	}
 
 	@Override
+	public int countFromUserSharingEntries(
+		long fromUserId, long classNameId, long classPK) {
+
+		return sharingEntryPersistence.countByFU_C_C(
+			fromUserId, classNameId, classPK);
+	}
+
+	@Override
 	public int countToUserSharingEntries(long toUserId) {
 		return sharingEntryPersistence.countByToUserId(toUserId);
+	}
+
+	@Override
+	public void deleteExpiredEntries() {
+		sharingEntryPersistence.removeByExpirationDate(DateUtil.newDate());
 	}
 
 	@Override
@@ -94,7 +166,7 @@ public class SharingEntryLocalServiceImpl
 			sharingEntryPersistence.findByGroupId(groupId);
 
 		for (SharingEntry sharingEntry : sharingEntries) {
-			sharingEntryPersistence.remove(sharingEntry);
+			_deleteSharingEntry(sharingEntry);
 		}
 	}
 
@@ -104,19 +176,19 @@ public class SharingEntryLocalServiceImpl
 			classNameId, classPK);
 
 		for (SharingEntry sharingEntry : sharingEntries) {
-			sharingEntryPersistence.remove(sharingEntry);
+			_deleteSharingEntry(sharingEntry);
 		}
 	}
 
 	@Override
 	public SharingEntry deleteSharingEntry(
-			long toUserId, long classNameId, long classPK)
+			long fromUserId, long toUserId, long classNameId, long classPK)
 		throws PortalException {
 
-		SharingEntry sharingEntry = sharingEntryPersistence.findByTU_C_C(
-			toUserId, classNameId, classPK);
+		SharingEntry sharingEntry = sharingEntryPersistence.findByFU_TU_C_C(
+			fromUserId, toUserId, classNameId, classPK);
 
-		return sharingEntryPersistence.remove(sharingEntry);
+		return _deleteSharingEntry(sharingEntry);
 	}
 
 	@Override
@@ -125,13 +197,29 @@ public class SharingEntryLocalServiceImpl
 			sharingEntryPersistence.findByToUserId(toUserId);
 
 		for (SharingEntry sharingEntry : sharingEntries) {
-			sharingEntryPersistence.remove(sharingEntry);
+			_deleteSharingEntry(sharingEntry);
 		}
 	}
 
 	@Override
 	public List<SharingEntry> getFromUserSharingEntries(long fromUserId) {
 		return sharingEntryPersistence.findByFromUserId(fromUserId);
+	}
+
+	@Override
+	public List<SharingEntry> getFromUserSharingEntries(
+		long fromUserId, long classNameId, long classPK) {
+
+		return sharingEntryPersistence.findByFU_C_C(
+			fromUserId, classNameId, classPK);
+	}
+
+	@Override
+	public List<SharingEntry> getFromUserSharingEntries(
+		long fromUserId, long classNameId, long classPK, int start, int end) {
+
+		return sharingEntryPersistence.findByFU_C_C(
+			fromUserId, classNameId, classPK, start, end);
 	}
 
 	@Override
@@ -147,9 +235,8 @@ public class SharingEntryLocalServiceImpl
 	}
 
 	@Override
-	public SharingEntry getSharingEntry(
-			long toUserId, long classNameId, long classPK)
-		throws PortalException {
+	public List<SharingEntry> getSharingEntries(
+		long toUserId, long classNameId, long classPK) {
 
 		return sharingEntryPersistence.findByTU_C_C(
 			toUserId, classNameId, classPK);
@@ -168,24 +255,164 @@ public class SharingEntryLocalServiceImpl
 	}
 
 	@Override
+	public boolean hasShareableSharingPermission(
+		long toUserId, long classNameId, long classPK,
+		SharingEntryActionKey sharingEntryActionKey) {
+
+		List<SharingEntry> sharingEntries =
+			sharingEntryPersistence.findByTU_C_C(
+				toUserId, classNameId, classPK);
+
+		for (SharingEntry sharingEntry : sharingEntries) {
+			if (!sharingEntry.isShareable()) {
+				continue;
+			}
+
+			if (hasSharingPermission(sharingEntry, sharingEntryActionKey)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean hasSharingPermission(
 		long toUserId, long classNameId, long classPK,
 		SharingEntryActionKey sharingEntryActionKey) {
 
-		SharingEntry sharingEntry = sharingEntryPersistence.fetchByTU_C_C(
-			toUserId, classNameId, classPK);
+		List<SharingEntry> sharingEntries =
+			sharingEntryPersistence.findByTU_C_C(
+				toUserId, classNameId, classPK);
 
-		if (sharingEntry == null) {
-			return false;
+		for (SharingEntry sharingEntry : sharingEntries) {
+			if (hasSharingPermission(sharingEntry, sharingEntryActionKey)) {
+				return true;
+			}
 		}
+
+		return false;
+	}
+
+	@Override
+	public boolean hasSharingPermission(
+		SharingEntry sharingEntry,
+		SharingEntryActionKey sharingEntryActionKey) {
 
 		long actionIds = sharingEntry.getActionIds();
 
-		if ((actionIds & sharingEntryActionKey.getBitwiseVaue()) != 0) {
+		if ((actionIds & sharingEntryActionKey.getBitwiseValue()) != 0) {
 			return true;
 		}
 
 		return false;
+	}
+
+	@Override
+	public SharingEntry updateSharingEntry(
+			long sharingEntryId,
+			Collection<SharingEntryActionKey> sharingEntryActionKeys,
+			boolean shareable, Date expirationDate)
+		throws PortalException {
+
+		SharingEntry sharingEntry = sharingEntryPersistence.findByPrimaryKey(
+			sharingEntryId);
+
+		_validateSharingEntryActionKeys(sharingEntryActionKeys);
+
+		_validateExpirationDate(expirationDate);
+
+		sharingEntry.setShareable(shareable);
+		sharingEntry.setExpirationDate(expirationDate);
+
+		Stream<SharingEntryActionKey> sharingEntryActionKeyStream =
+			sharingEntryActionKeys.stream();
+
+		sharingEntryActionKeyStream.map(
+			SharingEntryActionKey::getBitwiseValue
+		).reduce(
+			(bitwiseValue1, bitwiseValue2) -> bitwiseValue1 | bitwiseValue2
+		).ifPresent(
+			actionIds -> sharingEntry.setActionIds(actionIds)
+		);
+
+		SharingEntry updatedSharingEntry = sharingEntryPersistence.update(
+			sharingEntry);
+
+		_sendNotificationEvent(updatedSharingEntry);
+
+		return updatedSharingEntry;
+	}
+
+	private SharingEntry _deleteSharingEntry(SharingEntry sharingEntry) {
+		String className = sharingEntry.getClassName();
+		long classPK = sharingEntry.getClassPK();
+
+		SharingEntry deletedSharingEntry = sharingEntryPersistence.remove(
+			sharingEntry);
+
+		Indexer<Object> indexer = _indexerRegistry.getIndexer(className);
+
+		if (indexer != null) {
+			try {
+				indexer.reindex(className, classPK);
+			}
+			catch (SearchException se) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to index sharing entry for class name ",
+							className, " and primary key ",
+							String.valueOf(classPK)),
+						se);
+				}
+			}
+		}
+
+		return deletedSharingEntry;
+	}
+
+	private void _sendNotificationEvent(SharingEntry sharingEntry)
+		throws PortalException {
+
+		String portletId = PortletProviderUtil.getPortletId(
+			SharingEntry.class.getName(), PortletProvider.Action.EDIT);
+
+		if (UserNotificationManagerUtil.isDeliver(
+				sharingEntry.getToUserId(), portletId, 0,
+				UserNotificationDefinition.NOTIFICATION_TYPE_ADD_ENTRY,
+				UserNotificationDeliveryConstants.TYPE_WEBSITE)) {
+
+			JSONObject notificationEventJSONObject =
+				JSONFactoryUtil.createJSONObject();
+
+			notificationEventJSONObject.put(
+				"classPK", sharingEntry.getSharingEntryId());
+
+			User fromUser = _userLocalService.fetchUser(
+				sharingEntry.getFromUserId());
+
+			if (fromUser != null) {
+				notificationEventJSONObject.put(
+					"fromUserFullName", fromUser.getFullName());
+			}
+
+			_userNotificationEventLocalService.sendUserNotificationEvents(
+				sharingEntry.getToUserId(), portletId,
+				UserNotificationDeliveryConstants.TYPE_WEBSITE,
+				notificationEventJSONObject);
+		}
+	}
+
+	private void _validateExpirationDate(Date expirationDate)
+		throws InvalidSharingEntryExpirationDateException {
+
+		if ((expirationDate != null) &&
+			expirationDate.before(DateUtil.newDate())) {
+
+			throw new InvalidSharingEntryExpirationDateException(
+				"Expiration date is in the past");
+		}
 	}
 
 	private void _validateSharingEntryActionKeys(
@@ -222,7 +449,23 @@ public class SharingEntryLocalServiceImpl
 		}
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		SharingEntryLocalServiceImpl.class);
+
 	@ServiceReference(type = GroupLocalService.class)
 	private GroupLocalService _groupLocalService;
+
+	@ServiceReference(type = IndexerRegistry.class)
+	private IndexerRegistry _indexerRegistry;
+
+	@ServiceReference(type = Portal.class)
+	private Portal _portal;
+
+	@ServiceReference(type = UserLocalService.class)
+	private UserLocalService _userLocalService;
+
+	@ServiceReference(type = UserNotificationEventLocalService.class)
+	private UserNotificationEventLocalService
+		_userNotificationEventLocalService;
 
 }

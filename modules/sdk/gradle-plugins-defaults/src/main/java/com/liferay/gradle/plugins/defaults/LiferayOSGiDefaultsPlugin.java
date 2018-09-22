@@ -139,7 +139,6 @@ import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencyResolveDetails;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.DependencySubstitutions;
-import org.gradle.api.artifacts.DependencySubstitutions.Substitution;
 import org.gradle.api.artifacts.ExcludeRule;
 import org.gradle.api.artifacts.ExternalDependency;
 import org.gradle.api.artifacts.ExternalModuleDependency;
@@ -1657,7 +1656,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 					ComponentSelector componentSelector =
 						dependencySubstitutions.module(dependencyNotation);
 
-					Substitution substitution =
+					DependencySubstitutions.Substitution substitution =
 						dependencySubstitutions.substitute(componentSelector);
 
 					ComponentSelector newComponentSelector;
@@ -2944,7 +2943,10 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			}
 		}
 
-		if (Validator.isNull(dirName)) {
+		boolean jspPrecompileFromSource = GradleUtil.getProperty(
+			project, "jsp.precompile.from.source", true);
+
+		if (Validator.isNull(dirName) || jspPrecompileFromSource) {
 			dirName =
 				GradleUtil.getArchivesBaseName(project) + "-" +
 					project.getVersion();
@@ -2954,9 +2956,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			liferayExtension.getLiferayHome(), "work/" + dirName);
 
 		javaCompile.setDestinationDir(dir);
-
-		boolean jspPrecompileFromSource = GradleUtil.getProperty(
-			project, "jsp.precompile.from.source", true);
 
 		if (!jspPrecompileFromSource && (artifactProperties != null)) {
 			Copy copy = _addTaskDownloadCompiledJSP(
@@ -4282,28 +4281,15 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 	private static final BackupFilesBuildAdapter _backupFilesBuildAdapter =
 		new BackupFilesBuildAdapter();
-	private static final Set<String> _copyrightedExtensions;
+	private static final Set<String> _copyrightedExtensions = new HashSet<>(
+		Arrays.asList(
+			"ftl", "groovy", "htm", "html", "js", "jsp", "jspf", "txt", "vm",
+			"xml"));
 	private static final Spec<File> _javaSpec = new NameSuffixFileSpec(".java");
 	private static final Spec<File> _jsdocSpec = new NameSuffixFileSpec(
 		".es.js", ".jsdoc", ".jsx");
 	private static final Spec<File> _jspSpec = new NameSuffixFileSpec(
 		".jsp", ".jspf");
 	private static final Spec<File> _tldSpec = new NameSuffixFileSpec(".tld");
-
-	static {
-		_copyrightedExtensions = new HashSet<>();
-
-		_copyrightedExtensions.add("ftl");
-		_copyrightedExtensions.add("groovy");
-		_copyrightedExtensions.add("htm");
-		_copyrightedExtensions.add("html");
-		_copyrightedExtensions.add("java");
-		_copyrightedExtensions.add("js");
-		_copyrightedExtensions.add("jsp");
-		_copyrightedExtensions.add("jspf");
-		_copyrightedExtensions.add("txt");
-		_copyrightedExtensions.add("vm");
-		_copyrightedExtensions.add("xml");
-	}
 
 }

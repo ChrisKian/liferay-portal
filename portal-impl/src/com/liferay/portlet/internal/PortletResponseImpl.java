@@ -45,7 +45,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.portlet.ActionURL;
@@ -382,9 +381,8 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 		if (_urlEncoder != null) {
 			return _urlEncoder.encodeURL(response, path);
 		}
-		else {
-			return path;
-		}
+
+		return path;
 	}
 
 	public long getCompanyId() {
@@ -468,7 +466,7 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 
 		List<String> propertyNames = new ArrayList<>();
 
-		for (Entry<String, Object[]> entry : _headers.entrySet()) {
+		for (Map.Entry<String, Object[]> entry : _headers.entrySet()) {
 			Object[] values = entry.getValue();
 
 			if (values instanceof String[]) {
@@ -648,10 +646,8 @@ public abstract class PortletResponseImpl implements LiferayPortletResponse {
 			return PortletPreferencesFactoryUtil.getStrictLayoutPortletSetup(
 				layout, portletName);
 		}
-		else {
-			return themeDisplay.getStrictLayoutPortletSetup(
-				layout, portletName);
-		}
+
+		return themeDisplay.getStrictLayoutPortletSetup(layout, portletName);
 	}
 
 	protected String portletName;

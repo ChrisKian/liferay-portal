@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -75,7 +76,8 @@ public class GroupModelListenerTest {
 
 	@Test
 	public void testDeletingGroupDeletesSharingEntries() throws Exception {
-		long classNameId = RandomTestUtil.randomLong();
+		long classNameId = _classNameLocalService.getClassNameId(
+			Group.class.getName());
 		long classPK = RandomTestUtil.randomLong();
 
 		ServiceContext serviceContext =
@@ -84,8 +86,8 @@ public class GroupModelListenerTest {
 
 		_sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), classNameId, classPK,
-			_group.getGroupId(), Arrays.asList(SharingEntryActionKey.VIEW),
-			serviceContext);
+			_group.getGroupId(), true,
+			Arrays.asList(SharingEntryActionKey.VIEW), null, serviceContext);
 
 		List<SharingEntry> groupSharingEntries =
 			_sharingEntryLocalService.getGroupSharingEntries(
@@ -110,7 +112,8 @@ public class GroupModelListenerTest {
 		Group group2 = GroupTestUtil.addGroup();
 
 		try {
-			long classNameId = RandomTestUtil.randomLong();
+			long classNameId = _classNameLocalService.getClassNameId(
+				Group.class.getName());
 
 			ServiceContext serviceContext =
 				ServiceContextTestUtil.getServiceContext(
@@ -118,13 +121,15 @@ public class GroupModelListenerTest {
 
 			_sharingEntryLocalService.addSharingEntry(
 				_user.getUserId(), _groupUser.getUserId(), classNameId,
-				RandomTestUtil.randomLong(), _group.getGroupId(),
-				Arrays.asList(SharingEntryActionKey.VIEW), serviceContext);
+				RandomTestUtil.randomLong(), _group.getGroupId(), true,
+				Arrays.asList(SharingEntryActionKey.VIEW), null,
+				serviceContext);
 
 			_sharingEntryLocalService.addSharingEntry(
 				_user.getUserId(), _groupUser.getUserId(), classNameId,
-				RandomTestUtil.randomLong(), group2.getGroupId(),
-				Arrays.asList(SharingEntryActionKey.VIEW), serviceContext);
+				RandomTestUtil.randomLong(), group2.getGroupId(), true,
+				Arrays.asList(SharingEntryActionKey.VIEW), null,
+				serviceContext);
 
 			List<SharingEntry> groupSharingEntries =
 				_sharingEntryLocalService.getGroupSharingEntries(
@@ -162,6 +167,9 @@ public class GroupModelListenerTest {
 			_groupLocalService.deleteGroup(group2);
 		}
 	}
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
 	private Company _company;

@@ -34,7 +34,6 @@
 	</tear-down>
 
 	<command name="AddOrganizationSitesAndDeactivate" priority="5">
-		<property name="portal.acceptance" value="pending" />
 		<property name="test.name.skip.portal.instance" value="SitesadministrationUsecase#AddOrganizationSitesAndDeactivate" />
 		<property name="testray.component.names" value="Site Administration,Training,Users and Organizations" />
 
@@ -1150,12 +1149,6 @@
 				<var name="pageName" value="${privatePageName}" />
 			</execute>
 		</for>
-
-		<execute macro="ProductMenu#gotoPortlet">
-			<var name="category" value="Build" />
-			<var name="panel" value="Site Administration" />
-			<var name="portlet" value="Pages" />
-		</execute>
 
 		<execute macro="Site#changeSiteLogo">
 			<var name="logoFile" value="Document_3.png" />

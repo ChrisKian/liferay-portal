@@ -94,15 +94,12 @@ public class JournalArticleAssetRenderer
 
 			return article.getPrimaryKey();
 		}
-		else {
-			return article.getResourcePrimKey();
-		}
+
+		return article.getResourcePrimKey();
 	}
 
 	public JournalArticleAssetRenderer(JournalArticle article) {
 		_article = article;
-
-		setJournalServiceConfiguration();
 	}
 
 	public JournalArticle getArticle() {
@@ -161,9 +158,8 @@ public class JournalArticleAssetRenderer
 		if (_journalServiceConfiguration.articleCommentsEnabled()) {
 			return "edit_article_discussion";
 		}
-		else {
-			return null;
-		}
+
+		return null;
 	}
 
 	/**
@@ -557,11 +553,10 @@ public class JournalArticleAssetRenderer
 				_article.getVersion(), ddmTemplateKey, viewMode, languageId,
 				articlePage, portletRequestModel, themeDisplay);
 		}
-		else {
-			return JournalArticleLocalServiceUtil.getArticleDisplay(
-				_article, ddmTemplateKey, viewMode, languageId, articlePage,
-				portletRequestModel, themeDisplay);
-		}
+
+		return JournalArticleLocalServiceUtil.getArticleDisplay(
+			_article, ddmTemplateKey, viewMode, languageId, articlePage,
+			portletRequestModel, themeDisplay);
 	}
 
 	protected String getHitLayoutURL(

@@ -601,7 +601,7 @@ public class JenkinsResultsParserUtil {
 		return "";
 	}
 
-	public static File getBaseRepositoryDir() {
+	public static File getBaseGitRepositoryDir() {
 		Properties buildProperties = null;
 
 		try {
@@ -664,12 +664,26 @@ public class JenkinsResultsParserUtil {
 		}
 	}
 
+	public static String getDistinctTimeStamp() {
+		while (true) {
+			String timeStamp = String.valueOf(System.currentTimeMillis());
+
+			if (_timeStamps.contains(timeStamp)) {
+				continue;
+			}
+
+			_timeStamps.add(timeStamp);
+
+			return timeStamp;
+		}
+	}
+
 	public static String getGitHubApiUrl(
-		String repositoryName, String username, String path) {
+		String gitRepositoryName, String username, String path) {
 
 		return combine(
-			"https://api.github.com/repos/", username, "/", repositoryName, "/",
-			path.replaceFirst("^/*", ""));
+			"https://api.github.com/repos/", username, "/", gitRepositoryName,
+			"/", path.replaceFirst("^/*", ""));
 	}
 
 	public static String getHostName(String defaultHostName) {
@@ -753,10 +767,11 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static GitWorkingDirectory getJenkinsGitWorkingDirectory() {
-		LocalRepository localRepository = RepositoryFactory.getLocalRepository(
-			"liferay-jenkins-ee", "master");
+		LocalGitRepository localGitRepository =
+			GitRepositoryFactory.getLocalGitRepository(
+				"liferay-jenkins-ee", "master");
 
-		return localRepository.getGitWorkingDirectory();
+		return localGitRepository.getGitWorkingDirectory();
 	}
 
 	public static List<JenkinsMaster> getJenkinsMasters(
@@ -765,9 +780,9 @@ public class JenkinsResultsParserUtil {
 		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
 
 		for (int i = 1;
-				buildProperties.containsKey(
-					"master.slaves(" + prefix + "-" + i + ")");
-				i++) {
+			 buildProperties.containsKey(
+				 "master.slaves(" + prefix + "-" + i + ")");
+			 i++) {
 
 			jenkinsMasters.add(new JenkinsMaster(prefix + "-" + i));
 		}
@@ -970,17 +985,18 @@ public class JenkinsResultsParserUtil {
 	public static PortalGitWorkingDirectory getPortalGitWorkingDirectory(
 		String portalBranchName) {
 
-		String portalRepositoryName = "liferay-portal";
+		String portalGitRepositoryName = "liferay-portal";
 
 		if (!portalBranchName.equals("master")) {
-			portalRepositoryName += "-ee";
+			portalGitRepositoryName += "-ee";
 		}
 
-		LocalRepository localRepository = RepositoryFactory.getLocalRepository(
-			portalRepositoryName, portalBranchName);
+		LocalGitRepository localGitRepository =
+			GitRepositoryFactory.getLocalGitRepository(
+				portalGitRepositoryName, portalBranchName);
 
 		GitWorkingDirectory gitWorkingDirectory =
-			localRepository.getGitWorkingDirectory();
+			localGitRepository.getGitWorkingDirectory();
 
 		return (PortalGitWorkingDirectory)gitWorkingDirectory;
 	}
@@ -1032,7 +1048,7 @@ public class JenkinsResultsParserUtil {
 			String item = null;
 
 			while (true) {
-				item = list.get(getRandomValue(0, list.size() - 1));
+				item = getRandomString(list);
 
 				if (randomList.contains(item)) {
 					continue;
@@ -1045,6 +1061,10 @@ public class JenkinsResultsParserUtil {
 		}
 
 		return randomList;
+	}
+
+	public static String getRandomString(List<String> list) {
+		return list.get(getRandomValue(0, list.size() - 1));
 	}
 
 	public static int getRandomValue(int start, int end) {
@@ -1228,7 +1248,7 @@ public class JenkinsResultsParserUtil {
 			}
 
 			for (int i = 1; properties.containsKey(_getRedactTokenKey(i));
-					i++) {
+				 i++) {
 
 				String key = properties.getProperty(_getRedactTokenKey(i));
 
@@ -2036,6 +2056,7 @@ public class JenkinsResultsParserUtil {
 		"https://test.liferay.com/([0-9]+)/");
 	private static final Pattern _remoteURLAuthorityPattern2 = Pattern.compile(
 		"https://(test-[0-9]+-[0-9]+).liferay.com/");
+	private static final Set<String> _timeStamps = new HashSet<>();
 
 	static {
 		System.out.println("Securing standard error and out");

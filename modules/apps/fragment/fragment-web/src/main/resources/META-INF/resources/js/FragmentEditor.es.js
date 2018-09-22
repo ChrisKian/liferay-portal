@@ -152,15 +152,10 @@ class FragmentEditor extends PortletBase {
 						this.urls.redirect
 					);
 
-					if (Liferay.SPA) {
-						Liferay.SPA.app.navigate(redirectURL);
-					}
-					else {
-						location.href = redirectURL;
-					}
+					Liferay.Util.navigate(redirectURL);
 				}
 			)
-			.catch(
+			.catch (
 				(error) => {
 					this._saving = false;
 

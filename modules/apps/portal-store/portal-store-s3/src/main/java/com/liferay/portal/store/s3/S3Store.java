@@ -48,6 +48,7 @@ import com.liferay.document.library.kernel.exception.NoSuchFileException;
 import com.liferay.document.library.kernel.store.BaseStore;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.concurrent.ThreadPoolExecutor;
@@ -56,7 +57,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.store.s3.configuration.S3StoreConfiguration;
 
@@ -793,10 +793,9 @@ public class S3Store extends BaseStore {
 
 			return new SystemException(sb.toString());
 		}
-		else {
-			return new SystemException(
-				amazonClientException.getMessage(), amazonClientException);
-		}
+
+		return new SystemException(
+			amazonClientException.getMessage(), amazonClientException);
 	}
 
 	private static final int _DELETE_MAX = 1000;

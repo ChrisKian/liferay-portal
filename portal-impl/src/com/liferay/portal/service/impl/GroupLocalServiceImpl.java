@@ -526,10 +526,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the organization to the group.
+	 * Adds the group to the organization.
 	 *
 	 * @param organizationId the primary key of the organization
-	 * @param group the primary key of the group
+	 * @param group the group
 	 */
 	@Override
 	public void addOrganizationGroup(long organizationId, Group group) {
@@ -544,7 +544,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the organization to the group.
+	 * Adds the group to the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param groupId the primary key of the group
@@ -562,7 +562,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the organizations to the groups.
+	 * Adds the groups to the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param groups the groups
@@ -580,7 +580,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the organization to the groups.
+	 * Adds the groups to the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param groupIds the primary keys of the groups
@@ -598,7 +598,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the user group to the group.
+	 * Adds the group to the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param group the group
@@ -616,7 +616,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the user group to the group.
+	 * Adds the group to the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param groupId the primary key of the group
@@ -634,7 +634,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the user group to the groups.
+	 * Adds the groups to the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param groups the groups
@@ -652,7 +652,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Adds the user group to the groups.
+	 * Adds the groups to the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param groupIds the primary keys of the groups
@@ -814,7 +814,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Clears the organization from the groups.
+	 * Clears the groups from the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 */
@@ -831,7 +831,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Clears the user group from the groups.
+	 * Clears the groups from the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 */
@@ -1153,7 +1153,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the organization from the group.
+	 * Deletes the group from the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param group the group
@@ -1171,7 +1171,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the organization from the group.
+	 * Deletes the group from the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param groupId the primary key of the group
@@ -1189,7 +1189,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the organization from the groups.
+	 * Deletes the groups from the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param groups the groups
@@ -1209,7 +1209,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the organization from the groups.
+	 * Deletes the groups from the organization.
 	 *
 	 * @param organizationId the primary key of the organization
 	 * @param groupIds the primary keys of the groups
@@ -1227,7 +1227,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the user group from the group.
+	 * Deletes the group from the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param group the group
@@ -1245,7 +1245,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the user group from the group.
+	 * Deletes the group from the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param groupId the primary key of the group
@@ -1263,7 +1263,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the user group from the groups.
+	 * Deletes the groups from the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param groups the groups
@@ -1281,7 +1281,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Removes the user group from the groups.
+	 * Deletes the groups from the user group.
 	 *
 	 * @param userGroupId the primary key of the user group
 	 * @param groupIds the primary keys of the groups
@@ -2155,9 +2155,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			return search(
 				user.getCompanyId(), null, null, groupParams, start, end);
 		}
-		else {
-			return userPersistence.getGroups(userId, start, end);
-		}
+
+		return userPersistence.getGroups(userId, start, end);
 	}
 
 	/**
@@ -2347,9 +2346,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		if (groupPersistence.fetchByLiveGroupId(liveGroupId) != null) {
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -2384,9 +2382,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		if (groupFinder.countByG_U(groupId, userId, inherit) > 0) {
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	@Override
@@ -4601,9 +4598,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	protected boolean isStaging(ServiceContext serviceContext) {

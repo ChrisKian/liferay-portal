@@ -4269,7 +4269,7 @@ to Maven.
 3.12.97.
 
 ### Fixed
-- [LPS-84055]: The `printDependentArtifact` task should print the project
+- [LPS-84055]: Fix the `printDependentArtifact` task so it prints the project
 directory when it has a dependency with version `default`.
 
 ## 5.5.3 - 2018-08-05
@@ -4303,7 +4303,7 @@ directory when it has a dependency with version `default`.
 3.12.102.
 
 ### Fixed
-- [LPS-84055]: The `printDependentArtifact` task should print the project
+- [LPS-84055]: Fix the `printDependentArtifact` task so it prints the project
 directory when it has a `compile*` dependency with the version `default`.
 
 ## 5.5.8 - 2018-08-07
@@ -4318,11 +4318,206 @@ directory when it has a `compile*` dependency with the version `default`.
 - [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
 3.12.104.
 
-## 5.5.10 - 2018-08-08
+## 5.5.10 - 2018-08-09
 
 ### Fixed
-- [LPS-84055]: The `writeArtifactPublishCommands` task should not be skipped if
-it has `test` dependency with the version `default`.
+- [LPS-84055]: Fix the `writeArtifactPublishCommands` task so it's not skipped
+when the `test` dependency is version `default`.
+
+## 5.5.11 - 2018-08-09
+
+### Changed
+- [LPS-84307]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.105.
+
+## 5.5.12 - 2018-08-09
+
+### Changed
+- [LPS-84313]: Update the `com.liferay.spring.boot.defaults` plugin to
+automatically apply the `com.liferay.test.integration.base` plugin. Configure
+the `check` task to depend on the `testIntegration` task.
+
+## 5.5.13 - 2018-08-10
+
+### Changed
+- [LPS-84039]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.106.
+
+## 5.5.14 - 2018-08-13
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.107.
+
+## 5.5.15 - 2018-08-15
+
+### Changed
+- [LPS-84039]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.108.
+
+## 5.5.16 - 2018-08-15
+
+### Changed
+- [LPS-84473]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.109.
+
+## 5.5.17 - 2018-08-15
+
+### Changed
+- [LPS-83790]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.110.
+
+## 5.5.18 - 2018-08-20
+
+### Changed
+- [LPS-84621]: Disable the `validateSchema` task for CI.
+
+## 5.5.19 - 2018-08-21
+
+### Changed
+- [LPS-84615]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.111.
+- [LPS-84624]: Update the `com.liferay.spring.boot.defaults` plugin to configure
+the `test` and `testIntegration` tasks with sensible defaults.
+
+## 5.5.20 - 2018-08-22
+
+### Changed
+- [LPS-84218]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.112.
+
+## 5.5.21 - 2018-08-23
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.113.
+
+## 5.5.22 - 2018-08-23
+
+### Added
+- [LPS-83929]: Add the ability to exclude certain projects from executing the
+`printDependentArtifact` task by setting the property
+`printDependentArtifact.ignore.project.regex`.
+
+### Changed
+- [LPS-83067]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.114.
+- [LPS-83067]: Update the [Liferay Gradle Plugins Baseline] dependency to
+version 1.3.2.
+
+## 5.5.23 - 2018-08-27
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.115.
+
+## 5.5.24 - 2018-08-27
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.116.
+
+## 5.5.25 - 2018-08-28
+
+### Changed
+- [LPS-84094]: Allow properties defined in `gradle-ext.properties` to be
+overridden by values defined in a `gradle-ext.properties` file.
+- [LPS-84094]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.117.
+
+## 5.5.26 - 2018-08-29
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.118.
+
+### Fixed
+- [LPS-84887]: Update Maven SCM property default values in
+`config-maven.gradle`:
+	- `scm.connection` = `scm:git:git@github.com:liferay/liferay-portal.git`
+	- `scm.developerConnection` = `scm:git:git@github.com:liferay/liferay-portal.git`
+	- `scm.url` = `http://github.com/liferay/liferay-portal`
+
+## 5.5.27 - 2018-08-30
+
+### Changed
+- [LPS-84094]: Move `GradleUtil` methods to [Liferay Gradle Util] so it can be
+used inside `build.gradle` files.
+- [LPS-84621]: Enable the `validateSchema` task for CI.
+- [LPS-84891]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.119.
+
+## 5.5.28 - 2018-08-30
+
+### Changed
+- [LPS-80388]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.120.
+
+## 5.5.29 - 2018-09-03
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.121.
+
+## 5.5.30 - 2018-09-03
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.122.
+
+## 5.5.31 - 2018-09-04
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.123.
+
+## 5.5.32 - 2018-09-04
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.124.
+
+## 5.5.33 - 2018-09-04
+
+### Fixed
+- [LPS-70819]: Fix the `compileJSP.destinationDir` property when the
+`jsp.precompile.from.source` project property is set to `true`.
+
+## 5.5.34 - 2018-09-04
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.125.
+
+## 5.5.35 - 2018-09-04
+
+### Changed
+- [LPS-85092]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.126.
+
+## 5.5.36 - 2018-09-05
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.127.
+
+## 5.5.37 - 2018-09-06
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.128.
+
+## 5.5.38 - 2018-09-10
+
+### Changed
+- [LPS-74544]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.129.
+
+## 5.5.39 - 2018-09-10
+
+### Changed
+- [LPS-84119]: Update the [Liferay Gradle Plugins] dependency to version
+3.12.130.
 
 [Find Security Bugs]: https://github.com/liferay/liferay-portal/tree/master/modules/third-party/com-h3xstream-findsecbugs
 [Gradle Dependency Management]: https://github.com/spring-gradle-plugins/dependency-management-plugin
@@ -4727,6 +4922,7 @@ it has `test` dependency with the version `default`.
 [LPS-80184]: https://issues.liferay.com/browse/LPS-80184
 [LPS-80332]: https://issues.liferay.com/browse/LPS-80332
 [LPS-80386]: https://issues.liferay.com/browse/LPS-80386
+[LPS-80388]: https://issues.liferay.com/browse/LPS-80388
 [LPS-80394]: https://issues.liferay.com/browse/LPS-80394
 [LPS-80466]: https://issues.liferay.com/browse/LPS-80466
 [LPS-80513]: https://issues.liferay.com/browse/LPS-80513
@@ -4773,13 +4969,25 @@ it has `test` dependency with the version `default`.
 [LPS-83576]: https://issues.liferay.com/browse/LPS-83576
 [LPS-83705]: https://issues.liferay.com/browse/LPS-83705
 [LPS-83761]: https://issues.liferay.com/browse/LPS-83761
+[LPS-83790]: https://issues.liferay.com/browse/LPS-83790
 [LPS-83920]: https://issues.liferay.com/browse/LPS-83920
 [LPS-83929]: https://issues.liferay.com/browse/LPS-83929
 [LPS-84027]: https://issues.liferay.com/browse/LPS-84027
 [LPS-84039]: https://issues.liferay.com/browse/LPS-84039
 [LPS-84055]: https://issues.liferay.com/browse/LPS-84055
+[LPS-84094]: https://issues.liferay.com/browse/LPS-84094
 [LPS-84119]: https://issues.liferay.com/browse/LPS-84119
 [LPS-84213]: https://issues.liferay.com/browse/LPS-84213
+[LPS-84218]: https://issues.liferay.com/browse/LPS-84218
+[LPS-84307]: https://issues.liferay.com/browse/LPS-84307
+[LPS-84313]: https://issues.liferay.com/browse/LPS-84313
+[LPS-84473]: https://issues.liferay.com/browse/LPS-84473
+[LPS-84615]: https://issues.liferay.com/browse/LPS-84615
+[LPS-84621]: https://issues.liferay.com/browse/LPS-84621
+[LPS-84624]: https://issues.liferay.com/browse/LPS-84624
+[LPS-84887]: https://issues.liferay.com/browse/LPS-84887
+[LPS-84891]: https://issues.liferay.com/browse/LPS-84891
+[LPS-85092]: https://issues.liferay.com/browse/LPS-85092
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
 [LRDOCS-2981]: https://issues.liferay.com/browse/LRDOCS-2981

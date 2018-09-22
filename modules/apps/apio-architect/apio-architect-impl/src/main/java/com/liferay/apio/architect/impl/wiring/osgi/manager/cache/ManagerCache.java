@@ -16,6 +16,7 @@ package com.liferay.apio.architect.impl.wiring.osgi.manager.cache;
 
 import static javax.ws.rs.core.Variant.VariantListBuilder.newInstance;
 
+import com.liferay.apio.architect.documentation.contributor.CustomDocumentation;
 import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.impl.message.json.BatchResultMessageMapper;
 import com.liferay.apio.architect.impl.message.json.DocumentationMessageMapper;
@@ -46,7 +47,7 @@ import javax.ws.rs.core.Variant;
 import javax.ws.rs.core.Variant.VariantListBuilder;
 
 /**
- * Acts as a central cache for most of the managers.
+ * Acts as a central cache for most managers.
  *
  * <p>
  * There should only be one instance of this class, accessible through {@link
@@ -91,7 +92,6 @@ public class ManagerCache {
 	 *         the data
 	 * @return the batch result message mapper, if present; {@code
 	 *         Optional#empty()} otherwise
-	 * @review
 	 */
 	public <T> Optional<BatchResultMessageMapper<T>>
 		getBatchResultMessageMapperOptional(
@@ -139,6 +139,16 @@ public class ManagerCache {
 		).map(
 			Unsafe::unsafeCast
 		);
+	}
+
+	public CustomDocumentation getDocumentationContribution(
+		EmptyFunction computeEmptyFunction) {
+
+		if (_customDocumentation == null) {
+			computeEmptyFunction.invoke();
+		}
+
+		return _customDocumentation;
 	}
 
 	/**
@@ -470,9 +480,8 @@ public class ManagerCache {
 	/**
 	 * Adds a batch result message mapper.
 	 *
-	 * @param  mediaType the media type
-	 * @param  batchResultMessageMapper the batch result message mapper
-	 * @review
+	 * @param mediaType the media type
+	 * @param batchResultMessageMapper the batch result message mapper
 	 */
 	public void putBatchResultMessageMapper(
 		MediaType mediaType,
@@ -499,6 +508,12 @@ public class ManagerCache {
 		}
 
 		_collectionRoutes.put(key, collectionRoutes);
+	}
+
+	public void putDocumentationContribution(
+		CustomDocumentation customDocumentation) {
+
+		_customDocumentation = customDocumentation;
 	}
 
 	/**
@@ -739,6 +754,7 @@ public class ManagerCache {
 
 	private Map<MediaType, BatchResultMessageMapper> _batchResultMessageMappers;
 	private Map<String, CollectionRoutes> _collectionRoutes;
+	private CustomDocumentation _customDocumentation;
 	private Map<MediaType, DocumentationMessageMapper>
 		_documentationMessageMappers;
 	private Map<MediaType, EntryPointMessageMapper> _entryPointMessageMappers;

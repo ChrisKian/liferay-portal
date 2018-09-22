@@ -46,19 +46,19 @@ public enum SharingEntryActionKey {
 			return VIEW;
 		}
 
-		throw new IllegalArgumentException("Invalid action id " + actionId);
+		throw new IllegalArgumentException("Invalid action ID " + actionId);
 	}
 
 	public static SharingEntryActionKey parseFromBitwiseValue(
 		long bitwiseValue) {
 
-		if (Objects.equals(ADD_DISCUSSION.getBitwiseVaue(), bitwiseValue)) {
+		if (Objects.equals(ADD_DISCUSSION.getBitwiseValue(), bitwiseValue)) {
 			return ADD_DISCUSSION;
 		}
-		else if (Objects.equals(UPDATE.getBitwiseVaue(), bitwiseValue)) {
+		else if (Objects.equals(UPDATE.getBitwiseValue(), bitwiseValue)) {
 			return UPDATE;
 		}
-		else if (Objects.equals(VIEW.getBitwiseVaue(), bitwiseValue)) {
+		else if (Objects.equals(VIEW.getBitwiseValue(), bitwiseValue)) {
 			return VIEW;
 		}
 
@@ -70,7 +70,7 @@ public enum SharingEntryActionKey {
 		return _actionId;
 	}
 
-	public long getBitwiseVaue() {
+	public long getBitwiseValue() {
 		return _bitwiseValue;
 	}
 

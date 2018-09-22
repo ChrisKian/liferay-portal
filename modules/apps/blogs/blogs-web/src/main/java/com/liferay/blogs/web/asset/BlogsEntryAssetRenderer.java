@@ -102,9 +102,8 @@ public class BlogsEntryAssetRenderer
 		if (PropsValues.BLOGS_ENTRY_COMMENTS_ENABLED) {
 			return "edit_entry_discussion";
 		}
-		else {
-			return null;
-		}
+
+		return null;
 	}
 
 	/**
@@ -128,9 +127,8 @@ public class BlogsEntryAssetRenderer
 
 			return "/blogs/asset/" + template + ".jsp";
 		}
-		else {
-			return null;
-		}
+
+		return null;
 	}
 
 	@Override
@@ -159,7 +157,7 @@ public class BlogsEntryAssetRenderer
 				AssetHelper.ASSET_ENTRY_ABSTRACT_LENGTH);
 		}
 
-		String summary = _entry.getDescription();
+		String summary = HtmlUtil.escape(_entry.getDescription());
 
 		if (Validator.isNull(summary)) {
 			summary = HtmlUtil.stripHtml(

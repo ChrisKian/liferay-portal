@@ -31,7 +31,7 @@
 			<equals arg1="${pageVersioningEnabled}" arg2="true" />
 			<then>
 				<execute function="Click" locator1="Checkbox#ENABLED_ON_PUBLIC_PAGES" />
--				<execute function="Click" locator1="Checkbox#ENABLED_ON_PRIVATE_PAGES" />
+				<execute function="Click" locator1="Checkbox#ENABLED_ON_PRIVATE_PAGES" />
 			</then>
 		</if>
 
@@ -250,11 +250,9 @@
 
 		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
 
-		<execute function="Click" locator1="Staging#VARIATIONS_SELECTOR_DROPDOWN" />
-
-		<var name="key_pageVariationName" value="${pageVariationNameMenulistName}" />
-
-		<execute function="AssertClick#assertPartialTextClickAt" locator1="Staging#VARIATIONS_SELECTOR" value1="${pageVariationNameMenulistName}" />
+		<execute function="Select" locator1="Staging#VARIATIONS_SELECTOR" value1="${pageVariationNameMenulistName}">
+			<var name="key_pageVariationName" value="${pageVariationNameMenulistName}" />
+		</execute>
 	</command>
 
 	<command name="changePageVariationPG">
@@ -345,6 +343,13 @@
 		</if>
 
 		<if>
+			<isset var="uncheckPages" />
+			<then>
+				<execute macro="ContentConfiguration#uncheckPages" />
+			</then>
+		</if>
+
+		<if>
 			<isset var="uncheckSubContent" />
 			<then>
 				<execute function="Check#checkHiddenToggleSwitch" locator1="PagesConfiguration#CONTENT_CHOOSE_CONTENT_CONTENT_CHECKBOX">
@@ -405,6 +410,70 @@
 		<execute function="AssertTextEquals" locator1="Staging#STAGING_STATUS_PORTLET" value1="Successful" />
 
 		<execute macro="IFrame#closeFrame" />
+	</command>
+
+	<command name="createAndAssignStagingAdminToSite">
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Users" />
+			<var name="panel" value="Control Panel" />
+			<var name="portlet" value="Roles" />
+		</execute>
+
+		<execute macro="Role#addStagingAdminRole" />
+
+		<execute macro="JSONUser#addUser">
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Users" />
+			<var name="panel" value="Control Panel" />
+			<var name="portlet" value="Users and Organizations" />
+		</execute>
+
+		<execute macro="User#editPasswordCP">
+			<var name="password" value="password" />
+			<var name="userEmailAddress" value="userea@liferay.com" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="Navigator#gotoStagedView" />
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Members" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Memberships" />
+		</execute>
+
+		<execute macro="Site#assignUserAsMemberCP">
+			<var name="userFirstName" value="userfn" />
+			<var name="userLastName" value="userln" />
+			<var name="userScreenName" value="usersn" />
+		</execute>
+
+		<execute macro="Navigator#openSiteURL">
+			<var name="siteName" value="${siteName}" />
+		</execute>
+
+		<execute macro="Navigator#gotoStagedView" />
+
+		<execute macro="ProductMenu#gotoPortlet">
+			<var name="category" value="Members" />
+			<var name="panel" value="Site Administration" />
+			<var name="portlet" value="Site Memberships" />
+		</execute>
+
+		<execute macro="Site#assignSiteRoleCP">
+			<var name="resourceName" value="userfn userln" />
+			<var name="roleTitle" value="Staging Admin" />
+		</execute>
 	</command>
 
 	<command name="deactivateStagingCP">
@@ -1138,6 +1207,19 @@
 		<var name="key_pageVariationName" value="${pageVariationName}" />
 
 		<execute function="AssertTextEquals" locator1="Staging#PAGE_VARIATION" value1="${pageVariationName}" />
+	</command>
+
+	<command name="viewPublicationSummary">
+		<execute macro="LexiconEntry#gotoEntryMenuItem">
+			<var name="menuItem" value="Summary" />
+			<var name="rowEntry" value="${publicationTitle}" />
+		</execute>
+
+		<execute function="SelectFrame" locator1="IFrame#DIALOG" />
+
+		<execute function="AssertElementPresent" locator1="Staging#PROCESS_SUMMARY_PAGES_TITLE" />
+
+		<execute macro="IFrame#closeFrame" />
 	</command>
 
 	<command name="viewPublishContentCountViaPortletStagingCP">

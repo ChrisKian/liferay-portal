@@ -1,0 +1,18 @@
+Bundle-Name: Liferay Structured Content Apio Test
+Bundle-SymbolicName: com.liferay.structured.content.apio.test
+Bundle-Version: 1.0.0
+Import-Package:\
+	!com.fasterxml.jackson.*,\
+	\
+	!javax.validation.*,\
+	\
+	!org.apache.aries.blueprint,\
+	!org.apache.aries.blueprint.*,\
+	\
+	!org.osgi.service.blueprint.*,\
+	\
+	*
+-includeresource:\
+	test-classes/integration,\
+	@lib/assertj-core.jar,\
+	@lib/cxf-rt-frontend-jaxrs.jar

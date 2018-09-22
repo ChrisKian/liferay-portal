@@ -236,36 +236,36 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 	protected PortalGitWorkingDirectory(
 			String upstreamBranchName, String workingDirectoryPath,
-			String repositoryName)
+			String gitRepositoryName)
 		throws IOException {
 
-		super(upstreamBranchName, workingDirectoryPath, repositoryName);
+		super(upstreamBranchName, workingDirectoryPath, gitRepositoryName);
 	}
 
 	@Override
-	protected void setUpstreamRemoteToPrivateRepository() {
-		Remote upstreamRemote = getUpstreamRemote();
+	protected void setUpstreamGitRemoteToPrivateGitRepository() {
+		GitRemote upstreamGitRemote = getUpstreamGitRemote();
 
-		String remoteURL = upstreamRemote.getRemoteURL();
+		String remoteURL = upstreamGitRemote.getRemoteURL();
 
 		if (!remoteURL.contains("-ee")) {
 			remoteURL = remoteURL.replace(".git", "-ee.git");
 		}
 
-		addRemote(true, "upstream-temp", remoteURL);
+		addGitRemote(true, "upstream-temp", remoteURL);
 	}
 
 	@Override
-	protected void setUpstreamRemoteToPublicRepository() {
-		Remote upstreamRemote = getUpstreamRemote();
+	protected void setUpstreamGitRemoteToPublicGitRepository() {
+		GitRemote upstreamGitRemote = getUpstreamGitRemote();
 
-		String remoteURL = upstreamRemote.getRemoteURL();
+		String remoteURL = upstreamGitRemote.getRemoteURL();
 
 		if (remoteURL.contains("-ee")) {
 			remoteURL = remoteURL.replace("-ee", "");
 		}
 
-		addRemote(true, "upstream-temp", remoteURL);
+		addGitRemote(true, "upstream-temp", remoteURL);
 	}
 
 	private boolean _isNPMTestModuleDir(File moduleDir) {
@@ -350,15 +350,16 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		private static Map<Integer, String[]> _markerFileNames =
-			new HashMap<>();
-
-		static {
-			_markerFileNames.put(0, new String[] {"subsystem.bnd", ".gitrepo"});
-			_markerFileNames.put(1, new String[] {"app.bnd"});
-			_markerFileNames.put(2, new String[] {"bnd.bnd"});
-			_markerFileNames.put(
-				3, new String[] {"build.gradle", "build.xml", "pom.xml"});
-		}
+			new HashMap<Integer, String[]>() {
+				{
+					put(0, new String[] {"subsystem.bnd", ".gitrepo"});
+					put(1, new String[] {"app.bnd"});
+					put(2, new String[] {"bnd.bnd"});
+					put(
+						3,
+						new String[] {"build.gradle", "build.xml", "pom.xml"});
+				}
+			};
 
 		private final File _file;
 		private final int _priority;

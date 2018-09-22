@@ -910,7 +910,7 @@ public class PortletContainerImpl implements PortletContainer {
 
 		int portletSpecMajorVersion = portletApp.getSpecMajorVersion();
 
-		if (portletSpecMajorVersion == 3) {
+		if (portletSpecMajorVersion >= 3) {
 			WindowState requestWindowState = WindowStateFactory.getWindowState(
 				ParamUtil.getString(request, "p_p_state"), 3);
 
@@ -992,6 +992,16 @@ public class PortletContainerImpl implements PortletContainer {
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
+
+			if (liferayResourceRequest.isAsyncStarted() &&
+				liferayResourceRequest.isAsyncSupported()) {
+
+				PortletAsyncContextImpl portletAsyncContextImpl =
+					(PortletAsyncContextImpl)
+						liferayResourceRequest.getPortletAsyncContext();
+
+				portletAsyncContextImpl.setReturnedToContainer();
+			}
 		}
 	}
 

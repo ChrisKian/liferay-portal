@@ -711,10 +711,30 @@ public class PoshiRunnerExecutor {
 		}
 	}
 
-	public static void runMacroCommandElement(Element commandElement)
+	public static void runMacroCommandElement(
+			Element commandElement, String namespacedClassCommandName)
 		throws Exception {
 
 		PoshiRunnerStackTraceUtil.setCurrentElement(commandElement);
+
+		String classCommandName =
+			PoshiRunnerGetterUtil.
+				getClassCommandNameFromNamespacedClassCommandName(
+					namespacedClassCommandName);
+
+		String className =
+			PoshiRunnerGetterUtil.getClassNameFromNamespacedClassCommandName(
+				classCommandName);
+
+		String namespace = PoshiRunnerStackTraceUtil.getCurrentNamespace(
+			namespacedClassCommandName);
+
+		List<Element> rootVarElements = PoshiRunnerContext.getRootVarElements(
+			"macro", className, namespace);
+
+		for (Element rootVarElement : rootVarElements) {
+			runRootVarElement(rootVarElement, true);
+		}
 
 		PoshiRunnerVariablesUtil.pushCommandMap();
 
@@ -737,10 +757,6 @@ public class PoshiRunnerExecutor {
 				getClassCommandNameFromNamespacedClassCommandName(
 					namespacedClassCommandName);
 
-		String className =
-			PoshiRunnerGetterUtil.getClassNameFromNamespacedClassCommandName(
-				classCommandName);
-
 		List<Element> executeVarElements = executeElement.elements("var");
 
 		for (Element executeVarElement : executeVarElements) {
@@ -752,20 +768,13 @@ public class PoshiRunnerExecutor {
 		String namespace = PoshiRunnerStackTraceUtil.getCurrentNamespace(
 			namespacedClassCommandName);
 
-		List<Element> rootVarElements = PoshiRunnerContext.getRootVarElements(
-			"macro", className, namespace);
-
-		for (Element rootVarElement : rootVarElements) {
-			runRootVarElement(rootVarElement, true);
-		}
-
 		SummaryLoggerHandler.startSummary(executeElement);
 
 		Element commandElement = PoshiRunnerContext.getMacroCommandElement(
 			classCommandName, namespace);
 
 		try {
-			runMacroCommandElement(commandElement);
+			runMacroCommandElement(commandElement, namespacedClassCommandName);
 
 			Element returnElement = executeElement.element("return");
 
@@ -1064,14 +1073,30 @@ public class PoshiRunnerExecutor {
 		XMLLoggerHandler.updateStatus(element, "pass");
 	}
 
-	public static void runTestCaseCommandElement(Element commandElement)
+	public static void runTestCaseCommandElement(
+			Element element, String namespacedClassCommandName)
 		throws Exception {
 
-		PoshiRunnerStackTraceUtil.setCurrentElement(commandElement);
+		PoshiRunnerStackTraceUtil.setCurrentElement(element);
+
+		String className =
+			PoshiRunnerGetterUtil.getClassNameFromNamespacedClassCommandName(
+				namespacedClassCommandName);
+
+		String namespace =
+			PoshiRunnerGetterUtil.getNamespaceFromNamespacedClassCommandName(
+				namespacedClassCommandName);
+
+		List<Element> rootVarElements = PoshiRunnerContext.getRootVarElements(
+			"test-case", className, namespace);
+
+		for (Element rootVarElement : rootVarElements) {
+			runRootVarElement(rootVarElement, false);
+		}
 
 		PoshiRunnerVariablesUtil.pushCommandMap();
 
-		parseElement(commandElement);
+		parseElement(element);
 
 		PoshiRunnerVariablesUtil.popCommandMap();
 	}
@@ -1086,24 +1111,14 @@ public class PoshiRunnerExecutor {
 
 		PoshiRunnerStackTraceUtil.pushStackTrace(executeElement);
 
-		String className =
-			PoshiRunnerGetterUtil.getClassNameFromNamespacedClassCommandName(
-				namespacedClassCommandName);
 		String namespace =
 			PoshiRunnerGetterUtil.getNamespaceFromNamespacedClassCommandName(
 				namespacedClassCommandName);
 
-		List<Element> rootVarElements = PoshiRunnerContext.getRootVarElements(
-			"test-case", className, namespace);
-
-		for (Element rootVarElement : rootVarElements) {
-			runRootVarElement(rootVarElement, true);
-		}
-
 		Element commandElement = PoshiRunnerContext.getTestCaseCommandElement(
 			namespacedClassCommandName, namespace);
 
-		runTestCaseCommandElement(commandElement);
+		runTestCaseCommandElement(commandElement, namespacedClassCommandName);
 
 		PoshiRunnerStackTraceUtil.popStackTrace();
 

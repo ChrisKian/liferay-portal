@@ -33,7 +33,6 @@ import com.liferay.taglib.util.ParamAndPropertyAncestorTagImpl;
 import com.liferay.taglib.util.TypedParamAccessorTag;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
@@ -171,9 +170,21 @@ public class ActionURLTag
 		}
 
 		if (parameterMap != null) {
-			for (Entry<String, String[]> entry : parameterMap.entrySet()) {
-				liferayPortletURL.setParameter(
-					entry.getKey(), entry.getValue(), false);
+			for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+				String key = entry.getKey();
+
+				if (key.startsWith(_ACTION_PARAMETER_NAMESPACE)) {
+					key = key.substring(_ACTION_PARAMETER_NAMESPACE.length());
+
+					String portletNamespace = PortalUtil.getPortletNamespace(
+						portletName);
+
+					if (!key.startsWith(portletNamespace)) {
+						key = portletNamespace.concat(key);
+					}
+				}
+
+				liferayPortletURL.setParameter(key, entry.getValue(), false);
 			}
 		}
 
@@ -191,8 +202,14 @@ public class ActionURLTag
 
 	@Override
 	public void addParam(String name, String type, String value) {
-		if (Objects.equals(type, "render") && Validator.isNotNull(name)) {
-			name = PortletQName.PRIVATE_RENDER_PARAMETER_NAMESPACE.concat(name);
+		if (Validator.isNotNull(name)) {
+			if (Objects.equals(type, "action")) {
+				name = _ACTION_PARAMETER_NAMESPACE.concat(name);
+			}
+			else if (Objects.equals(type, "render")) {
+				name = PortletQName.PRIVATE_RENDER_PARAMETER_NAMESPACE.concat(
+					name);
+			}
 		}
 
 		super.addParam(name, value);
@@ -364,6 +381,8 @@ public class ActionURLTag
 
 		return liferayPortletConfig.getPortletId();
 	}
+
+	private static final String _ACTION_PARAMETER_NAMESPACE = "p_action_p_";
 
 	private static final Log _log = LogFactoryUtil.getLog(ActionURLTag.class);
 

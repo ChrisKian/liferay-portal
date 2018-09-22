@@ -546,11 +546,11 @@ public class PortalImpl implements Portal {
 
 			ServiceTracker
 				<PortalInetSocketAddressEventListener,
-					PortalInetSocketAddressEventListener>
-						portalInetSocketAddressEventListenerServiceTracker =
-							registry.trackServices(
-								PortalInetSocketAddressEventListener.class,
-								new PortalInetSocketAddressEventListenerServiceTrackerCustomizer());
+				 PortalInetSocketAddressEventListener>
+					portalInetSocketAddressEventListenerServiceTracker =
+						registry.trackServices(
+							PortalInetSocketAddressEventListener.class,
+							new PortalInetSocketAddressEventListenerServiceTrackerCustomizer());
 
 			portalInetSocketAddressEventListenerServiceTracker.open();
 
@@ -1483,9 +1483,8 @@ public class PortalImpl implements Portal {
 		if (secure) {
 			return getCDNHostHttps(companyId);
 		}
-		else {
-			return getCDNHostHttp(companyId);
-		}
+
+		return getCDNHostHttp(companyId);
 	}
 
 	@Override
@@ -1701,7 +1700,14 @@ public class PortalImpl implements Portal {
 		Group controlPanelDisplayGroup = getControlPanelDisplayGroup(
 			group.getCompanyId(), scopeGroupId, 0, ppid);
 
-		return getSiteAdminURL(controlPanelDisplayGroup, ppid, params);
+		Company company = CompanyLocalServiceUtil.getCompany(
+			controlPanelDisplayGroup.getCompanyId());
+
+		return _getSiteAdminURL(
+			getPortalURL(
+				company.getVirtualHostname(), getPortalServerPort(false),
+				false),
+			controlPanelDisplayGroup, ppid, params);
 	}
 
 	@Override
@@ -3620,11 +3626,15 @@ public class PortalImpl implements Portal {
 		HttpServletRequest request, Layout layout, Locale locale,
 		Locale originalLocale) {
 
-		String contextPath = getPathContext();
+		String requestURI = request.getRequestURI();
 
 		HttpServletRequest originalRequest = getOriginalServletRequest(request);
 
-		String requestURI = originalRequest.getRequestURI();
+		if (originalRequest.getPathInfo() == null) {
+			requestURI = originalRequest.getRequestURI();
+		}
+
+		String contextPath = getPathContext();
 
 		if (Validator.isNotNull(contextPath) &&
 			requestURI.contains(contextPath)) {
@@ -4128,9 +4138,8 @@ public class PortalImpl implements Portal {
 			if (secure) {
 				return PropsValues.WEB_SERVER_HTTPS_PORT;
 			}
-			else {
-				return PropsValues.WEB_SERVER_HTTP_PORT;
-			}
+
+			return PropsValues.WEB_SERVER_HTTP_PORT;
 		}
 
 		return inetSocketAddress.getPort();
@@ -4474,9 +4483,8 @@ public class PortalImpl implements Portal {
 		if (liferayPortletConfig != null) {
 			return liferayPortletConfig.getPortletId();
 		}
-		else {
-			return null;
-		}
+
+		return null;
 	}
 
 	@Override
@@ -4488,9 +4496,8 @@ public class PortalImpl implements Portal {
 		if (liferayPortletConfig != null) {
 			return liferayPortletConfig.getPortletId();
 		}
-		else {
-			return null;
-		}
+
+		return null;
 	}
 
 	@Override
@@ -4679,9 +4686,8 @@ public class PortalImpl implements Portal {
 		if (PropsValues.AUTO_DEPLOY_CUSTOM_PORTLET_XML) {
 			return PORTLET_XML_FILE_NAME_CUSTOM;
 		}
-		else {
-			return PORTLET_XML_FILE_NAME_STANDARD;
-		}
+
+		return PORTLET_XML_FILE_NAME_STANDARD;
 	}
 
 	@Override
@@ -4865,9 +4871,8 @@ public class PortalImpl implements Portal {
 		if (layout == null) {
 			return 0;
 		}
-		else {
-			return layout.getGroupId();
-		}
+
+		return layout.getGroupId();
 	}
 
 	@Override
@@ -5604,7 +5609,7 @@ public class PortalImpl implements Portal {
 		}
 
 		for (int i = persistentHttpServletRequestWrappers.size() - 1; i >= 0;
-				i--) {
+			 i--) {
 
 			HttpServletRequestWrapper httpServletRequestWrapper =
 				persistentHttpServletRequestWrappers.get(i);
@@ -5856,9 +5861,8 @@ public class PortalImpl implements Portal {
 
 			return userIdObj.longValue();
 		}
-		else {
-			return 0;
-		}
+
+		return 0;
 	}
 
 	@Override
@@ -6514,9 +6518,8 @@ public class PortalImpl implements Portal {
 		if (StringUtil.equalsIgnoreCase(method, HttpMethods.GET)) {
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	@Override
@@ -6528,9 +6531,8 @@ public class PortalImpl implements Portal {
 		if (StringUtil.equalsIgnoreCase(method, HttpMethods.POST)) {
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	@Override
@@ -6542,9 +6544,8 @@ public class PortalImpl implements Portal {
 
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	@Override
@@ -6674,9 +6675,8 @@ public class PortalImpl implements Portal {
 		if (pos >= 0) {
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	@Override
@@ -7236,9 +7236,8 @@ public class PortalImpl implements Portal {
 			else if (layoutType.hasModePrintPortletId(portletId)) {
 				return LiferayPortletMode.PRINT;
 			}
-			else {
-				return PortletMode.VIEW;
-			}
+
+			return PortletMode.VIEW;
 		}
 		else {
 			ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
@@ -9171,7 +9170,7 @@ public class PortalImpl implements Portal {
 	private class PortalInetSocketAddressEventListenerServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer
 			<PortalInetSocketAddressEventListener,
-				PortalInetSocketAddressEventListener> {
+			 PortalInetSocketAddressEventListener> {
 
 		@Override
 		public PortalInetSocketAddressEventListener addingService(

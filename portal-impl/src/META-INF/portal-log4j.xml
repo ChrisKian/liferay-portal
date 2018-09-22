@@ -81,7 +81,7 @@
 	</category>
 
 	<category name="com.liferay.portal.bootstrap.ModuleFrameworkImpl">
-		<priority value="WARN" />
+		<priority value="INFO" />
 	</category>
 
 	<category name="com.liferay.portal.captcha.CaptchaImpl">
@@ -249,6 +249,10 @@
 	</category>
 
 	<category name="com.liferay.portal.image.SpriteProcessorImpl">
+		<priority value="WARN" />
+	</category>
+
+	<category name="com.liferay.portal.json.jabsorb.serializer.LiferayJSONDeserializationWhitelist">
 		<priority value="WARN" />
 	</category>
 
@@ -974,6 +978,10 @@
 
 	<category name="com.sun.faces">
 		<priority value="ERROR" />
+	</category>
+
+	<category name="com.zaxxer.hikari">
+		<priority value="WARN" />
 	</category>
 
 	<category name="de.hunsicker">

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -75,7 +76,8 @@ public class UserModelListenerTest {
 
 	@Test
 	public void testDeletingUserSharedDeletesSharingEntries() throws Exception {
-		long classNameId = RandomTestUtil.randomLong();
+		long classNameId = _classNameLocalService.getClassNameId(
+			User.class.getName());
 		long classPK = RandomTestUtil.randomLong();
 
 		ServiceContext serviceContext =
@@ -84,8 +86,8 @@ public class UserModelListenerTest {
 
 		_sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), classNameId, classPK,
-			_group.getGroupId(), Arrays.asList(SharingEntryActionKey.VIEW),
-			serviceContext);
+			_group.getGroupId(), true,
+			Arrays.asList(SharingEntryActionKey.VIEW), null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
 			_sharingEntryLocalService.getToUserSharingEntries(
@@ -108,7 +110,8 @@ public class UserModelListenerTest {
 	public void testDeletingUserSharingDoesNotDeleteSharingEntries()
 		throws Exception {
 
-		long classNameId = RandomTestUtil.randomLong();
+		long classNameId = _classNameLocalService.getClassNameId(
+			User.class.getName());
 		long classPK = RandomTestUtil.randomLong();
 
 		ServiceContext serviceContext =
@@ -117,8 +120,8 @@ public class UserModelListenerTest {
 
 		_sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), classNameId, classPK,
-			_group.getGroupId(), Arrays.asList(SharingEntryActionKey.VIEW),
-			serviceContext);
+			_group.getGroupId(), true,
+			Arrays.asList(SharingEntryActionKey.VIEW), null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
 			_sharingEntryLocalService.getToUserSharingEntries(
@@ -136,6 +139,9 @@ public class UserModelListenerTest {
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
 	}
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
 	private Company _company;

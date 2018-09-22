@@ -27,7 +27,6 @@ import com.liferay.talend.runtime.apio.ApioException;
 import com.liferay.talend.runtime.apio.ApioResult;
 import com.liferay.talend.runtime.apio.constants.JSONLDConstants;
 import com.liferay.talend.runtime.apio.constants.SchemaOrgConstants;
-import com.liferay.talend.runtime.apio.constants.SchemaOrgConstants.Vocabulary;
 import com.liferay.talend.runtime.apio.jsonld.ApioApiDocumentation;
 import com.liferay.talend.runtime.apio.jsonld.ApioEntryPoint;
 import com.liferay.talend.runtime.apio.jsonld.ApioForm;
@@ -36,6 +35,7 @@ import com.liferay.talend.runtime.apio.jsonld.ApioSingleModel;
 import com.liferay.talend.runtime.apio.jsonld.ApioUtils;
 import com.liferay.talend.runtime.apio.operation.Operation;
 import com.liferay.talend.runtime.client.RESTClient;
+import com.liferay.talend.utils.URIUtils;
 
 import java.io.IOException;
 
@@ -69,7 +69,6 @@ import org.talend.daikon.i18n.I18nMessageProvider;
 import org.talend.daikon.i18n.I18nMessages;
 import org.talend.daikon.i18n.TranslatableImpl;
 import org.talend.daikon.properties.ValidationResult;
-import org.talend.daikon.properties.ValidationResult.Result;
 import org.talend.daikon.properties.ValidationResultMutable;
 
 /**
@@ -278,7 +277,7 @@ public class LiferaySourceOrSink
 			return _getJsonHomeRootEndpointMap(jsonNode);
 		}
 
-		return apioEntryPoint.getRootEndpointMap();
+		return _getRootEndpointMap(apioEntryPoint);
 	}
 
 	@Override
@@ -313,10 +312,13 @@ public class LiferaySourceOrSink
 				JsonNode webSiteNameJsonNode = jsonNode.path(
 					SchemaOrgConstants.Property.NAME);
 
+				String webSiteURL = webSiteURLJsonNode.asText();
+
+				String webSiteId = URIUtils.getLastPathSegment(webSiteURL);
+
 				webSitesList.add(
 					new SimpleNamedThing(
-						webSiteURLJsonNode.asText(),
-						webSiteNameJsonNode.asText()));
+						webSiteId, webSiteNameJsonNode.asText()));
 			}
 
 			actualPage = webSitesApioResourceCollection.getResourceActualPage();
@@ -455,12 +457,13 @@ public class LiferaySourceOrSink
 		for (Map.Entry<String, String> entry : resourceCollections.entrySet()) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"resource name: {}, href: {} ", entry.getKey(),
-					entry.getValue());
+					"resource: {}, href: {} ", entry.getValue(),
+					entry.getKey());
 			}
 
 			resourceNames.add(
-				new SimpleNamedThing(entry.getKey(), entry.getValue()));
+				new SimpleNamedThing(
+					entry.getValue(), entry.getValue(), entry.getKey()));
 		}
 
 		return resourceNames;
@@ -602,12 +605,13 @@ public class LiferaySourceOrSink
 		for (Map.Entry<String, String> entry : resourceCollections.entrySet()) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"resource name: {}, href: {} ", entry.getKey(),
-					entry.getValue());
+					"resource: {}, href: {} ", entry.getValue(),
+					entry.getKey());
 			}
 
 			schemaNames.add(
-				new SimpleNamedThing(entry.getKey(), entry.getValue()));
+				new SimpleNamedThing(
+					entry.getValue(), entry.getValue(), entry.getKey()));
 		}
 
 		return schemaNames;
@@ -705,7 +709,7 @@ public class LiferaySourceOrSink
 		ValidationResultMutable validationResultMutable =
 			new ValidationResultMutable();
 
-		validationResultMutable.setStatus(Result.OK);
+		validationResultMutable.setStatus(ValidationResult.Result.OK);
 
 		try {
 			LiferaySourceOrSink liferaySourceOrSink = new LiferaySourceOrSink();
@@ -725,20 +729,20 @@ public class LiferaySourceOrSink
 				i18nMessages.getMessage(
 					"error.validation.connection.testconnection",
 					ae.getLocalizedMessage(), ae.getCode()));
-			validationResultMutable.setStatus(Result.ERROR);
+			validationResultMutable.setStatus(ValidationResult.Result.ERROR);
 		}
 		catch (IOException ioe) {
 			validationResultMutable.setMessage(
 				i18nMessages.getMessage(
 					"error.validation.connection.testconnection.json"));
-			validationResultMutable.setStatus(Result.ERROR);
+			validationResultMutable.setStatus(ValidationResult.Result.ERROR);
 		}
 		catch (ProcessingException pe) {
 			validationResultMutable.setMessage(
 				i18nMessages.getMessage(
 					"error.validation.connection.testconnection.jersey",
 					pe.getLocalizedMessage()));
-			validationResultMutable.setStatus(Result.ERROR);
+			validationResultMutable.setStatus(ValidationResult.Result.ERROR);
 		}
 
 		return validationResultMutable;
@@ -764,7 +768,7 @@ public class LiferaySourceOrSink
 	private static boolean _hasWebSiteResourcePredicate(
 		Map.Entry<String, String> entry) {
 
-		if (Vocabulary.WEB_SITE.equals(entry.getValue()) ||
+		if (SchemaOrgConstants.Vocabulary.WEB_SITE.equals(entry.getValue()) ||
 			SchemaOrgConstants.Type.WEB_SITE.equals(entry.getValue())) {
 
 			return true;
@@ -796,6 +800,28 @@ public class LiferaySourceOrSink
 		return resourcesMap;
 	}
 
+	/**
+	 * Returns the exposed entry points in a Map. The key is the ID of a given
+	 * resource collection and the value is the resource URL's last path segment
+	 * to be able to construct URLs from it
+	 *
+	 * @param  apioEntryPoint
+	 * @return Map<String, String> Resource ID / URL last path segment, empty
+	 *         otherwise
+	 */
+	private Map<String, String> _getRootEndpointMap(
+		ApioEntryPoint apioEntryPoint) {
+
+		Set<String> rootEndpointURLs = apioEntryPoint.getRootEndpointURLs();
+		Map<String, String> rootEndpointURLMap = new TreeMap<>();
+
+		rootEndpointURLs.forEach(
+			endpointURL -> rootEndpointURLMap.put(
+				endpointURL, URIUtils.getLastPathSegment(endpointURL)));
+
+		return rootEndpointURLMap;
+	}
+
 	private Map<String, String> _getWebSiteResourceCollectionsDescriptor(
 			JsonNode jsonNode)
 		throws IOException {
@@ -818,8 +844,10 @@ public class LiferaySourceOrSink
 			String id = idJsonNode.asText();
 
 			if (resourceHref.startsWith(id)) {
-				resourcesMap.put(
-					resourceHrefJsonNode.asText(), typeCoercionTermKey);
+				String resourcePathName = URIUtils.getLastPathSegment(
+					resourceHref);
+
+				resourcesMap.put(resourceHref, resourcePathName);
 			}
 		}
 

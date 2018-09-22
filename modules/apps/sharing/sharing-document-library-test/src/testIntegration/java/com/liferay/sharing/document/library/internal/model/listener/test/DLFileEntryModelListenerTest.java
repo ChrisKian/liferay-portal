@@ -16,6 +16,7 @@ package com.liferay.sharing.document.library.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLTrashService;
@@ -107,10 +108,10 @@ public class DLFileEntryModelListenerTest {
 
 		_sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), _classNameId,
-			_fileEntry.getFileEntryId(), _fileEntry.getGroupId(),
+			_fileEntry.getFileEntryId(), _fileEntry.getGroupId(), true,
 			Arrays.asList(
-				SharingEntryActionKey.VIEW, SharingEntryActionKey.UPDATE),
-			serviceContext);
+				SharingEntryActionKey.UPDATE, SharingEntryActionKey.VIEW),
+			null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
 			_sharingEntryLocalService.getToUserSharingEntries(
@@ -139,20 +140,21 @@ public class DLFileEntryModelListenerTest {
 
 		_sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), _classNameId,
-			_fileEntry.getFileEntryId(), _fileEntry.getGroupId(),
+			_fileEntry.getFileEntryId(), _fileEntry.getGroupId(), true,
 			Arrays.asList(
-				SharingEntryActionKey.VIEW, SharingEntryActionKey.UPDATE),
-			serviceContext);
+				SharingEntryActionKey.UPDATE, SharingEntryActionKey.VIEW),
+			null, serviceContext);
 
-		long classNameId = RandomTestUtil.randomLong();
+		long classNameId = _classNameLocalService.getClassNameId(
+			DLFolder.class.getName());
 		long classPK = RandomTestUtil.randomLong();
 
 		SharingEntry sharingEntry = _sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), classNameId, classPK,
-			_fileEntry.getGroupId(),
+			_fileEntry.getGroupId(), true,
 			Arrays.asList(
-				SharingEntryActionKey.VIEW, SharingEntryActionKey.UPDATE),
-			serviceContext);
+				SharingEntryActionKey.UPDATE, SharingEntryActionKey.VIEW),
+			null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
 			_sharingEntryLocalService.getToUserSharingEntries(
@@ -182,10 +184,10 @@ public class DLFileEntryModelListenerTest {
 
 		_sharingEntryLocalService.addSharingEntry(
 			_user.getUserId(), _groupUser.getUserId(), _classNameId,
-			_fileEntry.getFileEntryId(), _fileEntry.getGroupId(),
+			_fileEntry.getFileEntryId(), _fileEntry.getGroupId(), true,
 			Arrays.asList(
-				SharingEntryActionKey.VIEW, SharingEntryActionKey.UPDATE),
-			serviceContext);
+				SharingEntryActionKey.UPDATE, SharingEntryActionKey.VIEW),
+			null, serviceContext);
 
 		List<SharingEntry> toUserSharingEntries =
 			_sharingEntryLocalService.getToUserSharingEntries(

@@ -20,8 +20,6 @@
 String tabs1 = ParamUtil.getString(request, "tabs1", "assignees");
 String tabs2 = ParamUtil.getString(request, "tabs2", "users");
 
-String redirect = ParamUtil.getString(request, "redirect");
-
 long passwordPolicyId = ParamUtil.getLong(request, "passwordPolicyId");
 
 PasswordPolicy passwordPolicy = PasswordPolicyLocalServiceUtil.fetchPasswordPolicy(passwordPolicyId);
@@ -38,7 +36,7 @@ else {
 }
 
 portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(redirect);
+portletDisplay.setURLBack(String.valueOf(renderResponse.createRenderURL()));
 
 renderResponse.setTitle(passwordPolicy.getName());
 
@@ -52,17 +50,12 @@ PortalUtil.addPortletBreadcrumbEntry(request, passwordPolicy.getName(), null);
 EditPasswordPolicyAssignmentsManagementToolbarDisplayContext editPasswordPolicyAssignmentsManagementToolbarDisplayContext = new EditPasswordPolicyAssignmentsManagementToolbarDisplayContext(request, renderRequest, renderResponse, displayStyle, "/edit_password_policy_assignments.jsp");
 
 SearchContainer searchContainer = editPasswordPolicyAssignmentsManagementToolbarDisplayContext.getSearchContainer();
-
-PortletURL portletURL = editPasswordPolicyAssignmentsManagementToolbarDisplayContext.getPortletURL();
 %>
 
 <liferay-util:include page="/edit_password_policy_tabs.jsp" servletContext="<%= application %>" />
 
-<liferay-ui:tabs
-	names="users,organizations"
-	param="tabs2"
-	type="tabs nav-tabs-default"
-	url="<%= portletURL.toString() %>"
+<clay:navigation-bar
+	navigationItems="<%= passwordPolicyDisplayContext.getEditPasswordPolicyAssignmentsNavigationItems(editPasswordPolicyAssignmentsManagementToolbarDisplayContext.getPortletURL()) %>"
 />
 
 <clay:management-toolbar

@@ -104,6 +104,15 @@
 		<execute function="SelectFrame" value1="relative=top" />
 	</command>
 
+	<command name="addSmallImage">
+		<execute function="Click" locator1="Button#SELECT_FILE_SMALL_IMAGE" />
+
+		<execute macro="ItemSelector#uploadFile">
+			<var name="navTab" value="${navTab}" />
+			<var name="uploadFileName" value="${uploadFileName}" />
+		</execute>
+	</command>
+
 	<command name="addSubtitle">
 		<execute macro="AlloyEditor#typeEditor">
 			<var name="content" value="${entrySubtitle}" />
@@ -516,6 +525,16 @@
 		<execute function="Click" locator1="Ratings#THUMB_UP" />
 	</command>
 
+	<command name="removeSmallImage">
+		<execute function="Click" locator1="Button#REMOVE_IMAGE" />
+
+		<execute function="AssertElementNotPresent" locator1="BlogsEntry#SMALL_IMAGE">
+			<var name="key_smallImage" value="${uploadFileName}" />
+		</execute>
+
+		<execute function="AssertTextEquals" locator1="Button#SELECT" value1="Select File" />
+	</command>
+
 	<command name="removeViewPermissionsPG">
 		<var method="StringUtil#replace('${roleTitle}', ' ', '-')" name="key_roleTitle" />
 		<var method="StringUtil#lowerCase('${key_roleTitle}')" name="key_roleTitle" />
@@ -769,7 +788,9 @@
 	</command>
 
 	<command name="viewContent">
-		<execute function="AssertTextEquals" locator1="BlogsEntry#CONTENT" value1="${entryContent}" />
+		<var name="key_entryTitle" value="${entryTitle}" />
+
+		<execute function="AssertTextEquals" locator1="Blogs#ICON_VIEW_ENTRY_TITLE" value1="${entryTitle}" />
 	</command>
 
 	<command name="viewDefaultCP">

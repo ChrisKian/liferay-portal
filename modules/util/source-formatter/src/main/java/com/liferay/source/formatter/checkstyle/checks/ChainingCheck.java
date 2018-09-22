@@ -130,7 +130,7 @@ public class ChainingCheck extends BaseCheck {
 			}
 
 			if (_isAllowedChainingMethodCall(detailAST, methodCallAST, chain)) {
-				if (chainSize > 2) {
+				if (chainSize > 1) {
 					_checkStyling(detailAST, methodCallAST);
 				}
 
@@ -250,7 +250,7 @@ public class ChainingCheck extends BaseCheck {
 		}
 
 		for (int i = DetailASTUtil.getStartLine(methodCallAST) + 1;
-				i <= DetailASTUtil.getEndLine(methodCallAST); i++) {
+			 i <= DetailASTUtil.getEndLine(methodCallAST); i++) {
 
 			String line = StringUtil.trim(getLine(i - 1));
 

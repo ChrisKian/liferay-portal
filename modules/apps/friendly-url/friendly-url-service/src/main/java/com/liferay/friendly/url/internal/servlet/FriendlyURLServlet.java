@@ -186,6 +186,10 @@ public class FriendlyURLServlet extends HttpServlet {
 
 			Layout layout = layoutFriendlyURLSeparatorComposite.getLayout();
 
+			if (!group.isActive() && !layout.isTypeControlPanel()) {
+				throw new NoSuchLayoutException();
+			}
+
 			request.setAttribute(WebKeys.LAYOUT, layout);
 
 			String layoutFriendlyURLSeparatorCompositeFriendlyURL =
@@ -400,9 +404,8 @@ public class FriendlyURLServlet extends HttpServlet {
 
 				return true;
 			}
-			else {
-				return false;
-			}
+
+			return false;
 		}
 
 		public String getPath() {
@@ -459,11 +462,10 @@ public class FriendlyURLServlet extends HttpServlet {
 		if (lifecycle.equals("1")) {
 			return new LastPath(_friendlyURLPathPrefix, pathInfo);
 		}
-		else {
-			return new LastPath(
-				_friendlyURLPathPrefix, pathInfo,
-				HttpUtil.parameterMapToString(request.getParameterMap()));
-		}
+
+		return new LastPath(
+			_friendlyURLPathPrefix, pathInfo,
+			HttpUtil.parameterMapToString(request.getParameterMap()));
 	}
 
 	protected String getPathInfo(HttpServletRequest request) {

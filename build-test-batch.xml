@@ -354,9 +354,13 @@ mariadb.executable=${mariadb.executable}]]></echo>
 						<param name="todir" value="lib/development" />
 					</antcall>
 
+					<local name="test.app.server.lib.global.dir" />
+
+					<propertycopy from="app.server.${app.server.type}.lib.global.dir" name="test.app.server.lib.global.dir" />
+
 					<antcall inheritall="false" target="copy-optional-jars">
 						<param name="database.type" value="@{database.type}" />
-						<param name="todir" value="${app.server.lib.global.dir}" />
+						<param name="todir" value="${test.app.server.lib.global.dir}" />
 					</antcall>
 
 					<antcall inheritall="false" target="rebuild-database">
@@ -588,6 +592,23 @@ mariadb.executable=${mariadb.executable}]]></echo>
 			</jar>
 
 			<delete dir="${merged-classes}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="prepare-suite-search-engine">
+		<attribute name="suite.name" />
+
+		<sequential>
+			<propertycopy from="search.engine[@{suite.name}]" name="suite.search.engine" silent="true" />
+
+			<if>
+				<equals arg1="${suite.search.engine}" arg2="solr" />
+				<then>
+					<property name="com.liferay.portal.search.solr.test.unit.started" value="true" />
+
+					<ant antfile="build-test-solr.xml" target="prepare-solr-suite" />
+				</then>
+			</if>
 		</sequential>
 	</macrodef>
 
@@ -1192,7 +1213,10 @@ app.server.type=@{app.server.type}]]></echo>
 									<then>
 										<setup-testable-tomcat />
 
-										<setup-test-batch-testable-tomcat setup.proxy="@{setup.proxy}" />
+										<setup-test-batch-testable-tomcat
+											setup.proxy="@{setup.proxy}"
+											test.portal.bundle.version="${test.portal.bundle.version}"
+										/>
 									</then>
 								</elseif>
 							</if>
@@ -1260,19 +1284,14 @@ app.server.type=@{app.server.type}]]></echo>
 					<if>
 						<isset property="env.CI_TEST_SUITE" />
 						<then>
-							<propertycopy from="search.engine[${env.CI_TEST_SUITE}]" name="suite.search.engine" silent="true" />
-
 							<get-testcase-property property.name="osgi.app.includes" />
 
 							<if>
-								<and>
-									<equals arg1="${suite.search.engine}" arg2="solr" />
-									<not>
-										<contains string="${osgi.app.includes}" substring="portal-search-solr" />
-									</not>
-								</and>
+								<not>
+									<contains string="${osgi.app.includes}" substring="portal-search-solr" />
+								</not>
 								<then>
-									<ant antfile="build-test-solr.xml" target="prepare-solr-suite" />
+									<prepare-suite-search-engine suite.name="${env.CI_TEST_SUITE}" />
 								</then>
 							</if>
 						</then>
@@ -1334,25 +1353,13 @@ app.server.type=@{app.server.type}]]></echo>
 					<if>
 						<isset property="env.CI_TEST_SUITE" />
 						<then>
-							<propertycopy from="search.engine[${env.CI_TEST_SUITE}]" name="suite.search.engine" silent="true" />
-
-							<if>
-								<equals arg1="${suite.search.engine}" arg2="solr" />
-								<then>
-									<ant antfile="build-test-solr.xml" target="prepare-solr-suite" />
-								</then>
-							</if>
+							<prepare-suite-search-engine suite.name="${env.CI_TEST_SUITE}" />
 						</then>
 					</if>
 				</test-set-up>
 
 				<test-tear-down>
-					<if>
-						<equals arg1="${suite.search.engine}" arg2="solr" />
-						<then>
-							<ant antfile="build-test-solr.xml" target="stop-solr-core" />
-						</then>
-					</if>
+					<stop-suite-search-engine />
 				</test-tear-down>
 			</run-batch-test>
 		</sequential>
@@ -2091,16 +2098,34 @@ app.server.type=@{app.server.type}]]></echo>
 
 							<antcall inheritAll="false" target="prepare-system-ext-properties" />
 
-							<print-test-class-group test.class.group.index="${axis.variable}" />
-
 							<get-test-batch-app-server-start-executable-arg-line />
 
-							<gradle-execute dir="modules" refreshdependencies="@{refreshdependencies}" task="testIntegration">
-								<arg value="-Dapp.server.start.executable.arg.line=${test.batch.app.server.start.executable.arg.line}" />
-								<arg value="-Ddatabase.type=@{database.type}" />
-								<arg value="-Dbuild.exclude.ant.plugin=true" />
-								<arg value="-Dtest.class.group.index=${axis.variable}" />
-							</gradle-execute>
+							<if>
+								<equals arg1="@{subrepository.name}" arg2="" />
+								<then>
+									<print-test-class-group test.class.group.index="${axis.variable}" />
+
+									<echo>Executing Gradle task in directory "modules": testIntegration.</echo>
+
+									<gradle-execute dir="modules" refreshdependencies="@{refreshdependencies}" task="testIntegration">
+										<arg value="-Dapp.server.start.executable.arg.line=${test.batch.app.server.start.executable.arg.line}" />
+										<arg value="-Ddatabase.type=@{database.type}" />
+										<arg value="-Dbuild.exclude.ant.plugin=true" />
+										<arg value="-Dtest.class.group.index=${axis.variable}" />
+									</gradle-execute>
+								</then>
+								<else>
+									<get-module-base-dir-from-subrepository-name subrepository.name="@{subrepository.name}" />
+
+									<echo>Executing Gradle task in directory "${module.base.dir}": testIntegration.</echo>
+
+									<gradle-execute dir="${module.base.dir}" refreshdependencies="@{refreshdependencies}" task="testIntegration">
+										<arg value="-Dapp.server.start.executable.arg.line=${test.batch.app.server.start.executable.arg.line}" />
+										<arg value="-Ddatabase.type=@{database.type}" />
+										<arg value="-Dbuild.exclude.ant.plugin=true" />
+									</gradle-execute>
+								</else>
+							</if>
 
 							<if>
 								<and>
@@ -2211,17 +2236,75 @@ app.server.type=@{app.server.type}]]></echo>
 								</elseif>
 							</if>
 
+							<gradle-execute dir="modules/core" task="deploy">
+								<arg value="--parallel" />
+								<arg value="-Dbuild.profile=portal-pre" />
+								<arg value="-Pforced.deploy.dir=${project.dir}/tmp/lib-pre" />
+							</gradle-execute>
+
+							<ant dir="portal-kernel" inheritAll="false" target="install-portal-snapshot" />
+
+							<gradle-execute dir="modules/apps" task="deploy">
+								<arg value="--parallel" />
+								<arg value="-Dbuild.profile=portal-pre" />
+								<arg value="-Pforced.deploy.dir=${project.dir}/tmp/lib-pre" />
+							</gradle-execute>
+
+							<parallel failonany="true" threadcount="${parallel.thread.count}">
+								<ant dir="portal-test" inheritAll="false" target="jar" />
+								<ant dir="support-tomcat" inheritAll="false" target="compile" />
+								<ant dir="util-bridges" inheritAll="false" target="compile" />
+
+								<sequential>
+									<ant dir="util-java" inheritAll="false" target="compile" />
+									<ant dir="util-taglib" inheritAll="false" target="compile" />
+								</sequential>
+
+								<ant dir="util-slf4j" inheritAll="false" target="compile" />
+							</parallel>
+
+							<ant dir="portal-impl" inheritAll="false" target="compile" />
+
+							<ant dir="portal-test-integration" inheritAll="false" target="jar" />
+
+							<copy
+								file="${project.dir}/portal-test/portal-test.jar"
+								overwrite="true"
+								tofile="${liferay.home}/osgi/modules/com.liferay.portal.test.jar"
+							/>
+
+							<copy
+								file="${project.dir}/portal-test/portal-test.jar"
+								overwrite="true"
+								tofile="${liferay.home}/osgi/test/com.liferay.portal.test.jar"
+							/>
+
+							<copy
+								file="${project.dir}/portal-test-integration/portal-test-integration.jar"
+								overwrite="true"
+								tofile="${liferay.home}/osgi/modules/com.liferay.portal.test.integration.jar"
+							/>
+
+							<copy
+								file="${project.dir}/portal-test-integration/portal-test-integration.jar"
+								overwrite="true"
+								tofile="${liferay.home}/osgi/test/com.liferay.portal.test.integration.jar"
+							/>
+
 							<local name="artifact.version" />
 
 							<property name="artifact.version" value="1.0.0-TEST_ARTIFACT" />
 
-							<copy-artifact-to-local-cache artifact.file="${app.server.lib.portal.dir}/portal-impl.jar" artifact.name="com.liferay.portal.impl" artifact.version="${artifact.version}" />
-							<copy-artifact-to-local-cache artifact.file="${app.server.lib.global.dir}/portal-kernel.jar" artifact.name="com.liferay.portal.kernel" artifact.version="${artifact.version}" />
+							<propertycopy from="app.server.${app.server.type}.lib.global.dir" name="test.app.server.lib.global.dir" />
+							<propertycopy from="app.server.${app.server.type}.lib.portal.dir" name="test.app.server.lib.portal.dir" />
+
+							<copy-artifact-to-local-cache artifact.file="${test.app.server.lib.portal.dir}/portal-impl.jar" artifact.name="com.liferay.portal.impl" artifact.version="${artifact.version}" />
+							<copy-artifact-to-local-cache artifact.file="${test.app.server.lib.global.dir}/portal-kernel.jar" artifact.name="com.liferay.portal.kernel" artifact.version="${artifact.version}" />
 							<copy-artifact-to-local-cache artifact.file="${liferay.home}/osgi/test/com.liferay.portal.test.jar" artifact.name="com.liferay.portal.test" artifact.version="${artifact.version}" />
 							<copy-artifact-to-local-cache artifact.file="${liferay.home}/osgi/test/com.liferay.portal.test.integration.jar" artifact.name="com.liferay.portal.test.integration" artifact.version="${artifact.version}" />
-							<copy-artifact-to-local-cache artifact.file="${app.server.lib.portal.dir}/util-bridges.jar" artifact.name="com.liferay.util.bridges" artifact.version="${artifact.version}" />
-							<copy-artifact-to-local-cache artifact.file="${app.server.lib.portal.dir}/util-java.jar" artifact.name="com.liferay.util.java" artifact.version="${artifact.version}" />
-							<copy-artifact-to-local-cache artifact.file="${app.server.lib.portal.dir}/util-taglib.jar" artifact.name="com.liferay.util.taglib" artifact.version="${artifact.version}" />
+							<copy-artifact-to-local-cache artifact.file="${test.app.server.lib.portal.dir}/util-bridges.jar" artifact.name="com.liferay.util.bridges" artifact.version="${artifact.version}" />
+							<copy-artifact-to-local-cache artifact.file="${test.app.server.lib.portal.dir}/util-java.jar" artifact.name="com.liferay.util.java" artifact.version="${artifact.version}" />
+							<copy-artifact-to-local-cache artifact.file="${test.app.server.lib.portal.dir}/util-taglib.jar" artifact.name="com.liferay.util.taglib" artifact.version="${artifact.version}" />
 
 							<deploy-release-dependency-modules />
 						</then>
@@ -2239,14 +2322,7 @@ app.server.type=@{app.server.type}]]></echo>
 					<if>
 						<isset property="env.CI_TEST_SUITE" />
 						<then>
-							<propertycopy from="search.engine[${env.CI_TEST_SUITE}]" name="suite.search.engine" silent="true" />
-
-							<if>
-								<equals arg1="${suite.search.engine}" arg2="solr" />
-								<then>
-									<ant antfile="build-test-solr.xml" target="prepare-solr-suite" />
-								</then>
-							</if>
+							<prepare-suite-search-engine suite.name="${env.CI_TEST_SUITE}" />
 						</then>
 					</if>
 
@@ -2257,24 +2333,11 @@ app.server.type=@{app.server.type}]]></echo>
 								<param name="test.class.groups.size" value="${test.batch.size}" />
 							</antcall>
 						</then>
-						<else>
-							<get-module-base-dir-from-subrepository-name subrepository.name="@{subrepository.name}" />
-
-							<antcall inheritAll="false" target="record-test-class-file-names">
-								<param name="test.class.modules.base.dir" value="${module.base.dir}" />
-								<param name="test.class.groups.size" value="${test.batch.size}" />
-							</antcall>
-						</else>
 					</if>
 				</test-set-up>
 
 				<test-tear-down>
-					<if>
-						<equals arg1="${suite.search.engine}" arg2="solr" />
-						<then>
-							<ant antfile="build-test-solr.xml" target="stop-solr-core" />
-						</then>
-					</if>
+					<stop-suite-search-engine />
 				</test-tear-down>
 			</run-batch-test>
 		</sequential>
@@ -2283,6 +2346,129 @@ app.server.type=@{app.server.type}]]></echo>
 	<macrodef name="run-poshi-validation">
 		<sequential>
 			<antcall target="run-poshi-validation" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="run-release-osgi-state-exploded-test">
+		<sequential>
+			<run-batch-test tomcat.gc.log="true">
+				<test-action>
+					<database-test-run-test database.type="mysql" stop.app.server="true">
+						<test-action>
+							<antcall inheritAll="false" target="prepare-log4j-ext-xml">
+								<param name="database.type" value="@{database.type}" />
+							</antcall>
+
+							<antcall inheritAll="false" target="prepare-portal-ext-properties">
+								<param name="database.type" value="@{database.type}" />
+							</antcall>
+
+							<echo file="${app.server.classes.portal.dir}/system-ext.properties">com.liferay.portal.kernel.util.ServiceProxyFactory.timeout=600000
+log.sanitizer.enabled=false</echo>
+
+							<antcall inheritall="false" target="start-app-server" />
+
+							<antcall inheritall="false" target="stop-app-server" />
+
+							<delete dir="${liferay.home}/logs" />
+
+							<delete>
+								<fileset
+									dir="${liferay.home}/osgi/state"
+									includes="**/bundleFile"
+								/>
+							</delete>
+
+							<trycatch>
+								<try>
+									<antcall inheritall="false" target="start-app-server-preserve-liferay-home" />
+
+									<antcall inheritall="false" target="run-selenium-test">
+										<param name="test.batch.run.type" value="single" />
+										<param name="test.class" value="PortalSmoke#Smoke" />
+										<param name="test.skip.tear.down" value="false" />
+									</antcall>
+								</try>
+
+								<finally>
+									<ant dir="portal-kernel" inheritAll="false" target="test-class">
+										<property name="test.class" value="PortalLogAssertorTest" />
+									</ant>
+								</finally>
+							</trycatch>
+						</test-action>
+					</database-test-run-test>
+				</test-action>
+
+				<test-set-up>
+					<if>
+						<isset property="env.DIST_PATH" />
+						<then>
+							<prepare-test-environment />
+						</then>
+						<else>
+							<prepare-test-build />
+						</else>
+					</if>
+				</test-set-up>
+			</run-batch-test>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="run-release-osgi-state-lpkg-test">
+		<sequential>
+			<run-batch-test tomcat.gc.log="true">
+				<test-action>
+					<database-test-run-test database.type="mysql" stop.app.server="true">
+						<test-action>
+							<setup-lpkg-test database.type="@{database.type}" />
+
+							<antcall inheritall="false" target="start-app-server" />
+
+							<antcall inheritall="false" target="stop-app-server" />
+
+							<delete dir="${liferay.home}/logs" />
+
+							<delete>
+								<fileset
+									dir="${liferay.home}/osgi/state"
+									includes="**/bundleFile"
+								/>
+							</delete>
+
+							<trycatch>
+								<try>
+									<antcall inheritall="false" target="start-app-server-preserve-liferay-home" />
+
+									<antcall inheritall="false" target="run-selenium-test">
+										<param name="test.batch.run.type" value="single" />
+										<param name="test.class" value="PortalSmoke#Smoke" />
+										<param name="test.skip.tear.down" value="false" />
+									</antcall>
+								</try>
+
+								<finally>
+									<ant dir="portal-kernel" inheritAll="false" target="test-class">
+										<property name="test.class" value="PortalLogAssertorTest" />
+									</ant>
+								</finally>
+							</trycatch>
+						</test-action>
+					</database-test-run-test>
+				</test-action>
+
+				<test-set-up>
+					<if>
+						<isset property="env.DIST_PATH" />
+						<then>
+							<prepare-test-environment />
+						</then>
+						<else>
+							<prepare-test-build />
+						</else>
+					</if>
+				</test-set-up>
+			</run-batch-test>
 		</sequential>
 	</macrodef>
 
@@ -2310,6 +2496,7 @@ log.sanitizer.enabled=false</echo>
 
 	<macrodef name="setup-test-batch-testable-tomcat">
 		<attribute default="true" name="setup.proxy" />
+		<attribute default="" name="test.portal.bundle.version" />
 
 		<sequential>
 			<if>
@@ -2319,7 +2506,7 @@ log.sanitizer.enabled=false</echo>
 				</then>
 			</if>
 
-			<setup-testable-tomcat-gc />
+			<setup-testable-tomcat-gc test.portal.bundle.version="@{test.portal.bundle.version}" />
 
 			<setup-testable-tomcat-heap-dump-on-oom />
 
@@ -2363,42 +2550,34 @@ log.sanitizer.enabled=false</echo>
 	</macrodef>
 
 	<macrodef name="setup-testable-tomcat-gc">
+		<attribute default="" name="test.portal.bundle.version" />
+
 		<sequential>
 			<if>
-				<resourcecontains
-					resource="${app.server.tomcat.dir}/bin/setenv.bat"
-					substring="${test.batch.app.server.tomcat.setenv.gc.old}"
-				/>
+				<os family="windows" />
 				<then>
-					<replace
-						file="${app.server.tomcat.dir}/bin/setenv.bat"
-						token="${test.batch.app.server.tomcat.setenv.gc.old}"
-						value="${test.batch.app.server.tomcat.setenv.gc.new}"
-					/>
+					<var name="set.env.file.name" value="${app.server.tomcat.dir}/bin/setenv.bat" />
 				</then>
 				<else>
-					<if>
-						<not>
-							<resourcecontains
-								resource="${app.server.tomcat.dir}/bin/setenv.bat"
-								substring="${test.batch.app.server.tomcat.setenv.gc.new}"
-							/>
-						</not>
-						<then>
-							<fail message="Unable to setup Tomcat GC properties for ${app.server.tomcat.dir}/bin/setenv.bat." />
-						</then>
-					</if>
+					<var name="set.env.file.name" value="${app.server.tomcat.dir}/bin/setenv.sh" />
 				</else>
 			</if>
 
 			<if>
+				<isset property="test.batch.app.server.tomcat.setenv.gc.old[@{test.portal.bundle.version}]" />
+				<then>
+					<propertycopy from="test.batch.app.server.tomcat.setenv.gc.old[@{test.portal.bundle.version}]" name="test.batch.app.server.tomcat.setenv.gc.old" override="true" />
+				</then>
+			</if>
+
+			<if>
 				<resourcecontains
-					resource="${app.server.tomcat.dir}/bin/setenv.sh"
+					resource="${set.env.file.name}"
 					substring="${test.batch.app.server.tomcat.setenv.gc.old}"
 				/>
 				<then>
 					<replace
-						file="${app.server.tomcat.dir}/bin/setenv.sh"
+						file="${set.env.file.name}"
 						token="${test.batch.app.server.tomcat.setenv.gc.old}"
 						value="${test.batch.app.server.tomcat.setenv.gc.new}"
 					/>
@@ -2407,12 +2586,12 @@ log.sanitizer.enabled=false</echo>
 					<if>
 						<not>
 							<resourcecontains
-								resource="${app.server.tomcat.dir}/bin/setenv.sh"
+								resource="${set.env.file.name}"
 								substring="${test.batch.app.server.tomcat.setenv.gc.new}"
 							/>
 						</not>
 						<then>
-							<fail message="Unable to setup Tomcat GC properties for ${app.server.tomcat.dir}/bin/setenv.sh." />
+							<fail message="Unable to setup Tomcat GC properties for ${set.env.file.name}" />
 						</then>
 					</if>
 				</else>
@@ -2493,6 +2672,17 @@ log.sanitizer.enabled=false</echo>
 							CATALINA_OPTS="${CATALINA_OPTS} ${print.final.flags}"
 						]]>
 					</echo>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="stop-suite-search-engine">
+		<sequential>
+			<if>
+				<equals arg1="${suite.search.engine}" arg2="solr" />
+				<then>
+					<ant antfile="build-test-solr.xml" target="stop-solr-core" />
 				</then>
 			</if>
 		</sequential>
@@ -3472,9 +3662,13 @@ log.sanitizer.enabled=false</echo>
 			<test-action>
 				<database-test-run-test database.type="mysql" database.version="${database.version}" stop.app.server="true">
 					<test-action>
+						<propertycopy from="app.server.${app.server.type}.classes.portal.dir" name="app.server.classes.portal.dir" override="true" />
+
 						<get-database-property property.name="database.version" />
 
-						<antcall target="prepare-portal-ext-properties" />
+						<antcall target="prepare-portal-ext-properties">
+							<param name="app.server.classes.portal.dir" value="${app.server.classes.portal.dir}" />
+						</antcall>
 
 						<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties"><![CDATA[
 							admin.email.from.address=${admin.email.from.address}
@@ -3540,7 +3734,11 @@ log.sanitizer.enabled=false</echo>
 							/>
 						</copy>
 
-						<antcall target="start-app-server" />
+						<propertycopy from="app.server.${app.server.type}.bin.dir" name="app.server.bin.dir" override="true" />
+
+						<antcall inheritall="false" target="start-app-server">
+							<param name="app.server.bin.dir" value="${app.server.bin.dir}" />
+						</antcall>
 
 						<copy
 							flatten="true"
@@ -3599,6 +3797,8 @@ log.sanitizer.enabled=false</echo>
 			</test-action>
 
 			<test-set-up>
+				<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
+
 				<if>
 					<and>
 						<or>
@@ -4045,6 +4245,7 @@ log.sanitizer.enabled=false</echo>
 			<test-action>
 				<gradle-execute dir="modules" task="test">
 					<arg value="-Dbuild.exclude.ant.plugin=true" />
+					<arg if:set="com.liferay.portal.search.solr.test.unit.started" value="-Dcom.liferay.portal.search.solr.test.unit.started=${com.liferay.portal.search.solr.test.unit.started}" />
 					<arg value="-Djunit.code.coverage=${test.batch.code.coverage}" />
 					<arg value="-Dtest.class.group.index=${axis.variable}" />
 				</gradle-execute>
@@ -4064,8 +4265,23 @@ log.sanitizer.enabled=false</echo>
 						<prepare-test-build />
 					</else>
 				</if>
+
+				<if>
+					<isset property="env.CI_TEST_SUITE" />
+					<then>
+						<prepare-suite-search-engine suite.name="${env.CI_TEST_SUITE}" />
+					</then>
+				</if>
 			</test-set-up>
+
+			<test-tear-down>
+				<stop-suite-search-engine />
+			</test-tear-down>
 		</run-batch-test>
+	</target>
+
+	<target name="modules-unit-project-templates-jdk8">
+		<antcall target="modules-unit-jdk8" />
 	</target>
 
 	<target name="oracle-service-start">
@@ -4486,6 +4702,14 @@ ${output.content}</echo>
 
 	<target name="release-functional-smoke-bundle-tomcat-mysql57-jdk8">
 		<antcall target="functional-bundle-tomcat-mysql57-jdk8" />
+	</target>
+
+	<target name="release-osgi-state-exploded-test-jdk8">
+		<run-release-osgi-state-exploded-test />
+	</target>
+
+	<target name="release-osgi-state-lpkg-test-jdk8">
+		<run-release-osgi-state-lpkg-test />
 	</target>
 
 	<target name="ruby-sass-compiler-jdk8">

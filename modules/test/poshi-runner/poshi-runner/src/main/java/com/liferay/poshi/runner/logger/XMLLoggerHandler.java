@@ -166,7 +166,8 @@ public final class XMLLoggerHandler {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(
-			_getLineNumberItemText(element.attributeValue("line-number")));
+			_getLineNumberItemText(
+				PoshiRunnerGetterUtil.getLineNumber(element)));
 
 		List<Element> childElements = element.elements();
 
@@ -567,18 +568,18 @@ public final class XMLLoggerHandler {
 		return loggerElement.toString();
 	}
 
-	private static LoggerElement _getLineNumberItem(String lineNumber) {
+	private static LoggerElement _getLineNumberItem(int lineNumber) {
 		LoggerElement loggerElement = new LoggerElement();
 
 		loggerElement.setClassName("line-number");
 		loggerElement.setID(null);
 		loggerElement.setName("div");
-		loggerElement.setText(lineNumber);
+		loggerElement.setText(String.valueOf(lineNumber));
 
 		return loggerElement;
 	}
 
-	private static String _getLineNumberItemText(String lineNumber) {
+	private static String _getLineNumberItemText(int lineNumber) {
 		LoggerElement loggerElement = _getLineNumberItem(lineNumber);
 
 		return loggerElement.toString();
@@ -665,7 +666,8 @@ public final class XMLLoggerHandler {
 
 		for (Element childElement : childElements) {
 			loggerElement.addChildLoggerElement(
-				_getLineNumberItem(childElement.attributeValue("line-number")));
+				_getLineNumberItem(
+					PoshiRunnerGetterUtil.getLineNumber(childElement)));
 			loggerElement.addChildLoggerElement(
 				_getLineContainerLoggerElement(childElement));
 		}

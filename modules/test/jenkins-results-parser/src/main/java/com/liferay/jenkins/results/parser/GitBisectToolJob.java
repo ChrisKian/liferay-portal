@@ -34,22 +34,23 @@ public class GitBisectToolJob extends BaseJob implements PortalTestClassJob {
 			JenkinsResultsParserUtil.getPortalGitWorkingDirectory(
 				portalBranchName);
 
-		jobProperties.putAll(
-			JenkinsResultsParserUtil.getProperties(
-				new File(
-					_jenkinsGitWorkingDirectory.getWorkingDirectory(),
-					"commands/build.properties")));
+		jobPropertiesFiles.add(
+			new File(
+				_jenkinsGitWorkingDirectory.getWorkingDirectory(),
+				"commands/build.properties"));
 
-		jobProperties.putAll(
-			JenkinsResultsParserUtil.getProperties(
-				new File(
-					_jenkinsGitWorkingDirectory.getWorkingDirectory(),
-					"commands/dependencies/git-bisect-tool.properties")));
+		jobPropertiesFiles.add(
+			new File(
+				_jenkinsGitWorkingDirectory.getWorkingDirectory(),
+				"commands/dependencies/git-bisect-tool.properties"));
 	}
 
 	@Override
 	public Set<String> getBatchNames() {
-		return Collections.emptySet();
+		String testBatchNames = JenkinsResultsParserUtil.getProperty(
+			getJobProperties(), "test.batch.names");
+
+		return getSetFromString(testBatchNames);
 	}
 
 	@Override

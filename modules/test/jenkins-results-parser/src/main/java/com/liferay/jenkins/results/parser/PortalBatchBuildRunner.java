@@ -17,48 +17,26 @@ package com.liferay.jenkins.results.parser;
 /**
  * @author Michael Hashimoto
  */
-public class PortalBatchBuildRunner extends BatchBuildRunner {
+public class PortalBatchBuildRunner
+	extends BatchBuildRunner<PortalBatchBuildData> {
+
+	protected PortalBatchBuildRunner(
+		PortalBatchBuildData portalBatchBuildData) {
+
+		super(portalBatchBuildData);
+	}
 
 	@Override
-	public void setup() {
-		primaryLocalRepository.setup();
+	protected void initWorkspace() {
+		PortalBatchBuildData portalBatchBuildData = getBuildData();
 
-		writeRepositoryProperties();
-	}
+		workspace = WorkspaceFactory.newBatchWorkspace(
+			portalBatchBuildData.getPortalGitHubURL(),
+			portalBatchBuildData.getPortalUpstreamBranchName(), getBatchName());
 
-	protected PortalBatchBuildRunner(Job job, String batchName) {
-		super(job, batchName);
-
-		if (!(job instanceof PortalTestClassJob)) {
-			throw new RuntimeException("Invalid job type");
-		}
-
-		PortalTestClassJob portalTestClassJob = (PortalTestClassJob)job;
-
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			portalTestClassJob.getPortalGitWorkingDirectory();
-
-		primaryLocalRepository = RepositoryFactory.getLocalRepository(
-			portalGitWorkingDirectory.getRepositoryName(),
-			portalGitWorkingDirectory.getUpstreamBranchName());
-
-		if (!(primaryLocalRepository instanceof PortalLocalRepository)) {
+		if (!(workspace instanceof BatchPortalWorkspace)) {
 			throw new RuntimeException("Invalid workspace");
 		}
-
-		portalLocalRepository = (PortalLocalRepository)primaryLocalRepository;
-
-		_setPortalJobBuildProperties();
-	}
-
-	protected void writeRepositoryProperties() {
-		portalLocalRepository.writeRepositoryPropertiesFiles();
-	}
-
-	protected final PortalLocalRepository portalLocalRepository;
-
-	private void _setPortalJobBuildProperties() {
-		portalLocalRepository.setBuildProperties(getPortalJobBuildProperties());
 	}
 
 }

@@ -217,8 +217,8 @@ public class HotDeployImpl implements HotDeploy {
 		}
 
 		if (hasDependencies) {
-			if (_log.isInfoEnabled()) {
-				_log.info("Deploying " + servletContextName + " from queue");
+			if (_log.isDebugEnabled()) {
+				_log.debug("Deploying " + servletContextName + " from queue");
 			}
 
 			for (int i = 0; i < _hotDeployListeners.size(); i++) {

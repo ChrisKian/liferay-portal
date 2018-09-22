@@ -59,8 +59,6 @@ import java.io.Writer;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1186,17 +1184,6 @@ public class JavadocFormatter {
 		return Dom4jUtil.toString(node);
 	}
 
-	private String _getAbsolutePath(String fileName) {
-		Path filePath = Paths.get(fileName);
-
-		filePath = filePath.toAbsolutePath();
-
-		filePath = filePath.normalize();
-
-		return StringUtil.replace(
-			filePath.toString(), CharPool.BACK_SLASH, CharPool.SLASH);
-	}
-
 	private int _getAdjustedLineNumber(int lineNumber, JavaModel javaModel) {
 		JavaAnnotatedElement javaAnnotatedElement =
 			(JavaAnnotatedElement)javaModel;
@@ -1940,9 +1927,8 @@ public class JavadocFormatter {
 
 			return true;
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	}
 
 	private boolean _hasPublicModifier(JavaClass javaClass) {

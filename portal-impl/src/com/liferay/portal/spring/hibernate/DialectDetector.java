@@ -14,6 +14,7 @@
 
 package com.liferay.portal.spring.hibernate;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.hibernate.DB2Dialect;
 import com.liferay.portal.dao.orm.hibernate.HSQLDialect;
@@ -24,7 +25,6 @@ import com.liferay.portal.dao.orm.hibernate.SybaseASE157Dialect;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -76,9 +76,8 @@ public class DialectDetector {
 			if (_log.isInfoEnabled()) {
 				_log.info(
 					StringBundler.concat(
-						"Determine dialect for ", dbName, " ",
-						String.valueOf(dbMajorVersion), ".",
-						String.valueOf(dbMinorVersion)));
+						"Determine dialect for ", dbName, " ", dbMajorVersion,
+						".", dbMinorVersion));
 			}
 
 			if (dbName.startsWith("HSQL")) {
@@ -149,10 +148,10 @@ public class DialectDetector {
 			throw new RuntimeException("No dialect found");
 		}
 		else if (dialectKey != null) {
-			if (_log.isInfoEnabled()) {
+			if (_log.isDebugEnabled()) {
 				Class<?> clazz = dialect.getClass();
 
-				_log.info("Found dialect " + clazz.getName());
+				_log.debug("Using dialect " + clazz.getName());
 			}
 
 			_dialects.put(dialectKey, dialect);

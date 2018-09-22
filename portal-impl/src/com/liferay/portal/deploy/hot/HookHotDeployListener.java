@@ -348,9 +348,8 @@ public class HookHotDeployListener
 		if (_log.isDebugEnabled()) {
 			return true;
 		}
-		else {
-			return portalProperties.containsKey(key);
-		}
+
+		return portalProperties.containsKey(key);
 	}
 
 	protected void destroyCustomJspBag(
@@ -1142,8 +1141,8 @@ public class HookHotDeployListener
 			Locale locale = getLocale(languagePropertiesLocation);
 
 			if (locale == null) {
-				if (_log.isInfoEnabled()) {
-					_log.info("Ignoring " + languagePropertiesLocation);
+				if (_log.isDebugEnabled()) {
+					_log.debug("Ignoring " + languagePropertiesLocation);
 				}
 
 				continue;
@@ -1256,7 +1255,7 @@ public class HookHotDeployListener
 
 		portalProperties.remove(PropsKeys.RELEASE_INFO_BUILD_NUMBER);
 		portalProperties.remove(PropsKeys.RELEASE_INFO_PREVIOUS_BUILD_NUMBER);
-		portalProperties.remove(PropsKeys.UPGRADE_PROCESSES);
+		portalProperties.remove(_PROPS_KEY_UPGRADE_PROCESSES);
 
 		_portalPropertiesMap.put(servletContextName, portalProperties);
 
@@ -1699,11 +1698,11 @@ public class HookHotDeployListener
 		if (unfilteredPortalProperties.containsKey(
 				PropsKeys.RELEASE_INFO_BUILD_NUMBER) ||
 			unfilteredPortalProperties.containsKey(
-				PropsKeys.UPGRADE_PROCESSES)) {
+				_PROPS_KEY_UPGRADE_PROCESSES)) {
 
 			String[] upgradeProcessClassNames = StringUtil.split(
 				unfilteredPortalProperties.getProperty(
-					PropsKeys.UPGRADE_PROCESSES));
+					_PROPS_KEY_UPGRADE_PROCESSES));
 
 			List<UpgradeProcess> upgradeProcesses =
 				UpgradeProcessUtil.initUpgradeProcesses(
@@ -2253,6 +2252,9 @@ public class HookHotDeployListener
 		}
 	}
 
+	private static final String _PROPS_KEY_UPGRADE_PROCESSES =
+		"upgrade.processes";
+
 	private static final String[] _PROPS_KEYS_EVENTS = {
 		LOGIN_EVENTS_POST, LOGIN_EVENTS_PRE, LOGOUT_EVENTS_POST,
 		LOGOUT_EVENTS_PRE, SERVLET_SERVICE_EVENTS_POST,
@@ -2503,9 +2505,8 @@ public class HookHotDeployListener
 			if (Validator.isNotNull(_servletContextName)) {
 				return true;
 			}
-			else {
-				return false;
-			}
+
+			return false;
 		}
 
 		@Override

@@ -163,8 +163,8 @@ public class ItemSelectorCriterionSerializerImpl
 	private ItemSelectorViewReturnTypeProviderHandler
 		_itemSelectorViewReturnTypeProviderHandler;
 	private ServiceTracker
-		<ItemSelectorViewReturnTypeProvider,
-			ItemSelectorViewReturnTypeProvider> _serviceTracker;
+		<ItemSelectorViewReturnTypeProvider, ItemSelectorViewReturnTypeProvider>
+			_serviceTracker;
 	private ServiceTracker<ItemSelectorView, ItemSelectorView>
 		_serviceTrackerItemSelectorView;
 	private ServiceTrackerMap<String, ItemSelectorView> _serviceTrackerMap;
@@ -322,7 +322,7 @@ public class ItemSelectorCriterionSerializerImpl
 	private class ItemSelectorViewReturnTypeProviderServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer
 			<ItemSelectorViewReturnTypeProvider,
-				ItemSelectorViewReturnTypeProvider> {
+			 ItemSelectorViewReturnTypeProvider> {
 
 		@Override
 		public ItemSelectorViewReturnTypeProvider addingService(

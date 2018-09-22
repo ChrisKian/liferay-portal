@@ -240,6 +240,22 @@ public class PoshiRunnerGetterUtil {
 		return className + "." + fileExtension;
 	}
 
+	public static int getLineNumber(Element element) {
+		if (element instanceof PoshiElement) {
+			PoshiElement poshiElement = (PoshiElement)element;
+
+			return poshiElement.getPoshiScriptLineNumber();
+		}
+
+		String lineNumber = element.attributeValue("line-number");
+
+		if (lineNumber != null) {
+			return Integer.valueOf(lineNumber);
+		}
+
+		return -1;
+	}
+
 	public static Object getMethodReturnValue(
 			List<String> args, String className, String methodName,
 			Object object)
@@ -376,14 +392,6 @@ public class PoshiRunnerGetterUtil {
 		String fileContent = FileUtil.read(url);
 		String filePath = url.getFile();
 
-		if (filePath.endsWith(".prose")) {
-			PoshiProseDefinition poshiProseDefinition =
-				new PoshiProseDefinition(
-					getFileNameFromFilePath(filePath), fileContent);
-
-			fileContent = Dom4JUtil.format(poshiProseDefinition.toElement());
-		}
-
 		if (!fileContent.contains("<definition") &&
 			(filePath.endsWith(".macro") || filePath.endsWith(".testcase"))) {
 
@@ -391,8 +399,16 @@ public class PoshiRunnerGetterUtil {
 				filePath);
 
 			if (poshiNode instanceof PoshiElement) {
-				fileContent = Dom4JUtil.format((PoshiElement)poshiNode);
+				return (Element)poshiNode;
 			}
+		}
+
+		if (filePath.endsWith(".prose")) {
+			PoshiProseDefinition poshiProseDefinition =
+				new PoshiProseDefinition(
+					getFileNameFromFilePath(filePath), fileContent);
+
+			fileContent = Dom4JUtil.format(poshiProseDefinition.toElement());
 		}
 
 		BufferedReader bufferedReader = new BufferedReader(
@@ -573,14 +589,12 @@ public class PoshiRunnerGetterUtil {
 	private static final Pattern _parameterPattern = Pattern.compile(
 		"('([^'\\\\]|\\\\.)*'|[^',\\s]+)");
 	private static final List<String> _reservedTags = Arrays.asList(
-		new String[] {
-			"and", "arg", "body", "case", "command", "condition", "contains",
-			"default", "definition", "description", "echo", "else", "elseif",
-			"equals", "execute", "fail", "for", "if", "head", "html", "isset",
-			"not", "off", "on", "or", "property", "prose", "return", "set-up",
-			"table", "take-screenshot", "task", "tbody", "td", "tear-down",
-			"thead", "then", "title", "tr", "var", "while"
-		});
+		"and", "arg", "body", "case", "command", "condition", "contains",
+		"default", "definition", "description", "echo", "else", "elseif",
+		"equals", "execute", "fail", "for", "if", "head", "html", "isset",
+		"not", "off", "on", "or", "property", "prose", "return", "set-up",
+		"table", "take-screenshot", "task", "tbody", "td", "tear-down", "thead",
+		"then", "title", "tr", "var", "while");
 	private static final Pattern _tagPattern = Pattern.compile("<[a-z\\-]+");
 	private static final Map<String, String > _utilityClassMap =
 		new TreeMap<>();

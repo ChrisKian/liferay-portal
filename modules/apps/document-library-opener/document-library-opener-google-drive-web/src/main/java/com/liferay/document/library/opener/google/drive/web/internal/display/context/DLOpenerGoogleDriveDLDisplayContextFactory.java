@@ -18,25 +18,31 @@ import com.liferay.document.library.display.context.BaseDLDisplayContextFactory;
 import com.liferay.document.library.display.context.DLDisplayContextFactory;
 import com.liferay.document.library.display.context.DLViewFileVersionDisplayContext;
 import com.liferay.document.library.opener.google.drive.DLOpenerGoogleDriveManager;
+import com.liferay.document.library.opener.service.DLOpenerFileEntryReferenceLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
  */
-@Component(immediate = true, service = DLDisplayContextFactory.class)
+@Component(
+	configurationPid = "com.liferay.document.library.opener.google.drive.internal.configuration.DLOpenerGoogleDriveConfiguration",
+	configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true,
+	service = DLDisplayContextFactory.class
+)
 public class DLOpenerGoogleDriveDLDisplayContextFactory
 	extends BaseDLDisplayContextFactory {
 
@@ -74,16 +80,18 @@ public class DLOpenerGoogleDriveDLDisplayContextFactory
 		return new DLOpenerGoogleDriveDLViewFileVersionDisplayContext(
 			parentDLViewFileVersionDisplayContext, request, response,
 			fileVersion,
-			_resourceBundleLoader.loadResourceBundle(themeDisplay.getLocale()),
+			ResourceBundleUtil.getBundle(
+				themeDisplay.getLocale(),
+				DLOpenerGoogleDriveDLDisplayContextFactory.class),
+			_dlOpenerFileEntryReferenceLocalService,
 			_dlOpenerGoogleDriveManager);
 	}
 
 	@Reference
-	private DLOpenerGoogleDriveManager _dlOpenerGoogleDriveManager;
+	private DLOpenerFileEntryReferenceLocalService
+		_dlOpenerFileEntryReferenceLocalService;
 
-	@Reference(
-		target = "(bundle.symbolic.name=com.liferay.document.library.opener.google.drive.web)"
-	)
-	private ResourceBundleLoader _resourceBundleLoader;
+	@Reference
+	private DLOpenerGoogleDriveManager _dlOpenerGoogleDriveManager;
 
 }

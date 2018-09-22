@@ -22,6 +22,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 
+import com.liferay.document.library.opener.constants.DLOpenerFileEntryReferenceConstants;
 import com.liferay.document.library.opener.google.drive.DLOpenerGoogleDriveFileReference;
 import com.liferay.document.library.opener.google.drive.DLOpenerGoogleDriveManager;
 import com.liferay.document.library.opener.google.drive.constants.DLOpenerGoogleDriveMimeTypes;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -39,6 +41,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.security.GeneralSecurityException;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -60,9 +65,12 @@ public class DLOpenerGoogleDriveManagerImpl
 			com.google.api.services.drive.model.File file =
 				new com.google.api.services.drive.model.File();
 
-			file.setMimeType(
-				DLOpenerGoogleDriveMimeTypes.
-					APPLICATION_VND_GOOGLE_APPS_DOCUMENT);
+			String googleDocsMimeType =
+				DLOpenerGoogleDriveMimeTypes.getGoogleDocsMimeType(
+					fileEntry.getMimeType());
+
+			file.setMimeType(googleDocsMimeType);
+
 			file.setName(fileEntry.getTitle());
 
 			FileContent fileContent = new FileContent(
@@ -82,10 +90,60 @@ public class DLOpenerGoogleDriveManagerImpl
 
 			_dlOpenerFileEntryReferenceLocalService.
 				addDLOpenerFileEntryReference(
-					userId, uploadedFile.getId(), fileEntry);
+					userId, uploadedFile.getId(), fileEntry,
+					DLOpenerFileEntryReferenceConstants.TYPE_EDIT);
 
 			return new DLOpenerGoogleDriveFileReference(
-				uploadedFile.getId(), fileEntry.getFileEntryId());
+				uploadedFile.getId(), fileEntry.getFileEntryId(),
+				_getGoogleDocsEditURL(uploadedFile.getId(), googleDocsMimeType),
+				new CachingSupplier<>(
+					() -> _getGoogleDriveFileTitle(userId, fileEntry)),
+				() -> _getContentFile(userId, fileEntry));
+		}
+		catch (IOException ioe) {
+			throw new PortalException(ioe);
+		}
+	}
+
+	@Override
+	public DLOpenerGoogleDriveFileReference create(
+			long userId, FileEntry fileEntry)
+		throws PortalException {
+
+		try {
+			com.google.api.services.drive.model.File file =
+				new com.google.api.services.drive.model.File();
+
+			String googleDocsMimeType =
+				DLOpenerGoogleDriveMimeTypes.getGoogleDocsMimeType(
+					fileEntry.getMimeType());
+
+			file.setMimeType(googleDocsMimeType);
+
+			file.setName(fileEntry.getTitle());
+
+			Drive drive = new Drive.Builder(
+				_netHttpTransport, _jsonFactory, _getCredential(userId)
+			).build();
+
+			Drive.Files driveFiles = drive.files();
+
+			Drive.Files.Create driveFilesCreate = driveFiles.create(file);
+
+			com.google.api.services.drive.model.File uploadedFile =
+				driveFilesCreate.execute();
+
+			_dlOpenerFileEntryReferenceLocalService.
+				addDLOpenerFileEntryReference(
+					userId, uploadedFile.getId(), fileEntry,
+					DLOpenerFileEntryReferenceConstants.TYPE_NEW);
+
+			return new DLOpenerGoogleDriveFileReference(
+				uploadedFile.getId(), fileEntry.getFileEntryId(),
+				_getGoogleDocsEditURL(uploadedFile.getId(), googleDocsMimeType),
+				new CachingSupplier<>(
+					() -> _getGoogleDriveFileTitle(userId, fileEntry)),
+				() -> _getContentFile(userId, fileEntry));
 		}
 		catch (IOException ioe) {
 			throw new PortalException(ioe);
@@ -119,31 +177,6 @@ public class DLOpenerGoogleDriveManagerImpl
 	@Override
 	public String getAuthorizationURL(String state, String redirectUri) {
 		return _oAuth2Manager.getAuthorizationURL(state, redirectUri);
-	}
-
-	@Override
-	public File getContentFile(long userId, FileEntry fileEntry)
-		throws PortalException {
-
-		try {
-			Drive drive = new Drive.Builder(
-				_netHttpTransport, _jsonFactory, _getCredential(userId)
-			).build();
-
-			Drive.Files driveFiles = drive.files();
-
-			Drive.Files.Export driveFilesExport = driveFiles.export(
-				_getGoogleDriveFileId(fileEntry), fileEntry.getMimeType());
-
-			try (InputStream is =
-					driveFilesExport.executeMediaAsInputStream()) {
-
-				return FileUtil.createTempFile(is);
-			}
-		}
-		catch (IOException ioe) {
-			throw new PortalException(ioe);
-		}
 	}
 
 	@Override
@@ -202,7 +235,14 @@ public class DLOpenerGoogleDriveManagerImpl
 			_checkCredential(userId);
 
 			return new DLOpenerGoogleDriveFileReference(
-				googleDriveFileId, fileEntry.getFileEntryId());
+				googleDriveFileId, fileEntry.getFileEntryId(),
+				_getGoogleDocsEditURL(
+					googleDriveFileId,
+					DLOpenerGoogleDriveMimeTypes.getGoogleDocsMimeType(
+						fileEntry.getMimeType())),
+				new CachingSupplier<>(
+					() -> _getGoogleDriveFileTitle(userId, fileEntry)),
+				() -> _getContentFile(userId, fileEntry));
 		}
 		catch (IOException ioe) {
 			throw new PortalException(ioe);
@@ -219,6 +259,28 @@ public class DLOpenerGoogleDriveManagerImpl
 		throws IOException, PrincipalException {
 
 		_getCredential(userId);
+	}
+
+	private File _getContentFile(long userId, FileEntry fileEntry) {
+		try {
+			Drive drive = new Drive.Builder(
+				_netHttpTransport, _jsonFactory, _getCredential(userId)
+			).build();
+
+			Drive.Files driveFiles = drive.files();
+
+			Drive.Files.Export driveFilesExport = driveFiles.export(
+				_getGoogleDriveFileId(fileEntry), fileEntry.getMimeType());
+
+			try (InputStream is =
+					driveFilesExport.executeMediaAsInputStream()) {
+
+				return FileUtil.createTempFile(is);
+			}
+		}
+		catch (IOException | PortalException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private Credential _getCredential(long userId)
@@ -244,6 +306,15 @@ public class DLOpenerGoogleDriveManagerImpl
 		}
 	}
 
+	private String _getGoogleDocsEditURL(
+		String googleDriveFileId, String mimeType) {
+
+		return StringBundler.concat(
+			"https://docs.google.com/",
+			_mimeTypePathFragmentMapping.get(mimeType), "/d/",
+			googleDriveFileId, "/edit");
+	}
+
 	private String _getGoogleDriveFileId(FileEntry fileEntry)
 		throws PortalException {
 
@@ -254,6 +325,38 @@ public class DLOpenerGoogleDriveManagerImpl
 		return dlOpenerFileEntryReference.getReferenceKey();
 	}
 
+	private String _getGoogleDriveFileTitle(long userId, FileEntry fileEntry) {
+		try {
+			Drive drive = new Drive.Builder(
+				_netHttpTransport, _jsonFactory, _getCredential(userId)
+			).build();
+
+			Drive.Files driveFiles = drive.files();
+
+			Drive.Files.Get driveFilesGet = driveFiles.get(
+				_getGoogleDriveFileId(fileEntry));
+
+			com.google.api.services.drive.model.File file =
+				driveFilesGet.execute();
+
+			return file.getName();
+		}
+		catch (IOException | PortalException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static final Map<String, String> _mimeTypePathFragmentMapping =
+		MapUtil.fromArray(
+			DLOpenerGoogleDriveMimeTypes.APPLICATION_VND_GOOGLE_APPS_DOCUMENT,
+			"document",
+			DLOpenerGoogleDriveMimeTypes.
+				APPLICATION_VND_GOOGLE_APPS_PRESENTATION,
+			"presentation",
+			DLOpenerGoogleDriveMimeTypes.
+				APPLICATION_VND_GOOGLE_APPS_SPREADSHEET,
+			"spreadsheets");
+
 	@Reference
 	private DLOpenerFileEntryReferenceLocalService
 		_dlOpenerFileEntryReferenceLocalService;
@@ -263,5 +366,27 @@ public class DLOpenerGoogleDriveManagerImpl
 
 	@Reference
 	private OAuth2Manager _oAuth2Manager;
+
+	private static class CachingSupplier<T> implements Supplier<T> {
+
+		public CachingSupplier(Supplier<T> supplier) {
+			_supplier = supplier;
+		}
+
+		@Override
+		public T get() {
+			if (_value != null) {
+				return _value;
+			}
+
+			_value = _supplier.get();
+
+			return _value;
+		}
+
+		private final Supplier<T> _supplier;
+		private T _value;
+
+	}
 
 }

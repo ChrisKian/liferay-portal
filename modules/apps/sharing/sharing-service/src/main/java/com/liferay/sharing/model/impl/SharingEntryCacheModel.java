@@ -66,7 +66,7 @@ public class SharingEntryCacheModel implements CacheModel<SharingEntry>,
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -88,8 +88,12 @@ public class SharingEntryCacheModel implements CacheModel<SharingEntry>,
 		sb.append(classNameId);
 		sb.append(", classPK=");
 		sb.append(classPK);
+		sb.append(", shareable=");
+		sb.append(shareable);
 		sb.append(", actionIds=");
 		sb.append(actionIds);
+		sb.append(", expirationDate=");
+		sb.append(expirationDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -128,7 +132,15 @@ public class SharingEntryCacheModel implements CacheModel<SharingEntry>,
 		sharingEntryImpl.setToUserId(toUserId);
 		sharingEntryImpl.setClassNameId(classNameId);
 		sharingEntryImpl.setClassPK(classPK);
+		sharingEntryImpl.setShareable(shareable);
 		sharingEntryImpl.setActionIds(actionIds);
+
+		if (expirationDate == Long.MIN_VALUE) {
+			sharingEntryImpl.setExpirationDate(null);
+		}
+		else {
+			sharingEntryImpl.setExpirationDate(new Date(expirationDate));
+		}
 
 		sharingEntryImpl.resetOriginalValues();
 
@@ -155,7 +167,10 @@ public class SharingEntryCacheModel implements CacheModel<SharingEntry>,
 
 		classPK = objectInput.readLong();
 
+		shareable = objectInput.readBoolean();
+
 		actionIds = objectInput.readLong();
+		expirationDate = objectInput.readLong();
 	}
 
 	@Override
@@ -184,7 +199,10 @@ public class SharingEntryCacheModel implements CacheModel<SharingEntry>,
 
 		objectOutput.writeLong(classPK);
 
+		objectOutput.writeBoolean(shareable);
+
 		objectOutput.writeLong(actionIds);
+		objectOutput.writeLong(expirationDate);
 	}
 
 	public String uuid;
@@ -197,5 +215,7 @@ public class SharingEntryCacheModel implements CacheModel<SharingEntry>,
 	public long toUserId;
 	public long classNameId;
 	public long classPK;
+	public boolean shareable;
 	public long actionIds;
+	public long expirationDate;
 }
