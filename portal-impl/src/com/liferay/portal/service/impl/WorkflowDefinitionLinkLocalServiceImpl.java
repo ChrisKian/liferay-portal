@@ -249,7 +249,15 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 	public boolean hasWorkflowDefinitionLink(
 		long companyId, long groupId, String className) {
 
-		return hasWorkflowDefinitionLink(companyId, groupId, className, 0);
+		int count =
+			workflowDefinitionLinkLocalService.getWorkflowDefinitionLinksCount(
+				companyId, groupId, className);
+
+		if (count > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -257,8 +265,15 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 	public boolean hasWorkflowDefinitionLink(
 		long companyId, long groupId, String className, long classPK) {
 
-		return hasWorkflowDefinitionLink(
-			companyId, groupId, className, classPK, 0);
+		List<WorkflowDefinitionLink> workflowDefinitionLinks =
+			workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLinks(
+				companyId, groupId, className, classPK);
+
+		if (workflowDefinitionLinks.isEmpty()) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override
