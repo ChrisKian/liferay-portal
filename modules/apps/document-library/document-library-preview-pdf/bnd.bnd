@@ -6,4 +6,4 @@ Import-Package:\
 	\
 	*
 Web-ContextPath: /document-library-preview-pdf
-Include-Resource: @poi-[0-9]*.jar
+-includeresource: @poi-[0-9]*.jar
