@@ -151,6 +151,7 @@ definition {
 	@description = "This is a use case for LPS-65319."
 	@priority = "5"
 	test ViewApprovedPageAfterStagingDeactivated {
+		property portal.acceptance = "false";
 		var pageName = "New Site Page Name";
 
 		Navigator.gotoStagedSitePage(
