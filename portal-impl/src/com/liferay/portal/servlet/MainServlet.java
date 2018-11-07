@@ -706,6 +706,11 @@ public class MainServlet extends ActionServlet {
 	protected String getRemoteUser(HttpServletRequest request, long userId) {
 		String remoteUser = request.getRemoteUser();
 
+		if (remoteUser == null) {
+			remoteUser = GetterUtil.getString(
+				request.getAttribute("remoteUser"), null);
+		}
+
 		if (!PropsValues.PORTAL_JAAS_ENABLE) {
 			HttpSession session = request.getSession();
 
