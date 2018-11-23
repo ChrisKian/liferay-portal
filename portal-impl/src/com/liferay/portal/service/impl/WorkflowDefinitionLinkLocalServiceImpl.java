@@ -193,10 +193,10 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 		if (workflowDefinitionLink == null) {
 			throw new NoSuchWorkflowDefinitionLinkException(
 				StringBundler.concat(
-					"No workflow for groupId=",
+					"No workflow exists with the key {groupId=",
 					String.valueOf(StagingUtil.getLiveGroupId(groupId)),
 					", companyId=", String.valueOf(companyId),
-					" and className=", className));
+					", and className=", className, "}"));
 		}
 
 		return workflowDefinitionLink;
