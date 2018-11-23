@@ -193,7 +193,8 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 		if (workflowDefinitionLink == null) {
 			throw new NoSuchWorkflowDefinitionLinkException(
 				StringBundler.concat(
-					"No workflow for groupId=", String.valueOf(groupId),
+					"No workflow for groupId=",
+					String.valueOf(StagingUtil.getLiveGroupId(groupId)),
 					", companyId=", String.valueOf(companyId),
 					" and className=", className));
 		}
@@ -277,7 +278,7 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override
@@ -343,14 +344,15 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 
 		WorkflowDefinitionLink workflowDefinitionLink =
 			workflowDefinitionLinkPersistence.fetchByG_C_C_C_T(
-				groupId, companyId,
+				StagingUtil.getLiveGroupId(groupId), companyId,
 				classNameLocalService.getClassNameId(className), classPK,
 				typePK);
 
 		if (workflowDefinitionLink == null) {
 			workflowDefinitionLink = addWorkflowDefinitionLink(
-				userId, companyId, groupId, className, classPK, typePK,
-				workflowDefinitionName, workflowDefinitionVersion);
+				userId, companyId, StagingUtil.getLiveGroupId(groupId),
+				className, classPK, typePK, workflowDefinitionName,
+				workflowDefinitionVersion);
 		}
 
 		workflowDefinitionLink.setGroupId(StagingUtil.getLiveGroupId(groupId));
