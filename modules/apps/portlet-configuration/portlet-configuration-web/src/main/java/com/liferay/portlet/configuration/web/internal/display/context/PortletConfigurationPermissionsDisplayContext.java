@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -53,6 +56,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.configuration.web.internal.constants.PortletConfigurationPortletKeys;
 import com.liferay.portlet.rolesadmin.search.RoleSearch;
 import com.liferay.portlet.rolesadmin.search.RoleSearchTerms;
+import com.liferay.roles.admin.configuration.RoleVisibilityConfiguration;
 import com.liferay.sites.kernel.util.SitesUtil;
 
 import java.util.ArrayList;
@@ -69,6 +73,8 @@ import javax.portlet.WindowStateException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -410,17 +416,43 @@ public class PortletConfigurationPermissionsDisplayContext {
 			teamGroupId = _group.getParentGroupId();
 		}
 
-		int count = RoleLocalServiceUtil.getGroupRolesAndTeamRolesCount(
-			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
-			excludedRoleNames, getRoleTypes(), modelResourceRoleId,
-			teamGroupId);
+		RoleVisibilityConfiguration stricterRoleVisibilityConfiguration =
+			ConfigurationProviderUtil.getCompanyConfiguration(
+			RoleVisibilityConfiguration.class, themeDisplay.getCompanyId());
+
+		int count = 0;
+
+		if (stricterRoleVisibilityConfiguration.enabled()) {
+			count = RoleServiceUtil.getGroupRolesAndTeamRolesCount(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId,
+				teamGroupId);
+		}
+		else {
+			count = RoleLocalServiceUtil.getGroupRolesAndTeamRolesCount(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId,
+				teamGroupId);
+		}
 
 		roleSearchContainer.setTotal(count);
 
-		List<Role> roles = RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
-			themeDisplay.getCompanyId(), searchTerms.getKeywords(),
-			excludedRoleNames, getRoleTypes(), modelResourceRoleId, teamGroupId,
-			roleSearchContainer.getStart(), roleSearchContainer.getResultEnd());
+		List<Role> roles = null;
+
+		if (stricterRoleVisibilityConfiguration.enabled()) {
+			roles = RoleServiceUtil.getGroupRolesAndTeamRoles(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId,
+				teamGroupId, roleSearchContainer.getStart(),
+				roleSearchContainer.getResultEnd());
+		}
+		else {
+			roles = RoleLocalServiceUtil.getGroupRolesAndTeamRoles(
+				themeDisplay.getCompanyId(), searchTerms.getKeywords(),
+				excludedRoleNames, getRoleTypes(), modelResourceRoleId,
+				teamGroupId, roleSearchContainer.getStart(),
+				roleSearchContainer.getResultEnd());
+		}
 
 		roleSearchContainer.setResults(roles);
 
@@ -563,6 +595,13 @@ public class PortletConfigurationPermissionsDisplayContext {
 		return portletURL;
 	}
 
+	@Reference(unbind = "-")
+	protected void setConfigurationProvider(
+		ConfigurationProvider configurationProvider) {
+
+		_configurationProvider = configurationProvider;
+	}
+
 	private int[] _getGroupRoleTypes(Group group, int[] defaultRoleTypes) {
 		if (group == null) {
 			return defaultRoleTypes;
@@ -628,6 +667,7 @@ public class PortletConfigurationPermissionsDisplayContext {
 	}
 
 	private List<String> _actions;
+	private ConfigurationProvider _configurationProvider;
 	private Group _group;
 	private final long _groupId;
 	private List<String> _guestUnsupportedActions;
