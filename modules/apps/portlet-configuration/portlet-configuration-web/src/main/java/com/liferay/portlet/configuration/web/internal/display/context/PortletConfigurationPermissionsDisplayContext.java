@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -73,8 +72,6 @@ import javax.portlet.WindowStateException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -595,13 +592,6 @@ public class PortletConfigurationPermissionsDisplayContext {
 		return portletURL;
 	}
 
-	@Reference(unbind = "-")
-	protected void setConfigurationProvider(
-		ConfigurationProvider configurationProvider) {
-
-		_configurationProvider = configurationProvider;
-	}
-
 	private int[] _getGroupRoleTypes(Group group, int[] defaultRoleTypes) {
 		if (group == null) {
 			return defaultRoleTypes;
@@ -667,7 +657,6 @@ public class PortletConfigurationPermissionsDisplayContext {
 	}
 
 	private List<String> _actions;
-	private ConfigurationProvider _configurationProvider;
 	private Group _group;
 	private final long _groupId;
 	private List<String> _guestUnsupportedActions;
