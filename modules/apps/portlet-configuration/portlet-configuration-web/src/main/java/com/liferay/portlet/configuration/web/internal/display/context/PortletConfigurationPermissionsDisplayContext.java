@@ -415,7 +415,7 @@ public class PortletConfigurationPermissionsDisplayContext {
 
 		RoleVisibilityConfiguration stricterRoleVisibilityConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
-			RoleVisibilityConfiguration.class, themeDisplay.getCompanyId());
+				RoleVisibilityConfiguration.class, themeDisplay.getCompanyId());
 
 		int count = 0;
 
