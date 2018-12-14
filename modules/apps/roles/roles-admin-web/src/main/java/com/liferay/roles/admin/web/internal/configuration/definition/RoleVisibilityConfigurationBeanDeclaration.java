@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.roles.admin.configuration.definition;
+package com.liferay.roles.admin.web.internal.configuration.definition;
 
 import com.liferay.portal.kernel.settings.definition.ConfigurationBeanDeclaration;
 import com.liferay.roles.admin.configuration.RoleVisibilityConfiguration;
