@@ -49,6 +49,8 @@ import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalServiceUtil;
 import com.liferay.portal.kernel.service.PhoneLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.TeamLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserGroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -765,11 +767,24 @@ public class UserImpl extends UserBaseImpl {
 
 	@Override
 	public Date getUnlockDate(PasswordPolicy passwordPolicy) {
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setUserId(getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		String userTimeZoneId = getTimeZoneId();
+
+		TimeZone userTimeZone = TimeZone.getTimeZone(userTimeZoneId);
+
+		TimeZone systemTimeZone = TimeZone.getDefault();
 		Date lockoutDate = getLockoutDate();
 
 		return new Date(
 			lockoutDate.getTime() +
-				(passwordPolicy.getLockoutDuration() * 1000));
+				(passwordPolicy.getLockoutDuration() * 1000) +
+					userTimeZone.getRawOffset() -
+						systemTimeZone.getRawOffset());
 	}
 
 	@Override
