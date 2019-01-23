@@ -30,8 +30,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CookieKeys;
@@ -73,6 +77,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -1823,6 +1828,28 @@ public class LanguageImpl implements Language, Serializable {
 
 			Object argument = arguments[argumentIndex];
 
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.popServiceContext();
+
+			User user = null;
+
+			try {
+				user = UserLocalServiceUtil.getUser(serviceContext.getUserId());
+			}
+			catch (PortalException pe) {
+				pe.printStackTrace();
+			}
+
+			TimeZone userTimeZone = TimeZone.getTimeZone(user.getTimeZoneId());
+
+			int userTimeZoneOffset = userTimeZone.getRawOffset();
+
+			TimeZone defaultTimeZone = TimeZone.getDefault();
+			String diffTimeZoneId =
+				TimeZone.getAvailableIDs(userTimeZoneOffset)[0];
+
+			defaultTimeZone.setID(diffTimeZoneId);
+
 			if (argument instanceof Number) {
 				if (numberFormat == null) {
 					numberFormat = NumberFormat.getNumberInstance(locale);
@@ -1834,7 +1861,7 @@ public class LanguageImpl implements Language, Serializable {
 				if (dateFormat == null) {
 					dateFormat = FastDateFormatFactoryUtil.getDateTime(
 						FastDateFormatConstants.SHORT,
-						FastDateFormatConstants.LONG, locale, null);
+						FastDateFormatConstants.LONG, locale, defaultTimeZone);
 				}
 
 				sb.append(dateFormat.format(argument));
