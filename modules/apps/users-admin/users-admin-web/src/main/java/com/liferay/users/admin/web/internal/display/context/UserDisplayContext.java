@@ -106,7 +106,8 @@ public class UserDisplayContext {
 		List<Group> groups = Collections.emptyList();
 
 		if (_selUser != null) {
-			groups = _selUser.getGroups();
+			groups = GroupLocalServiceUtil.getUserGroups(
+				_selUser.getUserId(), true);
 
 			if (_initDisplayContext.isFilterManageableGroups()) {
 				groups = UsersAdminUtil.filterGroups(
