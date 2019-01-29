@@ -222,13 +222,17 @@ public abstract class BaseAssetRendererFactory<T>
 		String value = LanguageUtil.get(locale, key, null);
 
 		if (value == null) {
-			PortletBag portletBag = PortletBagPool.get(getPortletId());
+			try {
+				PortletBag portletBag = PortletBagPool.get(getPortletId());
 
-			ResourceBundle resourceBundle = portletBag.getResourceBundle(
-				locale);
+				ResourceBundle resourceBundle = portletBag.getResourceBundle(
+					locale);
 
-			if (resourceBundle != null) {
-				value = ResourceBundleUtil.getString(resourceBundle, key);
+				if (resourceBundle != null) {
+					value = ResourceBundleUtil.getString(resourceBundle, key);
+				}
+			}
+			catch (NullPointerException npe) {
 			}
 		}
 
