@@ -3466,7 +3466,7 @@ public class PortalImpl implements Portal {
 			WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay != null) {
-			locale = themeDisplay.getLocale();
+			locale = themeDisplay.getSiteDefaultLocale();
 
 			if (LanguageUtil.isAvailableLocale(
 					themeDisplay.getSiteGroupId(), locale)) {
