@@ -7963,8 +7963,8 @@ public class PortalImpl implements Portal {
 				Encryptor.decrypt(company.getKeyObj(), doAsUserIdString));
 		}
 		catch (Exception e) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
+			if (_log.isDebugEnabled()) {
+				_log.debug(
 					"Unable to impersonate " + doAsUserIdString +
 						" because the string cannot be decrypted");
 			}
