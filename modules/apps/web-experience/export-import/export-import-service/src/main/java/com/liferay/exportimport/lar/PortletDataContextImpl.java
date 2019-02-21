@@ -2746,7 +2746,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 			try {
 				workflowDefinition =
-					WorkflowDefinitionManagerUtil.getLatestWorkflowDefinition(
+					WorkflowDefinitionManagerUtil.getLatestKaleoDefinition(
 						getCompanyId(), displayName);
 			}
 			catch (WorkflowException we) {
