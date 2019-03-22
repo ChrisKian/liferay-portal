@@ -21,6 +21,7 @@ import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.web.internal.security.permission.resource.BlogsEntryPermission;
 import com.liferay.blogs.web.internal.util.BlogsEntryUtil;
+import com.liferay.blogs.web.internal.util.BlogsUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -235,6 +236,16 @@ public class BlogsEntryAssetRenderer
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
 		String noSuchEntryRedirect) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)liferayPortletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		long groupId = _entry.getGroupId();
+
+		if (!BlogsUtil.hasViewInContextGroupLayout(groupId, themeDisplay)) {
+			return null;
+		}
 
 		return getURLViewInContext(
 			liferayPortletRequest, noSuchEntryRedirect, "/blogs/find_entry",
