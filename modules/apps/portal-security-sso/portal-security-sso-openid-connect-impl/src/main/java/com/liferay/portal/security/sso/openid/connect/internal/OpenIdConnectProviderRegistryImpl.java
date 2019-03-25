@@ -149,6 +149,8 @@ public class OpenIdConnectProviderRegistryImpl
 				openIdConnectMetadataFactory =
 					new OpenIdConnectMetadataFactoryImpl(
 						openIdConnectProviderConfiguration.providerName(),
+						openIdConnectProviderConfiguration.
+							idTokenSigningAlgValuesSupported(),
 						openIdConnectProviderConfiguration.issuerURL(),
 						openIdConnectProviderConfiguration.subjectTypes(),
 						openIdConnectProviderConfiguration.jwksURI(),

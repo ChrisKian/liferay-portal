@@ -75,6 +75,12 @@ public interface OpenIdConnectProviderConfiguration {
 	public String authorizationEndPoint();
 
 	@Meta.AD(
+		deflt = "", description = "id-token-signing-alg-values-supported-help",
+		name = "id-token-signing-alg-values-supported", required = false
+	)
+	public String[] idTokenSigningAlgValuesSupported();
+
+	@Meta.AD(
 		deflt = "", description = "issuer-url-help", name = "issuer-url",
 		required = false
 	)

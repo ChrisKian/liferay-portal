@@ -50,9 +50,10 @@ public class OpenIdConnectMetadataFactoryImpl
 	implements OpenIdConnectMetadataFactory {
 
 	public OpenIdConnectMetadataFactoryImpl(
-			String providerName, String issuerURL, String[] subjectTypes,
-			String jwksURL, String authorizationEndPointURL,
-			String tokenEndPointURL, String userInfoEndPointURL)
+			String providerName, String[] idTokenSigningAlgValuesSupported,
+			String issuerURL, String[] subjectTypes, String jwksURL,
+			String authorizationEndPointURL, String tokenEndPointURL,
+			String userInfoEndPointURL)
 		throws OpenIdConnectServiceException.ProviderException {
 
 		_providerName = providerName;
@@ -76,6 +77,23 @@ public class OpenIdConnectMetadataFactoryImpl
 				new URI(tokenEndPointURL));
 			_oidcProviderMetadata.setUserInfoEndpointURI(
 				new URI(userInfoEndPointURL));
+
+			if ((idTokenSigningAlgValuesSupported != null) &&
+				(idTokenSigningAlgValuesSupported.length > 0)) {
+
+				List<JWSAlgorithm> jwsAlgorithms = new ArrayList<>();
+
+				for (String idTokenSigningAlgValue :
+						idTokenSigningAlgValuesSupported) {
+
+					JWSAlgorithm jwsAlgorithm = JWSAlgorithm.parse(
+						idTokenSigningAlgValue);
+
+					jwsAlgorithms.add(jwsAlgorithm);
+				}
+
+				_oidcProviderMetadata.setIDTokenJWSAlgs(jwsAlgorithms);
+			}
 
 			refreshClientMetadata(_oidcProviderMetadata);
 		}
