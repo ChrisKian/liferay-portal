@@ -47,6 +47,7 @@ import java.util.Map;
 
 import javax.portlet.PortletRequest;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
@@ -328,9 +329,10 @@ public class BlogsUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(BlogsUtil.class);
 
-	private static final BundleContext _bundleContext = FrameworkUtil.getBundle(
-		BlogsUtil.class
-	).getBundleContext();
+	private static final Bundle _bundle = FrameworkUtil.getBundle(
+		BlogsUtil.class);
+	private static final BundleContext _bundleContext =
+		_bundle.getBundleContext();
 	private static final ServiceTrackerList
 		<PortletLayoutFinder, PortletLayoutFinder> _serviceTrackerList =
 			ServiceTrackerListFactory.open(
