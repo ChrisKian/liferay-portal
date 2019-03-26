@@ -1144,7 +1144,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Organizations
 
-		updateOrganizations(userId, organizationIds, false);
+		if (organizationIds != null) {
+			userPersistence.setOrganizations(userId, organizationIds);
+		}
 
 		// Roles
 
