@@ -2991,6 +2991,19 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
+	 * Removes the user from the organizations.
+	 *
+	 * @param userId the primary key of the user
+	 * @param organizationIds the primary keys of the organizations
+	 */
+	@Override
+	public void unsetUserOrganizations(long userId, long[] organizationIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_userLocalService.unsetUserOrganizations(userId, organizationIds);
+	}
+
+	/**
 	 * Updates whether the user has agreed to the terms of use.
 	 *
 	 * @param userId the primary key of the user

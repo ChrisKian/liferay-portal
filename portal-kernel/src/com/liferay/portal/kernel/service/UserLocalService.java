@@ -2140,6 +2140,15 @@ public interface UserLocalService
 		throws PortalException;
 
 	/**
+	 * Removes the user from the organizations.
+	 *
+	 * @param userId the primary key of the user
+	 * @param organizationIds the primary keys of the organizations
+	 */
+	public void unsetUserOrganizations(long userId, long[] organizationIds)
+		throws PortalException;
+
+	/**
 	 * Updates whether the user has agreed to the terms of use.
 	 *
 	 * @param userId the primary key of the user
