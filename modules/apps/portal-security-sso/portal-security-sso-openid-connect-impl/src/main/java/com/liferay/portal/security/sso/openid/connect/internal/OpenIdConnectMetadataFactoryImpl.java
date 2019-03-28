@@ -86,10 +86,8 @@ public class OpenIdConnectMetadataFactoryImpl
 				for (String idTokenSigningAlgValue :
 						idTokenSigningAlgValuesSupported) {
 
-					JWSAlgorithm jwsAlgorithm = JWSAlgorithm.parse(
-						idTokenSigningAlgValue);
-
-					jwsAlgorithms.add(jwsAlgorithm);
+					jwsAlgorithms.add(
+						JWSAlgorithm.parse(idTokenSigningAlgValue));
 				}
 
 				_oidcProviderMetadata.setIDTokenJWSAlgs(jwsAlgorithms);
