@@ -52,10 +52,14 @@ public class ConfigurationMessageListener extends BaseMessageListener {
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		if (message.contains(ConfigurationAdmin.SERVICE_FACTORYPID)) {
-			reloadConfiguration(
-				message.getString(ConfigurationAdmin.SERVICE_FACTORYPID),
-				ConfigurationAdmin.SERVICE_FACTORYPID,
-				message.getInteger("configuration.event.type"));
+			if (message.getInteger("configuration.event.type") !=
+					ConfigurationEvent.CM_DELETED) {
+
+				reloadConfiguration(
+					message.getString(ConfigurationAdmin.SERVICE_FACTORYPID),
+					ConfigurationAdmin.SERVICE_FACTORYPID,
+					message.getInteger("configuration.event.type"));
+			}
 		}
 
 		if (message.contains(Constants.SERVICE_PID)) {
