@@ -93,13 +93,12 @@ public class LiveUsersMessageListener extends BaseMessageListener {
 				clusterNodeId, companyId, userId, sessionId);
 
 			ClusterRequest clusterRequest =
-				ClusterRequest.createMulticastRequest(
-					methodHandler, true);
+				ClusterRequest.createMulticastRequest(methodHandler, true);
 
 			ClusterExecutorUtil.execute(clusterRequest);
 		}
 		catch (NoSuchMethodException nsme) {
-			_log.error(nsme);
+			_log.error(nsme, nsme);
 		}
 	}
 

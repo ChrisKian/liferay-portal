@@ -519,8 +519,11 @@ public class PortalRequestProcessor {
 
 				try {
 					MethodHandler methodHandler = new MethodHandler(
-						LiveUsers.class.getMethod("addUserTrackerPath", long.class, String.class, UserTrackerPath.class), themeDisplay.getCompanyId(),
-						session.getId(), userTrackerPath);
+						LiveUsers.class.getMethod(
+							"addUserTrackerPath", long.class, String.class,
+							UserTrackerPath.class),
+						themeDisplay.getCompanyId(), session.getId(),
+						userTrackerPath);
 
 					ClusterRequest clusterRequest =
 						ClusterRequest.createMulticastRequest(
@@ -529,7 +532,7 @@ public class PortalRequestProcessor {
 					ClusterExecutorUtil.execute(clusterRequest);
 				}
 				catch (NoSuchMethodException nsme) {
-					_log.error(nsme);
+					_log.error(nsme, nsme);
 				}
 			}
 		}
