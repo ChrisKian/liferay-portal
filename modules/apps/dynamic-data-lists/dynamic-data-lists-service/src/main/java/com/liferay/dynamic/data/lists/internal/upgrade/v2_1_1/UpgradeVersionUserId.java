@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 /**
  * @author Christopher Kian
  */
-public class UpgradeSchema extends UpgradeProcess {
+public class UpgradeVersionUserId extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
@@ -29,7 +29,7 @@ public class UpgradeSchema extends UpgradeProcess {
 				DDLRecordSetTable.class, "versionUserId", "VARCHAR(75) null")) {
 
 			String template = StringUtil.read(
-				UpgradeSchema.class.getResourceAsStream(
+				UpgradeVersionUserId.class.getResourceAsStream(
 					"dependencies/update.sql"));
 
 			runSQLTemplateString(template, false, false);
