@@ -14,15 +14,9 @@
 
 package com.liferay.dynamic.data.lists.internal.upgrade.v2_1_1;
 
-import com.liferay.portal.kernel.dao.db.DBInspector;
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.dynamic.data.lists.internal.upgrade.v2_1_1.util.DDLRecordSetTable;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringUtil;
-
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.Types;
 
 /**
  * @author Christopher Kian
@@ -31,34 +25,14 @@ public class UpgradeSchema extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try (Connection connection = DataAccess.getConnection()) {
-			DBInspector dbInspector = new DBInspector(connection);
+		if (hasColumnType(
+				DDLRecordSetTable.class, "versionUserId", "VARCHAR(75) null")) {
 
-			DatabaseMetaData databaseMetaData = connection.getMetaData();
+			String template = StringUtil.read(
+				UpgradeSchema.class.getResourceAsStream(
+					"dependencies/update.sql"));
 
-			try (ResultSet rs = databaseMetaData.getColumns(
-					dbInspector.getCatalog(), dbInspector.getSchema(),
-					dbInspector.normalizeName("DDLRecordSet"), null)) {
-
-				while (rs.next()) {
-					String columnName = StringUtil.toLowerCase(
-						rs.getString("COLUMN_NAME"));
-
-					if (columnName.equals("versionuserid")) {
-						int dataType = rs.getInt("DATA_TYPE");
-
-						if (dataType == Types.VARCHAR) {
-							String template = StringUtil.read(
-								UpgradeSchema.class.getResourceAsStream(
-									"dependencies/update.sql"));
-
-							runSQLTemplateString(template, false, false);
-						}
-
-						return;
-					}
-				}
-			}
+			runSQLTemplateString(template, false, false);
 		}
 	}
 
