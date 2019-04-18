@@ -1180,6 +1180,18 @@ public abstract class CompanyLocalServiceBaseImpl
 	protected ContactPersistence contactPersistence;
 
 	@BeanReference(
+		type = com.liferay.expando.kernel.service.ExpandoColumnLocalService.class
+	)
+	protected com.liferay.expando.kernel.service.ExpandoColumnLocalService
+		expandoColumnLocalService;
+
+	@BeanReference(
+		type = com.liferay.expando.kernel.service.ExpandoTableLocalService.class
+	)
+	protected com.liferay.expando.kernel.service.ExpandoTableLocalService
+		expandoTableLocalService;
+
+	@BeanReference(
 		type = com.liferay.portal.kernel.service.GroupLocalService.class
 	)
 	protected com.liferay.portal.kernel.service.GroupLocalService
@@ -1271,6 +1283,12 @@ public abstract class CompanyLocalServiceBaseImpl
 
 	@BeanReference(type = RoleFinder.class)
 	protected RoleFinder roleFinder;
+
+	@BeanReference(
+		type = com.liferay.portal.kernel.service.SystemEventLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.SystemEventLocalService
+		systemEventLocalService;
 
 	@BeanReference(
 		type = com.liferay.portal.kernel.service.UserLocalService.class

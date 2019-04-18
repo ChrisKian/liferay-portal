@@ -16,8 +16,6 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoTable;
-import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
-import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.petra.encryptor.Encryptor;
 import com.liferay.petra.encryptor.EncryptorException;
 import com.liferay.petra.string.StringPool;
@@ -71,7 +69,6 @@ import com.liferay.portal.kernel.search.facet.faceted.searcher.FacetedSearcherMa
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
-import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -1672,14 +1669,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		protected DeleteExpandoColumnActionableDynamicQuery(long companyId) {
 			_actionableDynamicQuery =
-				_expandoColumnLocalService.getActionableDynamicQuery();
+				expandoColumnLocalService.getActionableDynamicQuery();
 
 			_actionableDynamicQuery.setCompanyId(companyId);
 			_actionableDynamicQuery.setPerformActionMethod(
-				(ExpandoColumn expandoColumn) -> {
-					_expandoColumnLocalService.deleteExpandoColumn(
-						expandoColumn);
-				});
+				(ExpandoColumn expandoColumn) ->
+					expandoColumnLocalService.deleteExpandoColumn(
+						expandoColumn));
 		}
 
 		protected void performActions() throws PortalException {
@@ -1694,13 +1690,12 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		protected DeleteExpandoTableActionableDynamicQuery(long companyId) {
 			_actionableDynamicQuery =
-				_expandoTableLocalService.getActionableDynamicQuery();
+				expandoTableLocalService.getActionableDynamicQuery();
 
 			_actionableDynamicQuery.setCompanyId(companyId);
 			_actionableDynamicQuery.setPerformActionMethod(
-				(ExpandoTable expandoTable) -> {
-					_expandoTableLocalService.deleteExpandoTable(expandoTable);
-				});
+				(ExpandoTable expandoTable) ->
+					expandoTableLocalService.deleteExpandoTable(expandoTable));
 		}
 
 		protected void performActions() throws PortalException {
@@ -1830,13 +1825,12 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		protected DeleteSystemEventActionableDynamicQuery(long companyId) {
 			_actionableDynamicQuery =
-				_systemEventLocalService.getActionableDynamicQuery();
+				systemEventLocalService.getActionableDynamicQuery();
 
 			_actionableDynamicQuery.setCompanyId(companyId);
 			_actionableDynamicQuery.setPerformActionMethod(
-				(SystemEvent systemEvent) -> {
-					_systemEventLocalService.deleteSystemEvent(systemEvent);
-				});
+				(SystemEvent systemEvent) ->
+					systemEventLocalService.deleteSystemEvent(systemEvent));
 		}
 
 		protected void performActions() throws PortalException {
@@ -1902,15 +1896,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	private final ServiceTracker
 		<PortalInstanceLifecycleManager, PortalInstanceLifecycleManager>
 			_serviceTracker;
-
-	@BeanReference(type = ExpandoColumnLocalService.class)
-	private ExpandoColumnLocalService _expandoColumnLocalService;
-
-	@BeanReference(type = ExpandoTableLocalService.class)
-	private ExpandoTableLocalService _expandoTableLocalService;
-
-	@BeanReference(type = SystemEventLocalService.class)
-	private SystemEventLocalService _systemEventLocalService;
 
 	private static class CustomCompanyProvider implements CompanyProvider {
 
