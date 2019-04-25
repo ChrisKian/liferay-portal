@@ -28,6 +28,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -109,8 +110,21 @@ public class DBInspector {
 				return false;
 			}
 
-			int expectedColumnDataType = _getColumnDataType(
-				tableClass, columnName);
+			int expectedColumnDataType = _getColumnDataType(columnType);
+
+			if (expectedColumnDataType == 0) {
+				StringBuilder sb = new StringBuilder(7);
+
+				sb.append("Column type \"");
+				sb.append(columnType);
+				sb.append("\" for column name \"");
+				sb.append(columnName);
+				sb.append("\" is not valid for table \"");
+				sb.append(tableName);
+				sb.append("\".");
+
+				throw new UpgradeException(sb.toString());
+			}
 
 			int actualColumnDataType = rs.getInt("DATA_TYPE");
 
@@ -196,23 +210,57 @@ public class DBInspector {
 		return name;
 	}
 
-	private int _getColumnDataType(Class<?> tableClass, String columnName)
-		throws Exception {
-
-		Field tableColumnsField = tableClass.getField("TABLE_COLUMNS");
-
-		Object[][] tableColumns = (Object[][])tableColumnsField.get(null);
-
-		for (Object[] tableColumn : tableColumns) {
-			if (tableColumn[0].equals(columnName)) {
-				return (int)tableColumn[1];
-			}
+	private int _getColumnDataType(String columnType) throws Exception {
+		if (columnType.startsWith("BIGINT")) {
+			return Types.BIGINT;
+		}
+		else if (columnType.startsWith("BIT")) {
+			return Types.BIT;
+		}
+		else if (columnType.startsWith("BLOB")) {
+			return Types.BLOB;
+		}
+		else if (columnType.startsWith("BOOLEAN")) {
+			return Types.BOOLEAN;
+		}
+		else if (columnType.startsWith("CLOB")) {
+			return Types.CLOB;
+		}
+		else if (columnType.startsWith("DECIMAL")) {
+			return Types.DECIMAL;
+		}
+		else if (columnType.startsWith("DOUBLE")) {
+			return Types.DOUBLE;
+		}
+		else if (columnType.startsWith("FLOAT")) {
+			return Types.FLOAT;
+		}
+		else if (columnType.startsWith("INTEGER")) {
+			return Types.INTEGER;
+		}
+		else if (columnType.startsWith("LONGVARBINARY")) {
+			return Types.LONGVARBINARY;
+		}
+		else if (columnType.startsWith("LONGVARCHAR")) {
+			return Types.LONGVARCHAR;
+		}
+		else if (columnType.startsWith("NUMERIC")) {
+			return Types.NUMERIC;
+		}
+		else if (columnType.startsWith("SMALLINT")) {
+			return Types.SMALLINT;
+		}
+		else if (columnType.startsWith("TIMESTAMP")) {
+			return Types.TIMESTAMP;
+		}
+		else if (columnType.startsWith("TINYINT")) {
+			return Types.TINYINT;
+		}
+		else if (columnType.startsWith("VARCHAR")) {
+			return Types.VARCHAR;
 		}
 
-		throw new UpgradeException(
-			StringBundler.concat(
-				"Table class ", String.valueOf(tableClass),
-				" does not have column ", columnName));
+		return 0;
 	}
 
 	private int _getColumnSize(String columnType) throws UpgradeException {
