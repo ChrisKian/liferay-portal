@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-int roleType = ParamUtil.getInteger(request, "roleType");
+int roleType = ParamUtil.getInteger(request, "type");
 %>
 
 <c:choose>

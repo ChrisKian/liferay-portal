@@ -124,7 +124,7 @@ public class SelectSiteRolesDisplayContext {
 
 		portletURL.setParameter("mvcPath", "/select_site_role.jsp");
 		portletURL.setParameter("groupId", String.valueOf(getGroupId()));
-		portletURL.setParameter("roleType", String.valueOf(getRoleType()));
+		portletURL.setParameter("type", String.valueOf(getRoleType()));
 		portletURL.setParameter("eventName", getEventName());
 
 		String displayStyle = getDisplayStyle();
@@ -196,7 +196,7 @@ public class SelectSiteRolesDisplayContext {
 		}
 
 		_roleType = ParamUtil.getInteger(
-			_request, "roleType", RoleConstants.TYPE_SITE);
+			_request, "type", RoleConstants.TYPE_SITE);
 
 		return _roleType;
 	}

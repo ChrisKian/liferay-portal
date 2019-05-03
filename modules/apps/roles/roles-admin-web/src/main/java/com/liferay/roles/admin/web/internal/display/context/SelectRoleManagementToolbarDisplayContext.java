@@ -60,7 +60,7 @@ public class SelectRoleManagementToolbarDisplayContext {
 		_eventName = eventName;
 
 		_roleType = ParamUtil.getInteger(
-			_request, "roleType", RoleConstants.TYPE_REGULAR);
+			_request, "type", RoleConstants.TYPE_REGULAR);
 	}
 
 	public String getClearResultsURL() {
@@ -76,7 +76,7 @@ public class SelectRoleManagementToolbarDisplayContext {
 
 		portletURL.setParameter("mvcPath", "/select_role.jsp");
 
-		portletURL.setParameter("roleType", String.valueOf(_roleType));
+		portletURL.setParameter("type", String.valueOf(_roleType));
 
 		User selUser = _getSelectedUser();
 

@@ -45,7 +45,7 @@ if (role != null) {
 	}
 }
 
-int roleType = ParamUtil.getInteger(request, "roleType", RoleConstants.TYPE_SITE);
+int roleType = ParamUtil.getInteger(request, "type", RoleConstants.TYPE_SITE);
 
 Organization organization = null;
 
