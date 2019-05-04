@@ -29,14 +29,14 @@ public class RoleAssignment extends Assignment {
 
 		_roleId = roleId;
 		_roleName = null;
-		_roleType = null;
+		_type = null;
 	}
 
 	public RoleAssignment(String roleName, String roleType) {
 		super(AssignmentType.ROLE);
 
 		_roleName = roleName;
-		_roleType = roleType;
+		_type = roleType;
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class RoleAssignment extends Assignment {
 	}
 
 	public String getRoleType() {
-		return _roleType;
+		return _type;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class RoleAssignment extends Assignment {
 
 		hashCode.append(_roleId);
 		hashCode.append(_roleName);
-		hashCode.append(_roleType);
+		hashCode.append(_type);
 
 		return hashCode.toHashCode();
 	}
@@ -94,6 +94,6 @@ public class RoleAssignment extends Assignment {
 	private boolean _autoCreate;
 	private long _roleId;
 	private final String _roleName;
-	private final String _roleType;
+	private final String _type;
 
 }

@@ -28,14 +28,14 @@ public class RoleRecipient extends Recipient {
 
 		_roleId = roleId;
 		_roleName = null;
-		_roleType = roleType;
+		_type = roleType;
 	}
 
 	public RoleRecipient(String roleName, String roleType) {
 		super(RecipientType.ROLE);
 
 		_roleName = roleName;
-		_roleType = roleType;
+		_type = roleType;
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class RoleRecipient extends Recipient {
 	}
 
 	public String getRoleType() {
-		return _roleType;
+		return _type;
 	}
 
 	@Override
@@ -93,6 +93,6 @@ public class RoleRecipient extends Recipient {
 	private boolean _autoCreate;
 	private long _roleId;
 	private final String _roleName;
-	private final String _roleType;
+	private final String _type;
 
 }

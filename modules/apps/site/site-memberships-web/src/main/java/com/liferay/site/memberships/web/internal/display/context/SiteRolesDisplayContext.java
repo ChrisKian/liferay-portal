@@ -199,14 +199,14 @@ public class SiteRolesDisplayContext {
 	}
 
 	public int getRoleType() {
-		if (_roleType != null) {
-			return _roleType;
+		if (_type != null) {
+			return _type;
 		}
 
-		_roleType = ParamUtil.getInteger(
+		_type = ParamUtil.getInteger(
 			_request, "type", RoleConstants.TYPE_SITE);
 
-		return _roleType;
+		return _type;
 	}
 
 	private String _displayStyle;
@@ -219,6 +219,6 @@ public class SiteRolesDisplayContext {
 	private final RenderResponse _renderResponse;
 	private final HttpServletRequest _request;
 	private RoleSearch _roleSearch;
-	private Integer _roleType;
+	private Integer _type;
 
 }
