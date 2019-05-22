@@ -509,22 +509,7 @@ public class OrganizationLocalServiceImpl
 
 	@Override
 	public String[] getChildrenTypes(String type) {
-		String[] childrenTypes = _organizationTypesSettings.getChildrenTypes(
-			type);
-
-		if (childrenTypes.length > 0) {
-			List<String> list = new ArrayList<>();
-
-			for (String childrenType : childrenTypes) {
-				if (Validator.isNotNull(childrenType)) {
-					list.add(childrenType);
-				}
-			}
-
-			childrenTypes = list.toArray(new String[0]);
-		}
-
-		return childrenTypes;
+		return _organizationTypesSettings.getChildrenTypes(type);
 	}
 
 	@Override
