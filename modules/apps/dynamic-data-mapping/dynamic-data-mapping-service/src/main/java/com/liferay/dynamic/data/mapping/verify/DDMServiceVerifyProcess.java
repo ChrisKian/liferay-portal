@@ -273,10 +273,11 @@ public class DDMServiceVerifyProcess extends VerifyProcess {
 					catch (PortalException pe) {
 						_log.error(
 							String.format(
-								"Invalid data for DDM structure %d causes: " +
-									"{%s}",
-								ddmStructure.getStructureId(), pe.getMessage()),
-							pe);
+								"Invalid data for DDM structure %d causes " +
+									"exception",
+								ddmStructure.getStructureId()));
+
+						throw pe;
 					}
 				});
 
