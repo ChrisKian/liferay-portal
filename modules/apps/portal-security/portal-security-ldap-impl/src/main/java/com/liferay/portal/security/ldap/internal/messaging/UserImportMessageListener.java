@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.exportimport.LDAPUserImporter;
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
@@ -52,7 +53,8 @@ public class UserImportMessageListener extends BaseMessageListener {
 	@Modified
 	protected void activate() {
 		LDAPImportConfiguration ldapImportConfiguration =
-			_ldapImportConfigurationProvider.getConfiguration(0L);
+			_ldapImportConfigurationProvider.getConfiguration(
+				_portal.getDefaultCompanyId());
 
 		int interval = ldapImportConfiguration.importInterval();
 
@@ -141,6 +143,11 @@ public class UserImportMessageListener extends BaseMessageListener {
 	}
 
 	@Reference(unbind = "-")
+	protected void setPortal(Portal portal) {
+		_portal = portal;
+	}
+
+	@Reference(unbind = "-")
 	protected void setSchedulerEngineHelper(
 		SchedulerEngineHelper schedulerEngineHelper) {
 
@@ -160,6 +167,7 @@ public class UserImportMessageListener extends BaseMessageListener {
 	)
 	private volatile LDAPUserImporter _ldapUserImporter;
 
+	private Portal _portal;
 	private SchedulerEngineHelper _schedulerEngineHelper;
 
 	@Reference
