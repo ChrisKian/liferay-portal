@@ -14,6 +14,7 @@
 
 package com.liferay.portal.security.ldap.internal.messaging;
 
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -33,6 +34,7 @@ import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportCon
 import com.liferay.portal.security.ldap.internal.constants.LDAPDestinationNames;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -45,16 +47,19 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Shuyang Zhou
  */
-@Component(immediate = true, service = UserImportMessageListener.class)
+@Component(
+	configurationPid = "com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration",
+	immediate = true, service = UserImportMessageListener.class
+)
 public class UserImportMessageListener extends BaseMessageListener {
 
 	@Activate
 	@Modified
-	protected void activate() {
-		LDAPImportConfiguration ldapImportConfiguration =
-			_ldapImportConfigurationProvider.getConfiguration(0L);
+	protected void activate(Map<String, Object> properties) {
+		_ldapImportConfiguration = ConfigurableUtil.createConfigurable(
+			LDAPImportConfiguration.class, properties);
 
-		int interval = ldapImportConfiguration.importInterval();
+		int interval = _ldapImportConfiguration.importInterval();
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
@@ -151,6 +156,7 @@ public class UserImportMessageListener extends BaseMessageListener {
 		UserImportMessageListener.class);
 
 	private CompanyLocalService _companyLocalService;
+	private volatile LDAPImportConfiguration _ldapImportConfiguration;
 	private ConfigurationProvider<LDAPImportConfiguration>
 		_ldapImportConfigurationProvider;
 
