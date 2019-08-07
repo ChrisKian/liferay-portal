@@ -15,7 +15,7 @@
 package com.liferay.journal.web.internal.portlet.action;
 
 import com.liferay.journal.constants.JournalPortletKeys;
-import com.liferay.journal.service.JournalArticleService;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -51,11 +51,12 @@ public class UnsubscribeArticleMVCActionCommand extends BaseMVCActionCommand {
 
 		long articleId = ParamUtil.getLong(actionRequest, "articleId");
 
-		_journalArticleService.unsubscribe(
-			themeDisplay.getScopeGroupId(), articleId);
+		_journalArticleLocalService.unsubscribe(
+			themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
+			articleId);
 	}
 
 	@Reference
-	private JournalArticleService _journalArticleService;
+	private JournalArticleLocalService _journalArticleLocalService;
 
 }
