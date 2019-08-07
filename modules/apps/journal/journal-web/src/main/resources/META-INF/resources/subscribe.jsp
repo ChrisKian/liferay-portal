@@ -40,10 +40,14 @@ if (Validator.isNotNull(ddmStructureKey)) {
 
 String subscribeActionName = StringPool.BLANK;
 String unsubscribeActionName = StringPool.BLANK;
-%>
 
+Group scopeGroup = themeDisplay.getScopeGroup();
+if (scopeGroup.isStaged() && !scopeGroup.isStagingGroup()) {
+	scopeGroup = scopeGroup.getStagingGroup();
+}
+%>
 <div class="subscribe-action">
-	<c:if test="<%= JournalPermission.contains(permissionChecker, scopeGroupId, ActionKeys.SUBSCRIBE) && JournalUtil.getEmailArticleAnyEventEnabled(journalGroupServiceConfiguration) %>">
+	<c:if test="<%= JournalPermission.contains(permissionChecker, scopeGroup.getGroupId(), ActionKeys.SUBSCRIBE) && JournalUtil.getEmailArticleAnyEventEnabled(journalGroupServiceConfiguration) %>">
 
 		<%
 		boolean subscribed = false;
