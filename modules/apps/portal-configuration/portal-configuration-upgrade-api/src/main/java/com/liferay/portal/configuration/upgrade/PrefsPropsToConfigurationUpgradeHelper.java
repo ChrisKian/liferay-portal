@@ -25,4 +25,9 @@ public interface PrefsPropsToConfigurationUpgradeHelper {
 			Class<?> configurationClass, KeyValuePair... keyValuePairs)
 		throws Exception;
 
+	public void mapConfigurations(
+			long companyId, Class<?> configurationClass,
+			KeyValuePair... keyValuePairs)
+		throws Exception;
+
 }

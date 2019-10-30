@@ -15,11 +15,15 @@
 package com.liferay.portal.security.sso.token.internal.upgrade.v2_0_0;
 
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.security.sso.token.configuration.TokenConfiguration;
 import com.liferay.portal.security.sso.token.constants.LegacyTokenPropsKeys;
 import com.liferay.portal.security.sso.token.constants.TokenConfigurationKeys;
+
+import java.util.List;
 
 /**
  * @author Christopher Kian
@@ -40,29 +44,33 @@ public class UpgradeTokenConfiguration extends UpgradeProcess {
 	}
 
 	private void _upgradeConfiguration() throws Exception {
-		_prefsPropsToConfigurationUpgradeHelper.mapConfigurations(
-			TokenConfiguration.class,
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SHIBBOLETH_AUTH_ENABLED,
-				TokenConfigurationKeys.AUTH_ENABLED),
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SHIBBOLETH_IMPORT_FROM_LDAP,
-				TokenConfigurationKeys.IMPORT_FROM_LDAP),
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SHIBBOLETH_LOGOUT_URL,
-				TokenConfigurationKeys.LOGOUT_REDIRECT_URL),
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SHIBBOLETH_USER_HEADER,
-				TokenConfigurationKeys.USER_TOKEN_NAME),
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SITEMINDER_AUTH_ENABLED,
-				TokenConfigurationKeys.AUTH_ENABLED),
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SITEMINDER_IMPORT_FROM_LDAP,
-				TokenConfigurationKeys.IMPORT_FROM_LDAP),
-			new KeyValuePair(
-				LegacyTokenPropsKeys.SITEMINDER_USER_HEADER,
-				TokenConfigurationKeys.USER_TOKEN_NAME));
+		List<Company> companies = CompanyLocalServiceUtil.getCompanies();
+
+		for (Company company : companies) {
+			_prefsPropsToConfigurationUpgradeHelper.mapConfigurations(
+				company.getCompanyId(), TokenConfiguration.class,
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SHIBBOLETH_AUTH_ENABLED,
+					TokenConfigurationKeys.AUTH_ENABLED),
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SHIBBOLETH_IMPORT_FROM_LDAP,
+					TokenConfigurationKeys.IMPORT_FROM_LDAP),
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SHIBBOLETH_LOGOUT_URL,
+					TokenConfigurationKeys.LOGOUT_REDIRECT_URL),
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SHIBBOLETH_USER_HEADER,
+					TokenConfigurationKeys.USER_TOKEN_NAME),
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SITEMINDER_AUTH_ENABLED,
+					TokenConfigurationKeys.AUTH_ENABLED),
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SITEMINDER_IMPORT_FROM_LDAP,
+					TokenConfigurationKeys.IMPORT_FROM_LDAP),
+				new KeyValuePair(
+					LegacyTokenPropsKeys.SITEMINDER_USER_HEADER,
+					TokenConfigurationKeys.USER_TOKEN_NAME));
+		}
 	}
 
 	private final PrefsPropsToConfigurationUpgradeHelper
