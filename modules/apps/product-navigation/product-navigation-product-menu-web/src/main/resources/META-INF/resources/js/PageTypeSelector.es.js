@@ -32,7 +32,7 @@ function PageTypeSelector(props) {
 				);
 			}
 
-			Liferay.Util.navigate(window.location);
+			Liferay.Util.navigate(window.location.href);
 		},
 		[props.namespace]
 	);
