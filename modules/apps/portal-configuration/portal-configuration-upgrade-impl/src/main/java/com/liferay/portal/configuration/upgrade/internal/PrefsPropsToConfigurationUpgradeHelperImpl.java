@@ -14,10 +14,13 @@
 
 package com.liferay.portal.configuration.upgrade.internal;
 
+import aQute.bnd.annotation.metatype.Meta;
+
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.upgrade.PrefsPropsToConfigurationUpgradeHelper;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.KeyValuePair;
@@ -54,11 +57,33 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 			Class<?> configurationClass, KeyValuePair... keyValuePairs)
 		throws Exception {
 
-		String filterString = StringBundler.concat(
-			"(", Constants.SERVICE_PID, "=", configurationClass.getName(), ")");
+		mapConfigurations(0, configurationClass, keyValuePairs);
+	}
 
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			filterString);
+	@Override
+	public void mapConfigurations(
+			long companyId, Class<?> configurationClass,
+			KeyValuePair... keyValuePairs)
+		throws Exception {
+
+		Configuration[] configurations;
+
+		String filterString;
+
+		Meta.OCD ocd = configurationClass.getAnnotation(Meta.OCD.class);
+
+		if (companyId > 0) {
+			filterString = StringBundler.concat(
+				"(&(service.factoryPid=", ocd.id(), ".scoped)(",
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				"=", companyId, "))");
+		}
+		else {
+			filterString = StringBundler.concat(
+				"(", Constants.SERVICE_PID, "=", ocd.id(), ")");
+		}
+
+		configurations = _configurationAdmin.listConfigurations(filterString);
 
 		if (configurations != null) {
 			return;
@@ -72,8 +97,16 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 			configurationClass, properties);
 
 		for (KeyValuePair keyValuePair : keyValuePairs) {
-			String valueString = _prefsProps.getString(
-				keyValuePair.getKey(), null);
+			String valueString;
+
+			if (companyId > 0) {
+				valueString = _prefsProps.getString(
+					companyId, keyValuePair.getKey(), null);
+			}
+			else {
+				valueString = _prefsProps.getString(
+					keyValuePair.getKey(), null);
+			}
 
 			if (Validator.isNull(valueString)) {
 				continue;
@@ -136,10 +169,14 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 			return;
 		}
 
-		Configuration configuration = _configurationAdmin.getConfiguration(
-			configurationClass.getName(), StringPool.QUESTION);
-
-		configuration.update(properties);
+		if (companyId > 0) {
+			_configurationProvider.saveCompanyConfiguration(
+				configurationClass, companyId, properties);
+		}
+		else {
+			_configurationProvider.saveSystemConfiguration(
+				configurationClass, properties);
+		}
 
 		portletPreferences.store();
 	}
@@ -163,6 +200,9 @@ public class PrefsPropsToConfigurationUpgradeHelperImpl
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private PrefsProps _prefsProps;
