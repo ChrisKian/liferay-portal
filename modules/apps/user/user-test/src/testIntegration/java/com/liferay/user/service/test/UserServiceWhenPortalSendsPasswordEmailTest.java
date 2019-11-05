@@ -64,11 +64,15 @@ public class UserServiceWhenPortalSendsPasswordEmailTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
+		_adminEmailFromAddress = PropsUtil.get(
+			PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 		_adminEmailPasswordResetSubject = PropsUtil.get(
 			PropsKeys.ADMIN_EMAIL_PASSWORD_RESET_SUBJECT);
 		_adminEmailPasswordResetBody = PropsUtil.get(
 			PropsKeys.ADMIN_EMAIL_PASSWORD_RESET_BODY);
 
+		PropsUtil.set(
+			PropsKeys.ADMIN_EMAIL_FROM_ADDRESS, "integrationtest@liferay.com");
 		PropsUtil.set(
 			PropsKeys.ADMIN_EMAIL_PASSWORD_RESET_SUBJECT,
 			"com/liferay/user/service/test/dependencies" +
@@ -102,6 +106,8 @@ public class UserServiceWhenPortalSendsPasswordEmailTest {
 
 	@AfterClass
 	public static void tearDownClass() {
+		PropsUtil.set(
+			PropsKeys.ADMIN_EMAIL_FROM_ADDRESS, _adminEmailFromAddress);
 		PropsUtil.set(
 			PropsKeys.ADMIN_EMAIL_PASSWORD_RESET_SUBJECT,
 			_adminEmailPasswordResetSubject);
@@ -225,6 +231,7 @@ public class UserServiceWhenPortalSendsPasswordEmailTest {
 		portletPreferences.store();
 	}
 
+	private static String _adminEmailFromAddress;
 	private static String _adminEmailPasswordResetBody;
 	private static String _adminEmailPasswordResetSubject;
 	private static Localization _localization;
