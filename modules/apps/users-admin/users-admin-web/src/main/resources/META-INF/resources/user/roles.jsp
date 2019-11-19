@@ -37,6 +37,8 @@ currentURLObj.setParameter("historyKey", renderResponse.getNamespace() + "roles"
 String regularRoleSyncEntitiesEventName = liferayPortletResponse.getNamespace() + "syncRegularRoles";
 String siteRoleSyncEntitiesEventName = liferayPortletResponse.getNamespace() + "syncSiteRoles";
 String organizationRoleSyncEntitiesEventName = liferayPortletResponse.getNamespace() + "syncOrganizationRoles";
+
+Role administratorRole = RoleLocalServiceUtil.getRole(user.getCompanyId(), RoleConstants.ADMINISTRATOR);
 %>
 
 <liferay-ui:error-marker
@@ -116,7 +118,7 @@ String organizationRoleSyncEntitiesEventName = liferayPortletResponse.getNamespa
 				/>
 			</liferay-ui:search-container-column-text>
 
-			<c:if test="<%= !portletName.equals(myAccountPortletId) && !RoleMembershipPolicyUtil.isRoleRequired(selUser.getUserId(), role.getRoleId()) %>">
+			<c:if test="<%= !portletName.equals(myAccountPortletId) && !RoleMembershipPolicyUtil.isRoleRequired(selUser.getUserId(), role.getRoleId()) && ((role.getRoleId() != administratorRole.getRoleId()) || (UserLocalServiceUtil.getRoleUserIds(administratorRole.getRoleId())).length > 1) %>">
 				<liferay-ui:search-container-column-text>
 					<a class="modify-link" data-rowId="<%= role.getRoleId() %>" href="javascript:;"><%= removeRoleIcon %></a>
 				</liferay-ui:search-container-column-text>
