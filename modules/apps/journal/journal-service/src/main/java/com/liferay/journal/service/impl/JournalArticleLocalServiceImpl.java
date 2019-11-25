@@ -45,6 +45,7 @@ import com.liferay.journal.configuration.JournalGroupServiceConfiguration;
 import com.liferay.journal.configuration.JournalServiceConfiguration;
 import com.liferay.journal.constants.JournalActivityKeys;
 import com.liferay.journal.constants.JournalConstants;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.exception.ArticleExpirationDateException;
 import com.liferay.journal.exception.ArticleFriendlyURLException;
 import com.liferay.journal.exception.ArticleReviewDateException;
@@ -3166,6 +3167,31 @@ public class JournalArticleLocalServiceImpl
 					"folderId", String.valueOf(folder.getFolderId()));
 
 				articleURL = portletURL.toString();
+			}
+		}
+
+		if (Validator.isNull(articleURL)) {
+			try {
+				articleURL = _portal.getControlPanelFullURL(
+					article.getGroupId(), portletId, null);
+
+				StringBundler sb = new StringBundler(9);
+				JournalFolder folder = article.getFolder();
+
+				sb.append(articleURL);
+				sb.append("&_");
+				sb.append(JournalPortletKeys.JOURNAL);
+				sb.append("_group=");
+				sb.append(folder.getGroupId());
+				sb.append("&_");
+				sb.append(JournalPortletKeys.JOURNAL);
+				sb.append("_folderId=");
+				sb.append(folder.getFolderId());
+
+				articleURL = sb.toString();
+			}
+			catch (PortalException pe) {
+				_log.error(pe, pe);
 			}
 		}
 
