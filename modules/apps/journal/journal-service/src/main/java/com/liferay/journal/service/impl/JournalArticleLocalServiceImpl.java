@@ -103,6 +103,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
@@ -191,6 +192,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import javax.portlet.PortletURL;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -3139,6 +3142,34 @@ public class JournalArticleLocalServiceImpl
 		}
 
 		return articles.get(0);
+	}
+
+	public String getFolderURLViewInContext(
+			JournalArticle article, String portletId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String articleURL = StringPool.BLANK;
+
+		LiferayPortletResponse liferayPortletResponse =
+			serviceContext.getLiferayPortletResponse();
+
+		if (liferayPortletResponse != null) {
+			PortletURL portletURL = liferayPortletResponse.createRenderURL();
+
+			if (portletURL != null) {
+				JournalFolder folder = article.getFolder();
+
+				portletURL.setParameter(
+					"groupId", String.valueOf(folder.getGroupId()));
+				portletURL.setParameter(
+					"folderId", String.valueOf(folder.getFolderId()));
+
+				articleURL = portletURL.toString();
+			}
+		}
+
+		return articleURL;
 	}
 
 	@Override
