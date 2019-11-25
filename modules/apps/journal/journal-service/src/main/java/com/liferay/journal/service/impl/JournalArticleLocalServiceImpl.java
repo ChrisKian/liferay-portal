@@ -8142,7 +8142,7 @@ public class JournalArticleLocalServiceImpl
 		String portletId = PortletProviderUtil.getPortletId(
 			JournalArticle.class.getName(), PortletProvider.Action.EDIT);
 
-		String articleURL = getURLViewInContext(
+		String articleURL = getFolderURLViewInContext(
 			article, portletId, serviceContext);
 
 		String articleStatus = LanguageUtil.get(
