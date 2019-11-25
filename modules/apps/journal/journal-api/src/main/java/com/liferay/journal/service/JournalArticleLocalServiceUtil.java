@@ -1947,6 +1947,15 @@ public class JournalArticleLocalServiceUtil {
 		return getService().getExportActionableDynamicQuery(portletDataContext);
 	}
 
+	public static String getFolderURLViewInContext(
+			com.liferay.journal.model.JournalArticle article, String portletId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().getFolderURLViewInContext(
+			article, portletId, serviceContext);
+	}
+
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
