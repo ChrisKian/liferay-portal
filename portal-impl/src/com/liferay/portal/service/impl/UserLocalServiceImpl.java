@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -109,6 +110,7 @@ import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.BaseServiceImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -3012,7 +3014,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 *         <code>null</code>)
 	 * @return the matching users
 	 * @see    com.liferay.portal.kernel.service.persistence.UserFinder
+	 *
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #search(ThemeDisplay, String, int, LinkedHashMap, int, int, OrderByComparator)}
 	 */
+	@Deprecated
 	@Override
 	public List<User> search(
 		long companyId, String keywords, int status,
@@ -3032,6 +3038,32 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return UsersAdminUtil.getUsers(
 				search(
 					companyId, keywords, status, params, start, end,
+					getSorts(obc)));
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+	}
+
+	@Override
+	public List<User> search(
+		ThemeDisplay themeDisplay, String keywords, int status,
+		LinkedHashMap<String, Object> params, int start, int end,
+		OrderByComparator<User> obc) {
+
+		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+		if (!indexer.isIndexerEnabled() ||
+			!PropsValues.USERS_SEARCH_WITH_INDEX || isUseCustomSQL(params)) {
+
+			return userFinder.findByKeywords(
+				themeDisplay.getCompanyId(), keywords, status, params, start, end, obc);
+		}
+
+		try {
+			return UsersAdminUtil.getUsers(
+				search(
+					themeDisplay, keywords, status, params, start, end,
 					getSorts(obc)));
 		}
 		catch (Exception e) {
@@ -3077,6 +3109,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			companyId, keywords, status, params, start, end, new Sort[] {sort});
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #search(ThemeDisplay, String, int, LinkedHashMap, int, int, Sort[])}
+	 */
+	@Deprecated
 	@Override
 	public Hits search(
 		long companyId, String keywords, int status,
@@ -3123,6 +3160,62 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			SearchContext searchContext = buildSearchContext(
 				companyId, firstName, middleName, lastName, fullName,
+				screenName, emailAddress, street, city, zip, region, country,
+				status, params, andOperator, start, end, sorts);
+
+			return indexer.search(searchContext);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+	}
+
+	@Override
+	public Hits search(
+		ThemeDisplay themeDisplay, String keywords, int status,
+		LinkedHashMap<String, Object> params, int start, int end,
+		Sort[] sorts) {
+
+		String firstName = null;
+		String middleName = null;
+		String lastName = null;
+		String fullName = null;
+		String screenName = null;
+		String emailAddress = null;
+		String street = null;
+		String city = null;
+		String zip = null;
+		String region = null;
+		String country = null;
+		boolean andOperator = false;
+
+		if (Validator.isNotNull(keywords)) {
+			firstName = keywords;
+			middleName = keywords;
+			lastName = keywords;
+			fullName = keywords;
+			screenName = keywords;
+			emailAddress = keywords;
+			street = keywords;
+			city = keywords;
+			zip = keywords;
+			region = keywords;
+			country = keywords;
+		}
+		else {
+			andOperator = true;
+		}
+
+		if (params != null) {
+			params.put("keywords", keywords);
+		}
+
+		try {
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+				User.class);
+
+			SearchContext searchContext = buildSearchContext(
+				themeDisplay, firstName, middleName, lastName, fullName,
 				screenName, emailAddress, street, city, zip, region, country,
 				status, params, andOperator, start, end, sorts);
 
@@ -3285,7 +3378,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 *         more information see {@link
 	 *         com.liferay.portal.kernel.service.persistence.UserFinder}.
 	 * @return the number matching users
+	 *
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #searchCount(ThemeDisplay, String, int, LinkedHashMap)}
 	 */
+	@Deprecated
 	@Override
 	public int searchCount(
 		long companyId, String keywords, int status,
@@ -3337,6 +3434,68 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			SearchContext searchContext = buildSearchContext(
 				companyId, firstName, middleName, lastName, fullName,
+				screenName, emailAddress, street, city, zip, region, country,
+				status, params, andOperator, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+			return (int)indexer.searchCount(searchContext);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+	}
+
+	@Override
+	public int searchCount(
+		ThemeDisplay themeDisplay, String keywords, int status,
+		LinkedHashMap<String, Object> params) {
+
+		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
+
+		if (!indexer.isIndexerEnabled() ||
+			!PropsValues.USERS_SEARCH_WITH_INDEX || isUseCustomSQL(params)) {
+
+			return userFinder.countByKeywords(
+				themeDisplay.getCompanyId(), keywords, status, params);
+		}
+
+		try {
+			String firstName = null;
+			String middleName = null;
+			String lastName = null;
+			String fullName = null;
+			String screenName = null;
+			String emailAddress = null;
+			String street = null;
+			String city = null;
+			String zip = null;
+			String region = null;
+			String country = null;
+			boolean andOperator = false;
+
+			if (Validator.isNotNull(keywords)) {
+				firstName = keywords;
+				middleName = keywords;
+				lastName = keywords;
+				fullName = keywords;
+				screenName = keywords;
+				emailAddress = keywords;
+				street = keywords;
+				city = keywords;
+				zip = keywords;
+				region = keywords;
+				country = keywords;
+			}
+			else {
+				andOperator = true;
+			}
+
+			if (params != null) {
+				params.put("keywords", keywords);
+			}
+
+			SearchContext searchContext = buildSearchContext(
+				themeDisplay, firstName, middleName, lastName, fullName,
 				screenName, emailAddress, street, city, zip, region, country,
 				status, params, andOperator, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
@@ -5691,6 +5850,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return authResult;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #buildSearchContext(ThemeDisplay, String, String, String, String, String, String, String, String, String, String, String, int, LinkedHashMap, boolean, int, int, Sort[])}
+	 */
+	@Deprecated
 	protected SearchContext buildSearchContext(
 		long companyId, String firstName, String middleName, String lastName,
 		String fullName, String screenName, String emailAddress, String street,
@@ -5734,6 +5898,75 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		searchContext.setAttributes(attributes);
 
 		searchContext.setCompanyId(companyId);
+		searchContext.setEnd(end);
+
+		if (params != null) {
+			String keywords = (String)params.remove("keywords");
+
+			if (Validator.isNotNull(keywords)) {
+				searchContext.setKeywords(keywords);
+			}
+		}
+
+		if (sorts != null) {
+			searchContext.setSorts(sorts);
+		}
+
+		searchContext.setStart(start);
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.setHighlightEnabled(false);
+		queryConfig.setScoreEnabled(false);
+
+		return searchContext;
+	}
+
+	protected SearchContext buildSearchContext(
+		ThemeDisplay themeDisplay, String firstName, String middleName, String lastName,
+		String fullName, String screenName, String emailAddress, String street,
+		String city, String zip, String region, String country, int status,
+		LinkedHashMap<String, Object> params, boolean andSearch, int start,
+		int end, Sort[] sorts) {
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setAndSearch(andSearch);
+
+		Map<String, Serializable> attributes =
+			HashMapBuilder.<String, Serializable>put(
+				Field.GROUP_ID, themeDisplay.getScopeGroupId()
+			).put(
+				"city", city
+			).put(
+				"country", country
+			).put(
+				"emailAddress", emailAddress
+			).put(
+				"firstName", firstName
+			).put(
+				"fullName", fullName
+			).put(
+				"lastName", lastName
+			).put(
+				"middleName", middleName
+			).put(
+				"params", params
+			).put(
+				"region", region
+			).put(
+				"screenName", screenName
+			).put(
+				"status", status
+			).put(
+				"street", street
+			).put(
+				"zip", zip
+			).build();
+
+		searchContext.setAttributes(attributes);
+
+		searchContext.setCompanyId(themeDisplay.getCompanyId());
 		searchContext.setEnd(end);
 
 		if (params != null) {
