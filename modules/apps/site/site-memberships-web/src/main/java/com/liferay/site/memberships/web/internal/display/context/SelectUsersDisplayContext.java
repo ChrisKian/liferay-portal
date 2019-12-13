@@ -183,15 +183,15 @@ public class SelectUsersDisplayContext {
 		}
 
 		int usersCount = UserLocalServiceUtil.searchCount(
-			themeDisplay, searchTerms.getKeywords(),
-			searchTerms.getStatus(), userParams);
+			themeDisplay, searchTerms.getKeywords(), searchTerms.getStatus(),
+			userParams);
 
 		userSearch.setTotal(usersCount);
 
 		List<User> users = UserLocalServiceUtil.search(
-			themeDisplay, searchTerms.getKeywords(),
-			searchTerms.getStatus(), userParams, userSearch.getStart(),
-			userSearch.getEnd(), userSearch.getOrderByComparator());
+			themeDisplay, searchTerms.getKeywords(), searchTerms.getStatus(),
+			userParams, userSearch.getStart(), userSearch.getEnd(),
+			userSearch.getOrderByComparator());
 
 		userSearch.setResults(users);
 
