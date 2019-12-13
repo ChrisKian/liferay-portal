@@ -2108,7 +2108,10 @@ public class UserLocalServiceUtil {
 	 <code>null</code>)
 	 * @return the matching users
 	 * @see com.liferay.portal.kernel.service.persistence.UserFinder
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #search(ThemeDisplay, String, int, LinkedHashMap, int, int, OrderByComparator)}
 	 */
+	@Deprecated
 	public static java.util.List<com.liferay.portal.kernel.model.User> search(
 		long companyId, String keywords, int status,
 		java.util.LinkedHashMap<String, Object> params, int start, int end,
@@ -2147,7 +2150,10 @@ public class UserLocalServiceUtil {
 	 <code>null</code>)
 	 * @return the matching users
 	 * @see com.liferay.portlet.usersadmin.util.UserIndexer
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #search(ThemeDisplay, String, int, LinkedHashMap, int, int, Sort)}
 	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.Hits search(
 		long companyId, String keywords, int status,
 		java.util.LinkedHashMap<String, Object> params, int start, int end,
@@ -2157,6 +2163,11 @@ public class UserLocalServiceUtil {
 			companyId, keywords, status, params, start, end, sort);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #search(ThemeDisplay, String, int, LinkedHashMap, int, int, Sort[])}
+	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.Hits search(
 		long companyId, String keywords, int status,
 		java.util.LinkedHashMap<String, Object> params, int start, int end,
@@ -2203,7 +2214,10 @@ public class UserLocalServiceUtil {
 	 <code>null</code>)
 	 * @return the matching users
 	 * @see com.liferay.portal.kernel.service.persistence.UserFinder
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #search(ThemeDisplay, String, String, String, String, String, int, LinkedHashMap, boolean, int, int, OrderByComparator)}
 	 */
+	@Deprecated
 	public static java.util.List<com.liferay.portal.kernel.model.User> search(
 		long companyId, String firstName, String middleName, String lastName,
 		String screenName, String emailAddress, int status,
@@ -2253,7 +2267,10 @@ public class UserLocalServiceUtil {
 	 <code>null</code>)
 	 * @return the matching users
 	 * @see com.liferay.portlet.usersadmin.util.UserIndexer
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #search(ThemeDisplay, String, String, String, String, String, int, LinkedHashMap, boolean, int, int, Sort)}
 	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.Hits search(
 		long companyId, String firstName, String middleName, String lastName,
 		String screenName, String emailAddress, int status,
@@ -2265,6 +2282,11 @@ public class UserLocalServiceUtil {
 			emailAddress, status, params, andSearch, start, end, sort);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #search(ThemeDisplay, String, String, String, String, String, int, LinkedHashMap, boolean, int, int, Sort[])}
+	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.Hits search(
 		long companyId, String firstName, String middleName, String lastName,
 		String screenName, String emailAddress, int status,
@@ -2273,6 +2295,209 @@ public class UserLocalServiceUtil {
 
 		return getService().search(
 			companyId, firstName, middleName, lastName, screenName,
+			emailAddress, status, params, andSearch, start, end, sorts);
+	}
+
+	/**
+	 * Returns an ordered range of all the users who match the keywords and
+	 * status, without using the indexer. It is preferable to use the indexed
+	 * version {@link #search(ThemeDisplay, String, int, LinkedHashMap, int, int, Sort)}
+	 * instead of this method wherever possible for performance reasons.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end -
+	 * start</code> instances. <code>start</code> and <code>end</code> are not
+	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
+	 * refers to the first result in the set. Setting both <code>start</code>
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
+	 * result set.
+	 * </p>
+	 *
+	 * @param themeDisplay the theme display needed to build the SearchContext
+	 * @param keywords the keywords (space separated), which may occur in the
+	 user's first name, middle name, last name, screen name, or email
+	 address
+	 * @param status the workflow status
+	 * @param params the finder parameters (optionally <code>null</code>). For
+	 more information see {@link
+	 com.liferay.portal.kernel.service.persistence.UserFinder}.
+	 * @param start the lower bound of the range of users
+	 * @param end the upper bound of the range of users (not inclusive)
+	 * @param obc the comparator to order the users by (optionally
+	 <code>null</code>)
+	 * @return the matching users
+	 * @see com.liferay.portal.kernel.service.persistence.UserFinder
+	 */
+	public static java.util.List<com.liferay.portal.kernel.model.User> search(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String keywords, int status,
+		java.util.LinkedHashMap<String, Object> params, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<com.liferay.portal.kernel.model.User> obc) {
+
+		return getService().search(
+			themeDisplay, keywords, status, params, start, end, obc);
+	}
+
+	/**
+	 * Returns an ordered range of all the users who match the keywords and
+	 * status, using the indexer. It is preferable to use this method instead of
+	 * the non-indexed version whenever possible for performance reasons.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end -
+	 * start</code> instances. <code>start</code> and <code>end</code> are not
+	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
+	 * refers to the first result in the set. Setting both <code>start</code>
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
+	 * result set.
+	 * </p>
+	 *
+	 * @param themeDisplay the theme display needed to build the SearchContext
+	 * @param keywords the keywords (space separated), which may occur in the
+	 user's first name, middle name, last name, screen name, or email
+	 address
+	 * @param status the workflow status
+	 * @param params the indexer parameters (optionally <code>null</code>). For
+	 more information see {@link
+	 com.liferay.portlet.usersadmin.util.UserIndexer}.
+	 * @param start the lower bound of the range of users
+	 * @param end the upper bound of the range of users (not inclusive)
+	 * @param sort the field and direction to sort by (optionally
+	 <code>null</code>)
+	 * @return the matching users
+	 * @see com.liferay.portlet.usersadmin.util.UserIndexer
+	 */
+	public static com.liferay.portal.kernel.search.Hits search(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String keywords, int status,
+		java.util.LinkedHashMap<String, Object> params, int start, int end,
+		com.liferay.portal.kernel.search.Sort sort) {
+
+		return getService().search(
+			themeDisplay, keywords, status, params, start, end, sort);
+	}
+
+	public static com.liferay.portal.kernel.search.Hits search(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String keywords, int status,
+		java.util.LinkedHashMap<String, Object> params, int start, int end,
+		com.liferay.portal.kernel.search.Sort[] sorts) {
+
+		return getService().search(
+			themeDisplay, keywords, status, params, start, end, sorts);
+	}
+
+	/**
+	 * Returns an ordered range of all the users with the status, and whose
+	 * first name, middle name, last name, screen name, and email address match
+	 * the keywords specified for them, without using the indexer. It is
+	 * preferable to use the indexed version {@link #search(ThemeDisplay, String,
+	 * String, String, String, String, int, LinkedHashMap, boolean, int, int,
+	 * Sort)} instead of this method wherever possible for performance reasons.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end -
+	 * start</code> instances. <code>start</code> and <code>end</code> are not
+	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
+	 * refers to the first result in the set. Setting both <code>start</code>
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
+	 * result set.
+	 * </p>
+	 *
+	 * @param themeDisplay the theme display needed to build the SearchContext
+	 * @param firstName the first name keywords (space separated)
+	 * @param middleName the middle name keywords
+	 * @param lastName the last name keywords
+	 * @param screenName the screen name keywords
+	 * @param emailAddress the email address keywords
+	 * @param status the workflow status
+	 * @param params the finder parameters (optionally <code>null</code>). For
+	 more information see {@link
+	 com.liferay.portal.kernel.service.persistence.UserFinder}.
+	 * @param andSearch whether every field must match its keywords, or just
+	 one field. For example, &quot;users with the first name 'bob' and
+	 last name 'smith'&quot; vs &quot;users with the first name 'bob'
+	 or the last name 'smith'&quot;.
+	 * @param start the lower bound of the range of users
+	 * @param end the upper bound of the range of users (not inclusive)
+	 * @param obc the comparator to order the users by (optionally
+	 <code>null</code>)
+	 * @return the matching users
+	 * @see com.liferay.portal.kernel.service.persistence.UserFinder
+	 */
+	public static java.util.List<com.liferay.portal.kernel.model.User> search(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String firstName, String middleName, String lastName, String screenName,
+		String emailAddress, int status,
+		java.util.LinkedHashMap<String, Object> params, boolean andSearch,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<com.liferay.portal.kernel.model.User> obc) {
+
+		return getService().search(
+			themeDisplay, firstName, middleName, lastName, screenName,
+			emailAddress, status, params, andSearch, start, end, obc);
+	}
+
+	/**
+	 * Returns an ordered range of all the users with the status, and whose
+	 * first name, middle name, last name, screen name, and email address match
+	 * the keywords specified for them, using the indexer. It is preferable to
+	 * use this method instead of the non-indexed version whenever possible for
+	 * performance reasons.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end -
+	 * start</code> instances. <code>start</code> and <code>end</code> are not
+	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
+	 * refers to the first result in the set. Setting both <code>start</code>
+	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
+	 * result set.
+	 * </p>
+	 *
+	 * @param themeDisplay the theme display needed to build the SearchContext
+	 * @param firstName the first name keywords (space separated)
+	 * @param middleName the middle name keywords
+	 * @param lastName the last name keywords
+	 * @param screenName the screen name keywords
+	 * @param emailAddress the email address keywords
+	 * @param status the workflow status
+	 * @param params the indexer parameters (optionally <code>null</code>). For
+	 more information see {@link
+	 com.liferay.portlet.usersadmin.util.UserIndexer}.
+	 * @param andSearch whether every field must match its keywords, or just
+	 one field. For example, &quot;users with the first name 'bob' and
+	 last name 'smith'&quot; vs &quot;users with the first name 'bob'
+	 or the last name 'smith'&quot;.
+	 * @param start the lower bound of the range of users
+	 * @param end the upper bound of the range of users (not inclusive)
+	 * @param sort the field and direction to sort by (optionally
+	 <code>null</code>)
+	 * @return the matching users
+	 * @see com.liferay.portlet.usersadmin.util.UserIndexer
+	 */
+	public static com.liferay.portal.kernel.search.Hits search(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String firstName, String middleName, String lastName, String screenName,
+		String emailAddress, int status,
+		java.util.LinkedHashMap<String, Object> params, boolean andSearch,
+		int start, int end, com.liferay.portal.kernel.search.Sort sort) {
+
+		return getService().search(
+			themeDisplay, firstName, middleName, lastName, screenName,
+			emailAddress, status, params, andSearch, start, end, sort);
+	}
+
+	public static com.liferay.portal.kernel.search.Hits search(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String firstName, String middleName, String lastName, String screenName,
+		String emailAddress, int status,
+		java.util.LinkedHashMap<String, Object> params, boolean andSearch,
+		int start, int end, com.liferay.portal.kernel.search.Sort[] sorts) {
+
+		return getService().search(
+			themeDisplay, firstName, middleName, lastName, screenName,
 			emailAddress, status, params, andSearch, start, end, sorts);
 	}
 
@@ -2288,7 +2513,10 @@ public class UserLocalServiceUtil {
 	 more information see {@link
 	 com.liferay.portal.kernel.service.persistence.UserFinder}.
 	 * @return the number matching users
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #searchCount(ThemeDisplay, String, int, LinkedHashMap)}
 	 */
+	@Deprecated
 	public static int searchCount(
 		long companyId, String keywords, int status,
 		java.util.LinkedHashMap<String, Object> params) {
@@ -2316,7 +2544,10 @@ public class UserLocalServiceUtil {
 	 last name 'smith'&quot; vs &quot;users with the first name 'bob'
 	 or the last name 'smith'&quot;.
 	 * @return the number of matching users
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #searchCount(ThemeDisplay, String, String, String, String, String, int, LinkedHashMap, boolean)}
 	 */
+	@Deprecated
 	public static int searchCount(
 		long companyId, String firstName, String middleName, String lastName,
 		String screenName, String emailAddress, int status,
@@ -2324,6 +2555,59 @@ public class UserLocalServiceUtil {
 
 		return getService().searchCount(
 			companyId, firstName, middleName, lastName, screenName,
+			emailAddress, status, params, andSearch);
+	}
+
+	/**
+	 * Returns the number of users who match the keywords and status.
+	 *
+	 * @param themeDisplay the theme display needed to build the SearchContext
+	 * @param keywords the keywords (space separated), which may occur in the
+	 user's first name, middle name, last name, screen name, or email
+	 address
+	 * @param status the workflow status
+	 * @param params the finder parameters (optionally <code>null</code>). For
+	 more information see {@link
+	 com.liferay.portal.kernel.service.persistence.UserFinder}.
+	 * @return the number matching users
+	 */
+	public static int searchCount(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String keywords, int status,
+		java.util.LinkedHashMap<String, Object> params) {
+
+		return getService().searchCount(themeDisplay, keywords, status, params);
+	}
+
+	/**
+	 * Returns the number of users with the status, and whose first name, middle
+	 * name, last name, screen name, and email address match the keywords
+	 * specified for them.
+	 *
+	 * @param themeDisplay the theme display needed to build the SearchContext
+	 * @param firstName the first name keywords (space separated)
+	 * @param middleName the middle name keywords
+	 * @param lastName the last name keywords
+	 * @param screenName the screen name keywords
+	 * @param emailAddress the email address keywords
+	 * @param status the workflow status
+	 * @param params the finder parameters (optionally <code>null</code>). For
+	 more information see {@link
+	 com.liferay.portal.kernel.service.persistence.UserFinder}.
+	 * @param andSearch whether every field must match its keywords, or just
+	 one field. For example, &quot;users with the first name 'bob' and
+	 last name 'smith'&quot; vs &quot;users with the first name 'bob'
+	 or the last name 'smith'&quot;.
+	 * @return the number of matching users
+	 */
+	public static int searchCount(
+		com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+		String firstName, String middleName, String lastName, String screenName,
+		String emailAddress, int status,
+		java.util.LinkedHashMap<String, Object> params, boolean andSearch) {
+
+		return getService().searchCount(
+			themeDisplay, firstName, middleName, lastName, screenName,
 			emailAddress, status, params, andSearch);
 	}
 
@@ -2373,6 +2657,11 @@ public class UserLocalServiceUtil {
 			groupIds, userId, socialRelationTypes, keywords, start, end);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #searchUsers(ThemeDisplay, String, int, LinkedHashMap, int, int, Sort)}
+	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.portal.kernel.model.User> searchUsers(
 				long companyId, String keywords, int status,
@@ -2384,6 +2673,11 @@ public class UserLocalServiceUtil {
 			companyId, keywords, status, params, start, end, sort);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #searchUsers(ThemeDisplay, String, int, LinkedHashMap, int, int, Sort[])}
+	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.portal.kernel.model.User> searchUsers(
 				long companyId, String keywords, int status,
@@ -2395,6 +2689,11 @@ public class UserLocalServiceUtil {
 			companyId, keywords, status, params, start, end, sorts);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #searchUsers(ThemeDisplay, String, String, String, String, String, int, LinkedHashMap, boolean, int, int, Sort)}
+	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.portal.kernel.model.User> searchUsers(
 				long companyId, String firstName, String middleName,
@@ -2409,6 +2708,11 @@ public class UserLocalServiceUtil {
 			emailAddress, status, params, andSearch, start, end, sort);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 #searchUsers(ThemeDisplay, String, String, String, String, String, int, LinkedHashMap, boolean, int, int, Sort[])}
+	 */
+	@Deprecated
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.portal.kernel.model.User> searchUsers(
 				long companyId, String firstName, String middleName,
@@ -2420,6 +2724,60 @@ public class UserLocalServiceUtil {
 
 		return getService().searchUsers(
 			companyId, firstName, middleName, lastName, screenName,
+			emailAddress, status, params, andSearch, start, end, sorts);
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.portal.kernel.model.User> searchUsers(
+				com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+				String keywords, int status,
+				java.util.LinkedHashMap<String, Object> params, int start,
+				int end, com.liferay.portal.kernel.search.Sort sort)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().searchUsers(
+			themeDisplay, keywords, status, params, start, end, sort);
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.portal.kernel.model.User> searchUsers(
+				com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+				String keywords, int status,
+				java.util.LinkedHashMap<String, Object> params, int start,
+				int end, com.liferay.portal.kernel.search.Sort[] sorts)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().searchUsers(
+			themeDisplay, keywords, status, params, start, end, sorts);
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.portal.kernel.model.User> searchUsers(
+				com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+				String firstName, String middleName, String lastName,
+				String screenName, String emailAddress, int status,
+				java.util.LinkedHashMap<String, Object> params,
+				boolean andSearch, int start, int end,
+				com.liferay.portal.kernel.search.Sort sort)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().searchUsers(
+			themeDisplay, firstName, middleName, lastName, screenName,
+			emailAddress, status, params, andSearch, start, end, sort);
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.portal.kernel.model.User> searchUsers(
+				com.liferay.portal.kernel.theme.ThemeDisplay themeDisplay,
+				String firstName, String middleName, String lastName,
+				String screenName, String emailAddress, int status,
+				java.util.LinkedHashMap<String, Object> params,
+				boolean andSearch, int start, int end,
+				com.liferay.portal.kernel.search.Sort[] sorts)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().searchUsers(
+			themeDisplay, firstName, middleName, lastName, screenName,
 			emailAddress, status, params, andSearch, start, end, sorts);
 	}
 
