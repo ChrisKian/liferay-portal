@@ -4154,6 +4154,15 @@ AUI.add(
 						if (type === 'ddm-text-html') {
 							instance.recreateEditor(field);
 						}
+
+						if (fieldDefinition.nestedFields.length > 0) {
+							var nestedFields = fieldDefinition.nestedFields;
+							nestedFields.forEach(element => {
+								if (element.type === 'ddm-text-html') {
+									instance.recreateEditor(field);
+								}
+							});
+						}
 					}
 				},
 
