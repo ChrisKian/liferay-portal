@@ -5673,6 +5673,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		attributes.put("screenName", screenName);
 		attributes.put("status", status);
 		attributes.put("street", street);
+		attributes.put(
+			"usersGroups", (Long)params.getOrDefault("usersGroups", 0));
 		attributes.put("zip", zip);
 
 		searchContext.setAttributes(attributes);
