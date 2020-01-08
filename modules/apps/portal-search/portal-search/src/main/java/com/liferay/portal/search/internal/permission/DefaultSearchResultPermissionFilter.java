@@ -196,7 +196,7 @@ public class DefaultSearchResultPermissionFilter
 
 	protected boolean isGroupAdmin(SearchContext searchContext) {
 		long groupId = GetterUtil.getLong(
-			searchContext.getAttribute("usersGroups"));
+			searchContext.getAttribute(Field.GROUP_ID));
 
 		if (groupId == 0) {
 			return false;
