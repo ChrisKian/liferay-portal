@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.model.TypedModel;
 import com.liferay.portal.kernel.model.adapter.ModelAdapterUtil;
@@ -50,6 +52,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.model.impl.PortletImpl;
 
 import java.util.List;
 import java.util.Map;
@@ -121,6 +124,17 @@ public class ChangesetPortletDataHandler extends BasePortletDataHandler {
 			PortletDataContext portletDataContext, String portletId,
 			PortletPreferences portletPreferences)
 		throws Exception {
+
+		try {
+			String defaultResourceName = _getDefaultResourceName(portletId);
+
+			if (defaultResourceName != null) {
+				portletDataContext.addPortletPermissions(defaultResourceName);
+			}
+		}
+		catch (PortalException pe) {
+			pe.printStackTrace();
+		}
 
 		Element rootElement = addExportDataRootElement(portletDataContext);
 
@@ -215,6 +229,15 @@ public class ChangesetPortletDataHandler extends BasePortletDataHandler {
 				StagedModelDataHandlerUtil.importStagedModel(
 					portletDataContext, entityElement);
 			}
+		}
+
+		String defaultResourceName = _getDefaultResourceName(
+			portletDataContext.getPortletId());
+
+		if (defaultResourceName != null) {
+			portletDataContext.importPermissions(
+				defaultResourceName, portletDataContext.getSourceGroupId(),
+				portletDataContext.getGroupId());
 		}
 
 		return portletPreferences;
@@ -313,6 +336,15 @@ public class ChangesetPortletDataHandler extends BasePortletDataHandler {
 			portletDataContext, stagedModel);
 
 		return true;
+	}
+
+	private String _getDefaultResourceName(String portletId) {
+		Portlet portlet = new PortletImpl(CompanyConstants.SYSTEM, portletId);
+
+		PortletDataHandler portletDataHandler =
+			portlet.getPortletDataHandlerInstance();
+
+		return portletDataHandler.getResourceName();
 	}
 
 	private boolean _isExportModel(
