@@ -378,17 +378,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 		long groupId = getGroupId();
 
-		Group group = GroupLocalServiceUtil.getGroup(groupId);
-
-		if (group.isStagingGroup()) {
-			if (group.isStagedRemotely()) {
-				groupId = group.getLiveGroupId();
-			}
-			else {
-				return;
-			}
-		}
-
 		addPermissions(resourceName, groupId);
 	}
 
