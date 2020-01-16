@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
@@ -110,12 +109,12 @@ public class UpdatePasswordMyAccountMVCActionCommand
 						_portal.getOriginalServletRequest(
 							_portal.getHttpServletRequest(actionRequest));
 					HttpServletResponse httpServletResponse =
-						PortalUtil.getHttpServletResponse(actionResponse);
+						_portal.getHttpServletResponse(actionResponse);
 
 					AuthenticatedSessionManagerUtil.logout(
 						originalHttpServletRequest, httpServletResponse);
 
-					String redirect = PortalUtil.getCurrentCompleteURL(
+					String redirect = _portal.getCurrentCompleteURL(
 						originalHttpServletRequest);
 
 					if (!StringUtil.equals(
