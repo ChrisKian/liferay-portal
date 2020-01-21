@@ -39,6 +39,8 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -687,6 +689,17 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			Group childGroup = _groupLocalService.getGroup(childGroupId);
 
 			if (!childGroup.hasAncestor(siteGroupId)) {
+				if (_log.isWarnEnabled()) {
+					StringBundler sb = new StringBundler(4);
+
+					sb.append("Child group with id ");
+					sb.append(childGroupId);
+					sb.append(" does not have a parent site with id ");
+					sb.append(siteGroupId);
+
+					_log.warn(sb.toString());
+				}
+
 				throw new PrincipalException();
 			}
 
@@ -744,12 +757,29 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			Group parentGroup = _groupLocalService.getGroup(parentGroupId);
 
 			if (!SitesUtil.isContentSharingWithChildrenEnabled(parentGroup)) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Parent group " + parentGroupId +
+							"does not have content sharing enabled.");
+				}
+
 				throw new PrincipalException();
 			}
 
 			Group group = _groupLocalService.getGroup(siteGroupId);
 
 			if (!group.hasAncestor(parentGroupId)) {
+				if (_log.isWarnEnabled()) {
+					StringBundler sb = new StringBundler(4);
+
+					sb.append("Group with id ");
+					sb.append(parentGroupId);
+					sb.append(" is not the parent group of site with id ");
+					sb.append(siteGroupId);
+
+					_log.warn(sb.toString());
+				}
+
 				throw new PrincipalException();
 			}
 
@@ -1315,6 +1345,9 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 		assetEntryQuery.setNotAnyTagIds(notAnyAssetTagIds);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetPublisherHelperImpl.class);
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
