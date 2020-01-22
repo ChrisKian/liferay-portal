@@ -688,17 +688,15 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 			Group childGroup = _groupLocalService.getGroup(childGroupId);
 
-			if (!childGroup.hasAncestor(siteGroupId)) {
-				if (_log.isWarnEnabled()) {
-					StringBundler sb = new StringBundler(4);
+			if (!childGroup.hasAncestor(siteGroupId) && _log.isWarnEnabled()) {
+				StringBundler sb = new StringBundler(4);
 
-					sb.append("Child group with id ");
-					sb.append(childGroupId);
-					sb.append(" does not have a parent site with id ");
-					sb.append(siteGroupId);
+				sb.append("Child group with id ");
+				sb.append(childGroupId);
+				sb.append(" does not have a parent site with id ");
+				sb.append(siteGroupId);
 
-					_log.warn(sb.toString());
-				}
+				_log.warn(sb.toString());
 			}
 
 			return childGroupId;
@@ -766,17 +764,15 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 			Group group = _groupLocalService.getGroup(siteGroupId);
 
-			if (!group.hasAncestor(parentGroupId)) {
-				if (_log.isWarnEnabled()) {
-					StringBundler sb = new StringBundler(4);
+			if (!group.hasAncestor(parentGroupId) && _log.isWarnEnabled()) {
+				StringBundler sb = new StringBundler(4);
 
-					sb.append("Group with id ");
-					sb.append(parentGroupId);
-					sb.append(" is not the parent group of site with id ");
-					sb.append(siteGroupId);
+				sb.append("Group with id ");
+				sb.append(parentGroupId);
+				sb.append(" is not the parent group of site with id ");
+				sb.append(siteGroupId);
 
-					_log.warn(sb.toString());
-				}
+				_log.warn(sb.toString());
 			}
 
 			return parentGroupId;
