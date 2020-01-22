@@ -699,8 +699,6 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 					_log.warn(sb.toString());
 				}
-
-				throw new PrincipalException();
 			}
 
 			return childGroupId;
@@ -779,8 +777,6 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 					_log.warn(sb.toString());
 				}
-
-				throw new PrincipalException();
 			}
 
 			return parentGroupId;
