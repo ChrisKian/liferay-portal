@@ -77,7 +77,7 @@ dlSearchContainer.setResults(foldersAndFileEntriesAndFileShortcuts);
 							try {
 								DLAppServiceUtil.getFoldersCount(curFolder.getRepositoryId(), curFolder.getFolderId());
 							}
-							catch (PortalException pe) {
+							catch (PortalException portalException) {
 								rowURL = null;
 							}
 						}
