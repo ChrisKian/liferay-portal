@@ -196,21 +196,27 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 
 			String id = element.attr("id");
 
-			String instanceId = _getInstanceId(
-				fragmentEntryLink.getNamespace(), id);
+			Portlet portlet = _portletLocalService.getPortletById(portletName);
 
-			if (segmentsExperienceIdOptionalLong == null) {
-				segmentsExperienceIdOptionalLong =
-					_getSegmentsExperienceIdOptional(
-						fragmentEntryProcessorContext.
-							getSegmentsExperienceIds());
-			}
+			String instanceId = StringPool.BLANK;
 
-			if (segmentsExperienceIdOptionalLong.isPresent()) {
-				instanceId =
-					SegmentsExperiencePortletUtil.setSegmentsExperienceId(
-						instanceId,
-						segmentsExperienceIdOptionalLong.getAsLong());
+			if (portlet.isInstanceable()) {
+				instanceId = _getInstanceId(
+					fragmentEntryLink.getNamespace(), id);
+
+				if (segmentsExperienceIdOptionalLong == null) {
+					segmentsExperienceIdOptionalLong =
+						_getSegmentsExperienceIdOptional(
+							fragmentEntryProcessorContext.
+								getSegmentsExperienceIds());
+				}
+
+				if (segmentsExperienceIdOptionalLong.isPresent()) {
+					instanceId =
+						SegmentsExperiencePortletUtil.setSegmentsExperienceId(
+							instanceId,
+							segmentsExperienceIdOptionalLong.getAsLong());
+				}
 			}
 
 			String defaultPreferences = StringPool.BLANK;
@@ -221,9 +227,6 @@ public class PortletFragmentEntryProcessor implements FragmentEntryProcessor {
 					StringPool.BLANK, fragmentEntryProcessorContext);
 			}
 			else {
-				Portlet portlet = _portletLocalService.getPortletById(
-					portletName);
-
 				defaultPreferences = portlet.getDefaultPreferences();
 			}
 
