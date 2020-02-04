@@ -154,6 +154,7 @@ public interface AssetPublisherHelper {
 	public String getScopeId(Group group, long scopeGroupId);
 
 	public void validateGroupIdFromScopeId(
-		long childGroupId, long parentGroupId)
+			long childGroupId, long parentGroupId)
 		throws PortalException;
+
 }
