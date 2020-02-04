@@ -694,11 +694,7 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				return siteGroupId;
 			}
 
-			long scopeGroupId = GetterUtil.getLong(scopeIdSuffix);
-
-			Group scopeGroup = _groupLocalService.getGroup(scopeGroupId);
-
-			return scopeGroup.getGroupId();
+			return GetterUtil.getLong(scopeIdSuffix);
 		}
 		else if (scopeId.startsWith(SCOPE_ID_LAYOUT_UUID_PREFIX)) {
 			String layoutUuid = scopeId.substring(
