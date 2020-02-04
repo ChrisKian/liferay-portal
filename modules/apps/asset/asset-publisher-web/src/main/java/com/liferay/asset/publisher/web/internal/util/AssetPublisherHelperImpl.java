@@ -686,22 +686,7 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 
 			long childGroupId = GetterUtil.getLong(scopeIdSuffix);
 
-			Group childGroup = _groupLocalService.getGroup(childGroupId);
-
-			if (!childGroup.hasAncestor(siteGroupId)) {
-				if (_log.isWarnEnabled()) {
-					StringBundler sb = new StringBundler(4);
-
-					sb.append("Child group with id ");
-					sb.append(childGroupId);
-					sb.append(" does not have a parent site with id ");
-					sb.append(siteGroupId);
-
-					_log.warn(sb.toString());
-				}
-
-				throw new PrincipalException();
-			}
+			validateGroupIdFromScopeId(childGroupId, siteGroupId);
 
 			return childGroupId;
 		}
@@ -766,22 +751,7 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				throw new PrincipalException();
 			}
 
-			Group group = _groupLocalService.getGroup(siteGroupId);
-
-			if (!group.hasAncestor(parentGroupId)) {
-				if (_log.isWarnEnabled()) {
-					StringBundler sb = new StringBundler(4);
-
-					sb.append("Group with id ");
-					sb.append(parentGroupId);
-					sb.append(" is not the parent group of site with id ");
-					sb.append(siteGroupId);
-
-					_log.warn(sb.toString());
-				}
-
-				throw new PrincipalException();
-			}
+			validateGroupIdFromScopeId(siteGroupId, parentGroupId);
 
 			return parentGroupId;
 		}
@@ -876,6 +846,28 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 		}
 
 		return key;
+	}
+
+	public void validateGroupIdFromScopeId(
+			long childGroupId, long parentGroupId)
+		throws PortalException {
+
+		Group childGroup = _groupLocalService.getGroup(childGroupId);
+
+		if (!childGroup.hasAncestor(parentGroupId)) {
+			if (_log.isWarnEnabled()) {
+				StringBundler sb = new StringBundler(4);
+
+				sb.append("Group with id ");
+				sb.append(childGroupId);
+				sb.append(" does not have a parent group with id ");
+				sb.append(parentGroupId);
+
+				_log.warn(sb.toString());
+			}
+
+			throw new PrincipalException();
+		}
 	}
 
 	@Activate
