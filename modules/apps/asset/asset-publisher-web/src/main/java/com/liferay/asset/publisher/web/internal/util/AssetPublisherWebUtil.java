@@ -452,6 +452,9 @@ public class AssetPublisherWebUtil {
 		if (scopeId.startsWith(
 				AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX)) {
 
+			_assetPublisherHelper.validateGroupIdFromScopeId(
+				groupId, layout.getGroupId());
+
 			Group group = _groupLocalService.getGroup(groupId);
 
 			if (!group.hasAncestor(layout.getGroupId())) {
@@ -460,6 +463,9 @@ public class AssetPublisherWebUtil {
 		}
 		else if (scopeId.startsWith(
 					AssetPublisherHelper.SCOPE_ID_PARENT_GROUP_PREFIX)) {
+
+			_assetPublisherHelper.validateGroupIdFromScopeId(
+				layout.getGroupId(), groupId);
 
 			Group siteGroup = layout.getGroup();
 

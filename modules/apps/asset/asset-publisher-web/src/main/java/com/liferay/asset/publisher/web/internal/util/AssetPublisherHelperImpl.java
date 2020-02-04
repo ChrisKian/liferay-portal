@@ -684,11 +684,7 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			String scopeIdSuffix = scopeId.substring(
 				SCOPE_ID_CHILD_GROUP_PREFIX.length());
 
-			long childGroupId = GetterUtil.getLong(scopeIdSuffix);
-
-			validateGroupIdFromScopeId(childGroupId, siteGroupId);
-
-			return childGroupId;
+			return GetterUtil.getLong(scopeIdSuffix);
 		}
 		else if (scopeId.startsWith(SCOPE_ID_GROUP_PREFIX)) {
 			String scopeIdSuffix = scopeId.substring(
@@ -751,8 +747,6 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 				throw new PrincipalException();
 			}
 
-			validateGroupIdFromScopeId(siteGroupId, parentGroupId);
-
 			return parentGroupId;
 		}
 		else {
@@ -774,6 +768,13 @@ public class AssetPublisherHelperImpl implements AssetPublisherHelper {
 			try {
 				long groupId = getGroupIdFromScopeId(
 					scopeId, scopeGroupId, layout.isPrivateLayout());
+
+				if (scopeId.startsWith(SCOPE_ID_CHILD_GROUP_PREFIX)) {
+					validateGroupIdFromScopeId(groupId, scopeGroupId);
+				}
+				else if (scopeId.startsWith(SCOPE_ID_PARENT_GROUP_PREFIX)) {
+					validateGroupIdFromScopeId(scopeGroupId, groupId);
+				}
 
 				groupIds.add(groupId);
 			}
