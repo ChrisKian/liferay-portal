@@ -5069,6 +5069,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		screenName = getLogin(screenName);
 		emailAddress = StringUtil.toLowerCase(StringUtil.trim(emailAddress));
 		openId = StringUtil.trim(openId);
+		facebookSn = StringUtil.toLowerCase(StringUtil.trim(facebookSn));
+		jabberSn = StringUtil.toLowerCase(StringUtil.trim(jabberSn));
+		skypeSn = StringUtil.toLowerCase(StringUtil.trim(skypeSn));
+		twitterSn = StringUtil.toLowerCase(StringUtil.trim(twitterSn));
 
 		EmailAddressGenerator emailAddressGenerator =
 			EmailAddressGeneratorFactory.getInstance();
@@ -5209,35 +5213,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		contact.setSuffixId(suffixId);
 		contact.setMale(male);
 		contact.setBirthday(birthday);
-
-		if (smsSn != null) {
-			contact.setSmsSn(smsSn);
-		}
-
-		if (facebookSn != null) {
-			facebookSn = StringUtil.toLowerCase(StringUtil.trim(facebookSn));
-
-			contact.setFacebookSn(facebookSn);
-		}
-
-		if (jabberSn != null) {
-			jabberSn = StringUtil.toLowerCase(StringUtil.trim(jabberSn));
-
-			contact.setJabberSn(jabberSn);
-		}
-
-		if (skypeSn != null) {
-			skypeSn = StringUtil.toLowerCase(StringUtil.trim(skypeSn));
-
-			contact.setSkypeSn(skypeSn);
-		}
-
-		if (twitterSn != null) {
-			twitterSn = StringUtil.toLowerCase(StringUtil.trim(twitterSn));
-
-			contact.setTwitterSn(twitterSn);
-		}
-
+		contact.setSmsSn(smsSn);
+		contact.setFacebookSn(facebookSn);
+		contact.setJabberSn(jabberSn);
+		contact.setSkypeSn(skypeSn);
+		contact.setTwitterSn(twitterSn);
 		contact.setJobTitle(jobTitle);
 
 		contactPersistence.update(contact, serviceContext);
