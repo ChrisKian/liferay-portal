@@ -176,6 +176,24 @@ public class DLStoreImpl implements DLStore {
 	}
 
 	@Override
+	public void copyFile(
+			long companyId, long repositoryId, long newRepositoryId,
+			String fileName)
+		throws PortalException {
+
+		Store store = _storeFactory.getStore();
+
+		for (String versionLabel :
+				store.getFileVersions(companyId, repositoryId, fileName)) {
+
+			store.addFile(
+				companyId, newRepositoryId, fileName, versionLabel,
+				store.getFileAsStream(
+					companyId, repositoryId, fileName, versionLabel));
+		}
+	}
+
+	@Override
 	public void copyFileVersion(
 			long companyId, long repositoryId, String fileName,
 			String fromVersionLabel, String toVersionLabel)

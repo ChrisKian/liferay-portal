@@ -59,6 +59,11 @@ public interface DLStore {
 			long companyId, long repositoryId, String fileName, InputStream is)
 		throws PortalException;
 
+	public void copyFile(
+			long companyId, long repositoryId, long newRepositoryId,
+			String fileName)
+		throws PortalException;
+
 	public void copyFileVersion(
 			long companyId, long repositoryId, String fileName,
 			String fromVersionLabel, String toVersionLabel)

@@ -169,6 +169,24 @@ public class DLStoreUtil {
 	}
 
 	/**
+	 * Creates a new copy of the file in a new data repository. Similar to
+	 * {@link #updateFile(long, long, long, String)}  except that the old file
+	 * is not deleted.
+	 *
+	 * @param companyId the primary key of the company
+	 * @param repositoryId the primary key of the data repository
+	 * @param newRepositoryId the primary key of the new data repository
+	 * @param fileName the file's name
+	 */
+	public static void copyFile(
+			long companyId, long repositoryId, long newRepositoryId,
+			String fileName)
+		throws PortalException {
+
+		getStore().copyFile(companyId, repositoryId, newRepositoryId, fileName);
+	}
+
+	/**
 	 * Creates a new copy of the file version.
 	 *
 	 * @param companyId the primary key of the company
