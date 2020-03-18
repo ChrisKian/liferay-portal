@@ -15,6 +15,7 @@
 package com.liferay.exportimport.changeset.internal.manager;
 
 import com.liferay.exportimport.changeset.Changeset;
+import com.liferay.exportimport.changeset.ChangesetCacheUtil;
 import com.liferay.exportimport.changeset.ChangesetEnvironment;
 import com.liferay.exportimport.changeset.ChangesetManager;
 import com.liferay.exportimport.changeset.constants.ChangesetPortletKeys;
@@ -34,7 +35,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 
 import java.io.Serializable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,35 +54,29 @@ public class ChangesetManagerImpl implements ChangesetManager {
 	public void addChangeset(Changeset changeset) {
 		Objects.nonNull(changeset);
 
-		String changesetUuid = changeset.getUuid();
-
-		if (_changesets.containsKey(changesetUuid)) {
-			return;
-		}
-
-		_changesets.put(changesetUuid, changeset);
+		ChangesetCacheUtil.putChangeset(changeset);
 	}
 
 	@Override
 	public void clearChangesets() {
-		_changesets = new HashMap<>();
+		ChangesetCacheUtil.clearCache();
 	}
 
 	@Override
 	public boolean hasChangeset(String changesetUuid) {
-		return _changesets.containsKey(changesetUuid);
+		return ChangesetCacheUtil.hasChangeset(changesetUuid);
 	}
 
 	@Override
 	public Optional<Changeset> peekChangeset(String changesetUuid) {
-		return Optional.ofNullable(_changesets.get(changesetUuid));
+		return Optional.ofNullable(
+			ChangesetCacheUtil.getChangeset(changesetUuid));
 	}
 
 	@Override
 	public Optional<Changeset> popChangeset(String changesetUuid) {
-		Changeset changeset = _changesets.remove(changesetUuid);
-
-		return Optional.ofNullable(changeset);
+		return Optional.ofNullable(
+			ChangesetCacheUtil.removeChangeset(changesetUuid));
 	}
 
 	@Override
@@ -164,8 +158,6 @@ public class ChangesetManagerImpl implements ChangesetManager {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ChangesetManagerImpl.class);
-
-	private Map<String, Changeset> _changesets = new HashMap<>();
 
 	@Reference
 	private ExportImportConfigurationLocalService

@@ -214,6 +214,14 @@
 	<cache
 		eternal="false"
 		maxElementsInMemory="100000"
+		name="com.liferay.exportimport.changeset.ChangesetCacheUtil_CHANGESET"
+		overflowToDisk="false"
+		timeToIdleSeconds="600"
+	>
+	</cache>
+	<cache
+		eternal="false"
+		maxElementsInMemory="100000"
 		name="com.liferay.portal.security.permission.PermissionCacheUtil_PERMISSION"
 		overflowToDisk="false"
 		timeToIdleSeconds="600"
