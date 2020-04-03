@@ -46,6 +46,8 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortalPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
@@ -145,12 +147,12 @@ public class AssetCategoriesDisplayContext {
 
 						name = classType.getName();
 					}
-					catch (NoSuchModelException noSuchModelException) {
+					catch (NoSuchModelException nsme) {
 						if (_log.isDebugEnabled()) {
 							_log.debug(
 								"Unable to get asset type for class type " +
 									"primary key " + classTypePK,
-								noSuchModelException);
+								nsme);
 						}
 
 						continue;
@@ -360,7 +362,21 @@ public class AssetCategoriesDisplayContext {
 		}
 
 		_displayStyle = ParamUtil.getString(
-			_httpServletRequest, "displayStyle", "list");
+			_httpServletRequest, "displayStyle");
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(
+				_httpServletRequest);
+
+		if (Validator.isNull(_displayStyle)) {
+			_displayStyle = portalPreferences.getValue(
+				AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
+				"display-style", "list");
+		}
+
+		portalPreferences.setValue(
+			AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
+			"display-style", _displayStyle);
 
 		return _displayStyle;
 	}
