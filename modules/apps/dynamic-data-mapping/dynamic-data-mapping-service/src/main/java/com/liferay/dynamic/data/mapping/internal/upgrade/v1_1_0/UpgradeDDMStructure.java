@@ -27,6 +27,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,9 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 
 		List<DDMFormRule> ddmFormRules = ddmForm.getDDMFormRules();
 
+		List<String> ddmFormFieldNames = _populateDDMFormFieldNames(
+			ddmFormFieldsMap);
+
 		for (DDMFormField ddmFormField : ddmFormFieldsMap.values()) {
 			String visibilityExpression =
 				ddmFormField.getVisibilityExpression();
@@ -81,6 +86,9 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 			if (Validator.isNull(visibilityExpression)) {
 				continue;
 			}
+
+			visibilityExpression = _updateVisibilityExpression(
+				visibilityExpression, ddmFormFieldNames);
 
 			DDMFormRule ddmFormRule = new DDMFormRule(
 				Arrays.asList(
@@ -174,6 +182,59 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 
 	private boolean _isFunction(String token) {
 		return _availableFunctions.contains(StringUtil.toLowerCase(token));
+	}
+
+	private List<String> _populateDDMFormFieldNames(
+		Map<String, DDMFormField> ddmFormFieldMap) {
+
+		List<String> ddmFormFieldNames = new ArrayList<>();
+
+		for (DDMFormField ddmFormField : ddmFormFieldMap.values()) {
+			ddmFormFieldNames.add(ddmFormField.getName());
+		}
+
+		return ddmFormFieldNames;
+	}
+
+	private String _updateVisibilityExpression(
+		String visibilityExpression, List<String> ddmFormFieldNames) {
+
+		String updatedVisibilityExpression = visibilityExpression;
+
+		String replacement = visibilityExpression;
+
+		replacement = replacement.replaceAll("[+\\-*\"/\"(),%^]", "@@");
+		replacement = replacement.replaceAll("[!><=]{1}[=]?", "@@");
+
+		String[] tokens = replacement.split("@@");
+
+		tokens = ArrayUtil.distinct(tokens);
+
+		for (String token : tokens) {
+			if (_isFunction(token) || _isBooleanConstant(token) ||
+				Validator.isNumber(token)) {
+
+				continue;
+			}
+
+			StringBundler sb = new StringBundler(3);
+
+			if (ddmFormFieldNames.contains(token)) {
+				sb.append("getValue('");
+				sb.append(token);
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(token);
+				sb.append("'");
+			}
+
+			updatedVisibilityExpression =
+				updatedVisibilityExpression.replaceAll(token, sb.toString());
+		}
+
+		return updatedVisibilityExpression;
 	}
 
 	private static final Set<String> _availableFunctions = SetUtil.fromArray(
