@@ -27,6 +27,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.PreparedStatement;
@@ -35,6 +37,7 @@ import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Inácio Nery
@@ -164,6 +167,25 @@ public class UpgradeDDMStructure extends UpgradeProcess {
 			}
 		}
 	}
+
+	private boolean _isBooleanConstant(String token) {
+		return _booleanConstants.contains(StringUtil.toLowerCase(token));
+	}
+
+	private boolean _isFunction(String token) {
+		return _availableFunctions.contains(StringUtil.toLowerCase(token));
+	}
+
+	private static final Set<String> _availableFunctions = SetUtil.fromArray(
+		new String[] {
+			"abs", "acos", "asin", "atan", "between", "ceiling", "concat",
+			"contains", "cos", "cosh", "deg", "equals", "floor", "if",
+			"isemailaddress", "isurl", "log", "log10", "max", "min", "not",
+			"rad", "random", "round", "sin", "sinh", "sqrt", "sum", "tan",
+			"tanh", "isemailaddresses"
+		});
+	private static final Set<String> _booleanConstants = SetUtil.fromArray(
+		new String[] {"false", "true", "NOT"});
 
 	private final DDMFormDeserializer _ddmFormDeserializer;
 	private final DDMFormSerializer _ddmFormSerializer;
