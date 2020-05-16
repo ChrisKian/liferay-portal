@@ -128,6 +128,36 @@ public class SubscriptionSenderTest {
 	}
 
 	@Test
+	public void testGetPortalURLWithEntryURL() throws Exception {
+		SubscriptionSender subscriptionSender = new SubscriptionSender();
+
+		subscriptionSender.setEntryURL("http://www.test.com");
+		subscriptionSender.setMailId("test-mail-id");
+
+		subscriptionSender.initialize();
+
+		String portalURL = String.valueOf(
+			subscriptionSender.getContextAttribute("[$PORTAL_URL$]"));
+
+		Assert.assertEquals("http://www.test.com", portalURL);
+	}
+
+	@Test
+	public void testGetPortalURLWithEntryURLAndParams() throws Exception {
+		SubscriptionSender subscriptionSender = new SubscriptionSender();
+
+		subscriptionSender.setEntryURL("http://www.test.com/foo/bar?test");
+		subscriptionSender.setMailId("test-mail-id");
+
+		subscriptionSender.initialize();
+
+		String portalURL = String.valueOf(
+			subscriptionSender.getContextAttribute("[$PORTAL_URL$]"));
+
+		Assert.assertEquals("http://www.test.com", portalURL);
+	}
+
+	@Test
 	public void testGetPortalURLWithGroupId() throws Exception {
 		SubscriptionSender subscriptionSender = new SubscriptionSender();
 
