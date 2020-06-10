@@ -410,6 +410,10 @@
 	.icon-sites {
 		a {
 			color: $product-menu-panel-title-color;
+
+			&:hover {
+				color: $product-menu-panel-title-color;
+			}
 		}
 
 		position: absolute;
