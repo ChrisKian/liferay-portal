@@ -128,3 +128,27 @@ app.artifacts-2.0.5=\
 app.change.log-2.0.5=LPS-100448 LPS-103302 LPS-105380 LPS-107255 LPS-107697 LPS-109103 LPS-77425 LPS-79653 LPS-80332 LPS-98877 LPS-98879 LRQA-51488
 
 app.git.id-2.0.5=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.6
+#
+
+app.artifacts-2.0.6=\
+	com.liferay.portlet.configuration.css.web-4.0.24.jar,\
+	com.liferay.portlet.configuration.icon.close-4.0.6.jar,\
+	com.liferay.portlet.configuration.icon.edit-4.0.6.jar,\
+	com.liferay.portlet.configuration.icon.edit.defaults-4.0.6.jar,\
+	com.liferay.portlet.configuration.icon.edit.guest-4.0.6.jar,\
+	com.liferay.portlet.configuration.icon.help-4.0.6.jar,\
+	com.liferay.portlet.configuration.icon.locator.impl-2.0.6.jar,\
+	com.liferay.portlet.configuration.icon.maximize-4.0.8.jar,\
+	com.liferay.portlet.configuration.icon.minimize-4.0.8.jar,\
+	com.liferay.portlet.configuration.icon.print-4.0.6.jar,\
+	com.liferay.portlet.configuration.icon.refresh-4.0.6.jar,\
+	com.liferay.portlet.configuration.sharing.web-4.0.15.jar,\
+	com.liferay.portlet.configuration.toolbar.contributor.locator.impl-2.0.7.jar,\
+	com.liferay.portlet.configuration.web-3.0.31.jar
+
+app.change.log-2.0.6=LPS-0 LPS-100448 LPS-101015 LPS-101970 LPS-103252 LPS-103302 LPS-103511 LPS-105380 LPS-107255 LPS-107697 LPS-109103 LPS-112900 LPS-67565 LPS-73530 LPS-77366 LPS-77425 LPS-77699 LPS-78443 LPS-79653 LPS-79679 LPS-79702 LPS-79790 LPS-79829 LPS-80332 LPS-80505 LPS-80618 LPS-80905 LPS-81116 LPS-81117 LPS-81160 LPS-81208 LPS-81209 LPS-81344 LPS-81579 LPS-81723 LPS-82000 LPS-82021/LPS-82022 LPS-82165 LPS-82343 LPS-82828 LPS-83705 LPS-84039 LPS-84093 LPS-84119 LPS-84725 LPS-85948 LPS-86130 LPS-86408 LPS-86461 LPS-86806 LPS-86808 LPS-87590 LPS-87974 LPS-88218 LPS-88479 LPS-88891 LPS-88955 LPS-89326 LPS-89346 LPS-89617 LPS-89893 LPS-89894 LPS-89896 LPS-90259 LPS-90507 LPS-91366 LPS-91381 LPS-91924 LPS-91933 LPS-91967 LPS-92373 LPS-92511 LPS-92609 LPS-92802 LPS-93009 LPS-93823 LPS-94033 LPS-94466 LPS-94555 LPS-95413 LPS-95555 LPS-95558 LPS-95705 LPS-96376 LPS-96566 LPS-96717 LPS-96960 LPS-97127 LPS-97321 LPS-98032 LPS-98877 LPS-98879 LPS-99657 LRQA-44612 LRQA-51488
+
+app.git.id-2.0.6=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

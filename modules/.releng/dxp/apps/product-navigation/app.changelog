@@ -148,3 +148,31 @@ app.artifacts-2.0.5=\
 app.change.log-2.0.5=LPS-100448 LPS-102069 LPS-103302 LPS-103511 LPS-104679 LPS-105147 LPS-105380 LPS-107697 LPS-110319 LPS-110753 LPS-77425 LPS-78600 LPS-79653 LPS-80332 LPS-81102 LPS-84119 LPS-85134 LPS-86979 LPS-87688 LPS-89294 LPS-92518 LPS-94049 LPS-95096 LPS-98032 LPS-98877 LPS-98879 LRQA-51488
 
 app.git.id-2.0.5=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.6
+#
+
+app.artifacts-2.0.6=\
+	com.liferay.product.navigation.control.menu.api-5.0.7.jar,\
+	com.liferay.product.navigation.control.menu.impl-2.0.7.jar,\
+	com.liferay.product.navigation.control.menu.theme.contributor-4.0.12.jar,\
+	com.liferay.product.navigation.control.menu.web-4.0.34.jar,\
+	com.liferay.product.navigation.control.panel-4.0.8.jar,\
+	com.liferay.product.navigation.personal.menu.api-1.2.4.jar,\
+	com.liferay.product.navigation.personal.menu.web-1.0.17.jar,\
+	com.liferay.product.navigation.product.menu.api-2.0.5.jar,\
+	com.liferay.product.navigation.product.menu.theme.contributor-4.0.16.jar,\
+	com.liferay.product.navigation.product.menu.web-4.0.25.jar,\
+	com.liferay.product.navigation.simulation.api-3.0.1.jar,\
+	com.liferay.product.navigation.simulation.device-4.0.16.jar,\
+	com.liferay.product.navigation.simulation.theme.contributor-4.0.9.jar,\
+	com.liferay.product.navigation.simulation.web-5.0.17.jar,\
+	com.liferay.product.navigation.site.administration-4.0.18.jar,\
+	com.liferay.product.navigation.taglib-4.1.16.jar,\
+	com.liferay.product.navigation.user-4.0.11.jar,\
+	com.liferay.product.navigation.user.personal.bar.web-4.0.14.jar
+
+app.change.log-2.0.6=[[trimmed]]S-90261 LPS-90262 LPS-90351 LPS-90363 LPS-90608 LPS-90999 LPS-91036 LPS-91100 LPS-91148 LPS-91287 LPS-91665 LPS-91755 LPS-91772 LPS-91927 LPS-91930 LPS-91966 LPS-91967 LPS-92373 LPS-92406 LPS-92511 LPS-92518 LPS-92519 LPS-92609 LPS-92722 LPS-92802 LPS-92857 LPS-93008 LPS-93009 LPS-93078 LPS-93168 LPS-93240 LPS-93354 LPS-93420 LPS-93433 LPS-93563 LPS-93565 LPS-93579 LPS-93748 LPS-93779 LPS-93780 LPS-93781 LPS-93823 LPS-93864 LPS-93889 LPS-93935 LPS-94033 LPS-94049 LPS-94133 LPS-94143 LPS-94172 LPS-94273 LPS-94466 LPS-94555 LPS-94586 LPS-94624 LPS-94627 LPS-94670 LPS-94686 LPS-94781 LPS-94982 LPS-95096 LPS-95122 LPS-95134 LPS-95183 LPS-95284 LPS-95288 LPS-95374 LPS-95409 LPS-95413 LPS-95476 LPS-95485 LPS-95553 LPS-95555 LPS-95567 LPS-95740 LPS-95879 LPS-96376 LPS-96557 LPS-96566 LPS-96717 LPS-96746 LPS-96766 LPS-97079 LPS-97127 LPS-97290 LPS-97321 LPS-97367 LPS-97682 LPS-98032 LPS-98491 LPS-98850 LPS-98877 LPS-98879 LPS-98886 LPS-98946 LPS-99137 LPS-99390 LPS-99611 LRDOCS-7139 LRQA-51488
+
+app.git.id-2.0.6=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

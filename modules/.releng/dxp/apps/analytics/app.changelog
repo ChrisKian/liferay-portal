@@ -59,3 +59,21 @@ app.artifacts-2.0.4=\
 app.change.log-2.0.4=LPS-103252 LPS-105147 LPS-105380 LPS-108386 LPS-110419 LPS-111235 LPS-77699 LPS-84181 LRAC-4897 LRAC-4949 LRAC-5139 LRAC-5183 LRAC-5185 LRAC-5187 LRAC-5190 LRAC-5202 LRAC-5209 LRAC-5214 LRAC-5230 LRAC-5236 LRAC-5245 LRAC-5266 LRAC-5333 LRAC-5338 LRAC-5340 LRAC-5401 LRAC-5406 LRAC-5411 LRAC-5419 LRAC-5452 LRAC-5453 LRAC-5479 LRAC-5492 LRAC-5502 LRAC-5568 LRAC-5579 LRAC-5593 LRAC-5601 LRAC-5776 LRAC-5785 LRAC-5826 LRQA-51488
 
 app.git.id-2.0.4=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.5
+#
+
+app.artifacts-2.0.5=\
+	com.liferay.analytics.message.sender.api-3.3.0.jar,\
+	com.liferay.analytics.message.sender.impl-3.0.6.jar,\
+	com.liferay.analytics.message.storage.api-3.0.2.jar,\
+	com.liferay.analytics.message.storage.service-3.0.5.jar,\
+	com.liferay.analytics.settings.api-3.1.2.jar,\
+	com.liferay.analytics.settings.impl-3.0.6.jar,\
+	com.liferay.analytics.settings.web-3.0.16.jar,\
+	com.liferay.analytics.web-2.0.13.jar
+
+app.change.log-2.0.5=LPS-105380 LPS-108386 LPS-110419 LPS-111235 LPS-77699 LRAC-4897 LRAC-4949 LRAC-5183 LRAC-5185 LRAC-5202 LRAC-5245 LRAC-5406 LRAC-5452 LRAC-5492 LRAC-5502 LRAC-5601 LRAC-5776 LRAC-5785 LRAC-5823 LRAC-5826 LRAC-5872 LRAC-5888
+
+app.git.id-2.0.5=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

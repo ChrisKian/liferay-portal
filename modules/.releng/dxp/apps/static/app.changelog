@@ -392,3 +392,83 @@ app.artifacts-7.2.4=\
 app.change.log-7.2.4=LPS-100448 LPS-103302 LPS-104435 LPS-105380 LPS-107697 LPS-107789 LPS-107983 LPS-108112 LPS-108218 LPS-108250 LPS-109539 LPS-110835 LPS-111631 LPS-111694 LPS-111695 LPS-111697 LPS-112764 LPS-75049 LPS-77425 LPS-77616 LPS-77683 LPS-77699 LPS-77837 LPS-77992 LPS-80332 LPS-88998 LPS-88999 LPS-89189 LPS-95555 LPS-98312 LRQA-51488 
 
 app.git.id-7.2.4=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 7.2.5
+#
+
+app.artifacts-7.2.5=\
+	com.fasterxml.jackson.core.jackson-annotations-2.10.3.jar,\
+	com.fasterxml.jackson.core.jackson-core-2.10.3.jar,\
+	com.fasterxml.jackson.core.jackson-databind-2.10.3.jar,\
+	com.liferay.osgi.felix.lang-2.0.10.jar,\
+	com.liferay.osgi.log.service.extender-3.0.7.jar,\
+	com.liferay.osgi.util-5.0.7.jar,\
+	com.liferay.portal.bundle.blacklist.api-2.0.1.jar,\
+	com.liferay.portal.bundle.blacklist.impl-2.0.14.jar,\
+	com.liferay.portal.classloader.tracker-3.0.4.jar,\
+	com.liferay.portal.component.blacklist.api-3.0.1.jar,\
+	com.liferay.portal.component.blacklist.impl-3.0.13.jar,\
+	com.liferay.portal.configuration.metatype.api-2.0.13.jar,\
+	com.liferay.portal.configuration.persistence.api-2.0.5.jar,\
+	com.liferay.portal.configuration.persistence.impl-2.0.15.jar,\
+	com.liferay.portal.dependency.manager.component.executor.factory-1.0.6.jar,\
+	com.liferay.portal.log4j.extender-4.0.7.jar,\
+	com.liferay.portal.lpkg.deployer.api-2.0.2.jar,\
+	com.liferay.portal.lpkg.deployer.impl-2.0.29.jar,\
+	com.liferay.portal.osgi.web.portlet.tracker-4.0.13.jar,\
+	com.liferay.portal.osgi.web.servlet.api-2.0.4.jar,\
+	com.liferay.portal.osgi.web.servlet.context.helper.api-2.1.4.jar,\
+	com.liferay.portal.osgi.web.servlet.context.helper.impl-2.0.19.jar,\
+	com.liferay.portal.osgi.web.servlet.el.api.fragment-2.0.1.jar,\
+	com.liferay.portal.osgi.web.servlet.jsp.api.fragment-2.0.1.jar,\
+	com.liferay.portal.osgi.web.servlet.jsp.compiler-4.0.21.jar,\
+	com.liferay.portal.osgi.web.wab.extender-4.0.29.jar,\
+	com.liferay.portal.osgi.web.wab.generator.api-2.0.1.jar,\
+	com.liferay.portal.osgi.web.wab.generator.impl-2.0.38.jar,\
+	com.liferay.portal.osgi.web.wab.reference.support-3.0.11.jar,\
+	com.liferay.portal.osgi.web.wab.spring.bridge.api-2.0.7.jar,\
+	com.liferay.portal.profile.api-3.0.3.jar,\
+	com.liferay.portal.profile.impl-3.0.5.jar,\
+	com.liferay.portal.social.activity.extender-2.0.6.jar,\
+	geronimo-annotation_1.3_spec-1.1.jar,\
+	geronimo-atinject_1.0_spec-1.1.jar,\
+	geronimo-interceptor_1.2_spec-1.1.jar,\
+	geronimo-jcdi_2.0_spec-1.1.jar,\
+	javax.el-3.0.1-b10.jar,\
+	javax.servlet.jsp-api-2.3.3.jar,\
+	javax.servlet.jsp.jstl-1.2.3.LIFERAY-PATCHED-2.jar,\
+	javax.servlet.jsp.jstl-api-1.2.2.jar,\
+	javax.validation.api-2.0.1.Final.jar,\
+	jboss-classfilewriter-1.2.3.Final.jar,\
+	org.apache.aries.cdi.extender-1.0.1.jar,\
+	org.apache.aries.cdi.extension.el.jsp-1.0.0.jar,\
+	org.apache.aries.cdi.extension.http-1.0.1.jar,\
+	org.apache.aries.cdi.extra-1.0.0.jar,\
+	org.apache.aries.spifly.dynamic.framework.extension-1.2.3.LIFERAY-PATCHED-1.jar,\
+	org.apache.commons.fileupload-1.3.3.jar,\
+	org.apache.commons.io-2.2.0.jar,\
+	org.apache.felix.configadmin-1.9.8.LIFERAY-PATCHED-4.jar,\
+	org.apache.felix.dependencymanager-4.6.0.jar,\
+	org.apache.felix.dependencymanager.shell-4.0.8.jar,\
+	org.apache.felix.eventadmin-1.5.0.LIFERAY-PATCHED-1.jar,\
+	org.apache.felix.fileinstall-3.6.4.LIFERAY-PATCHED-23.jar,\
+	org.apache.felix.gogo.command-1.0.2.jar,\
+	org.apache.felix.gogo.runtime-1.1.0.LIFERAY-PATCHED-2.jar,\
+	org.apache.felix.gogo.shell-1.1.0.jar,\
+	org.apache.felix.scr-2.1.14.LIFERAY-PATCHED-3.jar,\
+	org.eclipse.equinox.console-1.3.100.jar,\
+	org.eclipse.equinox.http.servlet-1.2.2.v20200320-1909-LIFERAY-CACHED.jar,\
+	org.eclipse.equinox.metatype-1.4.200.LIFERAY-PATCHED-3.jar,\
+	org.jboss.logging.jboss-logging-3.3.2.Final.jar,\
+	org.jboss.weld.osgi-bundle-3.0.5.Final.jar,\
+	org.jsoup-1.10.2.jar,\
+	org.osgi.service.cdi-1.0.0.jar,\
+	org.osgi.service.http-3.5.0-20150611.165350-3.LIFERAY-PATCHED-2.jar,\
+	org.osgi.service.metatype-1.3.0.jar,\
+	org.osgi.util.function-1.1.0.jar,\
+	org.osgi.util.promise-1.1.0.jar
+
+app.change.log-7.2.5=[[trimmed]]81525 LPS-81540 LPS-81778 LPS-81855 LPS-82021/LPS-82022 LPS-82022 LPS-82251 LPS-82343 LPS-82420 LPS-82534 LPS-82771 LPS-83106 LPS-83547 LPS-83637 LPS-83747 LPS-83799 LPS-83935 LPS-83955 LPS-84093 LPS-84102 LPS-84105 LPS-84114 LPS-84115 LPS-84116 LPS-84119 LPS-84130 LPS-84361 LPS-84556 LPS-84580 LPS-84656 LPS-85003 LPS-85088 LPS-85296 LPS-85397 LPS-85452 LPS-85766 LPS-85867 LPS-86018 LPS-86378 LPS-86404 LPS-86408 LPS-86450 LPS-86460 LPS-86806 LPS-86820 LPS-87051 LPS-87590 LPS-88276 LPS-88382 LPS-88873 LPS-88998 LPS-88999 LPS-89189 LPS-89601 LPS-90252 LPS-90402 LPS-90703 LPS-91106 LPS-91420 LPS-92147 LPS-93442 LPS-93664 LPS-94207 LPS-94428 LPS-94555 LPS-94975 LPS-95067 LPS-95083 LPS-95096 LPS-95203 LPS-95413 LPS-95455 LPS-95555 LPS-95567 LPS-96403 LPS-96535 LPS-96558 LPS-96675 LPS-96919 LPS-97113 LPS-97328 LPS-97450 LPS-97762 LPS-97891 LPS-98312 LPS-98423 LPS-98520 LPS-98771 LPS-98796 LPS-98877 LPS-98879 LPS-98937 LPS-99011 LPS-99388 LPS-99534 LPS-99801 LRDOCS-7180 LRQA-33560 LRQA-51488 
+
+app.git.id-7.2.5=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

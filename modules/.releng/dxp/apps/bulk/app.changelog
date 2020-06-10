@@ -78,3 +78,17 @@ app.artifacts-1.0.5=\
 app.change.log-1.0.5=LPS-103302 LPS-105235 LPS-105380 LPS-106123 LPS-106128 LPS-109307 LPS-109882 LPS-109953 LPS-110347 LPS-111084 LPS-111235 LPS-112102 LPS-98387 LRQA-51488
 
 app.git.id-1.0.5=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 1.0.6
+#
+
+app.artifacts-1.0.6=\
+	com.liferay.bulk.rest.api-1.7.0.jar,\
+	com.liferay.bulk.rest.impl-1.0.36.jar,\
+	com.liferay.bulk.selection.api-1.1.5.jar,\
+	com.liferay.bulk.selection.impl-1.0.8.jar
+
+app.change.log-1.0.6=LPS-100448 LPS-103252 LPS-103302 LPS-105380 LPS-110685 LPS-111235 LPS-112102 LPS-113319 LPS-77699 LPS-84119 LPS-87544 LPS-87545 LPS-87864 LPS-88194 LPS-88397 LPS-88621 LPS-89008 LPS-90736 LPS-91163 LPS-93443 LPS-95555 LPS-96812 LPS-98879
+
+app.git.id-1.0.6=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

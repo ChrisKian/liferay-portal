@@ -52,3 +52,14 @@ app.artifacts-2.0.4=\
 app.change.log-2.0.4=LPS-103302 LPS-105380
 
 app.git.id-2.0.4=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.5
+#
+
+app.artifacts-2.0.5=\
+	com.liferay.portal.mobile.device.recognition.impl-2.0.6.jar
+
+app.change.log-2.0.5=LPS-100448 LPS-103302 LPS-105380 LPS-77425 LPS-80332 LPS-80517 LPS-84119 LPS-98879
+
+app.git.id-2.0.5=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

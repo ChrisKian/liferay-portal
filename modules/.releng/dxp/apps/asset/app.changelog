@@ -293,3 +293,60 @@ app.artifacts-2.0.5=\
 app.change.log-2.0.5=LPS-101228 LPS-102655 LPS-102740 LPS-102742 LPS-103252 LPS-103302 LPS-103350 LPS-103353 LPS-103558 LPS-103559 LPS-104567 LPS-104679 LPS-104720 LPS-104966 LPS-105044 LPS-105132 LPS-105147 LPS-105255 LPS-105307 LPS-105380 LPS-106666 LPS-107002 LPS-107052 LPS-107279 LPS-107321 LPS-107518 LPS-107541 LPS-107552 LPS-107697 LPS-108023 LPS-108120 LPS-108386 LPS-108444 LPS-108660 LPS-108966 LPS-109102 LPS-109612 LPS-109674 LPS-110302 LPS-110405 LPS-110419 LPS-110606 LPS-110712 LPS-110813 LPS-110959 LPS-111358 LPS-111442 LPS-77425 LPS-77699 LPS-80332 LPS-89093 LRQA-51488
 
 app.git.id-2.0.5=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.6
+#
+
+app.artifacts-2.0.6=\
+	com.liferay.asset.api-2.4.1.jar,\
+	com.liferay.asset.auto.tagger.api-1.2.5.jar,\
+	com.liferay.asset.auto.tagger.google.cloud.natural.language.api-2.0.2.jar,\
+	com.liferay.asset.auto.tagger.google.cloud.natural.language.impl-1.0.27.jar,\
+	com.liferay.asset.auto.tagger.opennlp.api-2.0.2.jar,\
+	com.liferay.asset.auto.tagger.opennlp.impl-1.0.22.jar,\
+	com.liferay.asset.auto.tagger.service-1.0.37.jar,\
+	com.liferay.asset.auto.tagger.web-1.0.13.jar,\
+	com.liferay.asset.browser.web-3.0.20.jar,\
+	com.liferay.asset.categories.admin.web-3.0.34.jar,\
+	com.liferay.asset.categories.navigation.api-3.0.1.jar,\
+	com.liferay.asset.categories.navigation.web-4.0.22.jar,\
+	com.liferay.asset.categories.selector.web-2.0.27.jar,\
+	com.liferay.asset.categories.service-3.0.13.jar,\
+	com.liferay.asset.category.property.api-2.1.5.jar,\
+	com.liferay.asset.category.property.service-2.0.20.jar,\
+	com.liferay.asset.display.api-2.0.11.jar,\
+	com.liferay.asset.display.impl-2.0.8.jar,\
+	com.liferay.asset.display.page.api-5.3.4.jar,\
+	com.liferay.asset.display.page.item.selector.api-2.0.2.jar,\
+	com.liferay.asset.display.page.item.selector.web-2.0.14.jar,\
+	com.liferay.asset.display.page.service-2.1.28.jar,\
+	com.liferay.asset.display.web-3.0.11.jar,\
+	com.liferay.asset.entry.query.processor.custom.user.attributes-4.0.11.jar,\
+	com.liferay.asset.entry.rel.api-2.2.5.jar,\
+	com.liferay.asset.entry.rel.service-2.0.21.jar,\
+	com.liferay.asset.info.display.api-2.3.6.jar,\
+	com.liferay.asset.info.display.impl-1.0.16.jar,\
+	com.liferay.asset.link.service-2.0.4.jar,\
+	com.liferay.asset.list.api-1.5.3.jar,\
+	com.liferay.asset.list.service-1.0.38.jar,\
+	com.liferay.asset.list.web-1.0.44.jar,\
+	com.liferay.asset.publisher.api-2.2.1.jar,\
+	com.liferay.asset.publisher.layout.prototype-3.0.11.jar,\
+	com.liferay.asset.publisher.web-3.0.78.jar,\
+	com.liferay.asset.service-3.0.32.jar,\
+	com.liferay.asset.tag.stats.api-2.0.9.jar,\
+	com.liferay.asset.tag.stats.service-2.0.18.jar,\
+	com.liferay.asset.taglib-4.1.11.jar,\
+	com.liferay.asset.tags.admin.web-3.0.23.jar,\
+	com.liferay.asset.tags.api-3.0.3.jar,\
+	com.liferay.asset.tags.compiler.web-4.0.11.jar,\
+	com.liferay.asset.tags.navigation.api-3.0.1.jar,\
+	com.liferay.asset.tags.navigation.web-5.0.17.jar,\
+	com.liferay.asset.tags.selector.web-2.0.17.jar,\
+	com.liferay.asset.tags.service-4.0.9.jar,\
+	com.liferay.asset.web-4.0.13.jar
+
+app.change.log-2.0.6=[[trimmed]]4 LPS-95040 LPS-95056 LPS-95096 LPS-95234 LPS-95295 LPS-95413 LPS-95543 LPS-95555 LPS-95567 LPS-95657 LPS-95740 LPS-95742 LPS-95746 LPS-95749 LPS-95750 LPS-95766 LPS-95769 LPS-95840 LPS-95854 LPS-95858 LPS-95881 LPS-95886 LPS-95902 LPS-96018 LPS-96035 LPS-96083 LPS-96094 LPS-96139 LPS-96151 LPS-96175 LPS-96256 LPS-96270 LPS-96307 LPS-96315 LPS-96376 LPS-96438 LPS-96543 LPS-96544 LPS-96549 LPS-96566 LPS-96625 LPS-96657 LPS-96706 LPS-96717 LPS-96766 LPS-96825 LPS-96830 LPS-96911 LPS-96925 LPS-96960 LPS-97079 LPS-97123 LPS-97127 LPS-97169 LPS-97223 LPS-97224 LPS-97275 LPS-97280 LPS-97329 LPS-97439 LPS-97458 LPS-97461 LPS-97528 LPS-97542 LPS-97559 LPS-97578 LPS-97644 LPS-97647 LPS-97880 LPS-98032 LPS-98135 LPS-98217 LPS-98324 LPS-98362 LPS-98426 LPS-98549 LPS-98748 LPS-98817 LPS-98877 LPS-98879 LPS-98946 LPS-99221 LPS-99252 LPS-99304 LPS-99327 LPS-99415 LPS-99473 LPS-99488 LPS-99519 LPS-99657 LPS-99807 LPS-99917 LPS-99973 LRDOCS-5925 LRDOCS-6300 LRDOCS-6544 LRQA-44612 LRQA-49613 LRQA-51488
+
+app.git.id-2.0.6=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

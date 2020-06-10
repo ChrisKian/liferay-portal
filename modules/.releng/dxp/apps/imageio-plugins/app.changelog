@@ -41,3 +41,14 @@ app.artifacts-2.0.3=\
 app.change.log-2.0.3=LPS-103302 LPS-111355 LPS-112061
 
 app.git.id-2.0.3=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.4
+#
+
+app.artifacts-2.0.4=\
+	com.liferay.imageio.plugins-3.0.5.jar
+
+app.change.log-2.0.4=LPS-103302 LPS-111355 LPS-112061 LPS-77425 LPS-80332 LPS-86408
+
+app.git.id-2.0.4=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

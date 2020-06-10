@@ -21,3 +21,15 @@ app.artifacts-2.0.1=\
 app.change.log-2.0.1=COMMERCE-1067 LPS-102577 LPS-105380 LPS-106123 LPS-106666 LPS-107626 LPS-107697 LPS-108311 LPS-108386 LPS-110419 LPS-110454 LPS-110933 LPS-111033 LPS-111235 LPS-111748 LPS-77699 LRQA-51488
 
 app.git.id-2.0.1=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.2
+#
+
+app.artifacts-2.0.2=\
+	com.liferay.batch.engine.api-12.0.2.jar,\
+	com.liferay.batch.engine.service-2.0.15.jar
+
+app.change.log-2.0.2=LPS-105380 LPS-110454 LPS-111235 LPS-111537 LPS-112857 LPS-77699
+
+app.git.id-2.0.2=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

@@ -63,3 +63,14 @@ app.artifacts-2.0.5=\
 app.change.log-2.0.5=LPS-103302
 
 app.git.id-2.0.5=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.6
+#
+
+app.artifacts-2.0.6=\
+	com.liferay.portlet.dependency.factory.impl-2.0.9.jar
+
+app.change.log-2.0.6=LPS-100448 LPS-103302 LPS-77425 LPS-80310 LPS-80388 LPS-84119 LPS-86408 LPS-98877 LPS-98879
+
+app.git.id-2.0.6=061c4ae034281e34c4f92f19c1ee886d15b3b7a3

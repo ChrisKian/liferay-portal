@@ -155,3 +155,32 @@ app.artifacts-2.0.5=\
 app.change.log-2.0.5=LPS-101555 LPS-102643 LPS-102867 LPS-103302 LPS-103528 LPS-103678 LPS-103913 LPS-104087 LPS-104599 LPS-104964 LPS-105059 LPS-105120 LPS-105147 LPS-105255 LPS-105380 LPS-105662 LPS-106297 LPS-106437 LPS-106441 LPS-106501 LPS-106503 LPS-106637 LPS-106638 LPS-106890 LPS-106893 LPS-107051 LPS-107255 LPS-107321 LPS-107508 LPS-107541 LPS-107582 LPS-107621 LPS-107697 LPS-107796 LPS-107824 LPS-107830 LPS-107883 LPS-107936 LPS-108120 LPS-108205 LPS-108225 LPS-108386 LPS-108711 LPS-108830 LPS-109042 LPS-109066 LPS-109223 LPS-109389 LPS-109545 LPS-109726 LPS-109868 LPS-110185 LPS-110205 LPS-110299 LPS-110343 LPS-110405 LPS-110419 LPS-110958 LPS-111020 LPS-111175 LPS-111448 LPS-63229 LPS-77699 LPS-89933 LPS-97245 LPS-97621 LPS-98228 LPS-99846 LRQA-57124
 
 app.git.id-2.0.5=298e5157cdf9ec1436ce0d36f8d394f9e9a7c6c1
+
+#
+# Liferay App Version 2.0.6
+#
+
+app.artifacts-2.0.6=\
+	com.liferay.dynamic.data.mapping.api-5.8.2.jar,\
+	com.liferay.dynamic.data.mapping.data.provider.impl-3.0.14.jar,\
+	com.liferay.dynamic.data.mapping.data.provider.instance-2.0.8.jar,\
+	com.liferay.dynamic.data.mapping.data.provider.web-3.0.16.jar,\
+	com.liferay.dynamic.data.mapping.expression-4.0.14.jar,\
+	com.liferay.dynamic.data.mapping.form.analytics-3.0.9.jar,\
+	com.liferay.dynamic.data.mapping.form.builder-2.0.51.jar,\
+	com.liferay.dynamic.data.mapping.form.evaluator.impl-2.0.25.jar,\
+	com.liferay.dynamic.data.mapping.form.field.type-4.0.59.jar,\
+	com.liferay.dynamic.data.mapping.form.renderer-4.0.45.jar,\
+	com.liferay.dynamic.data.mapping.form.taglib-2.0.16.jar,\
+	com.liferay.dynamic.data.mapping.form.values.factory-4.0.10.jar,\
+	com.liferay.dynamic.data.mapping.form.values.query-4.0.5.jar,\
+	com.liferay.dynamic.data.mapping.form.web-2.0.65.jar,\
+	com.liferay.dynamic.data.mapping.lang-4.0.27.jar,\
+	com.liferay.dynamic.data.mapping.service-4.0.67.jar,\
+	com.liferay.dynamic.data.mapping.taglib-4.2.1.jar,\
+	com.liferay.dynamic.data.mapping.validator-4.0.13.jar,\
+	com.liferay.dynamic.data.mapping.web-3.0.55.jar
+
+app.change.log-2.0.6=[[trimmed]]-96201 LPS-96203 LPS-96237 LPS-96251 LPS-96253 LPS-96255 LPS-96315 LPS-96346 LPS-96376 LPS-96415 LPS-96424 LPS-96425 LPS-96486 LPS-96566 LPS-96722 LPS-96723 LPS-96728 LPS-96766 LPS-96793 LPS-96833 LPS-96863 LPS-96960 LPS-96978 LPS-96983 LPS-97079 LPS-97097 LPS-97127 LPS-97212 LPS-97223 LPS-97224 LPS-97245 LPS-97251 LPS-97253 LPS-97256 LPS-97273 LPS-97292 LPS-97295 LPS-97302 LPS-97308 LPS-97315 LPS-97316 LPS-97317 LPS-97374 LPS-97386 LPS-97439 LPS-97465 LPS-97490 LPS-97525 LPS-97572 LPS-97574 LPS-97577 LPS-97593 LPS-97612 LPS-97621 LPS-97644 LPS-97757 LPS-97841 LPS-97960 LPS-98032 LPS-98047 LPS-98111 LPS-98137 LPS-98277 LPS-98278 LPS-98334 LPS-98363 LPS-98368 LPS-98372 LPS-98519 LPS-98669 LPS-98817 LPS-98857 LPS-98877 LPS-98878 LPS-98879 LPS-98906 LPS-98962 LPS-99093 LPS-99120 LPS-99125 LPS-99206 LPS-99221 LPS-99236 LPS-99316 LPS-99346 LPS-99386 LPS-99389 LPS-99541 LPS-99566 LPS-99623 LPS-99657 LPS-99827 LPS-99840 LPS-99846 LPS-99898 LPS-99916 LRQA-44612 LRQA-46551 LRQA-47907 LRQA-57124
+
+app.git.id-2.0.6=061c4ae034281e34c4f92f19c1ee886d15b3b7a3
