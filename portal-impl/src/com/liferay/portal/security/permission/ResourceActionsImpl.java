@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.DocumentType;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
+import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.registry.collections.ServiceTrackerCollections;
 import com.liferay.registry.collections.ServiceTrackerList;
@@ -252,7 +253,7 @@ public class ResourceActionsImpl implements ResourceActions {
 			value = key;
 		}
 
-		return value;
+		return LanguageResources.fixValue(value);
 	}
 
 	@Override
