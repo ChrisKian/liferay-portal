@@ -236,7 +236,7 @@ public class ResourceActionsImpl implements ResourceActions {
 			value = key;
 		}
 
-		return value;
+		return LanguageResources.fixValue(value);
 	}
 
 	@Override
