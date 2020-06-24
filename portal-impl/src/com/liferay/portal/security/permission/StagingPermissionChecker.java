@@ -178,8 +178,17 @@ public class StagingPermissionChecker implements PermissionChecker {
 			return true;
 		}
 
-		return _permissionChecker.hasPermission(
-			liveGroup, name, primKey, actionId);
+		if (group != null) {
+			setGroupId(group.getGroupId());
+		}
+
+		try {
+			return _permissionChecker.hasPermission(
+				liveGroup, name, primKey, actionId);
+		}
+		finally {
+			removeGroupId();
+		}
 	}
 
 	@Override
