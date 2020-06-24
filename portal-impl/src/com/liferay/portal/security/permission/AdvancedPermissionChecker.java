@@ -56,7 +56,6 @@ import com.liferay.portal.kernel.service.permission.LayoutSetPrototypePermission
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -429,7 +428,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 
 		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
-			userId, GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId));
+			userId,
+			GetterUtil.getLong(StagingPermissionChecker.getGroupId(), groupId));
 
 		if (roleIds != null) {
 			return roleIds;
@@ -530,7 +530,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 				addTeamRoles(
 					userId,
-					GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId),
+					GetterUtil.getLong(
+						StagingPermissionChecker.getGroupId(), groupId),
 					roleIdsSet);
 			}
 		}
@@ -546,7 +547,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		Arrays.sort(roleIds);
 
 		PermissionCacheUtil.putUserGroupRoleIds(
-			userId, GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId),
+			userId,
+			GetterUtil.getLong(StagingPermissionChecker.getGroupId(), groupId),
 			roleIds);
 
 		return roleIds;
