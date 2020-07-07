@@ -25,6 +25,8 @@ if ((searchContainer != null) && (searchContainer instanceof OrganizationSearch)
 	redirect = searchContainer.getIteratorURL().toString();
 }
 
+String backURL = ParamUtil.get(request, "backURL", redirect);
+
 ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 
 Organization organization = null;
@@ -58,7 +60,7 @@ long organizationGroupId = organization.getGroupId();
 	<c:if test="<%= hasUpdatePermission %>">
 		<portlet:renderURL var="editOrganizationURL">
 			<portlet:param name="mvcRenderCommandName" value="/users_admin/edit_organization" />
-			<portlet:param name="redirect" value="<%= redirect %>" />
+			<portlet:param name="backURL" value="<%= backURL %>" />
 			<portlet:param name="organizationId" value="<%= String.valueOf(organizationId) %>" />
 		</portlet:renderURL>
 
