@@ -18,9 +18,31 @@
 
 <%
 OrganizationScreenNavigationDisplayContext organizationScreenNavigationDisplayContext = (OrganizationScreenNavigationDisplayContext)request.getAttribute(UsersAdminWebKeys.ORGANIZATION_SCREEN_NAVIGATION_DISPLAY_CONTEXT);
+
+long organizationId = organizationScreenNavigationDisplayContext.getOrganizationId();
+
+String backURL = organizationScreenNavigationDisplayContext.getBackURL();
+
+if (Validator.isNull(backURL)) {
+	backURL = renderResponse.createRenderURL().toString();
+}
+
+String redirect = ParamUtil.getString(request, "redirect");
+
+if (Validator.isNull(redirect)) {
+	PortletURL redirectURL = renderResponse.createRenderURL();
+
+	redirectURL.setParameter("mvcRenderCommandName", "/users_admin/edit_organization");
+	redirectURL.setParameter("organizationId", String.valueOf(organizationId));
+	redirectURL.setParameter("backURL", backURL);
+
+	redirect = redirectURL.toString();
+}
 %>
 
 <aui:form action="<%= organizationScreenNavigationDisplayContext.getEditOrganizationActionURL() %>" cssClass="portlet-users-admin-edit-organization" method="post" name="fm">
+	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+
 	<clay:sheet>
 		<c:if test="<%= organizationScreenNavigationDisplayContext.isShowTitle() %>">
 			<clay:sheet-header>
@@ -36,7 +58,7 @@ OrganizationScreenNavigationDisplayContext organizationScreenNavigationDisplayCo
 			<clay:sheet-footer>
 				<aui:button primary="<%= true %>" type="submit" />
 
-				<aui:button href="<%= organizationScreenNavigationDisplayContext.getBackURL() %>" type="cancel" />
+				<aui:button href="<%= backURL %>" type="cancel" />
 			</clay:sheet-footer>
 		</c:if>
 	</clay:sheet>
