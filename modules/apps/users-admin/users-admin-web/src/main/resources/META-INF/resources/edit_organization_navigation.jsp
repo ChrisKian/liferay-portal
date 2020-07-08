@@ -19,8 +19,6 @@
 <%
 OrganizationScreenNavigationDisplayContext organizationScreenNavigationDisplayContext = (OrganizationScreenNavigationDisplayContext)request.getAttribute(UsersAdminWebKeys.ORGANIZATION_SCREEN_NAVIGATION_DISPLAY_CONTEXT);
 
-long organizationId = organizationScreenNavigationDisplayContext.getOrganizationId();
-
 String backURL = organizationScreenNavigationDisplayContext.getBackURL();
 
 if (Validator.isNull(backURL)) {
@@ -33,7 +31,7 @@ if (Validator.isNull(redirect)) {
 	PortletURL redirectURL = renderResponse.createRenderURL();
 
 	redirectURL.setParameter("mvcRenderCommandName", "/users_admin/edit_organization");
-	redirectURL.setParameter("organizationId", String.valueOf(organizationId));
+	redirectURL.setParameter("organizationId", String.valueOf(organizationScreenNavigationDisplayContext.getOrganizationId()));
 	redirectURL.setParameter("backURL", backURL);
 
 	redirect = redirectURL.toString();
