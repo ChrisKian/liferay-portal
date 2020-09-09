@@ -20,6 +20,7 @@ import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.UserBag;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
@@ -156,6 +157,13 @@ public class StagingPermissionChecker implements PermissionChecker {
 
 		if ((liveGroup != group) &&
 			primKey.equals(String.valueOf(group.getGroupId()))) {
+
+			if (name.equals(
+				"com.liferay.document.library.kernel.model.DLFileEntry") &&
+				actionId.equals(ActionKeys.VIEW)) {
+
+				System.out.println("  LPP-38738: Using primKey of live site.");
+			}
 
 			primKey = String.valueOf(liveGroup.getGroupId());
 		}

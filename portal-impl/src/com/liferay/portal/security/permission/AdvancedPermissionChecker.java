@@ -178,17 +178,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 	@Override
 	public long[] getRoleIds(long userId, long groupId) {
-		try {
-			return _applyRoleContributors(
-				doGetRoleIds(userId, groupId), groupId);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception, exception);
-			}
-
-			return PermissionChecker.DEFAULT_ROLE_IDS;
-		}
+		return _getRoleIds(userId, groupId, false);
 	}
 
 	@Override
@@ -256,6 +246,14 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	@Override
 	public boolean hasPermission(
 		Group group, String name, String primKey, String actionId) {
+		boolean log = false;
+
+		if (name.equals(
+			"com.liferay.document.library.kernel.model.DLFileEntry") &&
+			actionId.equals(ActionKeys.VIEW)) {
+
+			log = true;
+		}
 
 		StopWatch stopWatch = new StopWatch();
 
@@ -272,6 +270,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 				if (group.isLayout()) {
 					Layout layout = LayoutLocalServiceUtil.getLayout(
 						group.getClassPK());
+
+					if (log) {
+						System.out.println(
+							"  LPP-38738: Getting layout groupId.");
+					}
 
 					group = layout.getGroup();
 				}
@@ -298,6 +301,26 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		Boolean value = PermissionCacheUtil.getPermission(
 			groupId, name, primKey, roleIds, actionId);
+
+		if (log) {
+			if (value != null) {
+				if (value = true) {
+					System.out.println(
+						"  LPP-38738: PermissionCacheUtil returned true.");
+				}
+				else {
+					System.out.println(
+						"  LPP-38738: PermissionCacheUtil returned false.  " +
+							"Resetting.");
+
+					value = null;
+				}
+			}
+			else {
+				System.out.println(
+					"  LPP-38738: PermissionCacheUtil returned null.");
+			}
+		}
 
 		if (value != null) {
 			return value;
@@ -454,18 +477,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	protected void addTeamRoles(long userId, long groupId, Set<Long> roleIds)
 		throws Exception {
 
-		int count = TeamLocalServiceUtil.getGroupTeamsCount(groupId);
-
-		if (count == 0) {
-			return;
-		}
-
-		List<Role> roles = RoleLocalServiceUtil.getUserTeamRoles(
-			userId, groupId);
-
-		for (Role role : roles) {
-			roleIds.add(role.getRoleId());
-		}
+		_addTeamRoles(userId, groupId, roleIds, false);
 	}
 
 	protected boolean doCheckPermission(
@@ -497,148 +509,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	}
 
 	protected long[] doGetRoleIds(long userId, long groupId) throws Exception {
-		if (!signedIn) {
-			return getGuestUserRoleIds();
-		}
-
-		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
-			userId, GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId));
-
-		if (roleIds != null) {
-			return roleIds;
-		}
-
-		try {
-			Group group = null;
-
-			long parentGroupId = 0;
-
-			if (groupId > 0) {
-				group = GroupLocalServiceUtil.getGroup(groupId);
-
-				if (group.isLayout()) {
-					parentGroupId = group.getParentGroupId();
-
-					if (parentGroupId > 0) {
-						group = GroupLocalServiceUtil.getGroup(parentGroupId);
-					}
-				}
-			}
-
-			UserBag userBag = getUserBag();
-
-			Set<Long> roleIdsSet = SetUtil.fromArray(userBag.getRoleIds());
-
-			List<UserGroupRole> userGroupRoles =
-				UserGroupRoleLocalServiceUtil.getUserGroupRoles(
-					userId, groupId);
-
-			for (UserGroupRole userGroupRole : userGroupRoles) {
-				roleIdsSet.add(userGroupRole.getRoleId());
-			}
-
-			if (parentGroupId > 0) {
-				userGroupRoles =
-					UserGroupRoleLocalServiceUtil.getUserGroupRoles(
-						userId, parentGroupId);
-
-				for (UserGroupRole userGroupRole : userGroupRoles) {
-					roleIdsSet.add(userGroupRole.getRoleId());
-				}
-			}
-
-			long[] userUserGroupIds = userBag.getUserUserGroupsIds();
-
-			if (userUserGroupIds.length > 0) {
-				List<UserGroupGroupRole> userGroupGroupRoles =
-					UserGroupGroupRoleLocalServiceUtil.
-						getUserGroupGroupRolesByUser(userId, groupId);
-
-				for (UserGroupGroupRole userGroupGroupRole :
-						userGroupGroupRoles) {
-
-					roleIdsSet.add(userGroupGroupRole.getRoleId());
-				}
-
-				if (parentGroupId > 0) {
-					userGroupGroupRoles =
-						UserGroupGroupRoleLocalServiceUtil.
-							getUserGroupGroupRoles(userId, parentGroupId);
-
-					for (UserGroupGroupRole userGroupGroupRole :
-							userGroupGroupRoles) {
-
-						roleIdsSet.add(userGroupGroupRole.getRoleId());
-					}
-				}
-			}
-
-			if (group != null) {
-				if (group.isOrganization() && userBag.hasUserOrgGroup(group)) {
-					Role organizationUserRole = RoleLocalServiceUtil.getRole(
-						group.getCompanyId(), RoleConstants.ORGANIZATION_USER);
-
-					roleIdsSet.add(organizationUserRole.getRoleId());
-				}
-
-				if (group.isSite() &&
-					(userBag.hasUserGroup(group) ||
-					 userBag.hasUserOrgGroup(group))) {
-
-					Role siteMemberRole = RoleLocalServiceUtil.getRole(
-						group.getCompanyId(), RoleConstants.SITE_MEMBER);
-
-					roleIdsSet.add(siteMemberRole.getRoleId());
-				}
-
-				if (group.isUserPersonalSite()) {
-					Role powerUserRole = RoleLocalServiceUtil.getRole(
-						getCompanyId(), RoleConstants.POWER_USER);
-
-					if (userBag.hasRole(powerUserRole)) {
-						Role siteMemberRole = RoleLocalServiceUtil.getRole(
-							group.getCompanyId(), RoleConstants.SITE_MEMBER);
-
-						roleIdsSet.add(siteMemberRole.getRoleId());
-					}
-				}
-
-				if ((group.isOrganization() &&
-					 userBag.hasUserOrgGroup(group)) ||
-					(group.isSite() && userBag.hasUserGroup(group))) {
-
-					addTeamRoles(
-						userId,
-						GetterUtil.getLong(
-							GroupThreadLocal.getGroupId(), groupId),
-						roleIdsSet);
-				}
-			}
-
-			if (checkGuest) {
-				for (long roleId : getGuestUserRoleIds()) {
-					roleIdsSet.add(roleId);
-				}
-			}
-
-			roleIds = ArrayUtil.toLongArray(roleIdsSet);
-
-			Arrays.sort(roleIds);
-
-			PermissionCacheUtil.putUserGroupRoleIds(
-				userId,
-				GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId),
-				roleIds);
-
-			return roleIds;
-		}
-		catch (Exception exception) {
-			PermissionCacheUtil.removeUserGroupRoleIds(
-				userId,
-				GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId));
-
-			throw exception;
-		}
+		return _doGetRoleIds(userId, groupId, false);
 	}
 
 	protected List<Resource> fixMissingResources(
@@ -1382,6 +1253,30 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	@Deprecated
 	protected static final String RESULTS_SEPARATOR = "_RESULTS_SEPARATOR_";
 
+	private void _addTeamRoles(
+			long userId, long groupId, Set<Long> roleIds, boolean log)
+		throws Exception {
+
+		int count = TeamLocalServiceUtil.getGroupTeamsCount(groupId);
+
+		if (count == 0) {
+			return;
+		}
+
+		List<Role> roles = RoleLocalServiceUtil.getUserTeamRoles(
+			userId, groupId);
+
+		for (Role role : roles) {
+			if (log) {
+				System.out.println(
+					"  LPP-38738: Adding Team Role: " +
+						role.getName());
+			}
+
+			roleIds.add(role.getRoleId());
+		}
+	}
+
 	private long[] _applyRoleContributors(long[] roleIds, long groupId) {
 		if (_roleContributors.length == 0) {
 			return roleIds;
@@ -1409,6 +1304,243 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 					return ReflectionUtil.throwException(portalException);
 				}
 			});
+	}
+
+	private long[] _getRoleIds(long userId, long groupId, boolean log) {
+		try {
+			return _applyRoleContributors(
+				_doGetRoleIds(userId, groupId, log), groupId);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+
+			return PermissionChecker.DEFAULT_ROLE_IDS;
+		}
+	}
+
+	private long[] _doGetRoleIds(long userId, long groupId, boolean log)
+		throws Exception {
+
+		if (!signedIn) {
+			return getGuestUserRoleIds();
+		}
+
+		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
+			userId, GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId));
+
+
+		if (roleIds != null) {
+			if (log) {
+				System.out.println(
+					"  LPP-38738: Found the following roles from " +
+						"PermissionCacheUtil:");
+
+				for (long roleId : roleIds) {
+					System.out.println(
+						"    LPP-38738: " +
+							RoleLocalServiceUtil.getRole(roleId).getName());
+				}
+			}
+			else {
+				return roleIds;
+			}
+
+			System.out.println("  LPP-38738: Ignoring PermissionCacheUtil:");
+		}
+
+		try {
+			Group group = null;
+
+			long parentGroupId = 0;
+
+			if (groupId > 0) {
+				group = GroupLocalServiceUtil.getGroup(groupId);
+
+				if (group.isLayout()) {
+					parentGroupId = group.getParentGroupId();
+
+					if (parentGroupId > 0) {
+						group = GroupLocalServiceUtil.getGroup(parentGroupId);
+					}
+				}
+			}
+
+			UserBag userBag = getUserBag();
+
+			Set<Long> roleIdsSet = SetUtil.fromArray(userBag.getRoleIds());
+
+			if (log && roleIdsSet.size() > 0) {
+				System.out.println(
+					"  LPP-38738: Retrieved RoleIds from user bag: ");
+
+				for (long roleId : roleIdsSet) {
+					System.out.println("    LPP-38738: roleId: " + roleId);
+				}
+			}
+
+			List<UserGroupRole> userGroupRoles =
+				UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+					userId, groupId);
+
+			for (UserGroupRole userGroupRole : userGroupRoles) {
+				if (log) {
+					System.out.println(
+						"  LPP-38738: Adding UserGroupRole: " +
+							userGroupRole.getRole().getName());
+				}
+
+				roleIdsSet.add(userGroupRole.getRoleId());
+			}
+
+			if (parentGroupId > 0) {
+				if (log) {
+					System.out.println(
+						"  LPP-38738: Including UserGroupRoles from " +
+							"parentGroupId: " +
+								parentGroupId);
+				}
+
+				userGroupRoles =
+					UserGroupRoleLocalServiceUtil.getUserGroupRoles(
+						userId, parentGroupId);
+
+				for (UserGroupRole userGroupRole : userGroupRoles) {
+					if (log) {
+						System.out.println(
+							"  LPP-38738: Adding parent UserGroupRole: " +
+								userGroupRole.getRole().getName());
+					}
+
+					roleIdsSet.add(userGroupRole.getRoleId());
+				}
+			}
+
+			long[] userUserGroupIds = userBag.getUserUserGroupsIds();
+
+			if (userUserGroupIds.length > 0) {
+				List<UserGroupGroupRole> userGroupGroupRoles =
+					UserGroupGroupRoleLocalServiceUtil.
+						getUserGroupGroupRolesByUser(userId, groupId);
+
+				for (UserGroupGroupRole userGroupGroupRole :
+					userGroupGroupRoles) {
+
+					if (log) {
+						System.out.println(
+							"  LPP-38738: Adding userGroupGroupRole: " +
+							userGroupGroupRole.getRole().getName());
+					}
+
+					roleIdsSet.add(userGroupGroupRole.getRoleId());
+				}
+
+				if (parentGroupId > 0) {
+					userGroupGroupRoles =
+						UserGroupGroupRoleLocalServiceUtil.
+							getUserGroupGroupRoles(userId, parentGroupId);
+
+					for (UserGroupGroupRole userGroupGroupRole :
+						userGroupGroupRoles) {
+
+						if (log) {
+							System.out.println(
+								"  LPP-38738: Adding parent " +
+									"userGroupGroupRole: " +
+										userGroupGroupRole.getRole().getName());
+						}
+
+						roleIdsSet.add(userGroupGroupRole.getRoleId());
+					}
+				}
+			}
+
+			if (group != null) {
+				if (group.isOrganization() && userBag.hasUserOrgGroup(group)) {
+					Role organizationUserRole = RoleLocalServiceUtil.getRole(
+						group.getCompanyId(), RoleConstants.ORGANIZATION_USER);
+
+					if (log) {
+						System.out.println(
+							"  LPP-38738: Adding Organization User role : " +
+							organizationUserRole.getName());
+					}
+
+					roleIdsSet.add(organizationUserRole.getRoleId());
+				}
+
+				if (group.isSite() &&
+					(userBag.hasUserGroup(group) ||
+					 userBag.hasUserOrgGroup(group))) {
+
+					Role siteMemberRole = RoleLocalServiceUtil.getRole(
+						group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+					if (log) {
+						System.out.println(
+							"  LPP-38738: Adding SiteMember role : " +
+							siteMemberRole.getName());
+					}
+
+					roleIdsSet.add(siteMemberRole.getRoleId());
+				}
+
+				if (group.isUserPersonalSite()) {
+					Role powerUserRole = RoleLocalServiceUtil.getRole(
+						getCompanyId(), RoleConstants.POWER_USER);
+
+					if (userBag.hasRole(powerUserRole)) {
+						Role siteMemberRole = RoleLocalServiceUtil.getRole(
+							group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+						if (log) {
+							System.out.println(
+								"  LPP-38738: Adding SiteMember role : " +
+								siteMemberRole.getName());
+						}
+
+						roleIdsSet.add(siteMemberRole.getRoleId());
+					}
+				}
+
+				if ((group.isOrganization() &&
+					 userBag.hasUserOrgGroup(group)) ||
+					(group.isSite() && userBag.hasUserGroup(group))) {
+
+					addTeamRoles(
+						userId,
+						GetterUtil.getLong(
+							GroupThreadLocal.getGroupId(), groupId),
+						roleIdsSet);
+				}
+			}
+
+			if (checkGuest) {
+				for (long roleId : getGuestUserRoleIds()) {
+					if (log) {
+						System.out.println(
+							"  LPP-38738: Adding Guest role : " +
+							RoleLocalServiceUtil.getRole(roleId).getName());
+					}
+
+					roleIdsSet.add(roleId);
+				}
+			}
+
+			roleIds = ArrayUtil.toLongArray(roleIdsSet);
+
+			Arrays.sort(roleIds);
+
+			PermissionCacheUtil.putUserGroupRoleIds(userId, groupId, roleIds);
+
+			return roleIds;
+		}
+		catch (Exception exception) {
+			PermissionCacheUtil.removeUserGroupRoleIds(userId, groupId);
+
+			throw exception;
+		}
 	}
 
 	private boolean _hasGuestPermission(
@@ -1507,6 +1639,15 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			String actionId)
 		throws Exception {
 
+		boolean log = false;
+
+		if (name.equals(
+			"com.liferay.document.library.kernel.model.DLFileEntry") &&
+			actionId.equals(ActionKeys.VIEW)) {
+
+			log = true;
+		}
+
 		StopWatch stopWatch = new StopWatch();
 
 		stopWatch.start();
@@ -1524,12 +1665,31 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 				companyId, groupId, name, primKey, roleIds, actionId,
 				stopWatch);
 
+			if (log) {
+				System.out.println(
+					"  LPP-38738: hasPermission " +
+					"modelResourcePermissionLogic. Checking owner permission.");
+			}
+
 			if (hasPermission) {
+				if (log) {
+					System.out.println(
+						"  LPP-38738: hasPermission, returning true.");
+				}
+
 				return true;
+			}
+			else if (log) {
+				System.out.println(
+				"  LPP-38738: hasPermission is false.");
 			}
 		}
 		catch (NoSuchResourcePermissionException
 					noSuchResourcePermissionException) {
+			if (log) {
+				System.out.println(
+					"  LPP-38738: NoSuchResourcePermissionException.");
+			}
 
 			throw new IllegalArgumentException(
 				"Someone may be trying to circumvent the permission checker: " +
@@ -1538,6 +1698,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 
 		if (isOmniadmin()) {
+			if (log) {
+				System.out.println("  LPP-38738: OmniAdmin.");
+			}
+
 			return true;
 		}
 
@@ -1548,10 +1712,18 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 
 		if (isCompanyAdminImpl(companyId)) {
+			if (log) {
+				System.out.println("  LPP-38738: Company Admin.");
+			}
+
 			return true;
 		}
 
 		if (_isGroupAdminImpl(group)) {
+			if (log) {
+				System.out.println("  LPP-38738: Group Admin.");
+			}
+
 			boolean hasLayoutManagerPermission = true;
 
 			// Check if the layout manager has permission to do this action for
@@ -1576,6 +1748,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		if ((group != null) && group.isUserPersonalSite() &&
 			ActionKeys.VIEW.equals(actionId)) {
 
+			if (log) {
+				System.out.println("  LPP-38738: User Personal Site.");
+			}
+
 			// The only check we can perform on top is for the Site Member role.
 			// The Site Member role is derived from the Power User role. When a
 			// user is missing the Power User role, then the Site Member role
@@ -1596,6 +1772,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 					return true;
 				}
 			}
+		}
+
+		if (log) {
+			System.out.println("  LPP-38738: returning false.");
 		}
 
 		return false;

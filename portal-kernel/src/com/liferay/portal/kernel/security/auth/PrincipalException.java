@@ -176,6 +176,14 @@ public class PrincipalException extends PortalException {
 					(resourceId == 0) ? "" : resourceId),
 				cause);
 
+			System.out.println("LPP-38738: Throwing PrincipalException.");
+			System.out.println("  LPP-38738: userId: " + userId);
+			System.out.println("  LPP-38738: resourceName: " + resourceName);
+			System.out.println("  LPP-38738: resourceId: " + resourceId);
+			for (String actionId : actionIds) {
+				System.out.println("  LPP-38738: actionId: " + actionId);
+			}
+
 			this.userId = userId;
 			this.resourceName = resourceName;
 			this.resourceId = resourceId;
