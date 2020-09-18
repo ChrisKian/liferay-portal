@@ -69,6 +69,12 @@ public class SegmentsServicePreAction extends Action {
 			HttpServletResponse httpServletResponse)
 		throws ActionException {
 
+		String requestURI = httpServletRequest.getRequestURI();
+
+		if (requestURI.contains("/c/portal/saml/")) {
+			return;
+		}
+
 		try {
 			doRun(httpServletRequest, httpServletResponse);
 		}
