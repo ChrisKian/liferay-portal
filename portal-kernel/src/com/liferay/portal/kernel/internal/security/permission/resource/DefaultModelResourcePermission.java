@@ -188,6 +188,29 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 							modelResourcePermissionLogic);
 				}
 
+				if (contains == false) {
+					if (log) {
+						_log.debug(
+							"  LPP-38738: contains value was false, try " +
+								"owner permissions before throwing exception");
+					}
+
+					if (permissionChecker.hasOwnerPermission(
+						model.getCompanyId(), _modelName,
+						String.valueOf(
+							_modelResourcePermissionDefinition.getPrimaryKey(
+								model)),
+						model.getUserId(), actionId)) {
+
+						if (log) {
+							_log.debug(
+								"  LPP-38738: Has owner permission.");
+						}
+
+						contains = true;
+					}
+				}
+
 				if (log) {
 					_log.debug("  LPP-38738: contains is: " + contains);
 				}
