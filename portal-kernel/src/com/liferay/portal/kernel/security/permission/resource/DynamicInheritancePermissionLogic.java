@@ -16,6 +16,8 @@ package com.liferay.portal.kernel.security.permission.resource;
 
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -57,10 +59,21 @@ public class DynamicInheritancePermissionLogic
 		P parent = _fetchParentUnsafeFunction.apply(child);
 
 		if (parent == null) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("LPP-38738: Parent is null");
+			}
 			if (_portletResourcePermission.contains(
 					permissionChecker, child.getGroupId(), ActionKeys.VIEW)) {
 
+				if (_log.isDebugEnabled()) {
+					_log.debug("LPP-38738: Contains is true, returning null");
+				}
+
 				return null;
+			}
+
+			if (_log.isDebugEnabled()) {
+				_log.debug("LPP-38738: Contains is false");
 			}
 
 			return false;
@@ -70,13 +83,25 @@ public class DynamicInheritancePermissionLogic
 			_parentModelResourcePermission.contains(
 				permissionChecker, parent, ActionKeys.ACCESS)) {
 
+			if (_log.isDebugEnabled()) {
+				_log.debug("LPP-38738: has parent access");
+			}
+
 			return null;
 		}
 
 		if (_parentModelResourcePermission.contains(
 				permissionChecker, parent, ActionKeys.VIEW)) {
 
+			if (_log.isDebugEnabled()) {
+				_log.debug("LPP-38738: Contains is true for the parent");
+			}
+
 			return null;
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("LPP-38738: Contains is false for the parent");
 		}
 
 		return false;
@@ -87,5 +112,8 @@ public class DynamicInheritancePermissionLogic
 		_fetchParentUnsafeFunction;
 	private final ModelResourcePermission<P> _parentModelResourcePermission;
 	private final PortletResourcePermission _portletResourcePermission;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DynamicInheritancePermissionLogic.class);
 
 }

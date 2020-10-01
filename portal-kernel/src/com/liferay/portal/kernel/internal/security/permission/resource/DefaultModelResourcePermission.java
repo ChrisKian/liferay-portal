@@ -111,8 +111,10 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 		Boolean contains = (Boolean)permissionChecksMap.get(permissionCacheKey);
 
 		if (contains != null &&
+			(_modelName.equals(
+				"com.liferay.document.library.kernel.model.DLFileEntry") ||
 			_modelName.equals(
-				"com.liferay.document.library.kernel.model.DLFileEntry") &&
+				"com.liferay.document.library.kernel.model.DLFolder")) &&
 			actionId.equals(ActionKeys.VIEW)) {
 
 			System.out.println("LPP-38738: Retrieved permission check.");
@@ -152,11 +154,16 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 
 		Boolean log = false;
 
-		if (_modelName.equals(
-				"com.liferay.document.library.kernel.model.DLFileEntry") &&
+		if ((_modelName.equals(
+			"com.liferay.document.library.kernel.model.DLFileEntry") ||
+			 _modelName.equals(
+				 "com.liferay.document.library.kernel.model.DLFolder")) &&
 			actionId.equals(ActionKeys.VIEW)) {
 
 			log = true;
+
+			System.out.println(
+				"LPP-38738: Checking VIEW permission for " + _modelName);
 
 			System.out.println(
 				"LPP-38738: modelResourcePermissionLogics: " +
