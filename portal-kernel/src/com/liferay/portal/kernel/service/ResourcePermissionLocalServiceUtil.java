@@ -677,6 +677,16 @@ public class ResourcePermissionLocalServiceUtil {
 		return getService().getRoles(companyId, name, scope, primKey, actionId);
 	}
 
+	public static java.util.List<com.liferay.portal.kernel.model.Role>
+		getDynamicInheritanceRoles(
+			long companyId, String name, int scope, String primKey,
+			String actionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().getDynamicInheritanceRoles(
+			companyId, name, scope, primKey, actionId);
+	}
+
 	/**
 	 * Returns all the resource permissions where scope = any &#63;.
 	 *
