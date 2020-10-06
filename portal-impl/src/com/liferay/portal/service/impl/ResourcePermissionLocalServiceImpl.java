@@ -14,6 +14,11 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -779,6 +784,50 @@ public class ResourcePermissionLocalServiceImpl
 	}
 
 	@Override
+	public List<Role> getDynamicInheritanceRoles(
+		long companyId, String name, int scope, String primKey,
+		String actionId)
+		throws PortalException {
+
+		List<Role> roles = getRoles(companyId, name, scope, primKey, actionId);
+
+		ParentFetcher object = _getParentFetcher(name, primKey);
+
+		if (object == null) {
+			return roles;
+		}
+
+		ParentFetcher parentFetcher = object.getParent();
+
+		if (parentFetcher == null) {
+			return roles;
+		}
+
+		List<Role> parentAccessRoles = getRoles(
+			companyId, parentFetcher.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, parentFetcher.getPrimKey(),
+			"ACCESS");
+
+		parentAccessRoles.retainAll(roles);
+
+		List<Role> parentViewRoles = getRoles(
+			companyId, parentFetcher.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, parentFetcher.getPrimKey(),
+			"VIEW");
+
+		parentViewRoles.retainAll(roles);
+
+		_filterParentRoles(companyId, parentFetcher, parentViewRoles);
+
+		Set<Role> rolesSet = new HashSet<>();
+
+		rolesSet.addAll(parentAccessRoles);
+		rolesSet.addAll(parentViewRoles);
+
+		return new ArrayList<>(rolesSet);
+	}
+
+	@Override
 	public Map<String, List<ResourcePermission>>
 		getIndividualPortletResourcePermissions(long companyId) {
 
@@ -802,8 +851,8 @@ public class ResourcePermissionLocalServiceImpl
 			new HashMap<>();
 
 		for (ResourcePermission resourcePermission :
-				resourcePermissionPersistence.
-					<List<ResourcePermission>>dslQuery(dslQuery)) {
+			resourcePermissionPersistence.
+				<List<ResourcePermission>>dslQuery(dslQuery)) {
 
 			List<ResourcePermission> resourcePermissions =
 				resourcePermissionsMap.computeIfAbsent(
@@ -1955,6 +2004,59 @@ public class ResourcePermissionLocalServiceImpl
 		}
 	}
 
+	private List<Role> _filterParentRoles(
+			long companyId, ParentFetcher object, List<Role> roles)
+		throws PortalException {
+
+		ParentFetcher parentFetcher = object.getParent();
+
+		if ((parentFetcher == null) || roles.isEmpty()) {
+			return roles;
+		}
+
+		List<Role> parentViewRoles = getRoles(
+			companyId, parentFetcher.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, parentFetcher.getPrimKey(),
+			"VIEW");
+
+		roles.retainAll(parentViewRoles);
+
+		_filterParentRoles(companyId, parentFetcher, roles);
+
+		return roles;
+	}
+
+	private ParentFetcher _getParentFetcher(String name, String primKey) {
+		try {
+			if (name.equals(
+					"com.liferay.document.library.kernel.model.DLFileEntry")) {
+
+				return new DLFileEntryParentFetcher(primKey);
+			}
+
+			if (name.equals(
+					"com.liferay.document.library.kernel.model.DLFolder")) {
+
+				return new DLFolderParentFetcher(primKey);
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				StringBundler sb = new StringBundler(5);
+
+				sb.append("Unable to retrieve parent of ");
+				sb.append(name);
+				sb.append(" with primKey ");
+				sb.append(primKey);
+				sb.append(".");
+
+				_log.debug(sb.toString(), portalException);
+			}
+		}
+
+		return null;
+	}
+
 	private Map<Long, ResourcePermission> _getResourcePermissionsMap(
 		List<ResourcePermission> resourcePermissions) {
 
@@ -2255,5 +2357,109 @@ public class ResourcePermissionLocalServiceImpl
 				ResourcePermissionLocalServiceImpl.class,
 				"_individualPortletResourcePermissionProvider", null, false,
 				true);
+
+	private class DLFileEntryParentFetcher implements ParentFetcher {
+
+		DLFileEntryParentFetcher(DLFileEntry dlFileEntry) {
+			_dlFileEntry = dlFileEntry;
+
+			_dlFileEntryId = dlFileEntry.getFileEntryId();
+		}
+
+		DLFileEntryParentFetcher(String primKey) throws PortalException {
+			this(
+				DLFileEntryLocalServiceUtil.getDLFileEntry(
+					GetterUtil.getLong(primKey)));
+		}
+
+		public String getClassName() {
+			return "com.liferay.document.library.kernel.model.DLFileEntry";
+		}
+
+		public ParentFetcher getParent() throws PortalException {
+			long folderId = _dlFileEntry.getFolderId();
+
+			if (DLFolderConstants.DEFAULT_PARENT_FOLDER_ID == folderId) {
+				return null;
+			}
+
+			if (_dlFileEntry.isInTrash()) {
+				DLFolder parentFolder = DLFolderLocalServiceUtil.fetchFolder(
+					folderId);
+
+				return new DLFolderParentFetcher(parentFolder);
+			}
+
+			DLFolder parentFolder = DLFolderLocalServiceUtil.getFolder(
+				folderId);
+
+			return new DLFolderParentFetcher(parentFolder);
+		}
+
+		public String getPrimKey() {
+			return String.valueOf(_dlFileEntryId);
+		}
+
+		private DLFileEntry _dlFileEntry;
+		private long _dlFileEntryId;
+
+	}
+
+	private class DLFolderParentFetcher implements ParentFetcher {
+
+		DLFolderParentFetcher(DLFolder dlFolder) {
+			_dlFolderId = dlFolder.getFolderId();
+
+			_dlFolder = dlFolder;
+		}
+
+		DLFolderParentFetcher(String primKey) throws PortalException {
+			this(
+				DLFolderLocalServiceUtil.getDLFolder(
+					GetterUtil.getLong(primKey)));
+		}
+
+		public String getClassName() {
+			return "com.liferay.document.library.kernel.model.DLFolder";
+		}
+
+		public ParentFetcher getParent() throws PortalException {
+			long folderId = _dlFolder.getParentFolderId();
+
+			if (DLFolderConstants.DEFAULT_PARENT_FOLDER_ID == folderId) {
+				return null;
+			}
+
+			if (_dlFolder.isInTrash()) {
+				DLFolder parentFolder = DLFolderLocalServiceUtil.fetchFolder(
+					folderId);
+
+				return new DLFolderParentFetcher(parentFolder);
+			}
+
+			DLFolder parentFolder = DLFolderLocalServiceUtil.getFolder(
+				folderId);
+
+			return new DLFolderParentFetcher(parentFolder);
+		}
+
+		public String getPrimKey() {
+			return String.valueOf(_dlFolderId);
+		}
+
+		private DLFolder _dlFolder;
+		private long _dlFolderId;
+
+	}
+
+	private interface ParentFetcher {
+
+		public String getClassName();
+
+		public ParentFetcher getParent() throws PortalException;
+
+		public String getPrimKey();
+
+	}
 
 }
