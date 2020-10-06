@@ -19,6 +19,7 @@ import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -33,7 +34,9 @@ import com.liferay.portal.kernel.internal.service.permission.ModelPermissionsImp
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.AuditedModel;
+import com.liferay.portal.kernel.model.BaseChildModel;
 import com.liferay.portal.kernel.model.GroupedModel;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.Resource;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -50,6 +53,8 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionUpdateHandler;
 import com.liferay.portal.kernel.security.permission.PermissionUpdateHandlerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.kernel.service.SQLStateAcceptor;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
@@ -776,6 +781,45 @@ public class ResourcePermissionLocalServiceImpl
 		}
 
 		return availableActionIds;
+	}
+
+	@Override
+	public List<Role> getDynamicInheritanceRoles(
+			long companyId, String name, int scope, String primKey,
+			String actionId)
+		throws PortalException {
+
+		List<Role> roles = getRoles(companyId, name, scope, primKey, actionId);
+
+		Long classPK = Long.parseLong(primKey);
+
+		BaseChildModel baseChildModel = _getChildModel(name, classPK);
+
+		if (baseChildModel == null) {
+			return roles;
+		}
+
+		String parentClassPK = baseChildModel.getParentClassPK();
+
+		if (Validator.isNull(parentClassPK) || parentClassPK.equals("0")) {
+			return roles;
+		}
+
+		List<Role> parentAccessRoles = getRoles(
+			companyId, baseChildModel.getParentClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, parentClassPK, "ACCESS");
+
+		parentAccessRoles.retainAll(roles);
+
+		List<Role> parentViewRoles = _getTreePathRoles(
+			baseChildModel, companyId, roles);
+
+		Set<Role> rolesSet = new HashSet<>();
+
+		rolesSet.addAll(parentAccessRoles);
+		rolesSet.addAll(parentViewRoles);
+
+		return new ArrayList<>(rolesSet);
 	}
 
 	@Override
@@ -1955,6 +1999,48 @@ public class ResourcePermissionLocalServiceImpl
 		}
 	}
 
+	private BaseChildModel _getChildModel(String className, Long classPK) {
+		PersistedModelLocalService persistedModelLocalService =
+			_getPersistedModelLocalService(className);
+
+		PersistedModel persistedModel;
+
+		try {
+			persistedModel = persistedModelLocalService.getPersistedModel(
+				classPK);
+
+			if (persistedModel instanceof BaseChildModel) {
+				return (BaseChildModel)persistedModel;
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"No ", className, " found for class PK ", classPK),
+					portalException);
+			}
+		}
+
+		return null;
+	}
+
+	private PersistedModelLocalService _getPersistedModelLocalService(
+		String className) {
+
+		PersistedModelLocalService persistedModelLocalService =
+			PersistedModelLocalServiceRegistryUtil.
+				getPersistedModelLocalService(className);
+
+		if (persistedModelLocalService == null) {
+			throw new SystemException(
+				"No persisted model local service found for class " +
+					className);
+		}
+
+		return persistedModelLocalService;
+	}
+
 	private Map<Long, ResourcePermission> _getResourcePermissionsMap(
 		List<ResourcePermission> resourcePermissions) {
 
@@ -1966,6 +2052,28 @@ public class ResourcePermissionLocalServiceImpl
 		}
 
 		return resourcePermissionsMap;
+	}
+
+	private List<Role> _getTreePathRoles(
+			BaseChildModel baseChildModel, long companyId, List<Role> roles)
+		throws PortalException {
+
+		String[] parentFolderIds = StringUtil.split(
+			baseChildModel.getTreePath(), StringPool.SLASH);
+
+		List<Role> folderRoles;
+
+		for (int i = parentFolderIds.length - 1; !roles.isEmpty() && (i > 0);
+			 i--) {
+
+			folderRoles = getRoles(
+				companyId, baseChildModel.getParentClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL, parentFolderIds[i], "VIEW");
+
+			roles.retainAll(folderRoles);
+		}
+
+		return roles;
 	}
 
 	private void _initPortletDefaultPermissions(
