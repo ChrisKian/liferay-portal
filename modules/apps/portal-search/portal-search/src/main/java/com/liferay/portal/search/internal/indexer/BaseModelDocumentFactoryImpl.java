@@ -15,6 +15,7 @@
 package com.liferay.portal.search.internal.indexer;
 
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.ResourcedModel;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
@@ -53,6 +54,12 @@ public class BaseModelDocumentFactoryImpl implements BaseModelDocumentFactory {
 			Field.ROOT_ENTRY_CLASS_PK,
 			getRootEntryClassPK(classPKResourcePrimKeyTuple)
 		);
+
+		if (baseModel instanceof GroupedModel) {
+			GroupedModel groupedModel = (GroupedModel)baseModel;
+
+			documentBuilder.setLong(Field.GROUP_ID, groupedModel.getGroupId());
+		}
 
 		uidFactory.setUID(baseModel, documentBuilder);
 
