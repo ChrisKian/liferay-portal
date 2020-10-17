@@ -14,6 +14,7 @@
 
 package com.liferay.portal.search.internal.document;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.search.document.Document;
@@ -175,11 +176,10 @@ public class DocumentImpl implements Document {
 
 	public void setFieldValues(String name, Collection<Object> values) {
 		if ((values == null) || values.isEmpty()) {
-			removeField(name);
+			values = Arrays.asList(StringPool.BLANK);
 		}
-		else {
-			putField(name, values);
-		}
+
+		putField(name, values);
 	}
 
 	@Override
