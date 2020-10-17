@@ -14,7 +14,7 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.document;
 
-import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.document.Document;
@@ -127,10 +127,6 @@ public class DefaultElasticsearchDocumentFactory
 		if (!field.isLocalized()) {
 			String[] values = field.getValues();
 
-			if (ArrayUtil.isEmpty(values)) {
-				return;
-			}
-
 			List<String> valuesList = new ArrayList<>(values.length);
 
 			for (String value : values) {
@@ -139,10 +135,6 @@ public class DefaultElasticsearchDocumentFactory
 				}
 
 				valuesList.add(value.trim());
-			}
-
-			if (valuesList.isEmpty()) {
-				return;
 			}
 
 			values = valuesList.toArray(new String[0]);
@@ -218,8 +210,13 @@ public class DefaultElasticsearchDocumentFactory
 			addDates(xContentBuilder, field);
 		}
 		else {
-			for (String value : values) {
-				xContentBuilder.value(translateValue(field, value));
+			if (values.length < 1) {
+				xContentBuilder.value(translateValue(field, StringPool.BLANK));
+			}
+			else {
+				for (String value : values) {
+					xContentBuilder.value(translateValue(field, value));
+				}
 			}
 		}
 
