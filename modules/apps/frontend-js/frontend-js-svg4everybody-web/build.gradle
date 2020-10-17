@@ -1,3 +1,4 @@
+import com.liferay.gradle.util.FileUtil
 import com.liferay.gradle.util.copy.StripPathSegmentsAction
 
 task buildSVG4Everybody(type: Copy)
@@ -5,17 +6,14 @@ task buildSVG4Everybody(type: Copy)
 File jsDestinationDir = file("tmp/META-INF/resources")
 
 buildSVG4Everybody {
-	dependsOn npmInstall
-	eachFile new StripPathSegmentsAction(2)
-
 	filter {
 		String line ->
 
 		line.replace "\"function\" == typeof define", "false && \"function\" == typeof define"
 	}
 
-	from npmInstall.nodeModulesDir
-	include "svg4everybody/dist/svg4everybody.js"
+	from FileUtil.get(project, "https://raw.githubusercontent.com/jonathantneal/svg4everybody/d6ea438bd5a4599c35cbf1a0c29d697569c8c6c6/dist/svg4everybody.js")
+	include "svg4everybody.js"
 	includeEmptyDirs = false
 	into new File(jsDestinationDir, "svg4everybody")
 }
