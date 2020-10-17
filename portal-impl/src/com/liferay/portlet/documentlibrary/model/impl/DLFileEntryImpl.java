@@ -68,6 +68,16 @@ import java.util.Set;
 public class DLFileEntryImpl extends DLFileEntryBaseImpl {
 
 	@Override
+	public String getParentClassName() {
+		return "com.liferay.document.library.kernel.model.DLFolder";
+	}
+
+	@Override
+	public String getParentClassPK() {
+		return Long.toString(getFolderId());
+	}
+
+	@Override
 	public String buildTreePath() throws PortalException {
 		if (getFolderId() == DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
 			return StringPool.SLASH;

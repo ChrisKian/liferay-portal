@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
@@ -36,6 +37,16 @@ import java.util.List;
  * @author Brian Wing Shun Chan
  */
 public class DLFolderImpl extends DLFolderBaseImpl {
+
+	@Override
+	public String getParentClassName() {
+		return "com.liferay.document.library.kernel.model.DLFolder";
+	}
+
+	@Override
+	public String getParentClassPK() {
+		return Long.toString(getParentFolderId());
+	}
 
 	@Override
 	public List<Long> getAncestorFolderIds() throws PortalException {
