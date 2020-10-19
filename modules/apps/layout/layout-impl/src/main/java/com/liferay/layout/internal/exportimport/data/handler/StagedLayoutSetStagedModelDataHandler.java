@@ -811,7 +811,9 @@ public class StagedLayoutSetStagedModelDataHandler
 					layout.getParentLayoutId(),
 					layout.getSourcePrototypeLayoutUuid(), layoutPriority);
 
-				layoutPriorities.put(layout, layoutPriority);
+				if (layout.getPriority() != layoutPriority) {
+					layoutPriorities.put(layout, layoutPriority);
+				}
 			}
 		}
 
