@@ -636,6 +636,23 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	}
 
 	@Override
+	public long[] getUpdatedLayoutIds(
+		long lastMergeTime, List<Layout> layouts) {
+
+		long[] layoutIds = new long[0];
+
+		for (Layout layout : layouts) {
+			Date layoutModifiedDate = layout.getModifiedDate();
+
+			if (layoutModifiedDate.getTime() >= lastMergeTime) {
+				layoutIds = ArrayUtil.append(layoutIds, layout.getLayoutId());
+			}
+		}
+
+		return layoutIds;
+	}
+
+	@Override
 	public UserIdStrategy getUserIdStrategy(long userId, String userIdStrategy)
 		throws PortalException {
 

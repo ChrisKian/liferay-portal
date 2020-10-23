@@ -208,6 +208,12 @@ public class ExportImportHelperUtil {
 			groupId, userId, folderName);
 	}
 
+	public static long[] getUpdatedLayoutIds(
+		long lastMergeTime, List<Layout> layouts) {
+
+		return _exportImportHelper.getUpdatedLayoutIds(lastMergeTime, layouts);
+	}
+
 	public static UserIdStrategy getUserIdStrategy(
 			long userId, String userIdStrategy)
 		throws PortalException {
