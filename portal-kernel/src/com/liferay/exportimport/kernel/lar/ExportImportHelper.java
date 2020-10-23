@@ -137,6 +137,8 @@ public interface ExportImportHelper {
 			long groupId, long userId, String folderName)
 		throws PortalException;
 
+	public long[] getUpdatedLayoutIds(long lastMergeTime, List<Layout> layouts);
+
 	public UserIdStrategy getUserIdStrategy(long userId, String userIdStrategy)
 		throws PortalException;
 
