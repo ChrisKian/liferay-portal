@@ -1,7 +1,4 @@
 {
-	"dependencies": {
-		"svg4everybody": "git://github.com/jonathantneal/svg4everybody.git#master"
-	},
 	"name": "frontend-js-svg4everybody-web",
 	"private": true,
 	"scripts": {
