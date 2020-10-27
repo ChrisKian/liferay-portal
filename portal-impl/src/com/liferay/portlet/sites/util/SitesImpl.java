@@ -662,6 +662,10 @@ public class SitesImpl implements Sites {
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		if (_log.isWarnEnabled()) {
+			_log.warn("touched file");
+		}
+
 		User user = UserLocalServiceUtil.fetchUser(serviceContext.getUserId());
 
 		if (user == null) {
@@ -1332,6 +1336,10 @@ public class SitesImpl implements Sites {
 	@Override
 	public void mergeLayoutSetPrototypeLayouts(Group group, LayoutSet layoutSet)
 		throws Exception {
+
+		if (_log.isWarnEnabled()) {
+			_log.warn("touched file");
+		}
 
 		layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
 			layoutSet.getLayoutSetId());

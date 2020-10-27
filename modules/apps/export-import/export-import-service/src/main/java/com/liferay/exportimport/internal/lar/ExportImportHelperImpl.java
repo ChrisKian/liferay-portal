@@ -209,6 +209,10 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		}
 
 		for (List<Portlet> rankedPortlets : rankedPortletsMap.values()) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("touched file");
+			}
+
 			dataSiteLevelPortlets.addAll(rankedPortlets);
 		}
 

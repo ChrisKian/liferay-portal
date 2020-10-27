@@ -397,11 +397,15 @@ public class SiteAdministrationPanelCategoryDisplayContext {
 		List<Group> recentSites = _recentGroupManager.getRecentGroups(
 			PortalUtil.getHttpServletRequest(_portletRequest));
 
-		if (mySites.isEmpty() && recentSites.isEmpty()) {
-			return false;
+		if (_log.isWarnEnabled()) {
+			_log.warn("touched file");
 		}
 
-		return true;
+		if (!mySites.isEmpty() || !recentSites.isEmpty()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isShowStagingInfo() throws PortalException {

@@ -748,6 +748,10 @@ public class StagedLayoutSetStagedModelDataHandler
 			boolean privateLayout)
 		throws PortalException {
 
+		if (_log.isWarnEnabled()) {
+			_log.warn("touched file");
+		}
+
 		if (ExportImportThreadLocal.isInitialLayoutStagingInProcess()) {
 			return;
 		}

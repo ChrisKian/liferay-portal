@@ -131,6 +131,10 @@ public class RecentGroupManager {
 			String value, PortletRequest portletRequest)
 		throws Exception {
 
+		if (_log.isWarnEnabled()) {
+			_log.warn("touched file");
+		}
+
 		long[] groupIds = StringUtil.split(value, 0L);
 
 		if (ArrayUtil.isEmpty(groupIds)) {
