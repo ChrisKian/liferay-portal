@@ -100,6 +100,23 @@ public class RecentGroupManager {
 		return Collections.emptyList();
 	}
 
+	public boolean hasRecentGroups(HttpServletRequest httpServletRequest) {
+		String value = _getRecentGroupsValue(httpServletRequest);
+
+		try {
+			PortletRequest portletRequest =
+				(PortletRequest)httpServletRequest.getAttribute(
+					JavaConstants.JAVAX_PORTLET_REQUEST);
+
+			return hasRecentGroups(value, portletRequest);
+		}
+		catch (Exception exception) {
+			_log.error("Unable to determine if recent groups exist", exception);
+		}
+
+		return false;
+	}
+
 	/**
 	 * @deprecated As of Judson (7.1.x), replaced by {@link
 	 *             #getRecentGroups(String, PortletRequest)}
@@ -139,47 +156,36 @@ public class RecentGroupManager {
 
 		List<Group> groups = new ArrayList<>(groupIds.length);
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(
-				_portal.getUser(portletRequest));
+		for (long groupId : groupIds) {
+			Group group = _groupLocalService.fetchGroup(groupId);
+
+			if (_hasGroupURL(group, portletRequest)) {
+				groups.add(group);
+			}
+		}
+
+		return groups;
+	}
+
+	protected boolean hasRecentGroups(
+			String value, PortletRequest portletRequest)
+		throws Exception {
+
+		long[] groupIds = StringUtil.split(value, 0L);
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return false;
+		}
 
 		for (long groupId : groupIds) {
 			Group group = _groupLocalService.fetchGroup(groupId);
 
-			if (!_groupLocalService.isLiveGroupActive(group)) {
-				continue;
+			if (_hasGroupURL(group, portletRequest)) {
+				return true;
 			}
-
-			if (!group.isCompany()) {
-				Layout layout = _layoutLocalService.fetchFirstLayout(
-					group.getGroupId(), false,
-					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
-
-				if (layout == null) {
-					layout = _layoutLocalService.fetchFirstLayout(
-						group.getGroupId(), true,
-						LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
-
-					if ((layout == null) ||
-						!LayoutPermissionUtil.contains(
-							permissionChecker, layout, true, ActionKeys.VIEW)) {
-
-						continue;
-					}
-				}
-			}
-
-			String groupURL = _groupURLProvider.getGroupURL(
-				group, portletRequest);
-
-			if (Validator.isNull(groupURL)) {
-				continue;
-			}
-
-			groups.add(group);
 		}
 
-		return groups;
+		return false;
 	}
 
 	@Reference(unbind = "-")
@@ -205,6 +211,45 @@ public class RecentGroupManager {
 		HttpServletRequest httpServletRequest) {
 
 		return SessionClicks.get(httpServletRequest, _KEY_RECENT_GROUPS, null);
+	}
+
+	private boolean _hasGroupURL(Group group, PortletRequest portletRequest)
+		throws Exception {
+
+		if (!_groupLocalService.isLiveGroupActive(group)) {
+			return false;
+		}
+
+		if (!group.isCompany()) {
+			Layout layout = _layoutLocalService.fetchFirstLayout(
+				group.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+			if (layout == null) {
+				layout = _layoutLocalService.fetchFirstLayout(
+					group.getGroupId(), true,
+					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+				PermissionChecker permissionChecker =
+					PermissionCheckerFactoryUtil.create(
+						_portal.getUser(portletRequest));
+
+				if ((layout == null) ||
+					!LayoutPermissionUtil.contains(
+						permissionChecker, layout, true, ActionKeys.VIEW)) {
+
+					return false;
+				}
+			}
+		}
+
+		if (Validator.isNull(
+				_groupURLProvider.getGroupURL(group, portletRequest))) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private void _setRecentGroupsValue(
