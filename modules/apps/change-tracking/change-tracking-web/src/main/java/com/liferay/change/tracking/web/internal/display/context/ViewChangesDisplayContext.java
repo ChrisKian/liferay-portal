@@ -73,6 +73,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -682,6 +683,21 @@ public class ViewChangesDisplayContext {
 		return rootClassNameIds;
 	}
 
+	private <T extends BaseModel<T>> String _getTitle(
+		long ctCollectionId, CTSQLModeThreadLocal.CTSQLMode ctSQLMode,
+		Locale locale, T model, long modelClassNameId, long modelClassPK) {
+
+		if (model == null) {
+			return StringBundler.concat(
+				_ctDisplayRendererRegistry.getTypeName(
+					locale, modelClassNameId),
+				StringPool.SPACE, modelClassPK);
+		}
+
+		return _ctDisplayRendererRegistry.getTitle(
+			ctCollectionId, ctSQLMode, locale, model, modelClassNameId);
+	}
+
 	private <T extends BaseModel<T>> boolean _isSite(T model) {
 		if (model instanceof Group) {
 			Group group = (Group)model;
@@ -738,10 +754,11 @@ public class ViewChangesDisplayContext {
 					"modelKey", modelInfo._modelKey
 				).put(
 					"title",
-					_ctDisplayRendererRegistry.getTitle(
+					_getTitle(
 						CTConstants.CT_COLLECTION_ID_PRODUCTION,
 						CTSQLModeThreadLocal.CTSQLMode.DEFAULT,
-						_themeDisplay.getLocale(), model, modelClassNameId)
+						_themeDisplay.getLocale(), model, modelClassNameId,
+						classPK)
 				);
 
 				modelInfo._site = _isSite(model);
@@ -807,9 +824,9 @@ public class ViewChangesDisplayContext {
 						true)
 				).put(
 					"title",
-					_ctDisplayRendererRegistry.getTitle(
+					_getTitle(
 						ctCollectionId, ctSQLMode, _themeDisplay.getLocale(),
-						model, modelClassNameId)
+						model, modelClassNameId, classPK)
 				).put(
 					"userId", ctEntry.getUserId()
 				);
