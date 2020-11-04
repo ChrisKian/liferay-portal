@@ -1896,7 +1896,7 @@ public class SitesImpl implements Sites {
 
 		Map<String, Serializable> exportLayoutSettingsMap;
 
-		if (parameterMap.containsKey("lastMergeTime")) {
+		if (parameterMap.containsKey("lastMergeTime") && false) {
 			String lastMergeTime = parameterMap.get("lastMergeTime")[0];
 
 			exportLayoutSettingsMap =
