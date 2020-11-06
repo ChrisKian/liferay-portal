@@ -756,7 +756,7 @@ public class StagedLayoutSetStagedModelDataHandler
 			(Map<Long, Layout>)portletDataContext.getNewPrimaryKeysMap(
 				Layout.class + ".layout");
 
-		Map<Long, Integer> layoutPriorities = new HashMap<>();
+		Map<Layout, Integer> layoutPriorities = new HashMap<>();
 
 		Map<Long, List<String>> siblingActionsMap = new HashMap<>();
 
@@ -811,22 +811,22 @@ public class StagedLayoutSetStagedModelDataHandler
 					layout.getParentLayoutId(),
 					layout.getSourcePrototypeLayoutUuid(), layoutPriority);
 
-				layoutPriorities.put(layout.getPlid(), layoutPriority);
+				if (layout.getPriority() != layoutPriority || true) {
+					layoutPriorities.put(layout, layoutPriority);
+				}
 			}
 		}
 
 		Set<Long> parentLayoutIds = new HashSet<>();
 
-		Set<Long> updatedPlids = layoutPriorities.keySet();
+		Set<Layout> updatedLayouts = layoutPriorities.keySet();
 
-		for (long plid : updatedPlids) {
-			Layout layout = _layoutLocalService.fetchLayout(plid);
+		for (Layout updatedLayout : updatedLayouts) {
+			updatedLayout.setPriority(layoutPriorities.get(updatedLayout));
 
-			layout.setPriority(layoutPriorities.get(plid));
+			_layoutLocalService.updateLayout(updatedLayout);
 
-			_layoutLocalService.updateLayout(layout);
-
-			parentLayoutIds.add(layout.getParentLayoutId());
+			parentLayoutIds.add(updatedLayout.getParentLayoutId());
 		}
 
 		for (long parentLayoutId : parentLayoutIds) {
@@ -834,7 +834,7 @@ public class StagedLayoutSetStagedModelDataHandler
 				portletDataContext.getGroupId(), privateLayout, parentLayoutId);
 
 			for (Layout layout : siblingLayouts) {
-				if (!updatedPlids.contains(layout.getPlid()) &&
+				if (!updatedLayouts.contains(layout) &&
 					hasSiblingLayoutWithSamePriority(layout, siblingLayouts)) {
 
 					do {
