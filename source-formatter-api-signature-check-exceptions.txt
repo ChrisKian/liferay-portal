@@ -413,6 +413,7 @@ com.liferay.site.navigation.type.SiteNavigationMenuItemType#getResetMaxStateURL(
 com.liferay.site.util.RecentGroupManager#addRecentGroup(HttpServletRequest,Group)
 com.liferay.site.util.RecentGroupManager#addRecentGroup(HttpServletRequest,long)
 com.liferay.site.util.RecentGroupManager#getRecentGroups(HttpServletRequest)
+com.liferay.site.util.RecentGroupManager#hasRecentGroups(HttpServletRequest)
 com.liferay.sites.kernel.util.Sites#addPortletBreadcrumbEntries(Group,HttpServletRequest,PortletURL)
 com.liferay.sites.kernel.util.Sites#addPortletBreadcrumbEntries(Group,HttpServletRequest,RenderResponse)
 com.liferay.sites.kernel.util.Sites#addPortletBreadcrumbEntries(Group,String,PortletURL,HttpServletRequest,RenderResponse)
