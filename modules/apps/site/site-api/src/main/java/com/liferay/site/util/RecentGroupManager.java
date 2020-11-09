@@ -83,7 +83,18 @@ public class RecentGroupManager {
 		_setRecentGroupsValue(httpServletRequest, StringUtil.merge(groupIds));
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getRecentGroups(HttpServletRequest, int)}
+	 */
+	@Deprecated
 	public List<Group> getRecentGroups(HttpServletRequest httpServletRequest) {
+		return getRecentGroups(httpServletRequest, 0);
+	}
+
+	public List<Group> getRecentGroups(
+		HttpServletRequest httpServletRequest, int end) {
+
 		String value = _getRecentGroupsValue(httpServletRequest);
 
 		try {
@@ -91,7 +102,7 @@ public class RecentGroupManager {
 				(PortletRequest)httpServletRequest.getAttribute(
 					JavaConstants.JAVAX_PORTLET_REQUEST);
 
-			return getRecentGroups(value, portletRequest);
+			return getRecentGroups(value, portletRequest, end);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get recent groups", exception);
@@ -127,8 +138,20 @@ public class RecentGroupManager {
 		return groups;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getRecentGroups(String, PortletRequest, int)}
+	 */
+	@Deprecated
 	protected List<Group> getRecentGroups(
 			String value, PortletRequest portletRequest)
+		throws Exception {
+
+		return getRecentGroups(value, portletRequest, 0);
+	}
+
+	protected List<Group> getRecentGroups(
+			String value, PortletRequest portletRequest, int end)
 		throws Exception {
 
 		long[] groupIds = StringUtil.split(value, 0L);
@@ -177,6 +200,10 @@ public class RecentGroupManager {
 			}
 
 			groups.add(group);
+
+			if ((end > 0) && (groups.size() >= end)) {
+				break;
+			}
 		}
 
 		return groups;
