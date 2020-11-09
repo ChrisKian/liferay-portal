@@ -266,7 +266,7 @@ public class ApplicationsMenuMVCResourceCommand extends BaseMVCResourceCommand {
 		int max = 8;
 
 		List<Group> recentGroups = _recentGroupManager.getRecentGroups(
-			httpServletRequest);
+			httpServletRequest, max + 1);
 
 		if (ListUtil.isNotEmpty(recentGroups)) {
 			sitesJSONObject.put(

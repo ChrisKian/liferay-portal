@@ -117,7 +117,7 @@ public class MySitesPersonalMenuEntry implements PersonalMenuEntry {
 			PropsValues.MY_SITES_MAX_ELEMENTS);
 
 		List<Group> recentGroups = _recentGroupManager.getRecentGroups(
-			_portal.getHttpServletRequest(portletRequest));
+			_portal.getHttpServletRequest(portletRequest), 1);
 
 		if (mySiteGroups.isEmpty() && recentGroups.isEmpty()) {
 			return false;
