@@ -293,26 +293,17 @@ public class ViewConflictsDisplayContext {
 			T model = _ctDisplayRendererRegistry.fetchCTModel(
 				modelClassNameId, conflictInfo.getTargetPrimaryKey());
 
-			String title = null;
-
-			if (model != null) {
-				title = _ctDisplayRendererRegistry.getTitle(
-					CTConstants.CT_COLLECTION_ID_PRODUCTION,
-					CTSQLModeThreadLocal.CTSQLMode.DEFAULT,
-					_themeDisplay.getLocale(), model, modelClassNameId,
-					conflictInfo.getTargetPrimaryKey());
-			}
-			else {
-				title = _ctDisplayRendererRegistry.getTypeName(
-					_themeDisplay.getLocale(), modelClassNameId);
-			}
-
 			jsonObject.put(
 				"description",
 				_ctDisplayRendererRegistry.getTypeName(
 					_themeDisplay.getLocale(), modelClassNameId)
 			).put(
-				"title", title
+				"title",
+				_ctDisplayRendererRegistry.getTitle(
+					CTConstants.CT_COLLECTION_ID_PRODUCTION,
+					CTSQLModeThreadLocal.CTSQLMode.DEFAULT,
+					_themeDisplay.getLocale(), model, modelClassNameId,
+					conflictInfo.getTargetPrimaryKey())
 			).put(
 				"viewURL",
 				_getViewURL(
