@@ -279,6 +279,53 @@ public class CTDisplayRendererRegistry {
 			model.getPrimaryKeyObj());
 	}
 
+	public <T extends BaseModel<T>> String getTitle(
+		long ctCollectionId, CTSQLModeThreadLocal.CTSQLMode ctSQLMode,
+		Locale locale, T model, long modelClassNameId, long modelClassPK) {
+
+		if (model == null) {
+			return StringBundler.concat(
+				getTypeName(locale, modelClassNameId), StringPool.SPACE,
+				modelClassPK);
+		}
+
+		CTDisplayRenderer<T> ctDisplayRenderer =
+			(CTDisplayRenderer<T>)_ctDisplayServiceTrackerMap.getService(
+				modelClassNameId);
+
+		String name = null;
+
+		if (ctDisplayRenderer != null) {
+			try (SafeClosable safeClosable1 =
+					CTCollectionThreadLocal.setCTCollectionId(ctCollectionId);
+				SafeClosable safeClosable2 = CTSQLModeThreadLocal.setCTSQLMode(
+					ctSQLMode)) {
+
+				name = ctDisplayRenderer.getTitle(locale, model);
+			}
+			catch (PortalException portalException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(portalException, portalException);
+				}
+
+				String typeName = ctDisplayRenderer.getTypeName(locale);
+
+				if (Validator.isNotNull(typeName)) {
+					return StringBundler.concat(
+						typeName, StringPool.SPACE, model.getPrimaryKeyObj());
+				}
+			}
+		}
+
+		if (Validator.isNotNull(name)) {
+			return name;
+		}
+
+		return StringBundler.concat(
+			getTypeName(locale, modelClassNameId), StringPool.SPACE,
+			model.getPrimaryKeyObj());
+	}
+
 	public <T extends BaseModel<T>> String getTypeName(
 		Locale locale, long modelClassNameId) {
 
