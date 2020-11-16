@@ -299,7 +299,8 @@ public class ViewConflictsDisplayContext {
 				title = _ctDisplayRendererRegistry.getTitle(
 					CTConstants.CT_COLLECTION_ID_PRODUCTION,
 					CTSQLModeThreadLocal.CTSQLMode.DEFAULT,
-					_themeDisplay.getLocale(), model, modelClassNameId);
+					_themeDisplay.getLocale(), model, modelClassNameId,
+					conflictInfo.getTargetPrimaryKey());
 			}
 			else {
 				title = _ctDisplayRendererRegistry.getTypeName(

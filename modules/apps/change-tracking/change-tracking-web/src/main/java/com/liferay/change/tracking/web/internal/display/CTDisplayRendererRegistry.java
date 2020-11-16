@@ -235,9 +235,14 @@ public class CTDisplayRendererRegistry {
 
 		return getTitle(
 			ctCollectionId, ctSQLMode, locale, model,
-			ctEntry.getModelClassNameId());
+			ctEntry.getModelClassNameId(), ctEntry.getModelClassPK());
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #getTitle(long, CTSQLModeThreadLocal.CTSQLMode, Locale, T, long, long)}
+	 */
+	@Deprecated
 	public <T extends BaseModel<T>> String getTitle(
 		long ctCollectionId, CTSQLModeThreadLocal.CTSQLMode ctSQLMode,
 		Locale locale, T model, long modelClassNameId) {

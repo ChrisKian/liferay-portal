@@ -741,7 +741,8 @@ public class ViewChangesDisplayContext {
 					_ctDisplayRendererRegistry.getTitle(
 						CTConstants.CT_COLLECTION_ID_PRODUCTION,
 						CTSQLModeThreadLocal.CTSQLMode.DEFAULT,
-						_themeDisplay.getLocale(), model, modelClassNameId)
+						_themeDisplay.getLocale(), model, modelClassNameId,
+						classPK)
 				);
 
 				modelInfo._site = _isSite(model);
@@ -809,7 +810,7 @@ public class ViewChangesDisplayContext {
 					"title",
 					_ctDisplayRendererRegistry.getTitle(
 						ctCollectionId, ctSQLMode, _themeDisplay.getLocale(),
-						model, modelClassNameId)
+						model, modelClassNameId, classPK)
 				).put(
 					"userId", ctEntry.getUserId()
 				);
