@@ -227,12 +227,6 @@ public class CTDisplayRendererRegistry {
 			ctCollectionId, ctSQLMode, ctEntry.getModelClassNameId(),
 			ctEntry.getModelClassPK());
 
-		if (model == null) {
-			return StringBundler.concat(
-				getTypeName(locale, ctEntry.getModelClassNameId()),
-				StringPool.SPACE, ctEntry.getModelClassPK());
-		}
-
 		return getTitle(
 			ctCollectionId, ctSQLMode, locale, model,
 			ctEntry.getModelClassNameId(), ctEntry.getModelClassPK());
