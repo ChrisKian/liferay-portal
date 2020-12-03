@@ -5,6 +5,22 @@
 	z-index: $control-menu-zindex;
 }
 
+.has-control-menu {
+	:not(.portlet):target::before {
+		content: '';
+		display: block;
+		height: $has-control-menu-margin-top-mobile;
+		margin-top: -$has-control-menu-margin-top-mobile;
+	}
+
+	@include media-breakpoint-up(sm) {
+		:not(.portlet):target::before {
+			height: $has-control-menu-margin-top-desktop;
+			margin-top: -$has-control-menu-margin-top-desktop;
+		}
+	}
+}
+
 .control-menu-icon {
 	display: inline-block;
 }
