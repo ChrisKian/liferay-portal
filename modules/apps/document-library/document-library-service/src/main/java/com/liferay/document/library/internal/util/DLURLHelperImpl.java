@@ -47,7 +47,6 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.documentlibrary.webdav.DLWebDAVUtil;
 import com.liferay.trash.TrashHelper;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
@@ -215,7 +214,7 @@ public class DLURLHelperImpl implements DLURLHelper {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL) {
 
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(13);
 
 		if ((themeDisplay != null) && absoluteURL) {
 			sb.append(themeDisplay.getPortalURL());
@@ -242,17 +241,12 @@ public class DLURLHelperImpl implements DLURLHelper {
 		if (appendVersion) {
 			sb.append("?version=");
 			sb.append(fileVersion.getVersion());
-			sb.append("&t=");
+			sb.append(queryString);
 		}
-		else {
-			sb.append("?t=");
+		else if (Validator.isNotNull(queryString)) {
+			sb.append("?");
+			sb.append(queryString.substring(1));
 		}
-
-		Date modifiedDate = fileVersion.getModifiedDate();
-
-		sb.append(modifiedDate.getTime());
-
-		sb.append(queryString);
 
 		String previewURL = sb.toString();
 
