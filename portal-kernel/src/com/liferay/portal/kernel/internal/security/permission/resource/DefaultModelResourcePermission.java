@@ -15,6 +15,8 @@
 package com.liferay.portal.kernel.internal.security.permission.resource;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -110,20 +112,21 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 
 		Boolean contains = (Boolean)permissionChecksMap.get(permissionCacheKey);
 
-		if (contains != null &&
+		if (_log.isDebugEnabled() && (contains != null) &&
 			(_modelName.equals(
 				"com.liferay.document.library.kernel.model.DLFileEntry") ||
-			_modelName.equals(
-				"com.liferay.document.library.kernel.model.DLFolder")) &&
+			 _modelName.equals(
+				 "com.liferay.document.library.kernel.model.DLFolder")) &&
 			actionId.equals(ActionKeys.VIEW)) {
 
-			System.out.println("LPP-38738: Retrieved permission check.");
+			_log.debug("LPP-38738: Retrieved permission check.");
 
-			if (contains == true) {
-				System.out.println("  LPP-38738: Value is true.");
+			if (contains) {
+				_log.debug("  LPP-38738: Value is true.");
 			}
 			else {
-				System.out.println("  LPP-38738: Value is false, ignoring cached value.");
+				_log.debug(
+					"  LPP-38738: Value is false, ignoring cached value.");
 				contains = null;
 			}
 		}
@@ -154,20 +157,20 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 
 		Boolean log = false;
 
-		if ((_modelName.equals(
-			"com.liferay.document.library.kernel.model.DLFileEntry") ||
+		if (_log.isDebugEnabled() &&
+			(_modelName.equals(
+				"com.liferay.document.library.kernel.model.DLFileEntry") ||
 			 _modelName.equals(
 				 "com.liferay.document.library.kernel.model.DLFolder")) &&
 			actionId.equals(ActionKeys.VIEW)) {
 
 			log = true;
 
-			System.out.println(
-				"LPP-38738: Checking VIEW permission for " + _modelName);
+			_log.debug("LPP-38738: Checking VIEW permission for " + _modelName);
 
-			System.out.println(
+			_log.debug(
 				"LPP-38738: modelResourcePermissionLogics: " +
-				_modelResourcePermissionLogics);
+					_modelResourcePermissionLogics);
 		}
 
 		actionId = _modelResourcePermissionDefinition.mapActionId(actionId);
@@ -180,13 +183,15 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 
 			if (contains != null) {
 				if (log) {
-					System.out.println(
+					_log.debug(
 						"  LPP-38738: modelResourcePermissionLogic: " +
-						modelResourcePermissionLogic);
-
-					System.out.println(
-						"  LPP-38738: contains value: " + contains);
+							modelResourcePermissionLogic);
 				}
+
+				if (log) {
+					_log.debug("  LPP-38738: contains is: " + contains);
+				}
+
 				return contains;
 			}
 		}
@@ -195,7 +200,7 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 			_modelResourcePermissionDefinition.getPrimaryKey(model));
 
 		if (log) {
-			System.out.println(
+			_log.debug(
 				"  LPP-38738: No value found from " +
 					"modelResourcePermissionLogic. Checking owner permission.");
 		}
@@ -205,13 +210,14 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 				actionId)) {
 
 			if (log) {
-				System.out.println("  LPP-38738: Has owner permission.");
+				_log.debug("  LPP-38738: Has owner permission.");
 			}
+
 			return true;
 		}
 
 		if (log) {
-			System.out.println(
+			_log.debug(
 				"  LPP-38738: No owner permission.  " +
 					"Checking other permissions");
 		}
@@ -219,6 +225,9 @@ public class DefaultModelResourcePermission<T extends GroupedModel>
 		return permissionChecker.hasPermission(
 			model.getGroupId(), _modelName, primKey, actionId);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DefaultModelResourcePermission.class);
 
 	private final String _modelName;
 	private final ModelResourcePermissionDefinition<T>

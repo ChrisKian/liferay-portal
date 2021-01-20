@@ -17,6 +17,8 @@ package com.liferay.staging.security.internal.permission;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -158,11 +160,14 @@ public class StagingPermissionChecker implements PermissionChecker {
 		if ((liveGroup != group) &&
 			primKey.equals(String.valueOf(group.getGroupId()))) {
 
-			if (name.equals(
-				"com.liferay.document.library.kernel.model.DLFileEntry") &&
+			if (_log.isDebugEnabled() &&
+				(name.equals(
+					"com.liferay.document.library.kernel.model.DLFileEntry") ||
+				 name.equals(
+					 "com.liferay.document.library.kernel.model.DLFolder")) &&
 				actionId.equals(ActionKeys.VIEW)) {
 
-				System.out.println("  LPP-38738: Using primKey of live site.");
+				_log.debug("  LPP-38738: Using primKey of live site.");
 			}
 
 			primKey = String.valueOf(liveGroup.getGroupId());
@@ -270,5 +275,8 @@ public class StagingPermissionChecker implements PermissionChecker {
 	}
 
 	private final PermissionChecker _permissionChecker;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StagingPermissionChecker.class);
 
 }

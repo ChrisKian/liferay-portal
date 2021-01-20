@@ -15,6 +15,8 @@
 package com.liferay.portal.kernel.security.auth;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -176,12 +178,15 @@ public class PrincipalException extends PortalException {
 					(resourceId == 0) ? "" : resourceId),
 				cause);
 
-			System.out.println("LPP-38738: Throwing PrincipalException.");
-			System.out.println("  LPP-38738: userId: " + userId);
-			System.out.println("  LPP-38738: resourceName: " + resourceName);
-			System.out.println("  LPP-38738: resourceId: " + resourceId);
-			for (String actionId : actionIds) {
-				System.out.println("  LPP-38738: actionId: " + actionId);
+			if (_log.isDebugEnabled()) {
+				_log.debug("LPP-38738: Throwing PrincipalException.");
+				_log.debug("  LPP-38738: userId: " + userId);
+				_log.debug("  LPP-38738: resourceName: " + resourceName);
+				_log.debug("  LPP-38738: resourceId: " + resourceId);
+
+				for (String actionId : actionIds) {
+					_log.debug("  LPP-38738: actionId: " + actionId);
+				}
 			}
 
 			this.userId = userId;
@@ -269,5 +274,8 @@ public class PrincipalException extends PortalException {
 		PrincipalException.MustHavePermission.class,
 		PrincipalException.MustHaveValidCSRFToken.class
 	};
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		PrincipalException.class);
 
 }

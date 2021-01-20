@@ -246,10 +246,14 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	@Override
 	public boolean hasPermission(
 		Group group, String name, String primKey, String actionId) {
+
 		boolean log = false;
 
-		if (name.equals(
-			"com.liferay.document.library.kernel.model.DLFileEntry") &&
+		if (_log.isDebugEnabled() &&
+			(name.equals(
+				"com.liferay.document.library.kernel.model.DLFileEntry") ||
+			 name.equals(
+				 "com.liferay.document.library.kernel.model.DLFolder")) &&
 			actionId.equals(ActionKeys.VIEW)) {
 
 			log = true;
@@ -272,8 +276,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 						group.getClassPK());
 
 					if (log) {
-						System.out.println(
-							"  LPP-38738: Getting layout groupId.");
+						_log.debug("  LPP-38738: Getting layout groupId.");
 					}
 
 					group = layout.getGroup();
@@ -305,11 +308,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		if (log) {
 			if (value != null) {
 				if (value = true) {
-					System.out.println(
+					_log.debug(
 						"  LPP-38738: PermissionCacheUtil returned true.");
 				}
 				else {
-					System.out.println(
+					_log.debug(
 						"  LPP-38738: PermissionCacheUtil returned false.  " +
 							"Resetting.");
 
@@ -317,8 +320,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 				}
 			}
 			else {
-				System.out.println(
-					"  LPP-38738: PermissionCacheUtil returned null.");
+				_log.debug("  LPP-38738: PermissionCacheUtil returned null.");
 			}
 		}
 
@@ -1268,9 +1270,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		for (Role role : roles) {
 			if (log) {
-				System.out.println(
-					"  LPP-38738: Adding Team Role: " +
-						role.getName());
+				_log.debug("  LPP-38738: Adding Team Role: " + role.getName());
 			}
 
 			roleIds.add(role.getRoleId());
@@ -1306,20 +1306,6 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			});
 	}
 
-	private long[] _getRoleIds(long userId, long groupId, boolean log) {
-		try {
-			return _applyRoleContributors(
-				_doGetRoleIds(userId, groupId, log), groupId);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception, exception);
-			}
-
-			return PermissionChecker.DEFAULT_ROLE_IDS;
-		}
-	}
-
 	private long[] _doGetRoleIds(long userId, long groupId, boolean log)
 		throws Exception {
 
@@ -1330,24 +1316,25 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
 			userId, GetterUtil.getLong(GroupThreadLocal.getGroupId(), groupId));
 
-
 		if (roleIds != null) {
 			if (log) {
-				System.out.println(
+				_log.debug(
 					"  LPP-38738: Found the following roles from " +
 						"PermissionCacheUtil:");
 
 				for (long roleId : roleIds) {
-					System.out.println(
+					_log.debug(
 						"    LPP-38738: " +
-							RoleLocalServiceUtil.getRole(roleId).getName());
+							RoleLocalServiceUtil.getRole(
+								roleId
+							).getName());
 				}
 			}
 			else {
 				return roleIds;
 			}
 
-			System.out.println("  LPP-38738: Ignoring PermissionCacheUtil:");
+			_log.debug("  LPP-38738: Ignoring PermissionCacheUtil:");
 		}
 
 		try {
@@ -1371,12 +1358,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 			Set<Long> roleIdsSet = SetUtil.fromArray(userBag.getRoleIds());
 
-			if (log && roleIdsSet.size() > 0) {
-				System.out.println(
-					"  LPP-38738: Retrieved RoleIds from user bag: ");
+			if (log && (roleIdsSet.size() > 0)) {
+				_log.debug("  LPP-38738: Retrieved RoleIds from user bag: ");
 
 				for (long roleId : roleIdsSet) {
-					System.out.println("    LPP-38738: roleId: " + roleId);
+					_log.debug("    LPP-38738: roleId: " + roleId);
 				}
 			}
 
@@ -1386,9 +1372,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 			for (UserGroupRole userGroupRole : userGroupRoles) {
 				if (log) {
-					System.out.println(
+					_log.debug(
 						"  LPP-38738: Adding UserGroupRole: " +
-							userGroupRole.getRole().getName());
+							userGroupRole.getRole(
+							).getName());
 				}
 
 				roleIdsSet.add(userGroupRole.getRoleId());
@@ -1396,10 +1383,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 			if (parentGroupId > 0) {
 				if (log) {
-					System.out.println(
+					_log.debug(
 						"  LPP-38738: Including UserGroupRoles from " +
-							"parentGroupId: " +
-								parentGroupId);
+							"parentGroupId: " + parentGroupId);
 				}
 
 				userGroupRoles =
@@ -1408,9 +1394,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 				for (UserGroupRole userGroupRole : userGroupRoles) {
 					if (log) {
-						System.out.println(
+						_log.debug(
 							"  LPP-38738: Adding parent UserGroupRole: " +
-								userGroupRole.getRole().getName());
+								userGroupRole.getRole(
+								).getName());
 					}
 
 					roleIdsSet.add(userGroupRole.getRoleId());
@@ -1425,12 +1412,13 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 						getUserGroupGroupRolesByUser(userId, groupId);
 
 				for (UserGroupGroupRole userGroupGroupRole :
-					userGroupGroupRoles) {
+						userGroupGroupRoles) {
 
 					if (log) {
-						System.out.println(
+						_log.debug(
 							"  LPP-38738: Adding userGroupGroupRole: " +
-							userGroupGroupRole.getRole().getName());
+								userGroupGroupRole.getRole(
+								).getName());
 					}
 
 					roleIdsSet.add(userGroupGroupRole.getRoleId());
@@ -1442,13 +1430,14 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 							getUserGroupGroupRoles(userId, parentGroupId);
 
 					for (UserGroupGroupRole userGroupGroupRole :
-						userGroupGroupRoles) {
+							userGroupGroupRoles) {
 
 						if (log) {
-							System.out.println(
+							_log.debug(
 								"  LPP-38738: Adding parent " +
 									"userGroupGroupRole: " +
-										userGroupGroupRole.getRole().getName());
+										userGroupGroupRole.getRole(
+										).getName());
 						}
 
 						roleIdsSet.add(userGroupGroupRole.getRoleId());
@@ -1462,9 +1451,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 						group.getCompanyId(), RoleConstants.ORGANIZATION_USER);
 
 					if (log) {
-						System.out.println(
+						_log.debug(
 							"  LPP-38738: Adding Organization User role : " +
-							organizationUserRole.getName());
+								organizationUserRole.getName());
 					}
 
 					roleIdsSet.add(organizationUserRole.getRoleId());
@@ -1478,9 +1467,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 						group.getCompanyId(), RoleConstants.SITE_MEMBER);
 
 					if (log) {
-						System.out.println(
+						_log.debug(
 							"  LPP-38738: Adding SiteMember role : " +
-							siteMemberRole.getName());
+								siteMemberRole.getName());
 					}
 
 					roleIdsSet.add(siteMemberRole.getRoleId());
@@ -1495,9 +1484,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 							group.getCompanyId(), RoleConstants.SITE_MEMBER);
 
 						if (log) {
-							System.out.println(
+							_log.debug(
 								"  LPP-38738: Adding SiteMember role : " +
-								siteMemberRole.getName());
+									siteMemberRole.getName());
 						}
 
 						roleIdsSet.add(siteMemberRole.getRoleId());
@@ -1519,9 +1508,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			if (checkGuest) {
 				for (long roleId : getGuestUserRoleIds()) {
 					if (log) {
-						System.out.println(
+						_log.debug(
 							"  LPP-38738: Adding Guest role : " +
-							RoleLocalServiceUtil.getRole(roleId).getName());
+								RoleLocalServiceUtil.getRole(
+									roleId
+								).getName());
 					}
 
 					roleIdsSet.add(roleId);
@@ -1540,6 +1531,20 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			PermissionCacheUtil.removeUserGroupRoleIds(userId, groupId);
 
 			throw exception;
+		}
+	}
+
+	private long[] _getRoleIds(long userId, long groupId, boolean log) {
+		try {
+			return _applyRoleContributors(
+				_doGetRoleIds(userId, groupId, log), groupId);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+
+			return PermissionChecker.DEFAULT_ROLE_IDS;
 		}
 	}
 
@@ -1641,8 +1646,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		boolean log = false;
 
-		if (name.equals(
-			"com.liferay.document.library.kernel.model.DLFileEntry") &&
+		if (_log.isDebugEnabled() &&
+			(name.equals(
+				"com.liferay.document.library.kernel.model.DLFileEntry") ||
+			 name.equals(
+				 "com.liferay.document.library.kernel.model.DLFolder")) &&
 			actionId.equals(ActionKeys.VIEW)) {
 
 			log = true;
@@ -1666,29 +1674,28 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 				stopWatch);
 
 			if (log) {
-				System.out.println(
+				_log.debug(
 					"  LPP-38738: hasPermission " +
-					"modelResourcePermissionLogic. Checking owner permission.");
+						"modelResourcePermissionLogic. Checking owner " +
+							"permission.");
 			}
 
 			if (hasPermission) {
 				if (log) {
-					System.out.println(
-						"  LPP-38738: hasPermission, returning true.");
+					_log.debug("  LPP-38738: hasPermission, returning true.");
 				}
 
 				return true;
 			}
 			else if (log) {
-				System.out.println(
-				"  LPP-38738: hasPermission is false.");
+				_log.debug("  LPP-38738: hasPermission is false.");
 			}
 		}
 		catch (NoSuchResourcePermissionException
 					noSuchResourcePermissionException) {
+
 			if (log) {
-				System.out.println(
-					"  LPP-38738: NoSuchResourcePermissionException.");
+				_log.debug("  LPP-38738: NoSuchResourcePermissionException.");
 			}
 
 			throw new IllegalArgumentException(
@@ -1699,7 +1706,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		if (isOmniadmin()) {
 			if (log) {
-				System.out.println("  LPP-38738: OmniAdmin.");
+				_log.debug("  LPP-38738: OmniAdmin.");
 			}
 
 			return true;
@@ -1713,7 +1720,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		if (isCompanyAdminImpl(companyId)) {
 			if (log) {
-				System.out.println("  LPP-38738: Company Admin.");
+				_log.debug("  LPP-38738: Company Admin.");
 			}
 
 			return true;
@@ -1721,7 +1728,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		if (_isGroupAdminImpl(group)) {
 			if (log) {
-				System.out.println("  LPP-38738: Group Admin.");
+				_log.debug("  LPP-38738: Group Admin.");
 			}
 
 			boolean hasLayoutManagerPermission = true;
@@ -1749,7 +1756,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			ActionKeys.VIEW.equals(actionId)) {
 
 			if (log) {
-				System.out.println("  LPP-38738: User Personal Site.");
+				_log.debug("  LPP-38738: User Personal Site.");
 			}
 
 			// The only check we can perform on top is for the Site Member role.
@@ -1775,7 +1782,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 
 		if (log) {
-			System.out.println("  LPP-38738: returning false.");
+			_log.debug("  LPP-38738: returning false.");
 		}
 
 		return false;

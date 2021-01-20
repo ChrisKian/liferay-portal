@@ -14,6 +14,8 @@
 
 package com.liferay.portal.kernel.internal.security.permission.resource;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -128,17 +130,28 @@ public class DefaultPortletResourcePermission
 				permissionChecker, _resourceName, group, actionId);
 
 			if (contains != null) {
+				if (!contains && _log.isDebugEnabled()) {
+					_log.debug("    LPP-38738: contains is false");
+				}
+
 				return contains;
 			}
 		}
 
 		if ((group != null) && group.isStagingGroup()) {
 			group = group.getLiveGroup();
+
+			if (_log.isDebugEnabled()) {
+				_log.debug("    LPP-38738: Using live group");
+			}
 		}
 
 		return permissionChecker.hasPermission(
 			group, _resourceName, groupId, actionId);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DefaultPortletResourcePermission.class);
 
 	private final PortletResourcePermissionLogic[]
 		_portletResourcePermissionLogics;
