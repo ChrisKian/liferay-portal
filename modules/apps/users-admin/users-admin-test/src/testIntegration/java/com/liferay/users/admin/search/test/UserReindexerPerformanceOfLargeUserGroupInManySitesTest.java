@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -35,7 +37,6 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.search.configuration.ReindexerConfiguration;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.Queries;
-import com.liferay.portal.search.reindexer.Reindexer;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
@@ -131,6 +132,13 @@ public class UserReindexerPerformanceOfLargeUserGroupInManySitesTest {
 	@Test
 	public void testAddUsersThenReindex() throws Exception {
 		List<User> users = addUsers(_userCount);
+
+		reindex(users);
+	}
+
+	@Test
+	public void testAddManyUsersThenReindex() throws Exception {
+		List<User> users = addUsers(1100);
 
 		reindex(users);
 	}
@@ -293,15 +301,11 @@ public class UserReindexerPerformanceOfLargeUserGroupInManySitesTest {
 	}
 
 	protected void reindex(List<User> users) {
-		User user = users.get(0);
-
-		Stream<Long> stream = _getUserIdsStream(users);
-
-		_reindexer.reindex(
-			user.getCompanyId(), _CLASS_NAME,
-			stream.mapToLong(
-				Long::longValue
-			).toArray());
+		try {
+			indexer.reindex(users);
+		}
+		catch (SearchException searchException) {
+		}
 	}
 
 	protected SearchResponse searchUsersInAllGroups(
@@ -360,20 +364,20 @@ public class UserReindexerPerformanceOfLargeUserGroupInManySitesTest {
 		return new HashMapDictionary<>(new HashMap<String, Object>(map));
 	}
 
-	private static final String _CLASS_NAME = User.class.getName();
-
 	private static final boolean _REPORT_TIMES_AND_FAIL = false;
 
 	private static final boolean _STRESS_MODE_10_MIN_TO_RUN_ALL_TESTS = false;
+
+	@Inject(
+		filter = "indexer.class.name=com.liferay.asset.kernel.model.User"
+	)
+	protected Indexer<User> indexer;
 
 	@Inject
 	private static OrganizationLocalService _organizationLocalService;
 
 	@Inject
 	private static Queries _queries;
-
-	@Inject
-	private static Reindexer _reindexer;
 
 	@Inject
 	private static Searcher _searcher;
