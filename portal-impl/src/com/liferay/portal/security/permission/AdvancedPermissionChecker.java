@@ -378,10 +378,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 	}
 
-	protected void addTeamRoles(long userId, Group group, Set<Long> roleIds)
+	protected void addTeamRoles(long userId, long groupId, Set<Long> roleIds)
 		throws Exception {
-
-		long groupId = GroupThreadLocal.getGroupId();
 
 		int count = TeamLocalServiceUtil.getGroupTeamsCount(groupId);
 
@@ -530,7 +528,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			if ((group.isOrganization() && userBag.hasUserOrgGroup(group)) ||
 				(group.isSite() && userBag.hasUserGroup(group))) {
 
-				addTeamRoles(userId, group, roleIdsSet);
+				addTeamRoles(
+					userId,
+					GetterUtil.getLong(
+						GroupThreadLocal.getGroupId(), groupId),
+					roleIdsSet);
 			}
 		}
 
