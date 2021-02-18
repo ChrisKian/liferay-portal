@@ -427,9 +427,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			return getGuestUserRoleIds();
 		}
 
+		long currentGroupId = GetterUtil.getLong(
+			StagingPermissionChecker.getGroupId(), groupId);
+
 		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
-			userId,
-			GetterUtil.getLong(StagingPermissionChecker.getGroupId(), groupId));
+			userId, currentGroupId);
 
 		if (roleIds != null) {
 			return roleIds;
@@ -528,11 +530,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			if ((group.isOrganization() && userBag.hasUserOrgGroup(group)) ||
 				(group.isSite() && userBag.hasUserGroup(group))) {
 
-				addTeamRoles(
-					userId,
-					GetterUtil.getLong(
-						StagingPermissionChecker.getGroupId(), groupId),
-					roleIdsSet);
+				addTeamRoles(userId, currentGroupId, roleIdsSet);
 			}
 		}
 
@@ -547,9 +545,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		Arrays.sort(roleIds);
 
 		PermissionCacheUtil.putUserGroupRoleIds(
-			userId,
-			GetterUtil.getLong(StagingPermissionChecker.getGroupId(), groupId),
-			roleIds);
+			userId, currentGroupId, roleIds);
 
 		return roleIds;
 	}
