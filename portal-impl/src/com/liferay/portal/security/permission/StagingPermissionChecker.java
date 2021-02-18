@@ -18,6 +18,7 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeClosable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -46,16 +47,17 @@ public class StagingPermissionChecker implements PermissionChecker {
 		return groupId;
 	}
 
-	public static void removeGroupId() {
-		if (_log.isDebugEnabled()) {
-			_log.debug("removeGroupId ");
-		}
-
-		_groupId.remove();
+	public static void setGroupId(Long groupId) {
+		_groupId.setWithSafeClosable(groupId);
 	}
 
-	public static void setGroupId(Long groupId) {
-		_groupId.set(groupId);
+	public static SafeClosable setGroupIdWithSafeClosable(Group group) {
+		if (group != null) {
+			return _groupId.setWithSafeClosable(group.getGroupId());
+		}
+
+		return () -> {
+		};
 	}
 
 	public StagingPermissionChecker(PermissionChecker permissionChecker) {
@@ -140,16 +142,9 @@ public class StagingPermissionChecker implements PermissionChecker {
 			primKey = liveGroup.getGroupId();
 		}
 
-		if (group != null) {
-			setGroupId(group.getGroupId());
-		}
-
-		try {
+		try (SafeClosable safeClosable = setGroupIdWithSafeClosable(group)) {
 			return _permissionChecker.hasPermission(
 				liveGroup, name, primKey, actionId);
-		}
-		finally {
-			removeGroupId();
 		}
 	}
 
@@ -169,16 +164,9 @@ public class StagingPermissionChecker implements PermissionChecker {
 			return true;
 		}
 
-		if (group != null) {
-			setGroupId(group.getGroupId());
-		}
-
-		try {
+		try (SafeClosable safeClosable = setGroupIdWithSafeClosable(group)) {
 			return _permissionChecker.hasPermission(
 				liveGroup, name, primKey, actionId);
-		}
-		finally {
-			removeGroupId();
 		}
 	}
 
@@ -278,7 +266,7 @@ public class StagingPermissionChecker implements PermissionChecker {
 	private static final Log _log = LogFactoryUtil.getLog(
 		StagingPermissionChecker.class);
 
-	private static final ThreadLocal<Long> _groupId =
+	private static final CentralizedThreadLocal<Long> _groupId =
 		new CentralizedThreadLocal<>(
 			StagingPermissionChecker.class + "._groupId",
 			() -> GroupConstants.DEFAULT_LIVE_GROUP_ID);
