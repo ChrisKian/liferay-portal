@@ -55,16 +55,7 @@ public class StagingPermissionChecker implements PermissionChecker {
 	}
 
 	public static void setGroupId(Long groupId) {
-		if (_log.isDebugEnabled()) {
-			_log.debug("setGroupId " + groupId);
-		}
-
-		if (groupId > 0) {
-			_groupId.set(groupId);
-		}
-		else {
-			_groupId.set(GroupConstants.DEFAULT_LIVE_GROUP_ID);
-		}
+		_groupId.set(groupId);
 	}
 
 	public StagingPermissionChecker(PermissionChecker permissionChecker) {
