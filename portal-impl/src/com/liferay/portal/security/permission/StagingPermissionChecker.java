@@ -17,7 +17,11 @@ package com.liferay.portal.security.permission;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -31,6 +35,37 @@ import java.util.Objects;
  * @author Tomas Polesovsky
  */
 public class StagingPermissionChecker implements PermissionChecker {
+
+	public static Long getGroupId() {
+		Long groupId = _groupId.get();
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("getGroupId " + groupId);
+		}
+
+		return groupId;
+	}
+
+	public static void removeGroupId() {
+		if (_log.isDebugEnabled()) {
+			_log.debug("removeGroupId ");
+		}
+
+		_groupId.remove();
+	}
+
+	public static void setGroupId(Long groupId) {
+		if (_log.isDebugEnabled()) {
+			_log.debug("setGroupId " + groupId);
+		}
+
+		if (groupId > 0) {
+			_groupId.set(groupId);
+		}
+		else {
+			_groupId.set(GroupConstants.DEFAULT_LIVE_GROUP_ID);
+		}
+	}
 
 	public StagingPermissionChecker(PermissionChecker permissionChecker) {
 		_permissionChecker = permissionChecker;
@@ -104,18 +139,27 @@ public class StagingPermissionChecker implements PermissionChecker {
 	public boolean hasPermission(
 		Group group, String name, long primKey, String actionId) {
 
+		if (_isStagingFolder(name, actionId)) {
+			return true;
+		}
+
 		Group liveGroup = StagingUtil.getLiveGroup(group);
 
 		if ((liveGroup != group) && (primKey == group.getGroupId())) {
 			primKey = liveGroup.getGroupId();
 		}
 
-		if (_isStagingFolder(name, actionId)) {
-			return true;
+		if (group != null) {
+			setGroupId(group.getGroupId());
 		}
 
-		return _permissionChecker.hasPermission(
-			liveGroup, name, primKey, actionId);
+		try {
+			return _permissionChecker.hasPermission(
+				liveGroup, name, primKey, actionId);
+		}
+		finally {
+			removeGroupId();
+		}
 	}
 
 	@Override
@@ -134,8 +178,17 @@ public class StagingPermissionChecker implements PermissionChecker {
 			return true;
 		}
 
-		return _permissionChecker.hasPermission(
-			liveGroup, name, primKey, actionId);
+		if (group != null) {
+			setGroupId(group.getGroupId());
+		}
+
+		try {
+			return _permissionChecker.hasPermission(
+				liveGroup, name, primKey, actionId);
+		}
+		finally {
+			removeGroupId();
+		}
 	}
 
 	@Override
@@ -230,6 +283,14 @@ public class StagingPermissionChecker implements PermissionChecker {
 
 		return false;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StagingPermissionChecker.class);
+
+	private static final ThreadLocal<Long> _groupId =
+		new CentralizedThreadLocal<>(
+			StagingPermissionChecker.class + "._groupId",
+			() -> GroupConstants.DEFAULT_LIVE_GROUP_ID);
 
 	private final PermissionChecker _permissionChecker;
 

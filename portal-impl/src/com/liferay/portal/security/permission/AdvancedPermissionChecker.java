@@ -377,17 +377,17 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 	}
 
-	protected void addTeamRoles(long userId, Group group, Set<Long> roleIds)
+	protected void addTeamRoles(long userId, long groupId, Set<Long> roleIds)
 		throws Exception {
 
-		int count = TeamLocalServiceUtil.getGroupTeamsCount(group.getGroupId());
+		int count = TeamLocalServiceUtil.getGroupTeamsCount(groupId);
 
 		if (count == 0) {
 			return;
 		}
 
 		List<Role> roles = RoleLocalServiceUtil.getUserTeamRoles(
-			userId, group.getGroupId());
+			userId, groupId);
 
 		for (Role role : roles) {
 			roleIds.add(role.getRoleId());
@@ -428,7 +428,8 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		}
 
 		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
-			userId, groupId);
+			userId,
+			GetterUtil.getLong(StagingPermissionChecker.getGroupId(), groupId));
 
 		if (roleIds != null) {
 			return roleIds;
@@ -527,7 +528,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			if ((group.isOrganization() && userBag.hasUserOrgGroup(group)) ||
 				(group.isSite() && userBag.hasUserGroup(group))) {
 
-				addTeamRoles(userId, group, roleIdsSet);
+				addTeamRoles(
+					userId,
+					GetterUtil.getLong(
+						StagingPermissionChecker.getGroupId(), groupId),
+					roleIdsSet);
 			}
 		}
 
@@ -541,7 +546,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		Arrays.sort(roleIds);
 
-		PermissionCacheUtil.putUserGroupRoleIds(userId, groupId, roleIds);
+		PermissionCacheUtil.putUserGroupRoleIds(
+			userId,
+			GetterUtil.getLong(StagingPermissionChecker.getGroupId(), groupId),
+			roleIds);
 
 		return roleIds;
 	}
