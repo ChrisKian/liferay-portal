@@ -395,14 +395,17 @@ public class SiteBrowserDisplayContext {
 		boolean filterManageableGroups = ParamUtil.getBoolean(
 			_httpServletRequest, "filterManageableGroups", true);
 
+		if (!filterManageableGroups) {
+			return groups;
+		}
+
 		List<Group> filteredGroups = new ArrayList<>();
 
 		for (Group group : groups) {
 			if (permissionChecker.isGroupAdmin(group.getGroupId()) ||
-				(!filterManageableGroups &&
-				 GroupPermissionUtil.contains(
-					 permissionChecker, group.getGroupId(),
-					 ActionKeys.ASSIGN_MEMBERS))) {
+				GroupPermissionUtil.contains(
+					permissionChecker, group.getGroupId(),
+					ActionKeys.ASSIGN_MEMBERS)) {
 
 				filteredGroups.add(group);
 			}
