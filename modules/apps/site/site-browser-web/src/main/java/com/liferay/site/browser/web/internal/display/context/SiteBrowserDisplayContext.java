@@ -399,13 +399,19 @@ public class SiteBrowserDisplayContext {
 			return groups;
 		}
 
+		String type = getType();
+
 		List<Group> filteredGroups = new ArrayList<>();
 
 		for (Group group : groups) {
 			if (permissionChecker.isGroupAdmin(group.getGroupId()) ||
 				GroupPermissionUtil.contains(
 					permissionChecker, group.getGroupId(),
-					ActionKeys.ASSIGN_MEMBERS)) {
+					ActionKeys.ASSIGN_MEMBERS) ||
+				(type.equals("sites-that-i-administer") &&
+				 GroupPermissionUtil.contains(
+					 permissionChecker, group.getGroupId(),
+					 ActionKeys.UPDATE))) {
 
 				filteredGroups.add(group);
 			}
