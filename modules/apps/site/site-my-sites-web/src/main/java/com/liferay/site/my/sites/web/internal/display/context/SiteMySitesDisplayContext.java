@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.SearchDisplayStyleUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -116,6 +117,7 @@ public class SiteMySitesDisplayContext {
 		if (Objects.equals(getTabs1(), "my-sites")) {
 			groupParams.put("usersGroups", themeDisplay.getUserId());
 			groupParams.put("active", Boolean.TRUE);
+			groupParams.put("actionId", ActionKeys.VIEW);
 		}
 		else {
 			List<Integer> types = new ArrayList<>();

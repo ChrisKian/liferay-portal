@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -124,6 +125,8 @@ public class SitesThatIAdministerItemSelectorViewDisplayContext
 			User user = themeDisplay.getUser();
 
 			_groupParams.put("usersGroups", user.getUserId());
+
+			_groupParams.put("actionId", ActionKeys.UPDATE);
 		}
 
 		_groupParams.put("site", Boolean.TRUE);
