@@ -166,6 +166,10 @@ public class SiteBrowserDisplayContext {
 				_getGroupId());
 		}
 		else if (!type.equals("parent-sites")) {
+			_getGroupParams();
+
+			_groupParams.putIfAbsent("actionId", ActionKeys.ASSIGN_MEMBERS);
+
 			total = GroupLocalServiceUtil.searchCount(
 				themeDisplay.getCompanyId(), classNameIds,
 				groupSearchTerms.getKeywords(), _getGroupParams());
