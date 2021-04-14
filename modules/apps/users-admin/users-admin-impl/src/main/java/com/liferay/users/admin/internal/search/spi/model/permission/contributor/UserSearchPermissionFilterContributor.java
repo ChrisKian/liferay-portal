@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.search.spi.model.permission.SearchPermissionFilterContributor;
 
 import org.osgi.service.component.annotations.Component;
@@ -50,7 +52,9 @@ public class UserSearchPermissionFilterContributor
 			return;
 		}
 
-		_addAllUsersFilter(booleanFilter, companyId);
+		if (_isGroupAdmin(permissionChecker)) {
+			_addAllUsersFilter(booleanFilter, companyId);
+		}
 	}
 
 	private void _addAllUsersFilter(
@@ -71,6 +75,17 @@ public class UserSearchPermissionFilterContributor
 				"Unable to get the User role for company " + companyId,
 				portalException);
 		}
+	}
+
+	private boolean _isGroupAdmin(PermissionChecker permissionChecker) {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext == null) {
+			return false;
+		}
+
+		return permissionChecker.isGroupAdmin(serviceContext.getScopeGroupId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
