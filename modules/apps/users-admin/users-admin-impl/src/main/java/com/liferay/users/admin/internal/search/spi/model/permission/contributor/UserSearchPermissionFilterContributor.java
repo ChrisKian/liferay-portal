@@ -50,10 +50,17 @@ public class UserSearchPermissionFilterContributor
 			return;
 		}
 
+		_addAllUsersFilter(booleanFilter, companyId);
+	}
+
+	private void _addAllUsersFilter(
+		BooleanFilter booleanFilter, long companyId) {
+
 		try {
 			TermsFilter roleIdsTermsFilter = new TermsFilter(Field.ROLE_IDS);
 
-			Role role = roleLocalService.getRole(companyId, RoleConstants.USER);
+			Role role = _roleLocalService.getRole(
+				companyId, RoleConstants.USER);
 
 			roleIdsTermsFilter.addValue(String.valueOf(role.getRoleId()));
 
@@ -66,10 +73,10 @@ public class UserSearchPermissionFilterContributor
 		}
 	}
 
-	@Reference
-	protected RoleLocalService roleLocalService;
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		UserSearchPermissionFilterContributor.class);
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
