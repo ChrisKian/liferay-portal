@@ -62,10 +62,15 @@ JournalArticle article = journalContentDisplayContext.getOriginalArticle();
 		</c:if>
 
 		<c:if test="<%= JournalArticlePermission.contains(permissionChecker, article, ActionKeys.PERMISSIONS) %>">
+
+			<%
+			JournalArticle latestArticle = journalContentDisplayContext.getLatestArticle();
+			%>
+
 			<liferay-security:permissionsURL
 				modelResource="<%= JournalArticle.class.getName() %>"
-				modelResourceDescription="<%= HtmlUtil.escape(article.getTitle(locale)) %>"
-				resourcePrimKey="<%= String.valueOf(article.getResourcePrimKey()) %>"
+				modelResourceDescription="<%= HtmlUtil.escape(latestArticle.getTitle(locale)) %>"
+				resourcePrimKey="<%= String.valueOf(latestArticle.getResourcePrimKey()) %>"
 				var="permissionsURL"
 				windowState="<%= LiferayWindowState.POP_UP.toString() %>"
 			/>
