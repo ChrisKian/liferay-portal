@@ -555,6 +555,21 @@ public class JournalContentDisplayContext {
 		return _latestArticle;
 	}
 
+	public JournalArticle getOriginalArticle() throws PortalException {
+		if (_originalArticle != null) {
+			return _originalArticle;
+		}
+
+		if (Validator.isBlank(getArticleId())) {
+			return null;
+		}
+
+		_originalArticle = JournalArticleLocalServiceUtil.fetchArticle(
+			getArticleGroupId(), getArticleId(), 1);
+
+		return _originalArticle;
+	}
+
 	public String getPortletResource() {
 		if (_portletResource != null) {
 			return _portletResource;
@@ -1152,6 +1167,7 @@ public class JournalContentDisplayContext {
 	private final JournalContentPortletInstanceConfiguration
 		_journalContentPortletInstanceConfiguration;
 	private JournalArticle _latestArticle;
+	private JournalArticle _originalArticle;
 	private final PortletRequest _portletRequest;
 	private String _portletResource;
 	private final PortletResponse _portletResponse;

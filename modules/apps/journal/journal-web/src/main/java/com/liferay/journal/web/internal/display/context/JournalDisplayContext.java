@@ -851,6 +851,22 @@ public class JournalDisplayContext {
 		return orderColumns;
 	}
 
+	public JournalArticle getOriginalArticle(JournalArticle journalArticle) {
+		if (journalArticle.getVersion() == 1) {
+			return journalArticle;
+		}
+
+		JournalArticle originalArticle =
+			JournalArticleLocalServiceUtil.fetchArticle(
+				journalArticle.getGroupId(), journalArticle.getArticleId(), 1);
+
+		if (originalArticle != null) {
+			return originalArticle;
+		}
+
+		return journalArticle;
+	}
+
 	public String getOriginalAuthorUserName(JournalArticle article) {
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
 			JournalArticle.class.getName(),
