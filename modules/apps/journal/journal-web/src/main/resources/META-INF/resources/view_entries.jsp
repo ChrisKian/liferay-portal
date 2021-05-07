@@ -34,6 +34,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 
 		<%
 		JournalArticle curArticle = null;
+		JournalArticle originalArticle = null;
 		JournalFolder curFolder = null;
 
 		Object result = row.getObject();
@@ -43,6 +44,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 		}
 		else {
 			curArticle = journalDisplayContext.getLatestArticle((JournalArticle)result);
+			originalArticle = journalDisplayContext.getOriginalArticle((JournalArticle)result);
 		}
 		%>
 
@@ -58,9 +60,9 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 
 				row.setData(
 					HashMapBuilder.<String, Object>put(
-						"actions", journalDisplayContext.getAvailableActions(curArticle)
+						"actions", journalDisplayContext.getAvailableActions(originalArticle)
 					).put(
-						"draggable", !BrowserSnifferUtil.isMobile(request) && (JournalArticlePermission.contains(permissionChecker, curArticle, ActionKeys.DELETE) || JournalArticlePermission.contains(permissionChecker, curArticle, ActionKeys.UPDATE))
+						"draggable", !BrowserSnifferUtil.isMobile(request) && (JournalArticlePermission.contains(permissionChecker, originalArticle, ActionKeys.DELETE) || JournalArticlePermission.contains(permissionChecker, originalArticle, ActionKeys.UPDATE))
 					).put(
 						"title", HtmlUtil.escape(title)
 					).build());
@@ -69,7 +71,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 
 				String editURL = StringPool.BLANK;
 
-				if (JournalArticlePermission.contains(permissionChecker, curArticle, ActionKeys.UPDATE)) {
+				if (JournalArticlePermission.contains(permissionChecker, originalArticle, ActionKeys.UPDATE)) {
 					editURL = PortletURLBuilder.createRenderURL(
 						liferayPortletResponse
 					).setMVCPath(
@@ -153,7 +155,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 										"trashEnabled", componentContext.get("trashEnabled")
 									).build()
 								%>'
-								dropdownItems="<%= journalDisplayContext.getArticleActionDropdownItems(curArticle) %>"
+								dropdownItems="<%= journalDisplayContext.getArticleActionDropdownItems(originalArticle) %>"
 								propsTransformer="js/ElementsDefaultPropsTransformer"
 							/>
 						</liferay-ui:search-container-column-text>
@@ -258,7 +260,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 										"trashEnabled", componentContext.get("trashEnabled")
 									).build()
 								%>'
-								dropdownItems="<%= journalDisplayContext.getArticleActionDropdownItems(curArticle) %>"
+								dropdownItems="<%= journalDisplayContext.getArticleActionDropdownItems(originalArticle) %>"
 								propsTransformer="js/ElementsDefaultPropsTransformer"
 							/>
 						</liferay-ui:search-container-column-text>

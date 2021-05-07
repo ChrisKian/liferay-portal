@@ -17,7 +17,7 @@
 <%@ include file="/dynamic_include/init.jsp" %>
 
 <%
-JournalArticle article = journalContentDisplayContext.getArticle();
+JournalArticle article = journalContentDisplayContext.getOriginalArticle();
 %>
 
 <liferay-ui:success key='<%= portletDisplay.getId() + "requestProcessed" %>' message="your-request-completed-successfully" />
