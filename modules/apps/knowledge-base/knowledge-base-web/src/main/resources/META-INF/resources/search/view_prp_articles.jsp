@@ -42,6 +42,8 @@ String assetTagName = ParamUtil.getString(request, "tag");
 
 	searchContainer.setTotal(AssetEntryServiceUtil.getEntriesCount(assetEntryQuery));
 
+	int assetTotal = searchContainer.getTotal();
+
 	assetEntryQuery.setEnd(searchContainer.getEnd());
 	assetEntryQuery.setStart(searchContainer.getStart());
 
@@ -133,7 +135,7 @@ String assetTagName = ParamUtil.getString(request, "tag");
 					<c:choose>
 						<c:when test="<%= Validator.isNotNull(assetTagName) %>">
 							<c:choose>
-								<c:when test="<%= total > 0 %>">
+								<c:when test="<%= assetTotal > 0 %>">
 									<%= LanguageUtil.format(request, "articles-with-x-x-and-tag-x", new String[] {HtmlUtil.escape(assetVocabulary.getTitle(locale)), HtmlUtil.escape(assetCategory.getTitle(locale)), HtmlUtil.escape(assetTagName)}, false) %>
 								</c:when>
 								<c:otherwise>
@@ -143,7 +145,7 @@ String assetTagName = ParamUtil.getString(request, "tag");
 						</c:when>
 						<c:otherwise>
 							<c:choose>
-								<c:when test="<%= total > 0 %>">
+								<c:when test="<%= assetTotal > 0 %>">
 									<%= LanguageUtil.format(request, "articles-with-x-x", new String[] {HtmlUtil.escape(assetVocabulary.getTitle(locale)), HtmlUtil.escape(assetCategory.getTitle(locale))}, false) %>
 								</c:when>
 								<c:otherwise>
@@ -155,7 +157,7 @@ String assetTagName = ParamUtil.getString(request, "tag");
 				</c:when>
 				<c:otherwise>
 					<c:choose>
-						<c:when test="<%= total > 0 %>">
+						<c:when test="<%= assetTotal > 0 %>">
 							<%= LanguageUtil.format(request, "articles-with-tag-x", HtmlUtil.escape(assetTagName), false) %>
 						</c:when>
 						<c:otherwise>
