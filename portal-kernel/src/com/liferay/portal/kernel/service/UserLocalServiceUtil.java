@@ -76,9 +76,24 @@ public class UserLocalServiceUtil {
 	 * <code>admin.default.group.names</code>.
 	 *
 	 * @param userId the primary key of the user
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addDefaultGroups(User)}
 	 */
+	@Deprecated
 	public static void addDefaultGroups(long userId) throws PortalException {
 		getService().addDefaultGroups(userId);
+	}
+
+	/**
+	 * Adds the user to the default groups, unless the user is already in these
+	 * groups. The default groups can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.group.names</code>.
+	 *
+	 * @param user the user
+	 */
+	public static void addDefaultGroups(User user) throws PortalException {
+		getService().addDefaultGroups(user);
 	}
 
 	/**
@@ -88,9 +103,24 @@ public class UserLocalServiceUtil {
 	 * <code>admin.default.role.names</code>.
 	 *
 	 * @param userId the primary key of the user
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addDefaultRoles(User)}
 	 */
+	@Deprecated
 	public static void addDefaultRoles(long userId) throws PortalException {
 		getService().addDefaultRoles(userId);
+	}
+
+	/**
+	 * Adds the user to the default regular roles, unless the user already has
+	 * these regular roles. The default regular roles can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.role.names</code>.
+	 *
+	 * @param user the user
+	 */
+	public static void addDefaultRoles(User user) throws PortalException {
+		getService().addDefaultRoles(user);
 	}
 
 	/**
@@ -100,11 +130,26 @@ public class UserLocalServiceUtil {
 	 * <code>admin.default.user.group.names</code>.
 	 *
 	 * @param userId the primary key of the user
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 #addDefaultUserGroups(User)}
 	 */
+	@Deprecated
 	public static void addDefaultUserGroups(long userId)
 		throws PortalException {
 
 		getService().addDefaultUserGroups(userId);
+	}
+
+	/**
+	 * Adds the user to the default user groups, unless the user is already in
+	 * these user groups. The default user groups can be specified in
+	 * <code>portal.properties</code> with the property
+	 * <code>admin.default.user.group.names</code>.
+	 *
+	 * @param user the user
+	 */
+	public static void addDefaultUserGroups(User user) {
+		getService().addDefaultUserGroups(user);
 	}
 
 	public static void addGroupUser(long groupId, long userId) {

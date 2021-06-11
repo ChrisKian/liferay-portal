@@ -120,19 +120,19 @@ public class LoginPostAction extends Action {
 				User user = UserLocalServiceUtil.getUser(userId);
 
 				if (!UserLocalServiceUtil.hasDefaultGroups(user)) {
-					UserLocalServiceUtil.addDefaultGroups(userId);
+					UserLocalServiceUtil.addDefaultGroups(user);
 
 					reindexRequired = true;
 				}
 
 				if (!UserLocalServiceUtil.hasDefaultRoles(user)) {
-					UserLocalServiceUtil.addDefaultRoles(userId);
+					UserLocalServiceUtil.addDefaultRoles(user);
 
 					reindexRequired = true;
 				}
 
 				if (!UserLocalServiceUtil.hasDefaultUserGroups(user)) {
-					UserLocalServiceUtil.addDefaultUserGroups(userId);
+					UserLocalServiceUtil.addDefaultUserGroups(user);
 
 					reindexRequired = true;
 				}
