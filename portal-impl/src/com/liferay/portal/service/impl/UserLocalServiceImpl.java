@@ -3032,6 +3032,111 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return userPersistence.countByC_DU_S(companyId, defaultUser, status);
 	}
 
+	@Override
+	public boolean hasDefaultGroups(User user) throws PortalException {
+		String[] defaultGroupNames = PrefsPropsUtil.getStringArray(
+			user.getCompanyId(), PropsKeys.ADMIN_DEFAULT_GROUP_NAMES,
+			StringPool.NEW_LINE, PropsValues.ADMIN_DEFAULT_GROUP_NAMES);
+
+		long[] userGroupIds = user.getGroupIds();
+
+		if (defaultGroupNames.length > 0) {
+			Company company = companyPersistence.findByPrimaryKey(
+				user.getCompanyId());
+
+			Account account = company.getAccount();
+
+			for (String defaultGroupName : defaultGroupNames) {
+				if (StringUtil.equalsIgnoreCase(
+						defaultGroupName, account.getName())) {
+
+					defaultGroupName = GroupConstants.GUEST;
+				}
+
+				Group group = groupPersistence.fetchByC_GK(
+					user.getCompanyId(), defaultGroupName);
+
+				if ((group != null) &&
+					(!ArrayUtil.contains(userGroupIds, group.getGroupId()) ||
+					 !_hasDefaultRolesAndTeams(group, user.getUserId()))) {
+
+					return false;
+				}
+			}
+		}
+
+		String[] defaultOrganizationGroupNames = PrefsPropsUtil.getStringArray(
+			user.getCompanyId(),
+			PropsKeys.ADMIN_DEFAULT_ORGANIZATION_GROUP_NAMES,
+			StringPool.NEW_LINE,
+			PropsValues.ADMIN_DEFAULT_ORGANIZATION_GROUP_NAMES);
+
+		for (String defaultOrganizationGroupName :
+				defaultOrganizationGroupNames) {
+
+			defaultOrganizationGroupName +=
+				GroupLocalServiceImpl.ORGANIZATION_NAME_SUFFIX;
+
+			Group group = groupPersistence.fetchByC_GK(
+				user.getCompanyId(), defaultOrganizationGroupName);
+
+			if ((group != null) &&
+				(!ArrayUtil.contains(userGroupIds, group.getGroupId()) ||
+				 !_hasDefaultRolesAndTeams(group, user.getUserId()))) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean hasDefaultRoles(User user) throws PortalException {
+		long[] userRoleIds = user.getRoleIds();
+
+		String[] defaultRoleNames = PrefsPropsUtil.getStringArray(
+			user.getCompanyId(), PropsKeys.ADMIN_DEFAULT_ROLE_NAMES,
+			StringPool.NEW_LINE, PropsValues.ADMIN_DEFAULT_ROLE_NAMES);
+
+		for (String defaultRoleName : defaultRoleNames) {
+			Role role = rolePersistence.fetchByC_N(
+				user.getCompanyId(), defaultRoleName);
+
+			if ((role != null) &&
+				(role.getType() == RoleConstants.TYPE_REGULAR) &&
+				!ArrayUtil.contains(userRoleIds, role.getRoleId())) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean hasDefaultUserGroups(User user) throws PortalException {
+		long[] userUserGroupIds = user.getUserGroupIds();
+
+		String[] defaultUserGroupNames = PrefsPropsUtil.getStringArray(
+			user.getCompanyId(), PropsKeys.ADMIN_DEFAULT_USER_GROUP_NAMES,
+			StringPool.NEW_LINE, PropsValues.ADMIN_DEFAULT_USER_GROUP_NAMES);
+
+		for (String defaultUserGroupName : defaultUserGroupNames) {
+			UserGroup userGroup = userGroupPersistence.fetchByC_N(
+				user.getCompanyId(), defaultUserGroupName);
+
+			if ((userGroup != null) &&
+				!ArrayUtil.contains(
+					userUserGroupIds, userGroup.getUserGroupId())) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * Returns <code>true</code> if the password policy has been assigned to the
 	 * user.
@@ -7275,6 +7380,60 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		}
 
 		return localizedValueMap.get(fallbackLocale);
+	}
+
+	private boolean _hasDefaultRolesAndTeams(Group group, long userId)
+		throws PortalException {
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		long[] defaultSiteRoleIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty("defaultSiteRoleIds"),
+			0L);
+
+		if (defaultSiteRoleIds.length > 0) {
+			List<Role> userGroupRoles = roleLocalService.getUserGroupRoles(
+				userId, group.getGroupId());
+
+			long[] userGroupRoleIds = ListUtil.toLongArray(
+				userGroupRoles, Role.ROLE_ID_ACCESSOR);
+
+			for (long defaultSiteRoleId : defaultSiteRoleIds) {
+				if (!ArrayUtil.contains(userGroupRoleIds, defaultSiteRoleId)) {
+					Role defaultSiteRole = rolePersistence.findByPrimaryKey(
+						defaultSiteRoleId);
+
+					if (defaultSiteRole != null) {
+						return false;
+					}
+				}
+			}
+		}
+
+		long[] defaultTeamIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty("defaultTeamIds"), 0L);
+
+		if (defaultTeamIds.length > 0) {
+			List<Team> userTeams = teamLocalService.getUserTeams(
+				userId, group.getGroupId());
+
+			long[] userTeamIds = ListUtil.toLongArray(
+				userTeams, Team.TEAM_ID_ACCESSOR);
+
+			for (long defaultTeamId : defaultTeamIds) {
+				if (!ArrayUtil.contains(userTeamIds, defaultTeamId)) {
+					Team defaultTeam = teamPersistence.findByPrimaryKey(
+						defaultTeamId);
+
+					if (defaultTeam != null) {
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	private void _invalidateTicket(User user) throws PortalException {
