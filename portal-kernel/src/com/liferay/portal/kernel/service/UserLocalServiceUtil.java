@@ -2055,6 +2055,20 @@ public class UserLocalServiceUtil {
 		return getService().getUsersCount(companyId, defaultUser, status);
 	}
 
+	public static boolean hasDefaultGroups(User user) throws PortalException {
+		return getService().hasDefaultGroups(user);
+	}
+
+	public static boolean hasDefaultRoles(User user) throws PortalException {
+		return getService().hasDefaultRoles(user);
+	}
+
+	public static boolean hasDefaultUserGroups(User user)
+		throws PortalException {
+
+		return getService().hasDefaultUserGroups(user);
+	}
+
 	public static boolean hasGroupUser(long groupId, long userId) {
 		return getService().hasGroupUser(groupId, userId);
 	}

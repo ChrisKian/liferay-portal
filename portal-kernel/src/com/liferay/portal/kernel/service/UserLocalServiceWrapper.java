@@ -2253,6 +2253,27 @@ public class UserLocalServiceWrapper
 	}
 
 	@Override
+	public boolean hasDefaultGroups(User user)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _userLocalService.hasDefaultGroups(user);
+	}
+
+	@Override
+	public boolean hasDefaultRoles(User user)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _userLocalService.hasDefaultRoles(user);
+	}
+
+	@Override
+	public boolean hasDefaultUserGroups(User user)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _userLocalService.hasDefaultUserGroups(user);
+	}
+
+	@Override
 	public boolean hasGroupUser(long groupId, long userId) {
 		return _userLocalService.hasGroupUser(groupId, userId);
 	}
