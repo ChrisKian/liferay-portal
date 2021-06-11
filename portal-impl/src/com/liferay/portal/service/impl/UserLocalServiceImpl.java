@@ -294,11 +294,26 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * <code>admin.default.group.names</code>.
 	 *
 	 * @param userId the primary key of the user
+	 *
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #addDefaultGroups(User)}
 	 */
+	@Deprecated
 	@Override
 	public void addDefaultGroups(long userId) throws PortalException {
-		User user = userPersistence.findByPrimaryKey(userId);
+		addDefaultGroups(userPersistence.findByPrimaryKey(userId));
+	}
 
+	/**
+	 * Adds the user to the default groups, unless the user is already in these
+	 * groups. The default groups can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.group.names</code>.
+	 *
+	 * @param user the user
+	 */
+	@Override
+	public void addDefaultGroups(User user) throws PortalException {
 		Set<Long> groupIdsSet = new HashSet<>();
 
 		String[] defaultGroupNames = PrefsPropsUtil.getStringArray(
@@ -347,10 +362,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		long[] groupIds = ArrayUtil.toArray(groupIdsSet.toArray(new Long[0]));
 
-		userPersistence.addGroups(userId, groupIds);
+		userPersistence.addGroups(user.getUserId(), groupIds);
 
 		for (long groupId : groupIds) {
-			addDefaultRolesAndTeams(groupId, new long[] {userId});
+			addDefaultRolesAndTeams(groupId, new long[] {user.getUserId()});
 		}
 	}
 
@@ -361,11 +376,26 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * <code>admin.default.role.names</code>.
 	 *
 	 * @param userId the primary key of the user
+	 *
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #addDefaultRoles(User)}
 	 */
+	@Deprecated
 	@Override
 	public void addDefaultRoles(long userId) throws PortalException {
-		User user = userPersistence.findByPrimaryKey(userId);
+		addDefaultRoles(userPersistence.findByPrimaryKey(userId));
+	}
 
+	/**
+	 * Adds the user to the default regular roles, unless the user already has
+	 * these regular roles. The default regular roles can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.role.names</code>.
+	 *
+	 * @param user the user
+	 */
+	@Override
+	public void addDefaultRoles(User user) throws PortalException {
 		Set<Long> roleIdSet = new HashSet<>();
 
 		String[] defaultRoleNames = PrefsPropsUtil.getStringArray(
@@ -387,7 +417,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		roleIds = UsersAdminUtil.addRequiredRoles(user, roleIds);
 
-		userPersistence.addRoles(userId, roleIds);
+		userPersistence.addRoles(user.getUserId(), roleIds);
 	}
 
 	/**
@@ -397,11 +427,26 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	 * <code>admin.default.user.group.names</code>.
 	 *
 	 * @param userId the primary key of the user
+	 *
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *             #addDefaultUserGroups(User)}
 	 */
+	@Deprecated
 	@Override
 	public void addDefaultUserGroups(long userId) throws PortalException {
-		User user = userPersistence.findByPrimaryKey(userId);
+		addDefaultUserGroups(userPersistence.findByPrimaryKey(userId));
+	}
 
+	/**
+	 * Adds the user to the default user groups, unless the user is already in
+	 * these user groups. The default user groups can be specified in
+	 * <code>portal.properties</code> with the property
+	 * <code>admin.default.user.group.names</code>.
+	 *
+	 * @param user the user
+	 */
+	@Override
+	public void addDefaultUserGroups(User user) {
 		Set<Long> userGroupIdSet = new HashSet<>();
 
 		String[] defaultUserGroupNames = PrefsPropsUtil.getStringArray(
@@ -420,7 +465,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		long[] userGroupIds = ArrayUtil.toArray(
 			userGroupIdSet.toArray(new Long[0]));
 
-		userPersistence.addUserGroups(userId, userGroupIds);
+		userPersistence.addUserGroups(user.getUserId(), userGroupIds);
 	}
 
 	/**
@@ -1215,7 +1260,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			groupLocalService.addUserGroups(userId, groups);
 		}
 
-		addDefaultGroups(userId);
+		addDefaultGroups(user);
 
 		// Organizations
 
@@ -1229,7 +1274,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			userPersistence.setRoles(userId, roleIds);
 		}
 
-		addDefaultRoles(userId);
+		addDefaultRoles(user);
 
 		// User groups
 
@@ -1237,7 +1282,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			userPersistence.setUserGroups(userId, userGroupIds);
 		}
 
-		addDefaultUserGroups(userId);
+		addDefaultUserGroups(user);
 
 		// Resources
 
