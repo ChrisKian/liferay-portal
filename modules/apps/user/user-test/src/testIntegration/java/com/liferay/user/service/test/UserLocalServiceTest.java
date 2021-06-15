@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -33,6 +34,8 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.TeamLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
@@ -51,6 +54,8 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -71,6 +76,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Michael C. Han
+ * @author Christopher Kian
  */
 @DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
@@ -307,6 +313,166 @@ public class UserLocalServiceTest {
 			ArrayUtil.containsAll(
 				userIds,
 				ListUtil.toLongArray(userGroupUsers, User.USER_ID_ACCESSOR)));
+	}
+
+	@Test
+	public void testHasDefaultGroups() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+
+		Team team = TeamLocalServiceUtil.addTeam(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext());
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty(
+			"defaultSiteRoleIds", String.valueOf(role.getRoleId()));
+
+		typeSettingsUnicodeProperties.setProperty(
+			"defaultTeamIds", String.valueOf(team.getTeamId()));
+
+		group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
+
+		group = _groupLocalService.updateGroup(group);
+
+		typeSettingsUnicodeProperties = group.getTypeSettingsProperties();
+
+		long[] defaultSiteRoleIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty("defaultSiteRoleIds"),
+			0L);
+
+		long[] defaultTeamIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty("defaultTeamIds"), 0L);
+
+		Assert.assertTrue(
+			ArrayUtil.contains(defaultSiteRoleIds, role.getRoleId()));
+
+		Assert.assertTrue(ArrayUtil.contains(defaultTeamIds, team.getTeamId()));
+
+		User user = UserTestUtil.addUser();
+
+		Assert.assertFalse(
+			_groupLocalService.hasUserGroup(
+				user.getUserId(), group.getGroupId()));
+
+		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+
+		String[] oldAdminDefaultGroupNames =
+			PropsValues.ADMIN_DEFAULT_GROUP_NAMES;
+
+		PropsValues.ADMIN_DEFAULT_GROUP_NAMES = ArrayUtil.append(
+			oldAdminDefaultGroupNames, group.getNameCurrentValue());
+
+		Assert.assertFalse(_userLocalService.hasDefaultGroups(user));
+
+		_userLocalService.addGroupUser(group.getGroupId(), user);
+
+		Assert.assertTrue(
+			_groupLocalService.hasUserGroup(
+				user.getUserId(), group.getGroupId()));
+
+		Assert.assertTrue(
+			UserGroupRoleLocalServiceUtil.hasUserGroupRole(
+				user.getUserId(), group.getGroupId(), role.getRoleId()));
+
+		Assert.assertTrue(
+			TeamLocalServiceUtil.hasUserTeam(
+				user.getUserId(), team.getTeamId()));
+
+		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+
+		UserGroupRoleLocalServiceUtil.deleteUserGroupRoles(
+			user.getUserId(), group.getGroupId(),
+			new long[] {role.getRoleId()});
+
+		Assert.assertFalse(
+			UserGroupRoleLocalServiceUtil.hasUserGroupRole(
+				user.getUserId(), group.getGroupId(), role.getRoleId()));
+
+		Assert.assertFalse(_userLocalService.hasDefaultGroups(user));
+
+		typeSettingsUnicodeProperties.remove("defaultSiteRoleIds");
+
+		group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
+
+		group = _groupLocalService.updateGroup(group);
+
+		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+
+		TeamLocalServiceUtil.deleteUserTeam(user.getUserId(), team);
+
+		Assert.assertFalse(
+			TeamLocalServiceUtil.hasUserTeam(
+				user.getUserId(), team.getTeamId()));
+
+		Assert.assertFalse(_userLocalService.hasDefaultGroups(user));
+
+		typeSettingsUnicodeProperties.remove("defaultTeamIds");
+
+		group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
+
+		_groupLocalService.updateGroup(group);
+
+		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+
+		PropsValues.ADMIN_DEFAULT_GROUP_NAMES = oldAdminDefaultGroupNames;
+
+		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+	}
+
+	@Test
+	public void testHasDefaultRoles() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		Assert.assertTrue(_userLocalService.hasDefaultRoles(user));
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		String[] oldAdminDefaultRoleNames =
+			PropsValues.ADMIN_DEFAULT_ROLE_NAMES;
+
+		PropsValues.ADMIN_DEFAULT_ROLE_NAMES = ArrayUtil.append(
+			oldAdminDefaultRoleNames, role.getName());
+
+		Assert.assertFalse(_userLocalService.hasDefaultRoles(user));
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		Assert.assertTrue(_userLocalService.hasDefaultRoles(user));
+
+		PropsValues.ADMIN_DEFAULT_ROLE_NAMES = oldAdminDefaultRoleNames;
+
+		Assert.assertTrue(_userLocalService.hasDefaultRoles(user));
+	}
+
+	@Test
+	public void testHasDefaultUserGroups() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		Assert.assertTrue(_userLocalService.hasDefaultUserGroups(user));
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		String[] oldAdminDefaultUserGroupNames =
+			PropsValues.ADMIN_DEFAULT_USER_GROUP_NAMES;
+
+		PropsValues.ADMIN_DEFAULT_USER_GROUP_NAMES = ArrayUtil.append(
+			oldAdminDefaultUserGroupNames, userGroup.getName());
+
+		Assert.assertFalse(_userLocalService.hasDefaultUserGroups(user));
+
+		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user);
+
+		Assert.assertTrue(_userLocalService.hasDefaultUserGroups(user));
+
+		PropsValues.ADMIN_DEFAULT_USER_GROUP_NAMES =
+			oldAdminDefaultUserGroupNames;
+
+		Assert.assertTrue(_userLocalService.hasDefaultUserGroups(user));
 	}
 
 	@Test
