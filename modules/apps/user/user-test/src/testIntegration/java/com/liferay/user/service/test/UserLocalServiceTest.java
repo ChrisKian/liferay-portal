@@ -355,6 +355,8 @@ public class UserLocalServiceTest {
 
 		User user = UserTestUtil.addUser();
 
+		//User doesn't belong to group, and no default groups have been declared
+
 		Assert.assertFalse(
 			_groupLocalService.hasUserGroup(
 				user.getUserId(), group.getGroupId()));
@@ -364,10 +366,14 @@ public class UserLocalServiceTest {
 		String[] oldAdminDefaultGroupNames =
 			PropsValues.ADMIN_DEFAULT_GROUP_NAMES;
 
+		//Group added to list of defaults, user no longer has all default groups
+
 		PropsValues.ADMIN_DEFAULT_GROUP_NAMES = ArrayUtil.append(
 			oldAdminDefaultGroupNames, group.getNameCurrentValue());
 
 		Assert.assertFalse(_userLocalService.hasDefaultGroups(user));
+
+		//User added to group, now has default group (and site role, and team)
 
 		_userLocalService.addGroupUser(group.getGroupId(), user);
 
@@ -385,6 +391,10 @@ public class UserLocalServiceTest {
 
 		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
 
+		//remove site role from user, hasDefaultGroups now fails since user must
+
+		// also have default site roles
+
 		UserGroupRoleLocalServiceUtil.deleteUserGroupRoles(
 			user.getUserId(), group.getGroupId(),
 			new long[] {role.getRoleId()});
@@ -395,6 +405,8 @@ public class UserLocalServiceTest {
 
 		Assert.assertFalse(_userLocalService.hasDefaultGroups(user));
 
+		//remove site default role, ensure everything now passes again
+
 		typeSettingsUnicodeProperties.remove("defaultSiteRoleIds");
 
 		group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
@@ -402,6 +414,10 @@ public class UserLocalServiceTest {
 		group = _groupLocalService.updateGroup(group);
 
 		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+
+		//remove user from team, hasDefaultGroups now fails since user must
+
+		// also have default site teams
 
 		TeamLocalServiceUtil.deleteUserTeam(user.getUserId(), team);
 
@@ -411,6 +427,8 @@ public class UserLocalServiceTest {
 
 		Assert.assertFalse(_userLocalService.hasDefaultGroups(user));
 
+		//remove team from default list, ensure everything now passes again
+
 		typeSettingsUnicodeProperties.remove("defaultTeamIds");
 
 		group.setTypeSettingsProperties(typeSettingsUnicodeProperties);
@@ -418,6 +436,10 @@ public class UserLocalServiceTest {
 		_groupLocalService.updateGroup(group);
 
 		Assert.assertTrue(_userLocalService.hasDefaultGroups(user));
+
+		//Remove group from default list, check should still pass since user has
+
+		// all default groups (none)
 
 		PropsValues.ADMIN_DEFAULT_GROUP_NAMES = oldAdminDefaultGroupNames;
 
@@ -427,6 +449,8 @@ public class UserLocalServiceTest {
 	@Test
 	public void testHasDefaultRoles() throws Exception {
 		User user = UserTestUtil.addUser();
+
+		//No defaults added after user creation, therefore user has all defaults
 
 		Assert.assertTrue(_userLocalService.hasDefaultRoles(user));
 
@@ -438,13 +462,19 @@ public class UserLocalServiceTest {
 		PropsValues.ADMIN_DEFAULT_ROLE_NAMES = ArrayUtil.append(
 			oldAdminDefaultRoleNames, role.getName());
 
+		//New default added, user no longer has all defaults
+
 		Assert.assertFalse(_userLocalService.hasDefaultRoles(user));
 
 		_roleLocalService.addUserRole(user.getUserId(), role);
 
+		//User has new default
+
 		Assert.assertTrue(_userLocalService.hasDefaultRoles(user));
 
 		PropsValues.ADMIN_DEFAULT_ROLE_NAMES = oldAdminDefaultRoleNames;
+
+		//Removed role from list of defaults, user still has all defaults
 
 		Assert.assertTrue(_userLocalService.hasDefaultRoles(user));
 	}
@@ -452,6 +482,8 @@ public class UserLocalServiceTest {
 	@Test
 	public void testHasDefaultUserGroups() throws Exception {
 		User user = UserTestUtil.addUser();
+
+		//No defaults added after user creation, therefore user has all defaults
 
 		Assert.assertTrue(_userLocalService.hasDefaultUserGroups(user));
 
@@ -463,14 +495,20 @@ public class UserLocalServiceTest {
 		PropsValues.ADMIN_DEFAULT_USER_GROUP_NAMES = ArrayUtil.append(
 			oldAdminDefaultUserGroupNames, userGroup.getName());
 
+		//New default added, user no longer has all defaults
+
 		Assert.assertFalse(_userLocalService.hasDefaultUserGroups(user));
 
 		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user);
+
+		//User has new default
 
 		Assert.assertTrue(_userLocalService.hasDefaultUserGroups(user));
 
 		PropsValues.ADMIN_DEFAULT_USER_GROUP_NAMES =
 			oldAdminDefaultUserGroupNames;
+
+		//Removed userGroup from list of defaults, user still has all defaults
 
 		Assert.assertTrue(_userLocalService.hasDefaultUserGroups(user));
 	}
