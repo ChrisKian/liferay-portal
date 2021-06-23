@@ -104,6 +104,17 @@ public interface UserLocalService
 	public void addDefaultGroups(long userId) throws PortalException;
 
 	/**
+	 * Adds the user to the default groups, unless the user is already in these
+	 * groups. The default groups can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.group.names</code>.
+	 *
+	 * @param user
+	 * @return whether or not any changes were made
+	 */
+	public boolean addDefaultGroups(User user) throws PortalException;
+
+	/**
 	 * Adds the user to the default regular roles, unless the user already has
 	 * these regular roles. The default regular roles can be specified in
 	 * <code>portal.properties</code> with the key
@@ -114,6 +125,17 @@ public interface UserLocalService
 	public void addDefaultRoles(long userId) throws PortalException;
 
 	/**
+	 * Adds the user to the default regular roles, unless the user already has
+	 * these regular roles. The default regular roles can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.role.names</code>.
+	 *
+	 * @param user
+	 * @return whether or not any changes were made
+	 */
+	public boolean addDefaultRoles(User user) throws PortalException;
+
+	/**
 	 * Adds the user to the default user groups, unless the user is already in
 	 * these user groups. The default user groups can be specified in
 	 * <code>portal.properties</code> with the property
@@ -122,6 +144,17 @@ public interface UserLocalService
 	 * @param userId the primary key of the user
 	 */
 	public void addDefaultUserGroups(long userId) throws PortalException;
+
+	/**
+	 * Adds the user to the default user groups, unless the user is already in
+	 * these user groups. The default user groups can be specified in
+	 * <code>portal.properties</code> with the property
+	 * <code>admin.default.user.group.names</code>.
+	 *
+	 * @param user
+	 * @return whether or not any changes were made
+	 */
+	public boolean addDefaultUserGroups(User user) throws PortalException;
 
 	public void addGroupUser(long groupId, long userId);
 
