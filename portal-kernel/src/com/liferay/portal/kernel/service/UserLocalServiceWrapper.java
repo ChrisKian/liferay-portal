@@ -72,6 +72,24 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
+	 * Adds the user to the default groups, unless the user is already in these
+	 * groups. The default groups can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.group.names</code>.
+	 *
+	 * @param user the user
+	 * @return <code>true</code> if user was added to default groups, group
+	 roles, or teams;
+	 <code>false</code> if user was already a member
+	 */
+	@Override
+	public boolean addDefaultGroups(User user)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _userLocalService.addDefaultGroups(user);
+	}
+
+	/**
 	 * Adds the user to the default regular roles, unless the user already has
 	 * these regular roles. The default regular roles can be specified in
 	 * <code>portal.properties</code> with the key
@@ -87,6 +105,23 @@ public class UserLocalServiceWrapper
 	}
 
 	/**
+	 * Adds the user to the default regular roles, unless the user already has
+	 * these regular roles. The default regular roles can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.role.names</code>.
+	 *
+	 * @param user the user
+	 * @return <code>true</code> if user was given default roles;
+	 <code>false</code> if user already has default roles
+	 */
+	@Override
+	public boolean addDefaultRoles(User user)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _userLocalService.addDefaultRoles(user);
+	}
+
+	/**
 	 * Adds the user to the default user groups, unless the user is already in
 	 * these user groups. The default user groups can be specified in
 	 * <code>portal.properties</code> with the property
@@ -99,6 +134,23 @@ public class UserLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_userLocalService.addDefaultUserGroups(userId);
+	}
+
+	/**
+	 * Adds the user to the default user groups, unless the user is already in
+	 * these user groups. The default user groups can be specified in
+	 * <code>portal.properties</code> with the property
+	 * <code>admin.default.user.group.names</code>.
+	 *
+	 * @param user the user
+	 * @return <code>true</code> if user was added to default user groups;
+	 <code>false</code> if user is already a user group member
+	 */
+	@Override
+	public boolean addDefaultUserGroups(User user)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _userLocalService.addDefaultUserGroups(user);
 	}
 
 	@Override

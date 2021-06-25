@@ -82,6 +82,21 @@ public class UserLocalServiceUtil {
 	}
 
 	/**
+	 * Adds the user to the default groups, unless the user is already in these
+	 * groups. The default groups can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.group.names</code>.
+	 *
+	 * @param user the user
+	 * @return <code>true</code> if user was added to default groups, group
+	 roles, or teams;
+	 <code>false</code> if user was already a member
+	 */
+	public static boolean addDefaultGroups(User user) throws PortalException {
+		return getService().addDefaultGroups(user);
+	}
+
+	/**
 	 * Adds the user to the default regular roles, unless the user already has
 	 * these regular roles. The default regular roles can be specified in
 	 * <code>portal.properties</code> with the key
@@ -91,6 +106,20 @@ public class UserLocalServiceUtil {
 	 */
 	public static void addDefaultRoles(long userId) throws PortalException {
 		getService().addDefaultRoles(userId);
+	}
+
+	/**
+	 * Adds the user to the default regular roles, unless the user already has
+	 * these regular roles. The default regular roles can be specified in
+	 * <code>portal.properties</code> with the key
+	 * <code>admin.default.role.names</code>.
+	 *
+	 * @param user the user
+	 * @return <code>true</code> if user was given default roles;
+	 <code>false</code> if user already has default roles
+	 */
+	public static boolean addDefaultRoles(User user) throws PortalException {
+		return getService().addDefaultRoles(user);
 	}
 
 	/**
@@ -105,6 +134,22 @@ public class UserLocalServiceUtil {
 		throws PortalException {
 
 		getService().addDefaultUserGroups(userId);
+	}
+
+	/**
+	 * Adds the user to the default user groups, unless the user is already in
+	 * these user groups. The default user groups can be specified in
+	 * <code>portal.properties</code> with the property
+	 * <code>admin.default.user.group.names</code>.
+	 *
+	 * @param user the user
+	 * @return <code>true</code> if user was added to default user groups;
+	 <code>false</code> if user is already a user group member
+	 */
+	public static boolean addDefaultUserGroups(User user)
+		throws PortalException {
+
+		return getService().addDefaultUserGroups(user);
 	}
 
 	public static void addGroupUser(long groupId, long userId) {
