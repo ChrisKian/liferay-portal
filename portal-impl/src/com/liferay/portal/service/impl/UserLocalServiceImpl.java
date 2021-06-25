@@ -5713,75 +5713,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	protected void addDefaultRolesAndTeams(long groupId, long[] userIds)
 		throws PortalException {
 
-		List<Role> defaultSiteRoles = new ArrayList<>();
-
-		Group group = groupLocalService.getGroup(groupId);
-
-		UnicodeProperties typeSettingsUnicodeProperties =
-			group.getTypeSettingsProperties();
-
-		long[] defaultSiteRoleIds = StringUtil.split(
-			typeSettingsUnicodeProperties.getProperty("defaultSiteRoleIds"),
-			0L);
-
-		for (long defaultSiteRoleId : defaultSiteRoleIds) {
-			Role defaultSiteRole = rolePersistence.fetchByPrimaryKey(
-				defaultSiteRoleId);
-
-			if (defaultSiteRole == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("Unable to find role " + defaultSiteRoleId);
-				}
-
-				continue;
-			}
-
-			defaultSiteRoles.add(defaultSiteRole);
-		}
-
-		List<Team> defaultTeams = new ArrayList<>();
-
-		long[] defaultTeamIds = StringUtil.split(
-			typeSettingsUnicodeProperties.getProperty("defaultTeamIds"), 0L);
-
-		for (long defaultTeamId : defaultTeamIds) {
-			Team defaultTeam = teamPersistence.findByPrimaryKey(defaultTeamId);
-
-			if (defaultTeam == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("Unable to find team " + defaultTeamId);
-				}
-
-				continue;
-			}
-
-			defaultTeams.add(defaultTeam);
-		}
-
-		for (long userId : userIds) {
-			Set<Long> userRoleIdsSet = new HashSet<>();
-
-			for (Role role : defaultSiteRoles) {
-				userRoleIdsSet.add(role.getRoleId());
-			}
-
-			long[] userRoleIds = ArrayUtil.toArray(
-				userRoleIdsSet.toArray(new Long[0]));
-
-			userGroupRoleLocalService.addUserGroupRoles(
-				userId, groupId, userRoleIds);
-
-			Set<Long> userTeamIdsSet = new HashSet<>();
-
-			for (Team team : defaultTeams) {
-				userTeamIdsSet.add(team.getTeamId());
-			}
-
-			long[] userTeamIds = ArrayUtil.toArray(
-				userTeamIdsSet.toArray(new Long[0]));
-
-			userPersistence.addTeams(userId, userTeamIds);
-		}
+		_addDefaultRolesAndTeams(groupId, userIds);
 	}
 
 	/**
@@ -7218,6 +7150,80 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 	@BeanReference(type = MailService.class)
 	protected MailService mailService;
+
+	private boolean _addDefaultRolesAndTeams(long groupId, long[] userIds)
+		throws PortalException {
+
+		List<Role> defaultSiteRoles = new ArrayList<>();
+
+		Group group = groupLocalService.getGroup(groupId);
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		long[] defaultSiteRoleIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty("defaultSiteRoleIds"),
+			0L);
+
+		for (long defaultSiteRoleId : defaultSiteRoleIds) {
+			Role defaultSiteRole = rolePersistence.fetchByPrimaryKey(
+				defaultSiteRoleId);
+
+			if (defaultSiteRole == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to find role " + defaultSiteRoleId);
+				}
+
+				continue;
+			}
+
+			defaultSiteRoles.add(defaultSiteRole);
+		}
+
+		List<Team> defaultTeams = new ArrayList<>();
+
+		long[] defaultTeamIds = StringUtil.split(
+			typeSettingsUnicodeProperties.getProperty("defaultTeamIds"), 0L);
+
+		for (long defaultTeamId : defaultTeamIds) {
+			Team defaultTeam = teamPersistence.findByPrimaryKey(defaultTeamId);
+
+			if (defaultTeam == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to find team " + defaultTeamId);
+				}
+
+				continue;
+			}
+
+			defaultTeams.add(defaultTeam);
+		}
+
+		for (long userId : userIds) {
+			Set<Long> userRoleIdsSet = new HashSet<>();
+
+			for (Role role : defaultSiteRoles) {
+				userRoleIdsSet.add(role.getRoleId());
+			}
+
+			long[] userRoleIds = ArrayUtil.toArray(
+				userRoleIdsSet.toArray(new Long[0]));
+
+			userGroupRoleLocalService.addUserGroupRoles(
+				userId, groupId, userRoleIds);
+
+			Set<Long> userTeamIdsSet = new HashSet<>();
+
+			for (Team team : defaultTeams) {
+				userTeamIdsSet.add(team.getTeamId());
+			}
+
+			long[] userTeamIds = ArrayUtil.toArray(
+				userTeamIdsSet.toArray(new Long[0]));
+
+			userPersistence.addTeams(userId, userTeamIds);
+		}
+	}
 
 	private User _checkPasswordPolicy(User user) throws PortalException {
 
