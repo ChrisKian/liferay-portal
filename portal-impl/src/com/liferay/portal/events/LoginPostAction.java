@@ -115,14 +115,23 @@ public class LoginPostAction extends Action {
 					userId = PortalUtil.getUserId(httpServletRequest);
 				}
 
-				UserLocalServiceUtil.addDefaultGroups(userId);
-				UserLocalServiceUtil.addDefaultRoles(userId);
-				UserLocalServiceUtil.addDefaultUserGroups(userId);
+				boolean reindex = false;
 
-				Indexer<User> userIndexer = IndexerRegistryUtil.getIndexer(
-					User.class.getName());
+				User user = UserLocalServiceUtil.getUser(userId);
 
-				userIndexer.reindex(User.class.getName(), userId);
+				if (UserLocalServiceUtil.addDefaultGroups(user) ||
+					UserLocalServiceUtil.addDefaultRoles(user) ||
+					UserLocalServiceUtil.addDefaultUserGroups(user)) {
+
+					reindex = true;
+				}
+
+				if (reindex) {
+					Indexer<User> userIndexer = IndexerRegistryUtil.getIndexer(
+						User.class.getName());
+
+					userIndexer.reindex(User.class.getName(), userId);
+				}
 			}
 
 			User user = PortalUtil.getUser(httpServletRequest);
