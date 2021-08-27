@@ -8529,6 +8529,21 @@ public class PortalImpl implements Portal {
 								curLayoutSet.getVirtualHostnames();
 						}
 					}
+					else {
+						try {
+							virtualHostnames.putAll(
+								_getParentVirtualHostnames(
+									layoutSet.getGroupId()));
+						}
+						catch (PortalException portalException) {
+							if (_log.isWarnEnabled()) {
+								_log.warn(
+									"Unable to retrieve parent groups for " +
+										"group: " + layoutSet.getGroupId(),
+									portalException);
+							}
+						}
+					}
 
 					if (virtualHostnames.isEmpty() ||
 						virtualHostnames.containsKey(_LOCALHOST)) {
@@ -8591,6 +8606,29 @@ public class PortalImpl implements Portal {
 		sb.append(group.getFriendlyURL());
 
 		return sb.toString();
+	}
+
+	private TreeMap<String, String> _getParentVirtualHostnames(long groupId)
+		throws PortalException {
+
+		TreeMap<String, String> virtualHostnames = new TreeMap<>();
+
+		LayoutSet layoutSet = null;
+
+		List<Group> parentGroups = GroupLocalServiceUtil.getParentGroups(
+			groupId);
+
+		for (Group parentGroup : parentGroups) {
+			layoutSet = parentGroup.getPublicLayoutSet();
+
+			virtualHostnames.putAll(layoutSet.getVirtualHostnames());
+
+			layoutSet = parentGroup.getPrivateLayoutSet();
+
+			virtualHostnames.putAll(layoutSet.getVirtualHostnames());
+		}
+
+		return virtualHostnames;
 	}
 
 	private String _getPortalURL(
