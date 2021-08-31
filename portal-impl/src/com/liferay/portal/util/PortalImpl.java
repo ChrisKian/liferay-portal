@@ -8557,9 +8557,7 @@ public class PortalImpl implements Portal {
 						).build();
 					}
 
-					if (canonicalURL ||
-						!virtualHostnames.containsKey(_LOCALHOST)) {
-
+					if (canonicalURL) {
 						String virtualHostname = getCanonicalDomain(
 							virtualHostnames, portalDomain);
 
