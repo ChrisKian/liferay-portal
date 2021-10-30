@@ -19,6 +19,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepositoryHelper;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -76,11 +77,19 @@ public class FragmentEntryStagedModelRepository
 	public void deleteStagedModel(
 			String uuid, long groupId, String className, String extraData)
 		throws PortalException {
-
 		FragmentEntry fragmentEntry = fetchStagedModelByUuidAndGroupId(
 			uuid, groupId);
 
 		if (fragmentEntry != null) {
+//			if (!extraData.isEmpty()) {
+//				FragmentEntryLinkLocalServiceUtil.
+//					getFragmentEntryLinksByFragmentEntryId(
+//						fragmentEntry.getFragmentEntryId());
+//
+//
+//			}
+//
+
 			deleteStagedModel(fragmentEntry);
 		}
 	}
