@@ -20,6 +20,8 @@ import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Conjunction;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
@@ -32,6 +34,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.service.SystemEventLocalServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xml.Document;
@@ -193,11 +196,26 @@ public class DeletionSystemEventExporter {
 		Element deletionSystemEventElement =
 			deletionSystemEventsElement.addElement("deletion-system-event");
 
-		deletionSystemEventElement.addAttribute(
-			"class-name",
-			PortalUtil.getClassName(systemEvent.getClassNameId()));
-		deletionSystemEventElement.addAttribute(
-			"extra-data", systemEvent.getExtraData());
+		String className = PortalUtil.getClassName(
+			systemEvent.getClassNameId());
+
+		deletionSystemEventElement.addAttribute("class-name", className);
+
+		if (className.equals(FragmentEntry.class.getName())) {
+			Long[] layoutIds = ArrayUtil.toArray(
+				portletDataContext.getLayoutIds());
+
+			if (layoutIds.length > 0) {
+				deletionSystemEventElement.addAttribute(
+					"extra-data",
+					ArrayUtil.toString(layoutIds, StringPool.BLANK));
+			}
+		}
+		else {
+			deletionSystemEventElement.addAttribute(
+				"extra-data", systemEvent.getExtraData());
+		}
+
 		deletionSystemEventElement.addAttribute(
 			"group-id", String.valueOf(systemEvent.getGroupId()));
 
