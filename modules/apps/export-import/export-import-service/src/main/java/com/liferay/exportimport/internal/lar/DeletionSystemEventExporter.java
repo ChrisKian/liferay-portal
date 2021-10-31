@@ -21,7 +21,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.fragment.model.FragmentEntry;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Conjunction;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
@@ -30,6 +29,8 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -206,9 +207,13 @@ public class DeletionSystemEventExporter {
 				portletDataContext.getLayoutIds());
 
 			if (layoutIds.length > 0) {
+				JSONObject extraDataJSONObject = JSONUtil.put(
+					"privateLayout", portletDataContext.isPrivateLayout());
+
+				extraDataJSONObject.put("layoutIds", layoutIds);
+
 				deletionSystemEventElement.addAttribute(
-					"extra-data",
-					ArrayUtil.toString(layoutIds, StringPool.BLANK));
+					"extra-data", extraDataJSONObject.toString());
 			}
 		}
 		else {
