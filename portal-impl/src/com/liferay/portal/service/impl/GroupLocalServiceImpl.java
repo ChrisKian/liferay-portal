@@ -4357,22 +4357,32 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			// Join by Users_Orgs
 
-			long[] organizationIds =
-				_userPersistence.getOrganizationPrimaryKeys(userId);
+			List<Organization> organizations =
+				_userPersistence.getOrganizations(userId);
 
-			for (long organizationId : organizationIds) {
+			for (Organization organization : organizations) {
 				for (Group group : groups) {
-					if (organizationId == group.getClassPK()) {
+					long classPK = group.getClassPK();
+
+					if (organization.getOrganizationId() == classPK) {
 						joinedGroups.add(group);
+					}
+					else {
+						String treePath = organization.getTreePath();
+
+						if (treePath.contains(String.valueOf(classPK))) {
+							joinedGroups.add(group);
+						}
 					}
 				}
 			}
 
 			// Join by Groups_Orgs and Users_Orgs
 
-			for (long organizationId : organizationIds) {
+			for (Organization organization : organizations) {
 				joinedGroups.addAll(
-					_organizationPersistence.getGroups(organizationId));
+					_organizationPersistence.getGroups(
+						organization.getOrganizationId()));
 			}
 
 			// Join by Groups_UserGroups and Users_UserGroups
