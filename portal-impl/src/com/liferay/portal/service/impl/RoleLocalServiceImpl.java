@@ -646,12 +646,17 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			(type == RoleConstants.TYPE_ORGANIZATION) ||
 			(type == RoleConstants.TYPE_SITE)) {
 
+			DynamicQuery userDynamicQuery = getUserActiveDynamicQuery();
 			DynamicQuery userGroupRoleDynamicQuery =
 				_userGroupRoleLocalService.dynamicQuery();
 
-			Property property = PropertyFactoryUtil.forName("roleId");
+			Property roleIdProperty = PropertyFactoryUtil.forName("roleId");
 
-			userGroupRoleDynamicQuery.add(property.eq(roleId));
+			userGroupRoleDynamicQuery.add(roleIdProperty.eq(roleId));
+
+			Property userIdProperty = PropertyFactoryUtil.forName("userId");
+
+			userGroupRoleDynamicQuery.add(userIdProperty.in(userDynamicQuery));
 
 			userGroupRoleDynamicQuery.setProjection(
 				ProjectionFactoryUtil.countDistinct("userId"));
@@ -1997,6 +2002,19 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		}
 
 		return teamRoleMap;
+	}
+
+	protected DynamicQuery getUserActiveDynamicQuery() {
+		DynamicQuery userDynamicQuery = _userLocalService.dynamicQuery();
+
+		Property property = PropertyFactoryUtil.forName("status");
+
+		userDynamicQuery.add(property.eq(WorkflowConstants.STATUS_APPROVED));
+
+		userDynamicQuery.setProjection(
+			ProjectionFactoryUtil.property("userId"));
+
+		return userDynamicQuery;
 	}
 
 	protected void initAnalyticsAdministratorViewPermissions(Role role)
