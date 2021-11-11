@@ -646,7 +646,7 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			(type == RoleConstants.TYPE_ORGANIZATION) ||
 			(type == RoleConstants.TYPE_SITE)) {
 
-			DynamicQuery userDynamicQuery = getUserActiveDynamicQuery();
+			DynamicQuery userDynamicQuery = _getActiveUsersDynamicQuery();
 			DynamicQuery userGroupRoleDynamicQuery =
 				_userGroupRoleLocalService.dynamicQuery();
 
@@ -2004,19 +2004,6 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		return teamRoleMap;
 	}
 
-	protected DynamicQuery getUserActiveDynamicQuery() {
-		DynamicQuery userDynamicQuery = _userLocalService.dynamicQuery();
-
-		Property property = PropertyFactoryUtil.forName("status");
-
-		userDynamicQuery.add(property.eq(WorkflowConstants.STATUS_APPROVED));
-
-		userDynamicQuery.setProjection(
-			ProjectionFactoryUtil.property("userId"));
-
-		return userDynamicQuery;
-	}
-
 	protected void initAnalyticsAdministratorViewPermissions(Role role)
 		throws PortalException {
 
@@ -2134,6 +2121,19 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 				RoleConstants.PLACEHOLDER_DEFAULT_GROUP_ROLE +
 					" is a temporary placeholder that must not be persisted");
 		}
+	}
+
+	private DynamicQuery _getActiveUsersDynamicQuery() {
+		DynamicQuery userDynamicQuery = _userLocalService.dynamicQuery();
+
+		Property property = PropertyFactoryUtil.forName("status");
+
+		userDynamicQuery.add(property.eq(WorkflowConstants.STATUS_APPROVED));
+
+		userDynamicQuery.setProjection(
+			ProjectionFactoryUtil.property("userId"));
+
+		return userDynamicQuery;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
