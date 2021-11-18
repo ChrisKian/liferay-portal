@@ -372,9 +372,11 @@ const openSelectionModal = ({
 			if (searchContainer) {
 				iframeWindowObj.Liferay.componentReady(searchContainer.id).then(
 					(searchContainer) => {
-						const allSelectedElements = searchContainer.select.getAllSelectedElements();
+						const allElements = searchContainer.select._getAllElements(
+							false
+						);
 
-						const allSelectedNodes = allSelectedElements.getDOMNodes();
+						const allSelectedNodes = allElements.getDOMNodes();
 
 						onSelect(
 							allSelectedNodes.map((node) => {
@@ -382,6 +384,10 @@ const openSelectionModal = ({
 
 								if (node.value) {
 									item.value = node.value;
+								}
+
+								if (node.checked) {
+									item.checked = node.checked;
 								}
 
 								const row = node.closest('tr, li');
