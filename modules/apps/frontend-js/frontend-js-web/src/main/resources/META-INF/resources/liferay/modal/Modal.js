@@ -353,6 +353,7 @@ const openSelectionModal = ({
 	multiple = false,
 	onClose,
 	onSelect,
+	onSelectAll,
 	selectEventName,
 	selectedData,
 	size,
@@ -380,7 +381,7 @@ const openSelectionModal = ({
 
 						const allNodes = allElements.getDOMNodes();
 
-						onSelect(
+						onSelectAll(
 							allNodes.map((node) => {
 								let item = {};
 
@@ -390,6 +391,28 @@ const openSelectionModal = ({
 
 								if (node.checked) {
 									item.checked = node.checked;
+								}
+
+								const row = node.closest('tr, li');
+
+								if (row && Object.keys(row.dataset).length) {
+									item = {...item, ...row.dataset};
+								}
+
+								return item;
+							})
+						);
+
+						const allSelectedElements = searchContainer.select.getAllSelectedElements();
+
+						const allSelectedNodes = allSelectedElements.getDOMNodes();
+
+						onSelect(
+							allSelectedNodes.map((node) => {
+								let item = {};
+
+								if (node.value) {
+									item.value = node.value;
 								}
 
 								const row = node.closest('tr, li');

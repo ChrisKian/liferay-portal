@@ -19,7 +19,7 @@ export const ACTIONS = {
 		openSelectionModal({
 			buttonAddLabel: Liferay.Language.get('done'),
 			multiple: true,
-			onSelect: (items) => {
+			onSelectAll: (items) => {
 				const editUserGroupRoleFm = document.getElementById(
 					`${portletNamespace}editUserGroupRoleFm`
 				);
