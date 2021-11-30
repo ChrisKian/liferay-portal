@@ -396,7 +396,7 @@ AUI.add(
 						);
 
 						if (input) {
-							input.attr(STR_CHECKED, true);
+							input.attr(STR_CHECKED, item.checked);
 							input
 								.ancestor(params.rowSelector)
 								.addClass(params.rowClassNameActive);
