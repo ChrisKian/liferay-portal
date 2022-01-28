@@ -49,6 +49,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	configurationPid = "com.liferay.segments.configuration.SegmentsConfiguration",
 	immediate = true,
+	property = "destination.name=" + SegmentsDestinationNames.SEGMENTS_ENTRY_REL_INDEXER,
 	service = {
 		MessageListener.class, SegmentsEntryRelIndexerMessageListener.class
 	}
