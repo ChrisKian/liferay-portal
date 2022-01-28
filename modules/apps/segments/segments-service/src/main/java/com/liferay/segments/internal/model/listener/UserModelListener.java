@@ -35,8 +35,12 @@ public class UserModelListener extends BaseModelListener<User> {
 	public void onAfterUpdate(User originalUser, User user)
 		throws ModelListenerException {
 
+		Message message = new Message();
+
+		message.put("userUpdated", true);
+
 		_messageBus.sendMessage(
-			SegmentsDestinationNames.SEGMENTS_ENTRY_REL_INDEXER, new Message());
+			SegmentsDestinationNames.SEGMENTS_ENTRY_REL_INDEXER, message);
 	}
 
 	@Reference

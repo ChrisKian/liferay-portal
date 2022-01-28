@@ -48,4 +48,10 @@ public interface SegmentsConfiguration {
 	)
 	public int segmentsPreviewCheckInterval();
 
+	@Meta.AD(
+		deflt = "false", description = "segments-reindex-enabled-description",
+		name = "segments-reindex-enabled", required = false
+	)
+	public boolean segmentsReindexEnabled();
+
 }

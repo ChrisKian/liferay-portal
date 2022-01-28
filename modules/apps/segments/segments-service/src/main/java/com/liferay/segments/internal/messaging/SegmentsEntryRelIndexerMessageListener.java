@@ -86,6 +86,12 @@ public class SegmentsEntryRelIndexerMessageListener
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		boolean userUpdated = message.getBoolean("userUpdated");
+
+		if (userUpdated && !_segmentsConfiguration.segmentsReindexEnabled()) {
+			return;
+		}
+
 		ActionableDynamicQuery actionableDynamicQuery =
 			_segmentsEntryLocalService.getActionableDynamicQuery();
 
