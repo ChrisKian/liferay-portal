@@ -34,11 +34,13 @@ public class UserModelListener extends BaseModelListener<User> {
 	public void onAfterUpdate(User originalUser, User user)
 		throws ModelListenerException {
 
-		long classNameId = _classNameLocalService.getClassNameId(
-			User.class.getName());
+		if (originalUser.getModifiedDate() != user.getModifiedDate()) {
+			long classNameId = _classNameLocalService.getClassNameId(
+				User.class.getName());
 
-		_segmentsEntryRelLocalService.deleteSegmentsEntryRels(
-			classNameId, user.getUserId());
+			_segmentsEntryRelLocalService.deleteSegmentsEntryRels(
+				classNameId, user.getUserId());
+		}
 	}
 
 	@Reference
