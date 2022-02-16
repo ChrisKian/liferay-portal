@@ -70,7 +70,7 @@ public abstract class BaseUserCard
 
 	@Override
 	public String getName() {
-		return HtmlUtil.escape(user.getFullName());
+		return user.getFullName();
 	}
 
 	@Override
