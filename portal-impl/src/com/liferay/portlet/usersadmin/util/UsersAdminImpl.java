@@ -89,6 +89,7 @@ import com.liferay.portal.kernel.util.comparator.UserGroupNameComparator;
 import com.liferay.portal.kernel.util.comparator.UserJobTitleComparator;
 import com.liferay.portal.kernel.util.comparator.UserLastNameComparator;
 import com.liferay.portal.kernel.util.comparator.UserScreenNameComparator;
+import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.users.admin.kernel.util.UsersAdmin;
@@ -184,11 +185,21 @@ public class UsersAdminImpl implements UsersAdmin {
 			roleIds = ArrayUtil.append(roleIds, administratorRole.getRoleId());
 		}
 
-		Role userRole = RoleLocalServiceUtil.getRole(
-			user.getCompanyId(), RoleConstants.USER);
+		String[] defaultRoleNames = PrefsPropsUtil.getStringArray(
+			user.getCompanyId(), PropsKeys.ADMIN_DEFAULT_ROLE_NAMES,
+			StringPool.NEW_LINE, PropsValues.ADMIN_DEFAULT_ROLE_NAMES);
 
-		if (!ArrayUtil.contains(roleIds, userRole.getRoleId())) {
-			roleIds = ArrayUtil.append(roleIds, userRole.getRoleId());
+		for (String defaultRoleName : defaultRoleNames) {
+			if (defaultRoleName.equalsIgnoreCase(RoleConstants.USER)) {
+				Role userRole = RoleLocalServiceUtil.getRole(
+					user.getCompanyId(), RoleConstants.USER);
+
+				if (!ArrayUtil.contains(roleIds, userRole.getRoleId())) {
+					roleIds = ArrayUtil.append(roleIds, userRole.getRoleId());
+				}
+
+				break;
+			}
 		}
 
 		return roleIds;
