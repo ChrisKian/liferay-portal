@@ -7937,6 +7937,28 @@ public class PortalImpl implements Portal {
 
 			i18nPath = _buildI18NPath(locale, themeDisplay.getSiteGroup());
 		}
+		else {
+			Layout layout = themeDisplay.getLayout();
+
+			LayoutSet layoutSet = layout.getLayoutSet();
+
+			TreeMap<String, String> virtualHostnames =
+				layoutSet.getVirtualHostnames();
+
+			if (!virtualHostnames.isEmpty()) {
+				String virtualHostLanguageId = virtualHostnames.get(
+					themeDisplay.getPortalDomain());
+
+				String localeLanguageId = LanguageUtil.getLanguageId(locale);
+
+				if ((virtualHostLanguageId != null) &&
+					!virtualHostLanguageId.equals(localeLanguageId)) {
+
+					i18nPath = _buildI18NPath(
+						locale, themeDisplay.getSiteGroup());
+				}
+			}
+		}
 
 		themeDisplay.setI18nLanguageId(locale.toString());
 		themeDisplay.setI18nPath(i18nPath);
