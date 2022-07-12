@@ -7949,13 +7949,14 @@ public class PortalImpl implements Portal {
 				String virtualHostLanguageId = virtualHostnames.get(
 					themeDisplay.getPortalDomain());
 
-				String localeLanguageId = LanguageUtil.getLanguageId(locale);
+				if (Validator.isNotNull(virtualHostLanguageId)) {
+					String localeLanguageId = LanguageUtil.getLanguageId(
+						locale);
 
-				if ((virtualHostLanguageId != null) &&
-					!virtualHostLanguageId.equals(localeLanguageId)) {
-
-					i18nPath = _buildI18NPath(
-						locale, themeDisplay.getSiteGroup());
+					if (!virtualHostLanguageId.equals(localeLanguageId)) {
+						i18nPath = _buildI18NPath(
+							locale, themeDisplay.getSiteGroup());
+					}
 				}
 			}
 		}
