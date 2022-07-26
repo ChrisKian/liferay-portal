@@ -527,7 +527,12 @@ public class PortalInstances {
 
 				HttpSession httpSession = httpServletRequest.getSession(false);
 
-				if (httpSession != null) {
+				String path = GetterUtil.getString(
+					httpServletRequest.getPathInfo());
+
+				if ((httpSession != null) &&
+					PortalUtil.isGroupControlPanelPath(path)) {
+
 					Locale locale = (Locale)httpSession.getAttribute(
 						WebKeys.LOCALE);
 
