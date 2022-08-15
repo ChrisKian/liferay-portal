@@ -88,7 +88,8 @@ public class PortalInstancesTest {
 				RandomTestUtil.randomString(3);
 
 		_updateLayoutSetVirtualHostname(
-			_nondefaultGroupPublicLayout, _nondefaultGroupPublicLayoutHostname);
+			_nondefaultGroupPublicLayout, _nondefaultGroupPublicLayoutHostname,
+			StringPool.BLANK);
 	}
 
 	@After
@@ -102,7 +103,7 @@ public class PortalInstancesTest {
 	@Test
 	public void testGetCompanyId() {
 		_updateLayoutSetVirtualHostname(
-			_defaultGroupPublicLayout, StringPool.BLANK);
+			_defaultGroupPublicLayout, StringPool.BLANK, StringPool.BLANK);
 
 		_testGetCompanyId(
 			_company.getVirtualHostname(),
@@ -116,7 +117,8 @@ public class PortalInstancesTest {
 				RandomTestUtil.randomString(3);
 
 		_updateLayoutSetVirtualHostname(
-			_defaultGroupPublicLayout, defaultGroupPublicLayoutHostname);
+			_defaultGroupPublicLayout, defaultGroupPublicLayoutHostname,
+			StringPool.BLANK);
 
 		_testGetCompanyId(
 			_company.getVirtualHostname(),
@@ -150,14 +152,14 @@ public class PortalInstancesTest {
 	}
 
 	private void _updateLayoutSetVirtualHostname(
-		Layout layout, String layoutHostname) {
+		Layout layout, String layoutHostname, String languageId) {
 
 		LayoutSet layoutSet = layout.getLayoutSet();
 
 		_virtualHostLocalService.updateVirtualHosts(
 			_company.getCompanyId(), layoutSet.getLayoutSetId(),
 			TreeMapBuilder.put(
-				layoutHostname, StringPool.BLANK
+				layoutHostname, languageId
 			).build());
 
 		layout.setLayoutSet(null);
