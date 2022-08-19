@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.PortletCategory;
 import com.liferay.portal.kernel.model.User;
@@ -527,7 +528,12 @@ public class PortalInstances {
 
 				HttpSession httpSession = httpServletRequest.getSession(false);
 
-				if (httpSession != null) {
+				String path = GetterUtil.getString(
+					httpServletRequest.getPathInfo());
+
+				if ((httpSession != null) &&
+					path.contains(GroupConstants.CONTROL_PANEL_FRIENDLY_URL)) {
+
 					Locale locale = (Locale)httpSession.getAttribute(
 						WebKeys.LOCALE);
 
