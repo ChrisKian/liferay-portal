@@ -21,6 +21,7 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
+import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -55,6 +56,10 @@ public class CurrentAccountEntryManagerStore {
 		long groupId, long userId) {
 
 		PortalPreferences portalPreferences = _getPortalPreferences(userId);
+
+		if (portalPreferences == null) {
+			return null;
+		}
 
 		long accountEntryId = GetterUtil.getLong(
 			portalPreferences.getValue(
@@ -93,7 +98,8 @@ public class CurrentAccountEntryManagerStore {
 	public void saveInPortalPreferences(
 		long accountEntryId, long groupId, long userId) {
 
-		PortalPreferences portalPreferences = _getPortalPreferences(userId);
+		PortalPreferences portalPreferences =
+			_portletPreferencesFactory.getPortalPreferences(userId, true);
 
 		String key = _getKey(groupId);
 
@@ -125,7 +131,23 @@ public class CurrentAccountEntryManagerStore {
 	}
 
 	private PortalPreferences _getPortalPreferences(long userId) {
-		return _portletPreferencesFactory.getPortalPreferences(userId, true);
+		com.liferay.portal.kernel.model.PortalPreferences
+			portalPreferencesModel =
+				_portalPreferencesLocalService.fetchPortalPreferences(
+					userId, PortletKeys.PREFS_OWNER_TYPE_USER);
+
+		if (portalPreferencesModel == null) {
+			return null;
+		}
+
+		PortalPreferences portalPreferences =
+			_portalPreferenceValueLocalService.getPortalPreferences(
+				portalPreferencesModel, true);
+
+		portalPreferences.setSignedIn(true);
+		portalPreferences.setUserId(userId);
+
+		return portalPreferences;
 	}
 
 	@Reference
@@ -133,6 +155,10 @@ public class CurrentAccountEntryManagerStore {
 
 	@Reference
 	private PortalPreferencesLocalService _portalPreferencesLocalService;
+
+	@Reference
+	private PortalPreferenceValueLocalService
+		_portalPreferenceValueLocalService;
 
 	@Reference
 	private PortletPreferencesFactory _portletPreferencesFactory;
