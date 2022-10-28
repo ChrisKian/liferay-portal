@@ -74,9 +74,13 @@ public class AccountGroupDetailsScreenNavigationCategory
 	public boolean isVisible(
 		User user, AccountGroupDisplay accountGroupDisplay) {
 
+		if (accountGroupDisplay.getAccountGroupId() == 0) {
+			return false;
+		}
+
 		return AccountGroupPermission.contains(
 			PermissionCheckerFactoryUtil.create(user),
-			accountGroupDisplay.getAccountGroupId(), ActionKeys.UPDATE);
+			accountGroupDisplay.getAccountGroupId(), ActionKeys.ADD_ENTRY, ActionKeys.UPDATE);
 	}
 
 	@Override
