@@ -77,18 +77,18 @@ public class AccountGroupDetailsScreenNavigationCategory
 	public boolean isVisible(
 		User user, AccountGroupDisplay accountGroupDisplay) {
 
-		if (accountGroupDisplay.getAccountGroupId() == AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT) {
+		if (accountGroupDisplay.getAccountGroupId() ==
+				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT) {
 
-		return PortalPermissionUtil.contains(
-			PermissionCheckerFactoryUtil.create(user),
-			AccountActionKeys.ADD_ACCOUNT_GROUP);
+			return PortalPermissionUtil.contains(
+				PermissionCheckerFactoryUtil.create(user),
+				AccountActionKeys.ADD_ACCOUNT_GROUP);
 		}
 
 		return AccountGroupPermission.contains(
-				PermissionCheckerFactoryUtil.create(user),
-				accountGroupDisplay.getAccountGroupId(), ActionKeys.UPDATE);
+			PermissionCheckerFactoryUtil.create(user),
+			accountGroupDisplay.getAccountGroupId(), ActionKeys.UPDATE);
 	}
-
 
 	@Override
 	public void render(
