@@ -909,6 +909,8 @@ public class PortletPreferencesFactoryImpl
 			Layout layout, String portletId, boolean modeEditGuest)
 		throws PortalException {
 
+		// can this portletId lead to multiple portletPreferences entries?
+
 		String originalPortletId = portletId;
 
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(
@@ -942,13 +944,15 @@ public class PortletPreferencesFactoryImpl
 
 		boolean hasMasterLayoutPreferences = false;
 
-		long portletPreferencesCount =
-			PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, masterLayoutPlid,
-				portletId);
+		if (masterLayoutPlid > 0) {
+			long portletPreferencesCount =
+				PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
+					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, masterLayoutPlid,
+					portletId);
 
-		if ((masterLayoutPlid > 0) && (portletPreferencesCount > 0)) {
-			hasMasterLayoutPreferences = true;
+			if (portletPreferencesCount > 0) {
+				hasMasterLayoutPreferences = true;
+			}
 		}
 
 		if (hasMasterLayoutPreferences) {
