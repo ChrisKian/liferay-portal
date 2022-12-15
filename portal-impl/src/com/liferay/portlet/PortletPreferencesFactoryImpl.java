@@ -945,12 +945,17 @@ public class PortletPreferencesFactoryImpl
 		boolean hasMasterLayoutPreferences = false;
 
 		if (masterLayoutPlid > 0) {
-			long portletPreferencesCount =
-				PortletPreferencesLocalServiceUtil.getPortletPreferencesCount(
-					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, masterLayoutPlid,
-					portletId);
+			PortletPreferencesImpl portletPreferencesImpl =
+				(PortletPreferencesImpl)
+					PortletPreferencesLocalServiceUtil.fetchPreferences(
+						layout.getCompanyId(),
+						PortletKeys.PREFS_OWNER_ID_DEFAULT,
+						PortletKeys.PREFS_OWNER_TYPE_LAYOUT, masterLayoutPlid,
+						portletId);
 
-			if (portletPreferencesCount > 0) {
+			if ((portletPreferencesImpl != null) &&
+				(portletPreferencesImpl.size() > 0)) {
+
 				hasMasterLayoutPreferences = true;
 			}
 		}
