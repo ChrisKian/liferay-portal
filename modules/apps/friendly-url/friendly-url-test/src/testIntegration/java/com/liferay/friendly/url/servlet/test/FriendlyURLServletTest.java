@@ -26,16 +26,16 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
+//import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+//import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+//import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+//import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -155,42 +155,42 @@ public class FriendlyURLServletTest {
 	public void testGetRedirectOnHiddenLayout() throws Throwable {
 		_layout.setHidden(true);
 
-		_layoutLocalService.updateLayout(_layout);
-
-		Role guestRole = RoleLocalServiceUtil.getRole(
-			_group.getCompanyId(), RoleConstants.GUEST);
-
-		ResourcePermission resourcePermission =
-			_resourcePermissionLocalService.fetchResourcePermission(
-				_group.getCompanyId(), Layout.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(_layout.getPrimaryKey()), guestRole.getRoleId());
-
-		resourcePermission.setActionIds(0);
-		resourcePermission.setViewActionId(false);
-
-		_resourcePermissionLocalService.updateResourcePermission(
-			resourcePermission);
-
-		Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group);
-
-		layout2.setHidden(true);
-
-		_layoutLocalService.updateLayout(layout2);
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setPathInfo(StringPool.SLASH);
-
-		_user = UserTestUtil.addUser();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_user));
-
-		testGetRedirect(
-			mockHttpServletRequest, _group.getFriendlyURL(), Portal.PATH_MAIN,
-			_redirectConstructor1.newInstance(getURL(layout2)));
+//		_layoutLocalService.updateLayout(_layout);
+//
+//		Role guestRole = RoleLocalServiceUtil.getRole(
+//			_group.getCompanyId(), RoleConstants.GUEST);
+//
+//		ResourcePermission resourcePermission =
+//			_resourcePermissionLocalService.fetchResourcePermission(
+//				_group.getCompanyId(), Layout.class.getName(),
+//				ResourceConstants.SCOPE_INDIVIDUAL,
+//				String.valueOf(_layout.getPrimaryKey()), guestRole.getRoleId());
+//
+//		resourcePermission.setActionIds(0);
+//		resourcePermission.setViewActionId(false);
+//
+//		_resourcePermissionLocalService.updateResourcePermission(
+//			resourcePermission);
+//
+//		Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group);
+//
+//		layout2.setHidden(true);
+//
+//		_layoutLocalService.updateLayout(layout2);
+//
+//		MockHttpServletRequest mockHttpServletRequest =
+//			new MockHttpServletRequest();
+//
+//		mockHttpServletRequest.setPathInfo(StringPool.SLASH);
+//
+//		_user = UserTestUtil.addUser();
+//
+//		PermissionThreadLocal.setPermissionChecker(
+//			PermissionCheckerFactoryUtil.create(_user));
+//
+//		testGetRedirect(
+//			mockHttpServletRequest, _group.getFriendlyURL(), Portal.PATH_MAIN,
+//			_redirectConstructor1.newInstance(getURL(layout2)));
 	}
 
 	@Test
@@ -712,8 +712,8 @@ public class FriendlyURLServletTest {
 	@Inject
 	private RedirectEntryLocalService _redirectEntryLocalService;
 
-	@Inject
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
+//	@Inject
+//	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@DeleteAfterTestRun
 	private Role _role;
