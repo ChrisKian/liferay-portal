@@ -153,22 +153,18 @@ public class FriendlyURLServletTest {
 
 	@Test
 	public void testGetRedirectOnHiddenLayout() throws Throwable {
-		Group group = GroupTestUtil.addGroup();
+		_layout.setHidden(true);
 
-		Layout layout1 = LayoutTestUtil.addTypePortletLayout(group);
-
-		layout1.setHidden(true);
-
-		_layoutLocalService.updateLayout(layout1);
+		_layoutLocalService.updateLayout(_layout);
 
 		Role guestRole = RoleLocalServiceUtil.getRole(
-			group.getCompanyId(), RoleConstants.GUEST);
+			_group.getCompanyId(), RoleConstants.GUEST);
 
 		ResourcePermission resourcePermission =
 			_resourcePermissionLocalService.fetchResourcePermission(
-				group.getCompanyId(), Layout.class.getName(),
+				_group.getCompanyId(), Layout.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(layout1.getPrimaryKey()), guestRole.getRoleId());
+				String.valueOf(_layout.getPrimaryKey()), guestRole.getRoleId());
 
 		resourcePermission.setActionIds(0);
 		resourcePermission.setViewActionId(false);
@@ -176,7 +172,7 @@ public class FriendlyURLServletTest {
 		_resourcePermissionLocalService.updateResourcePermission(
 			resourcePermission);
 
-		Layout layout2 = LayoutTestUtil.addTypePortletLayout(group);
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group);
 
 		layout2.setHidden(true);
 
@@ -193,7 +189,7 @@ public class FriendlyURLServletTest {
 			PermissionCheckerFactoryUtil.create(_user));
 
 		testGetRedirect(
-			mockHttpServletRequest, group.getFriendlyURL(), Portal.PATH_MAIN,
+			mockHttpServletRequest, _group.getFriendlyURL(), Portal.PATH_MAIN,
 			_redirectConstructor1.newInstance(getURL(layout2)));
 	}
 
