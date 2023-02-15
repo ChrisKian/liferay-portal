@@ -287,8 +287,9 @@ public class I18nFilter extends BasePortalFilter {
 	protected boolean isForwardedByI18nServlet(
 		HttpServletRequest httpServletRequest) {
 
-		if ((httpServletRequest.getAttribute(WebKeys.I18N_LANGUAGE_ID) !=
-				null) ||
+		if (((PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE != 2) &&
+			 (httpServletRequest.getAttribute(WebKeys.I18N_LANGUAGE_ID) !=
+				 null)) ||
 			(httpServletRequest.getAttribute(WebKeys.I18N_PATH) != null)) {
 
 			return true;
