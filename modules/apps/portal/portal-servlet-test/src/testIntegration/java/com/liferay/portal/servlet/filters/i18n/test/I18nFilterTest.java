@@ -17,7 +17,9 @@ package com.liferay.portal.servlet.filters.i18n.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -25,14 +27,18 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.filters.i18n.I18nFilter;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.util.PortalInstances;
 
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.junit.Assert;
@@ -123,6 +129,49 @@ public class I18nFilterTest {
 	}
 
 	@Test
+	public void testEnglishUserSpanishVirtualHostWithSpanishCookieAlgorithm3()
+		throws Exception {
+
+		String layoutHostname =
+			RandomTestUtil.randomString(6) + "." +
+				RandomTestUtil.randomString(3);
+
+		LayoutSet layoutSet = _group.getPublicLayoutSet();
+
+		_virtualHostLocalService.updateVirtualHosts(
+			_group.getCompanyId(), layoutSet.getLayoutSetId(),
+			TreeMapBuilder.put(
+				StringUtil.toLowerCase(layoutHostname), "es_ES"
+			).build());
+
+		_mockHttpServletRequest.addHeader("Host", layoutHostname);
+		_mockHttpServletRequest.setServerName(layoutHostname);
+
+		User user = UserTestUtil.addUser(
+			null, LocaleUtil.ENGLISH, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), new long[] {_group.getGroupId()});
+
+		_mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+
+		_language.updateCookie(
+			_mockHttpServletRequest, _mockHttpServletResponse,
+			LocaleUtil.SPAIN);
+
+		_mockHttpServletRequest.setCookies(
+			_mockHttpServletResponse.getCookies());
+
+		PortalInstances.getCompanyId(_mockHttpServletRequest);
+
+		Assert.assertTrue(
+			ReflectionTestUtil.invoke(
+				_i18nFilter, "isFilterEnabled",
+				new Class<?>[] {
+					HttpServletRequest.class, HttpServletResponse.class
+				},
+				_mockHttpServletRequest, null));
+	}
+
+	@Test
 	public void testGuestEnglishSessionPathWithEnglishCookieAlgorithm3()
 		throws Exception {
 
@@ -176,6 +225,41 @@ public class I18nFilterTest {
 				3, null, LocaleUtil.SPAIN, LocaleUtil.SPAIN));
 	}
 
+	@Test
+	public void testGuestUserSpanishVirtualHostWithSpanishCookieAlgorithm3() {
+		String layoutHostname =
+			RandomTestUtil.randomString(6) + "." +
+				RandomTestUtil.randomString(3);
+
+		LayoutSet layoutSet = _group.getPublicLayoutSet();
+
+		_virtualHostLocalService.updateVirtualHosts(
+			_group.getCompanyId(), layoutSet.getLayoutSetId(),
+			TreeMapBuilder.put(
+				StringUtil.toLowerCase(layoutHostname), "es_ES"
+			).build());
+
+		_mockHttpServletRequest.addHeader("Host", layoutHostname);
+		_mockHttpServletRequest.setServerName(layoutHostname);
+
+		_language.updateCookie(
+			_mockHttpServletRequest, _mockHttpServletResponse,
+			LocaleUtil.SPAIN);
+
+		_mockHttpServletRequest.setCookies(
+			_mockHttpServletResponse.getCookies());
+
+		PortalInstances.getCompanyId(_mockHttpServletRequest);
+
+		Assert.assertTrue(
+			ReflectionTestUtil.invoke(
+				_i18nFilter, "isFilterEnabled",
+				new Class<?>[] {
+					HttpServletRequest.class, HttpServletResponse.class
+				},
+				_mockHttpServletRequest, null));
+	}
+
 	private String _getPrependI18nLanguageId(
 			int localePrependFriendlyURLStyle, Locale userLocale,
 			Locale sessionLocale, Locale cookieLocale)
@@ -225,5 +309,8 @@ public class I18nFilterTest {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private VirtualHostLocalService _virtualHostLocalService;
 
 }
