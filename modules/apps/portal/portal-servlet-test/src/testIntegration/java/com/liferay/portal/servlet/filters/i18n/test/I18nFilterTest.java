@@ -78,7 +78,7 @@ public class I18nFilterTest {
 
 		Assert.assertNull(
 			_getPrependI18nLanguageId(
-				3, LocaleUtil.US, LocaleUtil.US, LocaleUtil.US));
+				3, LocaleUtil.US, LocaleUtil.US, LocaleUtil.US, null));
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class I18nFilterTest {
 
 		Assert.assertNull(
 			_getPrependI18nLanguageId(
-				3, LocaleUtil.US, LocaleUtil.US, LocaleUtil.SPAIN));
+				3, LocaleUtil.US, LocaleUtil.US, LocaleUtil.SPAIN, null));
 	}
 
 	@Test
@@ -95,7 +95,8 @@ public class I18nFilterTest {
 		throws Exception {
 
 		Assert.assertNull(
-			_getPrependI18nLanguageId(3, LocaleUtil.US, LocaleUtil.US, null));
+			_getPrependI18nLanguageId(
+				3, LocaleUtil.US, LocaleUtil.US, null, null));
 	}
 
 	@Test
@@ -105,7 +106,7 @@ public class I18nFilterTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			_getPrependI18nLanguageId(
-				3, LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.US));
+				3, LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.US, null));
 	}
 
 	@Test
@@ -115,7 +116,7 @@ public class I18nFilterTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			_getPrependI18nLanguageId(
-				3, LocaleUtil.US, LocaleUtil.SPAIN, null));
+				3, LocaleUtil.US, LocaleUtil.SPAIN, null, null));
 	}
 
 	@Test
@@ -125,50 +126,16 @@ public class I18nFilterTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			_getPrependI18nLanguageId(
-				3, LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.SPAIN));
+				3, LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.SPAIN, null));
 	}
 
 	@Test
 	public void testEnglishUserSpanishVirtualHostWithSpanishCookieAlgorithm3()
 		throws Exception {
 
-		String layoutHostname =
-			RandomTestUtil.randomString(6) + "." +
-				RandomTestUtil.randomString(3);
-
-		LayoutSet layoutSet = _group.getPublicLayoutSet();
-
-		_virtualHostLocalService.updateVirtualHosts(
-			_group.getCompanyId(), layoutSet.getLayoutSetId(),
-			TreeMapBuilder.put(
-				StringUtil.toLowerCase(layoutHostname), "es_ES"
-			).build());
-
-		_mockHttpServletRequest.addHeader("Host", layoutHostname);
-		_mockHttpServletRequest.setServerName(layoutHostname);
-
-		User user = UserTestUtil.addUser(
-			null, LocaleUtil.ENGLISH, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), new long[] {_group.getGroupId()});
-
-		_mockHttpServletRequest.setAttribute(WebKeys.USER, user);
-
-		_language.updateCookie(
-			_mockHttpServletRequest, _mockHttpServletResponse,
+		_getPrependI18nLanguageId(
+			3, LocaleUtil.ENGLISH, LocaleUtil.SPAIN, LocaleUtil.SPAIN,
 			LocaleUtil.SPAIN);
-
-		_mockHttpServletRequest.setCookies(
-			_mockHttpServletResponse.getCookies());
-
-		PortalInstances.getCompanyId(_mockHttpServletRequest);
-
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				_i18nFilter, "isFilterEnabled",
-				new Class<?>[] {
-					HttpServletRequest.class, HttpServletResponse.class
-				},
-				_mockHttpServletRequest, null));
 	}
 
 	@Test
@@ -176,7 +143,8 @@ public class I18nFilterTest {
 		throws Exception {
 
 		Assert.assertNull(
-			_getPrependI18nLanguageId(3, null, LocaleUtil.US, LocaleUtil.US));
+			_getPrependI18nLanguageId(
+				3, null, LocaleUtil.US, LocaleUtil.US, null));
 	}
 
 	@Test
@@ -185,7 +153,7 @@ public class I18nFilterTest {
 
 		Assert.assertNull(
 			_getPrependI18nLanguageId(
-				3, null, LocaleUtil.US, LocaleUtil.SPAIN));
+				3, null, LocaleUtil.US, LocaleUtil.SPAIN, null));
 	}
 
 	@Test
@@ -193,7 +161,7 @@ public class I18nFilterTest {
 		throws Exception {
 
 		Assert.assertNull(
-			_getPrependI18nLanguageId(3, null, LocaleUtil.US, null));
+			_getPrependI18nLanguageId(3, null, LocaleUtil.US, null, null));
 	}
 
 	@Test
@@ -203,7 +171,7 @@ public class I18nFilterTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			_getPrependI18nLanguageId(
-				3, null, LocaleUtil.SPAIN, LocaleUtil.US));
+				3, null, LocaleUtil.SPAIN, LocaleUtil.US, null));
 	}
 
 	@Test
@@ -212,7 +180,7 @@ public class I18nFilterTest {
 
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
-			_getPrependI18nLanguageId(3, null, LocaleUtil.SPAIN, null));
+			_getPrependI18nLanguageId(3, null, LocaleUtil.SPAIN, null, null));
 	}
 
 	@Test
@@ -222,52 +190,44 @@ public class I18nFilterTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
 			_getPrependI18nLanguageId(
-				3, null, LocaleUtil.SPAIN, LocaleUtil.SPAIN));
+				3, null, LocaleUtil.SPAIN, LocaleUtil.SPAIN, null));
 	}
 
 	@Test
-	public void testGuestUserSpanishVirtualHostWithSpanishCookieAlgorithm3() {
-		String layoutHostname =
-			RandomTestUtil.randomString(6) + "." +
-				RandomTestUtil.randomString(3);
+	public void testGuestUserSpanishVirtualHostWithSpanishCookieAlgorithm3()
+		throws Exception {
 
-		LayoutSet layoutSet = _group.getPublicLayoutSet();
-
-		_virtualHostLocalService.updateVirtualHosts(
-			_group.getCompanyId(), layoutSet.getLayoutSetId(),
-			TreeMapBuilder.put(
-				StringUtil.toLowerCase(layoutHostname), "es_ES"
-			).build());
-
-		_mockHttpServletRequest.addHeader("Host", layoutHostname);
-		_mockHttpServletRequest.setServerName(layoutHostname);
-
-		_language.updateCookie(
-			_mockHttpServletRequest, _mockHttpServletResponse,
-			LocaleUtil.SPAIN);
-
-		_mockHttpServletRequest.setCookies(
-			_mockHttpServletResponse.getCookies());
-
-		PortalInstances.getCompanyId(_mockHttpServletRequest);
-
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				_i18nFilter, "isFilterEnabled",
-				new Class<?>[] {
-					HttpServletRequest.class, HttpServletResponse.class
-				},
-				_mockHttpServletRequest, null));
+		_getPrependI18nLanguageId(
+			3, null, LocaleUtil.SPAIN, LocaleUtil.SPAIN, LocaleUtil.SPAIN);
 	}
 
 	private String _getPrependI18nLanguageId(
 			int localePrependFriendlyURLStyle, Locale userLocale,
-			Locale sessionLocale, Locale cookieLocale)
+			Locale sessionLocale, Locale cookieLocale, Locale virtualHostLocale)
 		throws Exception {
 
-		HttpSession httpSession = _mockHttpServletRequest.getSession();
+		if (virtualHostLocale != null) {
+			String layoutHostname =
+				RandomTestUtil.randomString(6) + "." +
+					RandomTestUtil.randomString(3);
 
-		httpSession.setAttribute(WebKeys.LOCALE, sessionLocale);
+			LayoutSet layoutSet = _group.getPublicLayoutSet();
+
+			_virtualHostLocalService.updateVirtualHosts(
+				_group.getCompanyId(), layoutSet.getLayoutSetId(),
+				TreeMapBuilder.put(
+					StringUtil.toLowerCase(layoutHostname), "es_ES"
+				).build());
+
+			_mockHttpServletRequest.addHeader("Host", layoutHostname);
+			_mockHttpServletRequest.setServerName(layoutHostname);
+		}
+
+		if (sessionLocale != null) {
+			HttpSession httpSession = _mockHttpServletRequest.getSession();
+
+			httpSession.setAttribute(WebKeys.LOCALE, sessionLocale);
+		}
 
 		if (userLocale != null) {
 			_user = UserTestUtil.addUser(
@@ -289,6 +249,16 @@ public class I18nFilterTest {
 			_mockHttpServletRequest.setCookies(
 				_mockHttpServletResponse.getCookies());
 		}
+
+		PortalInstances.getCompanyId(_mockHttpServletRequest);
+
+		Assert.assertTrue(
+			ReflectionTestUtil.invoke(
+				_i18nFilter, "isFilterEnabled",
+				new Class<?>[] {
+					HttpServletRequest.class, HttpServletResponse.class
+				},
+				_mockHttpServletRequest, _mockHttpServletResponse));
 
 		return ReflectionTestUtil.invoke(
 			_i18nFilter, "prependI18nLanguageId",
