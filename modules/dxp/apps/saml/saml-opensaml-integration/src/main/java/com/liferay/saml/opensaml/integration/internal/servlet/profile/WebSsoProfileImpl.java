@@ -77,6 +77,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1032,6 +1033,33 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			samlSsoRequestContext.getSamlSsoSessionId());
 	}
 
+	private void _bindSamlSsoRequestContext(
+		String samlMessageId, HttpSession httpSession,
+		SamlSsoRequestContext samlSsoRequestContext) {
+
+		Map<String, SamlSsoRequestContext> samlSsoRequestContexts =
+			(Map<String, SamlSsoRequestContext>)httpSession.getAttribute(
+				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+
+		if (samlSsoRequestContexts == null) {
+			if (samlSsoRequestContext == null) {
+				return;
+			}
+
+			samlSsoRequestContexts = new HashMap<>();
+
+			httpSession.setAttribute(
+				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContexts);
+		}
+
+		if (samlSsoRequestContext != null) {
+			samlSsoRequestContexts.put(samlMessageId, samlSsoRequestContext);
+		}
+		else {
+			samlSsoRequestContexts.remove(samlMessageId);
+		}
+	}
+
 	private Decrypter _createDecrypter() {
 		DecryptionParametersResolver decryptionParametersResolver =
 			new BasicDecryptionParametersResolver();
@@ -1086,14 +1114,16 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+		String samlMessageId = ParamUtil.getString(
+			httpServletRequest, "saml_message_id");
+
 		HttpSession httpSession = httpServletRequest.getSession();
 
-		SamlSsoRequestContext samlSsoRequestContext =
-			(SamlSsoRequestContext)httpSession.getAttribute(
-				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+		SamlSsoRequestContext samlSsoRequestContext = _getSamlSsoRequestContext(
+			samlMessageId, httpSession);
 
 		if (samlSsoRequestContext != null) {
-			httpSession.removeAttribute(SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+			_bindSamlSsoRequestContext(samlMessageId, httpSession, null);
 
 			MessageContext<?> messageContext = getMessageContext(
 				httpServletRequest, httpServletResponse,
@@ -1411,6 +1441,20 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 		}
 
 		return nameIdResolver;
+	}
+
+	private SamlSsoRequestContext _getSamlSsoRequestContext(
+		String samlMessageId, HttpSession httpSession) {
+
+		Map<String, SamlSsoRequestContext> samlSsoRequestContexts =
+			(Map<String, SamlSsoRequestContext>)httpSession.getAttribute(
+				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+
+		if (samlSsoRequestContexts == null) {
+			return null;
+		}
+
+		return samlSsoRequestContexts.get(samlMessageId);
 	}
 
 	private Assertion _getSuccessAssertion(
@@ -1893,9 +1937,6 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 		samlSsoRequestContext.setSAMLMessageContext(null);
 
-		httpSession.setAttribute(
-			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContext);
-
 		httpServletResponse.addHeader(
 			HttpHeaders.CACHE_CONTROL,
 			HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
@@ -1934,6 +1975,10 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 			if ((samlMessageInfoContext != null) &&
 				(samlMessageInfoContext.getMessageId() != null)) {
+
+				_bindSamlSsoRequestContext(
+					samlMessageInfoContext.getMessageId(), httpSession,
+					samlSsoRequestContext);
 
 				redirectSB.append("?saml_message_id=");
 				redirectSB.append(
