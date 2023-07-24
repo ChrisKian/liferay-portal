@@ -29,6 +29,7 @@ List<Organization> organizations = userDisplayContext.getOrganizations();
 Long[] organizationIds = UsersAdminUtil.getOrganizationIds(organizations);
 
 List<Role> roles = userDisplayContext.getRoles();
+List<Role> segmentsContributedRoles = userDisplayContext.getSegmentsContributedRoles();
 List<UserGroupRole> organizationRoles = userDisplayContext.getOrganizationRoles();
 List<UserGroupRole> siteRoles = userDisplayContext.getSiteRoles();
 List<UserGroupGroupRole> inheritedSiteRoles = userDisplayContext.getInheritedSiteRoles();
@@ -141,6 +142,59 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>
+
+	<clay:content-row
+		containerElement="div"
+		cssClass="sheet-subtitle"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<span class="heading-text"><liferay-ui:message key="segments-contributed-roles" /></span>
+		</clay:content-col>
+	</clay:content-row>
+
+	<c:choose>
+		<c:when test="<%= segmentsContributedRoles.isEmpty() %>">
+			<div class="sheet-text"><liferay-ui:message key="this-user-does-not-have-any-roles-contributed-from-segments" /></div>
+		</c:when>
+		<c:otherwise>
+			<liferay-ui:search-container
+				cssClass="lfr-search-container-segment-assigned-roles"
+				curParam="segmentsContributedRolesCur"
+				headerNames="title"
+				id="segmentsContributedRolesSearchContainer"
+				iteratorURL="<%= currentURLObj %>"
+				total="<%= segmentsContributedRoles.size() %>"
+			>
+				<liferay-ui:search-container-results
+					calculateStartAndEnd="<%= true %>"
+					results="<%= segmentsContributedRoles %>"
+				/>
+
+				<liferay-ui:search-container-row
+					className="com.liferay.portal.kernel.model.Role"
+					keyProperty="roleId"
+					modelVar="role"
+				>
+					<liferay-ui:search-container-column-text
+						cssClass="table-cell-expand"
+						name="title"
+					>
+						<liferay-ui:icon
+							iconCssClass="<%= role.getIconCssClass() %>"
+							label="<%= true %>"
+							message="<%= HtmlUtil.escape(role.getTitle(locale)) %>"
+						/>
+					</liferay-ui:search-container-column-text>
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator
+					markupView="lexicon"
+				/>
+			</liferay-ui:search-container>
+		</c:otherwise>
+	</c:choose>
 
 	<c:if test="<%= !portletName.equals(myAccountPortletId) %>">
 		<aui:script sandbox="<%= true %>" use="liferay-search-container">

@@ -38,6 +38,8 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.membershippolicy.RoleMembershipPolicyUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.OrganizationServiceUtil;
@@ -55,6 +57,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.user.groups.admin.item.selector.UserGroupItemSelectorCriterion;
 import com.liferay.users.admin.kernel.util.UsersAdminUtil;
 
@@ -214,6 +217,58 @@ public class UserDisplayContext {
 
 		return UsersAdminUtil.filterRoles(
 			_permissionChecker, _selUser.getRoles());
+	}
+
+	public List<Role> getSegmentsContributedRoles() throws PortalException {
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		long[] cachedSegmentsEntryIds =
+			(long[])_httpServletRequest.getAttribute(
+				SegmentsWebKeys.SEGMENTS_ENTRY_IDS);
+
+		long[] roleIds;
+
+		try {
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(_selUser);
+
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+
+			_httpServletRequest.removeAttribute(
+				SegmentsWebKeys.SEGMENTS_ENTRY_IDS);
+
+			roleIds = permissionChecker.getRoleIds(
+				_selUser.getUserId(), _themeDisplay.getCompanyGroupId());
+
+			for (long roleId : _selUser.getRoleIds()) {
+				roleIds = ArrayUtil.remove(roleIds, roleId);
+			}
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+
+			_httpServletRequest.setAttribute(
+				SegmentsWebKeys.SEGMENTS_ENTRY_IDS, cachedSegmentsEntryIds);
+		}
+
+		List<Role> roles = new ArrayList<>();
+
+		for (long roleId : roleIds) {
+			Role role = RoleLocalServiceUtil.fetchRole(roleId);
+
+			if ((role != null) &&
+				!role.getName(
+				).equals(
+					RoleConstants.GUEST
+				)) {
+
+				roles.add(role);
+			}
+		}
+
+		return roles;
 	}
 
 	public User getSelectedUser() {
