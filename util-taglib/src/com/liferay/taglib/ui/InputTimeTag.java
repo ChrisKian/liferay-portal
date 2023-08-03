@@ -72,6 +72,10 @@ public class InputTimeTag extends IncludeTag {
 		return _disabled;
 	}
 
+	public boolean isDisableNamespace() {
+		return _disableNamespace;
+	}
+
 	public void setAmPmParam(String amPmParam) {
 		_amPmParam = amPmParam;
 	}
@@ -98,6 +102,10 @@ public class InputTimeTag extends IncludeTag {
 
 	public void setDisabled(boolean disabled) {
 		_disabled = disabled;
+	}
+
+	public void setDisableNamespace(boolean disableNamespace) {
+		_disableNamespace = disableNamespace;
 	}
 
 	public void setHourParam(String hourParam) {
@@ -143,6 +151,7 @@ public class InputTimeTag extends IncludeTag {
 		_dateParam = null;
 		_dateValue = null;
 		_disabled = false;
+		_disableNamespace = false;
 		_hourParam = null;
 		_hourValue = 0;
 		_minuteInterval = 0;
@@ -174,6 +183,9 @@ public class InputTimeTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:disabled", String.valueOf(_disabled));
 		httpServletRequest.setAttribute(
+			"liferay-ui:input-time:disableNamespace",
+			String.valueOf(_disableNamespace));
+		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:hourParam", _hourParam);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:hourValue", String.valueOf(_hourValue));
@@ -198,6 +210,7 @@ public class InputTimeTag extends IncludeTag {
 	private String _dateParam;
 	private Date _dateValue;
 	private boolean _disabled;
+	private boolean _disableNamespace;
 	private String _hourParam;
 	private int _hourValue;
 	private int _minuteInterval;

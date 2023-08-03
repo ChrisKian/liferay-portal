@@ -1477,6 +1477,13 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<description>Whether to disable the namespace for the component. The default value is <![CDATA[<code>false</code>]]>.</description>
+			<name>disableNamespace</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<description>The name of the hour parameter for the component. An acceptable value is <![CDATA[<code>hour</code>]]>.</description>
 			<name>hourParam</name>
 			<required>true</required>
