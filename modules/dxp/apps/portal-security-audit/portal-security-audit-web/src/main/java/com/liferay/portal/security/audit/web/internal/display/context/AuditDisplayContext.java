@@ -177,7 +177,8 @@ public class AuditDisplayContext {
 		}
 
 		_endDateAmPm = ParamUtil.getInteger(
-			_httpServletRequest, "endDateAmPm", _today.get(Calendar.AM_PM));
+			_themeDisplay.getRequest(), "endDateAmPm",
+			_today.get(Calendar.AM_PM));
 
 		return _endDateAmPm;
 	}
@@ -188,7 +189,8 @@ public class AuditDisplayContext {
 		}
 
 		_endDateDay = ParamUtil.getInteger(
-			_httpServletRequest, "endDateDay", _today.get(Calendar.DATE));
+			_themeDisplay.getRequest(), "endDateDay",
+			_today.get(Calendar.DATE));
 
 		return _endDateDay;
 	}
@@ -199,7 +201,8 @@ public class AuditDisplayContext {
 		}
 
 		_endDateHour = ParamUtil.getInteger(
-			_httpServletRequest, "endDateHour", _today.get(Calendar.HOUR));
+			_themeDisplay.getRequest(), "endDateHour",
+			_today.get(Calendar.HOUR));
 
 		return _endDateHour;
 	}
@@ -210,7 +213,8 @@ public class AuditDisplayContext {
 		}
 
 		_endDateMinute = ParamUtil.getInteger(
-			_httpServletRequest, "endDateMinute", _today.get(Calendar.MINUTE));
+			_themeDisplay.getRequest(), "endDateMinute",
+			_today.get(Calendar.MINUTE));
 
 		return _endDateMinute;
 	}
@@ -221,7 +225,8 @@ public class AuditDisplayContext {
 		}
 
 		_endDateMonth = ParamUtil.getInteger(
-			_httpServletRequest, "endDateMonth", _today.get(Calendar.MONTH));
+			_themeDisplay.getRequest(), "endDateMonth",
+			_today.get(Calendar.MONTH));
 
 		return _endDateMonth;
 	}
@@ -232,7 +237,8 @@ public class AuditDisplayContext {
 		}
 
 		_endDateYear = ParamUtil.getInteger(
-			_httpServletRequest, "endDateYear", _today.get(Calendar.YEAR));
+			_themeDisplay.getRequest(), "endDateYear",
+			_today.get(Calendar.YEAR));
 
 		return _endDateYear;
 	}
@@ -342,7 +348,8 @@ public class AuditDisplayContext {
 		}
 
 		_startDateAmPm = ParamUtil.getInteger(
-			_httpServletRequest, "startDateAmPm", _today.get(Calendar.AM_PM));
+			_themeDisplay.getRequest(), "startDateAmPm",
+			_today.get(Calendar.AM_PM));
 
 		return _startDateAmPm;
 	}
@@ -353,7 +360,8 @@ public class AuditDisplayContext {
 		}
 
 		_startDateDay = ParamUtil.getInteger(
-			_httpServletRequest, "startDateDay", _today.get(Calendar.DATE));
+			_themeDisplay.getRequest(), "startDateDay",
+			_today.get(Calendar.DATE));
 
 		return _startDateDay;
 	}
@@ -364,7 +372,8 @@ public class AuditDisplayContext {
 		}
 
 		_startDateHour = ParamUtil.getInteger(
-			_httpServletRequest, "startDateHour", _today.get(Calendar.HOUR));
+			_themeDisplay.getRequest(), "startDateHour",
+			_today.get(Calendar.HOUR));
 
 		return _startDateHour;
 	}
@@ -375,7 +384,7 @@ public class AuditDisplayContext {
 		}
 
 		_startDateMinute = ParamUtil.getInteger(
-			_httpServletRequest, "startDateMinute",
+			_themeDisplay.getRequest(), "startDateMinute",
 			_today.get(Calendar.MINUTE));
 
 		return _startDateMinute;
@@ -387,7 +396,8 @@ public class AuditDisplayContext {
 		}
 
 		_startDateMonth = ParamUtil.getInteger(
-			_httpServletRequest, "startDateMonth", _today.get(Calendar.MONTH));
+			_themeDisplay.getRequest(), "startDateMonth",
+			_today.get(Calendar.MONTH));
 
 		return _startDateMonth;
 	}
@@ -398,7 +408,8 @@ public class AuditDisplayContext {
 		}
 
 		_startDateYear = ParamUtil.getInteger(
-			_httpServletRequest, "startDateYear", _today.get(Calendar.YEAR));
+			_themeDisplay.getRequest(), "startDateYear",
+			_today.get(Calendar.YEAR));
 
 		return _startDateYear;
 	}
