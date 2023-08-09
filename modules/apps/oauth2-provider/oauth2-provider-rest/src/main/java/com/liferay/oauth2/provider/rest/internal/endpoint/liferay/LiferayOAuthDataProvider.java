@@ -1330,7 +1330,9 @@ public class LiferayOAuthDataProvider
 				oAuth2Application.getClientCredentialUserId(),
 				oAuth2Application.getClientCredentialUserName()));
 
-		if (!clientAuthenticationMethod.equals("client_secret_basic_or_post")) {
+		List<String> features = oAuth2Application.getFeaturesList();
+
+		if (features.contains("force.authentication.type.check")) {
 			client.setTokenEndpointAuthMethod(clientAuthenticationMethod);
 		}
 

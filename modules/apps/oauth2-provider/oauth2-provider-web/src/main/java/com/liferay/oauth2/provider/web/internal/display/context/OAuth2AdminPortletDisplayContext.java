@@ -124,8 +124,7 @@ public class OAuth2AdminPortletDisplayContext
 	}
 
 	public String[] getOAuth2Features(PortletPreferences portletPreferences) {
-		return StringUtil.split(
-			portletPreferences.getValue("oAuth2Features", StringPool.BLANK));
+		return portletPreferences.getValues("oAuth2Features", new String[0]);
 	}
 
 	public ClientProfile[] getSortedClientProfiles() {

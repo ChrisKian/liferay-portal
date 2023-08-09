@@ -35,6 +35,7 @@ page import="com.liferay.oauth2.provider.web.internal.display.context.OAuth2Admi
 page import="com.liferay.oauth2.provider.web.internal.display.context.OAuth2ApplicationsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth2.provider.web.internal.display.context.OAuth2AuthorizationsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth2.provider.web.internal.tree.Tree" %><%@
+page import="com.liferay.petra.string.CharPool" %><%@
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker" %><%@

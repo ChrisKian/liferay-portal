@@ -4,6 +4,7 @@
 	<preference>
 		<name>oAuth2Features</name>
 		<value>token.introspection</value>
+		<value>force.authentication.type.check</value>
 	</preference>
 	<preference>
 		<name>oAuth2Grants</name>
