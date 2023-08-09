@@ -769,7 +769,9 @@ public class OAuth2ApplicationLocalServiceImpl
 					OAuthConstants.TOKEN_ENDPOINT_AUTH_BASIC) ||
 				 clientAuthenticationMethod.equals(
 					 OAuthConstants.TOKEN_ENDPOINT_AUTH_POST) ||
-				 clientAuthenticationMethod.equals("client_secret_jwt")) {
+				 clientAuthenticationMethod.equals("client_secret_jwt") ||
+				 clientAuthenticationMethod.equals(
+					 "client_secret_basic_or_post")) {
 
 			// Confidential client with client secret
 

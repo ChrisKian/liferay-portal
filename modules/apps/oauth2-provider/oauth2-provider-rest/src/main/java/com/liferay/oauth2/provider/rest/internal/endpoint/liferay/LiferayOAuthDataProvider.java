@@ -1329,7 +1329,10 @@ public class LiferayOAuthDataProvider
 				oAuth2Application.getCompanyId(),
 				oAuth2Application.getClientCredentialUserId(),
 				oAuth2Application.getClientCredentialUserName()));
-		client.setTokenEndpointAuthMethod(clientAuthenticationMethod);
+
+		if (!clientAuthenticationMethod.equals("client_secret_basic_or_post")) {
+			client.setTokenEndpointAuthMethod(clientAuthenticationMethod);
+		}
 
 		Map<String, String> properties = client.getProperties();
 
