@@ -40,10 +40,10 @@ SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("l
 		<liferay-ui:input-date
 			dayParam="startDateDay"
 			dayValue="<%= startDateDay %>"
-			disableNamespace="<%= true %>"
 			monthParam="startDateMonth"
 			monthValue="<%= startDateMonth %>"
 			name="startDate"
+			useNamespace="<%= false %>"
 			yearParam="startDateYear"
 			yearValue="<%= startDateYear %>"
 		/>
@@ -51,12 +51,12 @@ SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("l
 		<liferay-ui:input-time
 			amPmParam="startDateAmPm"
 			amPmValue="<%= startDateAmPm %>"
-			disableNamespace="<%= true %>"
 			hourParam="startDateHour"
 			hourValue="<%= startDateHour %>"
 			minuteParam="startDateMinute"
 			minuteValue="<%= startDateMinute %>"
 			name="startDateTime"
+			useNamespace="<%= false %>"
 		/>
 	</aui:field-wrapper>
 
@@ -64,10 +64,10 @@ SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("l
 		<liferay-ui:input-date
 			dayParam="endDateDay"
 			dayValue="<%= endDateDay %>"
-			disableNamespace="<%= true %>"
 			monthParam="endDateMonth"
 			monthValue="<%= endDateMonth %>"
 			name="endDate"
+			useNamespace="<%= false %>"
 			yearParam="endDateYear"
 			yearValue="<%= endDateYear %>"
 		/>
@@ -75,12 +75,12 @@ SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("l
 		<liferay-ui:input-time
 			amPmParam="endDateAmPm"
 			amPmValue="<%= endDateAmPm %>"
-			disableNamespace="<%= true %>"
 			hourParam="endDateHour"
 			hourValue="<%= endDateHour %>"
 			minuteParam="endDateMinute"
 			minuteValue="<%= endDateMinute %>"
 			name="endDateTime"
+			useNamespace="<%= false %>"
 		/>
 	</aui:field-wrapper>
 </liferay-ui:search-toggle>

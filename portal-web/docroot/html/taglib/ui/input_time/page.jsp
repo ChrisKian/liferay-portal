@@ -10,7 +10,7 @@
 <%
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_input_time_page") + StringPool.UNDERLINE;
 
-if (GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:input-time:disableNamespace"))) {
+if (!GetterUtil.getBoolean((String)request.getAttribute("liferay-ui:input-time:useNamespace"), true)) {
 	namespace = StringPool.BLANK;
 }
 

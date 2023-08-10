@@ -72,8 +72,8 @@ public class InputTimeTag extends IncludeTag {
 		return _disabled;
 	}
 
-	public boolean isDisableNamespace() {
-		return _disableNamespace;
+	public boolean isUseNamespace() {
+		return _useNamespace;
 	}
 
 	public void setAmPmParam(String amPmParam) {
@@ -102,10 +102,6 @@ public class InputTimeTag extends IncludeTag {
 
 	public void setDisabled(boolean disabled) {
 		_disabled = disabled;
-	}
-
-	public void setDisableNamespace(boolean disableNamespace) {
-		_disableNamespace = disableNamespace;
 	}
 
 	public void setHourParam(String hourParam) {
@@ -140,6 +136,10 @@ public class InputTimeTag extends IncludeTag {
 		_timeFormat = timeFormat;
 	}
 
+	public void setUseNamespace(boolean useNamespace) {
+		_useNamespace = useNamespace;
+	}
+
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
@@ -151,7 +151,6 @@ public class InputTimeTag extends IncludeTag {
 		_dateParam = null;
 		_dateValue = null;
 		_disabled = false;
-		_disableNamespace = false;
 		_hourParam = null;
 		_hourValue = 0;
 		_minuteInterval = 0;
@@ -159,6 +158,7 @@ public class InputTimeTag extends IncludeTag {
 		_minuteValue = 0;
 		_name = null;
 		_timeFormat = null;
+		_useNamespace = true;
 	}
 
 	@Override
@@ -183,9 +183,6 @@ public class InputTimeTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:disabled", String.valueOf(_disabled));
 		httpServletRequest.setAttribute(
-			"liferay-ui:input-time:disableNamespace",
-			String.valueOf(_disableNamespace));
-		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:hourParam", _hourParam);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:hourValue", String.valueOf(_hourValue));
@@ -199,6 +196,9 @@ public class InputTimeTag extends IncludeTag {
 		httpServletRequest.setAttribute("liferay-ui:input-time:name", _name);
 		httpServletRequest.setAttribute(
 			"liferay-ui:input-time:timeFormat", String.valueOf(_timeFormat));
+		httpServletRequest.setAttribute(
+			"liferay-ui:input-time:useNamespace",
+			String.valueOf(_useNamespace));
 	}
 
 	private static final String _PAGE = "/html/taglib/ui/input_time/page.jsp";
@@ -210,7 +210,6 @@ public class InputTimeTag extends IncludeTag {
 	private String _dateParam;
 	private Date _dateValue;
 	private boolean _disabled;
-	private boolean _disableNamespace;
 	private String _hourParam;
 	private int _hourValue;
 	private int _minuteInterval;
@@ -218,5 +217,6 @@ public class InputTimeTag extends IncludeTag {
 	private int _minuteValue;
 	private String _name;
 	private String _timeFormat;
+	private boolean _useNamespace = true;
 
 }
