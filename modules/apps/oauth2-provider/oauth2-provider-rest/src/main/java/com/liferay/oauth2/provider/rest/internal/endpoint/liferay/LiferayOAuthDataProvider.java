@@ -1330,8 +1330,10 @@ public class LiferayOAuthDataProvider
 				oAuth2Application.getClientCredentialUserId(),
 				oAuth2Application.getClientCredentialUserName()));
 
-		if (!clientAuthenticationMethod.equals(
-				OAuthConstants.TOKEN_ENDPOINT_AUTH_POST)) {
+		if (!(clientAuthenticationMethod.equals(
+				OAuthConstants.TOKEN_ENDPOINT_AUTH_BASIC) ||
+			  clientAuthenticationMethod.equals(
+				  OAuthConstants.TOKEN_ENDPOINT_AUTH_POST))) {
 
 			client.setTokenEndpointAuthMethod(clientAuthenticationMethod);
 		}
