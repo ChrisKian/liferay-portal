@@ -61,19 +61,5 @@ long groupId = ParamUtil.getLong(request, "groupId");
 long userId = ParamUtil.getLong(request, "userId");
 String userName = ParamUtil.getString(request, "userName");
 
-int endDateAmPm = ParamUtil.getInteger(themeDisplay.getRequest(), "endDateAmPm", today.get(Calendar.AM_PM));
-int endDateDay = ParamUtil.getInteger(themeDisplay.getRequest(), "endDateDay", today.get(Calendar.DATE));
-int endDateHour = ParamUtil.getInteger(themeDisplay.getRequest(), "endDateHour", today.get(Calendar.HOUR));
-int endDateMinute = ParamUtil.getInteger(themeDisplay.getRequest(), "endDateMinute", today.get(Calendar.MINUTE));
-int endDateMonth = ParamUtil.getInteger(themeDisplay.getRequest(), "endDateMonth", today.get(Calendar.MONTH));
-int endDateYear = ParamUtil.getInteger(themeDisplay.getRequest(), "endDateYear", today.get(Calendar.YEAR));
-
-int startDateAmPm = ParamUtil.getInteger(themeDisplay.getRequest(), "startDateAmPm", yesterday.get(Calendar.AM_PM));
-int startDateDay = ParamUtil.getInteger(themeDisplay.getRequest(), "startDateDay", yesterday.get(Calendar.DATE));
-int startDateHour = ParamUtil.getInteger(themeDisplay.getRequest(), "startDateHour", yesterday.get(Calendar.HOUR));
-int startDateMinute = ParamUtil.getInteger(themeDisplay.getRequest(), "startDateMinute", yesterday.get(Calendar.MINUTE));
-int startDateMonth = ParamUtil.getInteger(themeDisplay.getRequest(), "startDateMonth", yesterday.get(Calendar.MONTH));
-int startDateYear = ParamUtil.getInteger(themeDisplay.getRequest(), "startDateYear", yesterday.get(Calendar.YEAR));
-
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 %>
