@@ -8,6 +8,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
+AuditDisplayContext auditDisplayContext = (AuditDisplayContext)request.getAttribute(AuditDisplayContext.class.getName());
+
 SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("liferay-ui:search:searchContainer");
 %>
 
@@ -39,22 +41,22 @@ SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("l
 	<aui:field-wrapper label="start-date">
 		<liferay-ui:input-date
 			dayParam="startDateDay"
-			dayValue="<%= startDateDay %>"
+			dayValue="<%= auditDisplayContext.getStartDateDay() %>"
 			monthParam="startDateMonth"
-			monthValue="<%= startDateMonth %>"
+			monthValue="<%= auditDisplayContext.getStartDateMonth() %>"
 			name="startDate"
 			useNamespace="<%= false %>"
 			yearParam="startDateYear"
-			yearValue="<%= startDateYear %>"
+			yearValue="<%= auditDisplayContext.getStartDateYear() %>"
 		/>
 
 		<liferay-ui:input-time
 			amPmParam="startDateAmPm"
-			amPmValue="<%= startDateAmPm %>"
+			amPmValue="<%= auditDisplayContext.getStartDateAmPm() %>"
 			hourParam="startDateHour"
-			hourValue="<%= startDateHour %>"
+			hourValue="<%= auditDisplayContext.getStartDateHour() %>"
 			minuteParam="startDateMinute"
-			minuteValue="<%= startDateMinute %>"
+			minuteValue="<%= auditDisplayContext.getStartDateMinute() %>"
 			name="startDateTime"
 			useNamespace="<%= false %>"
 		/>
@@ -63,22 +65,22 @@ SearchContainer<?> searchContainer = (SearchContainer<?>)request.getAttribute("l
 	<aui:field-wrapper label="end-date">
 		<liferay-ui:input-date
 			dayParam="endDateDay"
-			dayValue="<%= endDateDay %>"
+			dayValue="<%= auditDisplayContext.getEndDateDay() %>"
 			monthParam="endDateMonth"
-			monthValue="<%= endDateMonth %>"
+			monthValue="<%= auditDisplayContext.getEndDateMonth() %>"
 			name="endDate"
 			useNamespace="<%= false %>"
 			yearParam="endDateYear"
-			yearValue="<%= endDateYear %>"
+			yearValue="<%= auditDisplayContext.getEndDateYear() %>"
 		/>
 
 		<liferay-ui:input-time
 			amPmParam="endDateAmPm"
-			amPmValue="<%= endDateAmPm %>"
+			amPmValue="<%= auditDisplayContext.getEndDateAmPm() %>"
 			hourParam="endDateHour"
-			hourValue="<%= endDateHour %>"
+			hourValue="<%= auditDisplayContext.getEndDateHour() %>"
 			minuteParam="endDateMinute"
-			minuteValue="<%= endDateMinute %>"
+			minuteValue="<%= auditDisplayContext.getEndDateMinute() %>"
 			name="endDateTime"
 			useNamespace="<%= false %>"
 		/>

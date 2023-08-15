@@ -59,6 +59,78 @@ public class AuditDisplayContext {
 			timeZone, _themeDisplay.getLocale());
 	}
 
+	public int getEndDateAmPm() {
+		if (_endDateAmPm != null) {
+			return _endDateAmPm;
+		}
+
+		_endDateAmPm = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"endDateAmPm", _today.get(Calendar.AM_PM));
+
+		return _endDateAmPm;
+	}
+
+	public int getEndDateDay() {
+		if (_endDateDay != null) {
+			return _endDateDay;
+		}
+
+		_endDateDay = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"endDateDay", _today.get(Calendar.DATE));
+
+		return _endDateDay;
+	}
+
+	public int getEndDateHour() {
+		if (_endDateHour != null) {
+			return _endDateHour;
+		}
+
+		_endDateHour = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"endDateHour", _today.get(Calendar.HOUR));
+
+		return _endDateHour;
+	}
+
+	public int getEndDateMinute() {
+		if (_endDateMinute != null) {
+			return _endDateMinute;
+		}
+
+		_endDateMinute = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"endDateMinute", _today.get(Calendar.MINUTE));
+
+		return _endDateMinute;
+	}
+
+	public int getEndDateMonth() {
+		if (_endDateMonth != null) {
+			return _endDateMonth;
+		}
+
+		_endDateMonth = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"endDateMonth", _today.get(Calendar.MONTH));
+
+		return _endDateMonth;
+	}
+
+	public int getEndDateYear() {
+		if (_endDateYear != null) {
+			return _endDateYear;
+		}
+
+		_endDateYear = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"endDateYear", _today.get(Calendar.YEAR));
+
+		return _endDateYear;
+	}
+
 	public SearchContainer<AuditEvent> getSearchContainer() throws Exception {
 		if (_searchContainer != null) {
 			return _searchContainer;
@@ -84,16 +156,16 @@ public class AuditDisplayContext {
 
 		if (displayTerms.isAdvancedSearch()) {
 			Date endDate = PortalUtil.getDate(
-				_getEndDateMonth(), _getEndDateDay(), _getEndDateYear(),
-				(_getEndDateAmPm() != Calendar.PM) ? _getEndDateHour() :
-					_getEndDateHour() + 12,
-				_getEndDateMinute(), _timeZone, null);
+				getEndDateMonth(), getEndDateDay(), getEndDateYear(),
+				(getEndDateAmPm() != Calendar.PM) ? getEndDateHour() :
+					getEndDateHour() + 12,
+				getEndDateMinute(), _timeZone, null);
 
 			Date startDate = PortalUtil.getDate(
-				_getStartDateMonth(), _getStartDateDay(), _getStartDateYear(),
-				(_getStartDateAmPm() != Calendar.PM) ? _getStartDateHour() :
-					_getStartDateHour() + 12,
-				_getStartDateMinute(), _timeZone, null);
+				getStartDateMonth(), getStartDateDay(), getStartDateYear(),
+				(getStartDateAmPm() != Calendar.PM) ? getStartDateHour() :
+					getStartDateHour() + 12,
+				getStartDateMinute(), _timeZone, null);
 
 			_searchContainer.setResultsAndTotal(
 				() -> AuditEventManagerUtil.getAuditEvents(
@@ -131,6 +203,78 @@ public class AuditDisplayContext {
 		}
 
 		return _searchContainer;
+	}
+
+	public int getStartDateAmPm() {
+		if (_startDateAmPm != null) {
+			return _startDateAmPm;
+		}
+
+		_startDateAmPm = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"startDateAmPm", _today.get(Calendar.AM_PM));
+
+		return _startDateAmPm;
+	}
+
+	public int getStartDateDay() {
+		if (_startDateDay != null) {
+			return _startDateDay;
+		}
+
+		_startDateDay = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"startDateDay", _today.get(Calendar.DATE));
+
+		return _startDateDay;
+	}
+
+	public int getStartDateHour() {
+		if (_startDateHour != null) {
+			return _startDateHour;
+		}
+
+		_startDateHour = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"startDateHour", _today.get(Calendar.HOUR));
+
+		return _startDateHour;
+	}
+
+	public int getStartDateMinute() {
+		if (_startDateMinute != null) {
+			return _startDateMinute;
+		}
+
+		_startDateMinute = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"startDateMinute", _today.get(Calendar.MINUTE));
+
+		return _startDateMinute;
+	}
+
+	public int getStartDateMonth() {
+		if (_startDateMonth != null) {
+			return _startDateMonth;
+		}
+
+		_startDateMonth = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"startDateMonth", _today.get(Calendar.MONTH));
+
+		return _startDateMonth;
+	}
+
+	public int getStartDateYear() {
+		if (_startDateYear != null) {
+			return _startDateYear;
+		}
+
+		_startDateYear = ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			"startDateYear", _today.get(Calendar.YEAR));
+
+		return _startDateYear;
 	}
 
 	public void setPaging(boolean paging) {
@@ -177,78 +321,6 @@ public class AuditDisplayContext {
 		return _clientIP;
 	}
 
-	private int _getEndDateAmPm() {
-		if (_endDateAmPm != null) {
-			return _endDateAmPm;
-		}
-
-		_endDateAmPm = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"endDateAmPm", _today.get(Calendar.AM_PM));
-
-		return _endDateAmPm;
-	}
-
-	private int _getEndDateDay() {
-		if (_endDateDay != null) {
-			return _endDateDay;
-		}
-
-		_endDateDay = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"endDateDay", _today.get(Calendar.DATE));
-
-		return _endDateDay;
-	}
-
-	private int _getEndDateHour() {
-		if (_endDateHour != null) {
-			return _endDateHour;
-		}
-
-		_endDateHour = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"endDateHour", _today.get(Calendar.HOUR));
-
-		return _endDateHour;
-	}
-
-	private int _getEndDateMinute() {
-		if (_endDateMinute != null) {
-			return _endDateMinute;
-		}
-
-		_endDateMinute = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"endDateMinute", _today.get(Calendar.MINUTE));
-
-		return _endDateMinute;
-	}
-
-	private int _getEndDateMonth() {
-		if (_endDateMonth != null) {
-			return _endDateMonth;
-		}
-
-		_endDateMonth = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"endDateMonth", _today.get(Calendar.MONTH));
-
-		return _endDateMonth;
-	}
-
-	private int _getEndDateYear() {
-		if (_endDateYear != null) {
-			return _endDateYear;
-		}
-
-		_endDateYear = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"endDateYear", _today.get(Calendar.YEAR));
-
-		return _endDateYear;
-	}
-
 	private String _getEventType() {
 		if (_eventType != null) {
 			return _eventType;
@@ -281,40 +353,40 @@ public class AuditDisplayContext {
 				_liferayPortletResponse)
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "endDateAmPm",
-			_getEndDateAmPm()
+			getEndDateAmPm()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "endDateDay",
-			_getEndDateDay()
+			getEndDateDay()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "endDateHour",
-			_getEndDateHour()
+			getEndDateHour()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "endDateMinute",
-			_getEndDateMinute()
+			getEndDateMinute()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "endDateMonth",
-			_getEndDateMonth()
+			getEndDateMonth()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "endDateYear",
-			_getEndDateYear()
+			getEndDateYear()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "startDateAmPm",
-			_getStartDateAmPm()
+			getStartDateAmPm()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "startDateDay",
-			_getStartDateDay()
+			getStartDateDay()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "startDateHour",
-			_getStartDateHour()
+			getStartDateHour()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "startDateMinute",
-			_getStartDateMinute()
+			getStartDateMinute()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "startDateMonth",
-			_getStartDateMonth()
+			getStartDateMonth()
 		).setParameter(
 			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "startDateYear",
-			_getStartDateYear()
+			getStartDateYear()
 		).setParameter(
 			"className", _getClassName()
 		).setParameter(
@@ -358,78 +430,6 @@ public class AuditDisplayContext {
 		_serverPort = ParamUtil.getInteger(_httpServletRequest, "serverPort");
 
 		return _serverPort;
-	}
-
-	private int _getStartDateAmPm() {
-		if (_startDateAmPm != null) {
-			return _startDateAmPm;
-		}
-
-		_startDateAmPm = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"startDateAmPm", _today.get(Calendar.AM_PM));
-
-		return _startDateAmPm;
-	}
-
-	private int _getStartDateDay() {
-		if (_startDateDay != null) {
-			return _startDateDay;
-		}
-
-		_startDateDay = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"startDateDay", _today.get(Calendar.DATE));
-
-		return _startDateDay;
-	}
-
-	private int _getStartDateHour() {
-		if (_startDateHour != null) {
-			return _startDateHour;
-		}
-
-		_startDateHour = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"startDateHour", _today.get(Calendar.HOUR));
-
-		return _startDateHour;
-	}
-
-	private int _getStartDateMinute() {
-		if (_startDateMinute != null) {
-			return _startDateMinute;
-		}
-
-		_startDateMinute = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"startDateMinute", _today.get(Calendar.MINUTE));
-
-		return _startDateMinute;
-	}
-
-	private int _getStartDateMonth() {
-		if (_startDateMonth != null) {
-			return _startDateMonth;
-		}
-
-		_startDateMonth = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"startDateMonth", _today.get(Calendar.MONTH));
-
-		return _startDateMonth;
-	}
-
-	private int _getStartDateYear() {
-		if (_startDateYear != null) {
-			return _startDateYear;
-		}
-
-		_startDateYear = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
-			"startDateYear", _today.get(Calendar.YEAR));
-
-		return _startDateYear;
 	}
 
 	private long _getUserId() {
