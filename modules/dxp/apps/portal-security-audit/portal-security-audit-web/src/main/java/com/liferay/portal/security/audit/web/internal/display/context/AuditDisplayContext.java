@@ -64,8 +64,7 @@ public class AuditDisplayContext {
 			return _endDateAmPm;
 		}
 
-		_endDateAmPm = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_endDateAmPm = _getParamWithOrWithoutNamespace(
 			"endDateAmPm", _today.get(Calendar.AM_PM));
 
 		return _endDateAmPm;
@@ -76,8 +75,7 @@ public class AuditDisplayContext {
 			return _endDateDay;
 		}
 
-		_endDateDay = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_endDateDay = _getParamWithOrWithoutNamespace(
 			"endDateDay", _today.get(Calendar.DATE));
 
 		return _endDateDay;
@@ -88,8 +86,7 @@ public class AuditDisplayContext {
 			return _endDateHour;
 		}
 
-		_endDateHour = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_endDateHour = _getParamWithOrWithoutNamespace(
 			"endDateHour", _today.get(Calendar.HOUR));
 
 		return _endDateHour;
@@ -100,8 +97,7 @@ public class AuditDisplayContext {
 			return _endDateMinute;
 		}
 
-		_endDateMinute = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_endDateMinute = _getParamWithOrWithoutNamespace(
 			"endDateMinute", _today.get(Calendar.MINUTE));
 
 		return _endDateMinute;
@@ -112,8 +108,7 @@ public class AuditDisplayContext {
 			return _endDateMonth;
 		}
 
-		_endDateMonth = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_endDateMonth = _getParamWithOrWithoutNamespace(
 			"endDateMonth", _today.get(Calendar.MONTH));
 
 		return _endDateMonth;
@@ -124,8 +119,7 @@ public class AuditDisplayContext {
 			return _endDateYear;
 		}
 
-		_endDateYear = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_endDateYear = _getParamWithOrWithoutNamespace(
 			"endDateYear", _today.get(Calendar.YEAR));
 
 		return _endDateYear;
@@ -210,8 +204,7 @@ public class AuditDisplayContext {
 			return _startDateAmPm;
 		}
 
-		_startDateAmPm = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_startDateAmPm = _getParamWithOrWithoutNamespace(
 			"startDateAmPm", _today.get(Calendar.AM_PM));
 
 		return _startDateAmPm;
@@ -222,8 +215,7 @@ public class AuditDisplayContext {
 			return _startDateDay;
 		}
 
-		_startDateDay = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_startDateDay = _getParamWithOrWithoutNamespace(
 			"startDateDay", _today.get(Calendar.DATE));
 
 		return _startDateDay;
@@ -234,8 +226,7 @@ public class AuditDisplayContext {
 			return _startDateHour;
 		}
 
-		_startDateHour = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_startDateHour = _getParamWithOrWithoutNamespace(
 			"startDateHour", _today.get(Calendar.HOUR));
 
 		return _startDateHour;
@@ -246,8 +237,7 @@ public class AuditDisplayContext {
 			return _startDateMinute;
 		}
 
-		_startDateMinute = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_startDateMinute = _getParamWithOrWithoutNamespace(
 			"startDateMinute", _today.get(Calendar.MINUTE));
 
 		return _startDateMinute;
@@ -258,8 +248,7 @@ public class AuditDisplayContext {
 			return _startDateMonth;
 		}
 
-		_startDateMonth = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_startDateMonth = _getParamWithOrWithoutNamespace(
 			"startDateMonth", _today.get(Calendar.MONTH));
 
 		return _startDateMonth;
@@ -270,8 +259,7 @@ public class AuditDisplayContext {
 			return _startDateYear;
 		}
 
-		_startDateYear = ParamUtil.getInteger(
-			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+		_startDateYear = _getParamWithOrWithoutNamespace(
 			"startDateYear", _today.get(Calendar.YEAR));
 
 		return _startDateYear;
@@ -339,6 +327,17 @@ public class AuditDisplayContext {
 		_groupId = ParamUtil.getInteger(_httpServletRequest, "groupId");
 
 		return _groupId;
+	}
+
+	private int _getParamWithOrWithoutNamespace(
+		String param, int defaultValue) {
+
+		return ParamUtil.getInteger(
+			(HttpServletRequest)_servletRequestWrapper.getRequest(),
+			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + param,
+			ParamUtil.getInteger(
+				(HttpServletRequest)_servletRequestWrapper.getRequest(), param,
+				defaultValue));
 	}
 
 	private PortletURL _getPortletURL() throws Exception {
