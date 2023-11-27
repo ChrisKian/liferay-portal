@@ -311,6 +311,10 @@ public class LDAPUtil {
 		if (date.endsWith("Z")) {
 			if (date.indexOf(CharPool.PERIOD) != -1) {
 				format = "yyyyMMddHHmmss.S'Z'";
+
+				if (date.length() > 19) {
+					date = date.substring(0, 18) + "Z";
+				}
 			}
 			else {
 				format = "yyyyMMddHHmmss'Z'";
@@ -321,6 +325,10 @@ public class LDAPUtil {
 
 			if (date.indexOf(CharPool.PERIOD) != -1) {
 				format = "yyyyMMddHHmmss.SSSZ";
+
+				if (date.length() > 19) {
+					date = date.substring(0, 18) + "Z";
+				}
 			}
 			else {
 				format = "yyyyMMddHHmmssZ";
@@ -328,6 +336,10 @@ public class LDAPUtil {
 		}
 		else if (date.indexOf(CharPool.PERIOD) != -1) {
 			format = "yyyyMMddHHmmss.S";
+
+			if (date.length() > 18) {
+				date = date.substring(0, 18);
+			}
 		}
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
