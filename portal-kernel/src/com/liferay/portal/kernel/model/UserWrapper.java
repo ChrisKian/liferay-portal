@@ -1402,6 +1402,11 @@ public class UserWrapper
 		return model.isPasswordModified();
 	}
 
+	@Override
+	public boolean isPasswordResetRequired() {
+		return model.isPasswordResetRequired();
+	}
+
 	/**
 	 * Returns <code>true</code> if this user is password reset.
 	 *
