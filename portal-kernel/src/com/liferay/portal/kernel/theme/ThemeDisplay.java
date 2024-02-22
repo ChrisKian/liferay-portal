@@ -1725,6 +1725,9 @@ public class ThemeDisplay
 				_log.error(exception);
 			}
 		}
+		else if (_log.isDebugEnabled()) {
+			_log.debug("Setting scopeGroupId to 0", new Throwable());
+		}
 	}
 
 	public void setSecure(boolean secure) {

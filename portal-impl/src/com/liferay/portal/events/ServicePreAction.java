@@ -1999,10 +1999,19 @@ public class ServicePreAction extends Action {
 
 		List<String> liferayRequestGroupHeaderValues = new ArrayList<>();
 
-		liferayRequestGroupHeaderValues.add(
-			String.valueOf(themeDisplay.getScopeGroupId()));
-
 		Group group = themeDisplay.getScopeGroup();
+
+		if (themeDisplay.getScopeGroupId() > 0) {
+			liferayRequestGroupHeaderValues.add(
+				String.valueOf(themeDisplay.getScopeGroupId()));
+		}
+		else {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"ScopeGroupId is 0.  The scopeGroup has a groupId of " +
+						group.getGroupId());
+			}
+		}
 
 		liferayRequestGroupHeaderValues.add(group.getType() + "t");
 
