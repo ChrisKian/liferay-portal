@@ -136,6 +136,10 @@ public class SamlSloContext implements Serializable {
 		return _relayState;
 	}
 
+	public Map<String, SamlSloRequestInfo> getSamlRequestInfos() {
+		return new ConcurrentHashMap<>(_samlRequestInfos);
+	}
+
 	public SamlSloRequestInfo getSamlSloRequestInfo(String entityId) {
 		return _samlRequestInfos.get(entityId);
 	}
@@ -173,6 +177,12 @@ public class SamlSloContext implements Serializable {
 		_relayState = relayState;
 	}
 
+	public void setSamlRequestInfos(
+		Map<String, SamlSloRequestInfo> samlRequestInfos) {
+
+		_samlRequestInfos = samlRequestInfos;
+	}
+
 	public void setSamlSsoSessionId(String samlSsoSessionId) {
 		_samlSsoSessionId = samlSsoSessionId;
 	}
@@ -204,7 +214,7 @@ public class SamlSloContext implements Serializable {
 	private final SamlIdpSpConnectionLocalService
 		_samlIdpSpConnectionLocalService;
 	private final SamlIdpSpSessionLocalService _samlIdpSpSessionLocalService;
-	private final Map<String, SamlSloRequestInfo> _samlRequestInfos =
+	private Map<String, SamlSloRequestInfo> _samlRequestInfos =
 		new ConcurrentHashMap<>();
 	private String _samlSsoSessionId;
 	private long _userId;
