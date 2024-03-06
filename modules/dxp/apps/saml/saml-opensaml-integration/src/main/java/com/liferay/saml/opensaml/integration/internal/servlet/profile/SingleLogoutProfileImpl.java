@@ -47,6 +47,7 @@ import java.io.Writer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -705,12 +706,6 @@ public class SingleLogoutProfileImpl
 		HttpServletRequest httpServletRequest,
 		MessageContext<?> messageContext) {
 
-		HttpSession httpSession = httpServletRequest.getSession();
-
-		SamlSloContext samlSloContext =
-			(SamlSloContext)httpSession.getAttribute(
-				SamlWebKeys.SAML_SLO_CONTEXT);
-
 		String samlSsoSessionId = getSamlSsoSessionId(httpServletRequest);
 
 		if (messageContext != null) {
@@ -732,7 +727,9 @@ public class SingleLogoutProfileImpl
 			}
 		}
 
-		if ((samlSloContext == null) && Validator.isNotNull(samlSsoSessionId)) {
+		SamlSloContext samlSloContext = null;
+
+		if (Validator.isNotNull(samlSsoSessionId)) {
 			SamlIdpSsoSession samlIdpSsoSession =
 				_samlIdpSsoSessionLocalService.fetchSamlIdpSso(
 					samlSsoSessionId);
@@ -746,6 +743,21 @@ public class SingleLogoutProfileImpl
 
 				samlSloContext.setSamlSsoSessionId(samlSsoSessionId);
 
+				HttpSession httpSession = httpServletRequest.getSession();
+
+				Map<String, SamlSloRequestInfo> samlRequestInfos =
+					(Map<String, SamlSloRequestInfo>)httpSession.getAttribute(
+						SamlWebKeys.SAML_SLO_REQUEST_INFO);
+
+				if ((samlRequestInfos == null) || samlRequestInfos.isEmpty()) {
+					httpSession.setAttribute(
+						SamlWebKeys.SAML_SLO_REQUEST_INFO,
+						samlSloContext.getSamlRequestInfos());
+				}
+				else {
+					samlSloContext.setSamlRequestInfos(samlRequestInfos);
+				}
+
 				if (messageContext != null) {
 					SAMLBindingContext samlBindingContext =
 						messageContext.getSubcontext(SAMLBindingContext.class);
@@ -755,9 +767,6 @@ public class SingleLogoutProfileImpl
 				}
 
 				samlSloContext.setUserId(portal.getUserId(httpServletRequest));
-
-				httpSession.setAttribute(
-					SamlWebKeys.SAML_SLO_CONTEXT, samlSloContext);
 			}
 		}
 
