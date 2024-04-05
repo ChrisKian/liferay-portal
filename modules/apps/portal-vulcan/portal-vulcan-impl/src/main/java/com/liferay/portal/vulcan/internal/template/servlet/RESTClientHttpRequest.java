@@ -371,11 +371,15 @@ public class RESTClientHttpRequest implements HttpServletRequest {
 			return uploadServletRequest.getSession(create);
 		}
 
-		HttpServletRequestWrapper protectedServletRequest =
-			(HttpServletRequestWrapper)servletRequest;
+		try {
+			HttpServletRequestWrapper protectedServletRequest =
+				(HttpServletRequestWrapper)servletRequest;
 
-		if (protectedServletRequest.getSession(false) != null) {
-			return protectedServletRequest.getSession(false);
+			if (protectedServletRequest.getSession(false) != null) {
+				return protectedServletRequest.getSession(false);
+			}
+		}
+		catch (Exception exception) {
 		}
 
 		return _httpServletRequest.getSession(create);
