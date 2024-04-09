@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
+import com.liferay.portal.kernel.upload.UploadServletRequest;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -362,6 +363,19 @@ public class RESTClientHttpRequest implements HttpServletRequest {
 				(DynamicServletRequest)servletRequest;
 
 			return dynamicServletRequest.getSession(create);
+		}
+		else if (servletRequest instanceof UploadServletRequest) {
+			UploadServletRequest uploadServletRequest =
+				(UploadServletRequest)servletRequest;
+
+			return uploadServletRequest.getSession(create);
+		}
+
+		HttpServletRequestWrapper protectedServletRequest =
+			(HttpServletRequestWrapper)servletRequest;
+
+		if (protectedServletRequest.getSession(false) != null) {
+			return protectedServletRequest.getSession(false);
 		}
 
 		return _httpServletRequest.getSession(create);
