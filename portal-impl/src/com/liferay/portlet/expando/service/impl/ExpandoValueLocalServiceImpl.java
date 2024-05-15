@@ -25,9 +25,9 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.typeconverter.DateArrayConverter;
 import com.liferay.portal.typeconverter.NumberArrayConverter;
@@ -847,12 +847,17 @@ public class ExpandoValueLocalServiceImpl
 				value.setStringArray((String[])attributeValue);
 			}
 			else if (type == ExpandoColumnConstants.STRING_LOCALIZED) {
+				ExpandoValue existingValue = getValue(
+					companyId, classNameId, tableName, column.getName(),
+					classPK);
 
 				Locale defaultLocale = LocaleUtil.getSiteDefault();
 
-				Map<Locale, String> defaultValuesMap = HashMapBuilder.put(
-					defaultLocale, (String)attributeValue
-				).build();
+				Map<Locale, String> defaultValuesMap =
+					LocalizationUtil.getLocalizationMap(
+						existingValue.getData());
+
+				defaultValuesMap.put(defaultLocale, (String)attributeValue);
 
 				if (Validator.isNull(defaultValuesMap.get(defaultLocale))) {
 					for (String defaultValue : defaultValuesMap.values()) {
