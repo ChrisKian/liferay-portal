@@ -147,7 +147,9 @@ public class ExpandoConverterUtil {
 		else if (type == ExpandoColumnConstants.SHORT_ARRAY) {
 			return GetterUtil.getShortValues(attribute);
 		}
-		else if (type == ExpandoColumnConstants.STRING) {
+		else if ((type == ExpandoColumnConstants.STRING) ||
+				 (type == ExpandoColumnConstants.STRING_LOCALIZED)) {
+
 			return attribute[0];
 		}
 
