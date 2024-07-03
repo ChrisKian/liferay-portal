@@ -27,7 +27,7 @@ export const test = mergeTests(
 	serviceAccessPolicyPageTest
 );
 
-test('LPD-26931 Verify the new System Template SAP entry allows guest access for restClient services', async ({
+test('LPD-26931 Verify the new System Freemarker Template SAP entry allows guest access for restClient services accessed from Freemarker Templates', async ({
 	apiHelpers,
 	editServiceAccessPolicyPage,
 	fragmentEditorPage,
@@ -99,7 +99,7 @@ test('LPD-26931 Verify the new System Template SAP entry allows guest access for
 	await serviceAccessPolicyPage.goto(site.friendlyUrlPath);
 
 	await (
-		await page.getByRole('link', {name: 'SYSTEM_TEMPLATE_DEFAULT'})
+		await page.getByRole('link', {name: 'SYSTEM_FREEMARKER_TEMPLATE'})
 	).click();
 
 	await editServiceAccessPolicyPage.enabledButton.setChecked(false);
@@ -133,7 +133,7 @@ test('LPD-26931 Verify the new System Template SAP entry allows guest access for
 	await serviceAccessPolicyPage.goto(site.friendlyUrlPath);
 
 	await (
-		await page.getByRole('link', {name: 'SYSTEM_TEMPLATE_DEFAULT'})
+		await page.getByRole('link', {name: 'SYSTEM_FREEMARKER_TEMPLATE'})
 	).click();
 
 	await editServiceAccessPolicyPage.enabledButton.setChecked(true);

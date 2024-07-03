@@ -108,14 +108,16 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 	public void checkSystemSAPEntries(long companyId) throws PortalException {
 		SAPEntry systemDefaultSAPEntry = sapEntryPersistence.fetchByC_N(
 			companyId, _sapConfiguration.systemDefaultSAPEntryName());
+		SAPEntry systemFreemarkerTemplateSAPEntry =
+			sapEntryPersistence.fetchByC_N(
+				companyId,
+				_sapConfiguration.systemFreemarkerTemplateSAPEntryName());
 		SAPEntry systemUserPasswordSAPEntry = sapEntryPersistence.fetchByC_N(
 			companyId, _sapConfiguration.systemUserPasswordSAPEntryName());
-		SAPEntry systemTemplateDefaultSAPEntry = sapEntryPersistence.fetchByC_N(
-			companyId, _sapConfiguration.systemTemplateDefaultSAPEntryName());
 
 		if ((systemDefaultSAPEntry != null) &&
-			(systemUserPasswordSAPEntry != null) &&
-			(systemTemplateDefaultSAPEntry != null)) {
+			(systemFreemarkerTemplateSAPEntry != null) &&
+			(systemUserPasswordSAPEntry != null)) {
 
 			return;
 		}
@@ -143,6 +145,28 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 				guestRole.getRoleId(), new String[] {ActionKeys.VIEW});
 		}
 
+		if (systemFreemarkerTemplateSAPEntry == null) {
+			Map<Locale, String> titleMap = HashMapBuilder.put(
+				LocaleUtil.getDefault(),
+				_sapConfiguration.systemFreemarkerTemplateSAPEntryDescription()
+			).build();
+
+			systemFreemarkerTemplateSAPEntry = addSAPEntry(
+				guestUserId,
+				_sapConfiguration.
+					systemFreemarkerTemplateSAPEntryServiceSignatures(),
+				false, true,
+				_sapConfiguration.systemFreemarkerTemplateSAPEntryName(),
+				titleMap, new ServiceContext());
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				systemFreemarkerTemplateSAPEntry.getCompanyId(),
+				SAPEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(
+					systemFreemarkerTemplateSAPEntry.getSapEntryId()),
+				guestRole.getRoleId(), new String[] {ActionKeys.VIEW});
+		}
+
 		if (systemUserPasswordSAPEntry == null) {
 			Map<Locale, String> titleMap = HashMapBuilder.put(
 				LocaleUtil.getDefault(),
@@ -159,27 +183,6 @@ public class SAPEntryLocalServiceImpl extends SAPEntryLocalServiceBaseImpl {
 				systemUserPasswordSAPEntry.getCompanyId(),
 				SAPEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(systemUserPasswordSAPEntry.getSapEntryId()),
-				guestRole.getRoleId(), new String[] {ActionKeys.VIEW});
-		}
-
-		if (systemTemplateDefaultSAPEntry == null) {
-			Map<Locale, String> titleMap = HashMapBuilder.put(
-				LocaleUtil.getDefault(),
-				_sapConfiguration.systemTemplateDefaultSAPEntryDescription()
-			).build();
-
-			systemTemplateDefaultSAPEntry = addSAPEntry(
-				guestUserId,
-				_sapConfiguration.
-					systemTemplateDefaultSAPEntryServiceSignatures(),
-				false, true,
-				_sapConfiguration.systemTemplateDefaultSAPEntryName(), titleMap,
-				new ServiceContext());
-
-			_resourcePermissionLocalService.setResourcePermissions(
-				systemTemplateDefaultSAPEntry.getCompanyId(),
-				SAPEntry.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(systemTemplateDefaultSAPEntry.getSapEntryId()),
 				guestRole.getRoleId(), new String[] {ActionKeys.VIEW});
 		}
 	}

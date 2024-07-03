@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
 import com.liferay.portal.kernel.security.service.access.policy.ServiceAccessPolicy;
 import com.liferay.portal.kernel.security.service.access.policy.ServiceAccessPolicyThreadLocal;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.service.access.policy.configuration.SAPConfiguration;
 import com.liferay.portal.security.service.access.policy.constants.SAPConstants;
@@ -290,11 +291,13 @@ public class SAPAccessControlPolicy extends BaseAccessControlPolicy {
 			HttpServletRequest httpServletRequest =
 				accessControlContext.getRequest();
 
-			if (httpServletRequest.getAttribute(SAPWebKeys.TEMPLATE_DISPATCH) !=
-					null) {
+			boolean freemarkerTemplateDispatch = GetterUtil.getBoolean(
+				httpServletRequest.getAttribute(
+					SAPWebKeys.FREEMARKER_TEMPLATE_DISPATCH));
 
+			if (freemarkerTemplateDispatch) {
 				systemServiceAccessPolicyNames.add(
-					sapConfiguration.systemTemplateDefaultSAPEntryName());
+					sapConfiguration.systemFreemarkerTemplateSAPEntryName());
 			}
 		}
 
