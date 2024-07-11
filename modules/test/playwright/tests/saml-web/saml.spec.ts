@@ -8,13 +8,20 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {samlAdminPagesTest} from '../../fixtures/samlAdminPagesTest';
 import {virtualInstancesPagesTest} from '../../fixtures/virtualInstancesPagesTest';
 import getRandomString from '../../utils/getRandomString';
+import {connectSpAndIdp} from './utils/samlProviderConnectionUtil';
+import {
+	createIdentityProviderVirtualInstance,
+	createServiceProviderVirtualInstance,
+} from './utils/samlVirtualInstanceUtil';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	applicationsMenuPageTest,
 	loginTest(),
+	samlAdminPagesTest,
 	virtualInstancesPagesTest
 );
 
@@ -48,6 +55,54 @@ test('Create, edit, and delete a new virtual instance', async ({
 	).toBeVisible();
 
 	await virtualInstancesPage.deleteVirtualInstance(name);
+});
+
+test('Create a new virtual instance, configure it for SAML IdP', async ({
+	identityProviderConnectionsPage,
+	page,
+	samlAdminPage,
+	serviceProviderConnectionsPage,
+	virtualInstancesPage,
+}) => {
+
+	// Create new idp virtual instance
+
+	const idpVirtualInstanceName = 'idp';
+
+	await createIdentityProviderVirtualInstance(
+	    idpVirtualInstanceName, idpVirtualInstanceName,
+		{page, samlAdminPage, virtualInstancesPage});
+
+	// Create new sp virtual instance
+
+	const spVirtualInstanceName = 'sp';
+
+	await createServiceProviderVirtualInstance(
+	    spVirtualInstanceName, spVirtualInstanceName,
+		{page, samlAdminPage, virtualInstancesPage});
+
+	// Add a new connection for each provider, of the opposite provider
+
+	await connectSpAndIdp(
+		idpVirtualInstanceName,
+		spVirtualInstanceName,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		{
+			identityProviderConnectionsPage,
+			serviceProviderConnectionsPage,
+		}
+	);
+
+	// Next, attempt auth from SP, to IdP, then redirected back to SP
+
+
+	//Lastly, delete both virtual instances
+	await virtualInstancesPage.deleteVirtualInstance(idpVirtualInstanceName);
+
+	await virtualInstancesPage.deleteVirtualInstance(spVirtualInstanceName);
 });
 
 test('testing', async ({page}) => {
