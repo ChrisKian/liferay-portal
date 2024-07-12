@@ -10,6 +10,7 @@ import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest'
 import {loginTest} from '../../fixtures/loginTest';
 import {samlAdminPagesTest} from '../../fixtures/samlAdminPagesTest';
 import {virtualInstancesPagesTest} from '../../fixtures/virtualInstancesPagesTest';
+import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
 import {ApiHelpers} from '../../helpers/ApiHelpers';
 import {liferayConfig} from '../../liferay.config';
 import {getRandomInt} from '../../utils/getRandomInt';
@@ -26,6 +27,7 @@ export const test = mergeTests(
 	applicationsMenuPageTest,
 	loginTest(),
 	samlAdminPagesTest,
+	systemSettingsPageTest,
 	virtualInstancesPagesTest
 );
 
@@ -64,8 +66,20 @@ test('Create, edit, and delete a new virtual instance', async ({
 test('Create two virtual instances, one IdP and one SP, connect them, perform SP initialted SSO, perform SP initiated SLO', async ({
 	browser,
 	page,
+	systemSettingsPage,
 	virtualInstancesPage,
 }) => {
+
+	// Set the Keystore Manager Target to Doc Lib, so we can store multiple certificates in one instance
+
+	await systemSettingsPage.goToSystemSetting(
+		'SSO', 'SAML KeyStoreManager Implementation Configuration');
+
+	await systemSettingsPage.page.getByLabel('Keystore Manager Target').click();
+
+	await systemSettingsPage.page.getByRole('option', {name: 'Document Library Keystore Manager'}).click();
+
+	await systemSettingsPage.page.getByRole('button', { name: 'Update' }).click();
 
 	// Create new idp virtual instance
 
