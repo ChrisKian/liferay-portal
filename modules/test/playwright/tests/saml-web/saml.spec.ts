@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
 import {loginTest} from '../../fixtures/loginTest';
+import {samlSsoTest} from '../../fixtures/samlSsoTest';
 import {samlAdminPagesTest} from '../../fixtures/samlAdminPagesTest';
 import {virtualInstancesPagesTest} from '../../fixtures/virtualInstancesPagesTest';
 import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
@@ -21,6 +22,10 @@ import {
 	createIdentityProviderVirtualInstance,
 	createServiceProviderVirtualInstance,
 } from './utils/samlVirtualInstanceUtil';
+
+export const fixtureTest = mergeTests(
+	samlSsoTest(),
+);
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -238,4 +243,13 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 	await virtualInstancesPage.deleteVirtualInstance(spVirtualInstanceName);
 });
 
-test('testing', async ({page}) => {});
+fixtureTest('testing samlSsoTest fixture, please do not run', async ({
+	idpVirtualInstance,
+	spVirtualInstance,
+}) => {
+
+	// just showing we can get it
+
+	await idpVirtualInstance.adminUser.emailAddress;
+	await spVirtualInstance.adminUser.emailAddress;
+});
