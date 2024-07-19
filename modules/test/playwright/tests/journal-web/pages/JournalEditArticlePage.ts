@@ -13,24 +13,30 @@ import {JournalPage} from './JournalPage';
 export class JournalEditArticlePage {
 	readonly page: Page;
 
+	readonly changesSavedIndicator: Locator;
 	readonly journalPage: JournalPage;
 	readonly propertiesTab: Locator;
 	readonly publishButton: Locator;
+	readonly redoButton: Locator;
 	readonly submitForWorkflowButton: Locator;
-	readonly titlePlaceholder: Locator;
+	readonly titleInput: Locator;
+	readonly undoButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 
+		this.changesSavedIndicator = page.locator(
+			'#_com_liferay_journal_web_portlet_JournalPortlet_changesSavedIndicator'
+		);
 		this.journalPage = new JournalPage(page);
 		this.propertiesTab = page.getByRole('tab', {name: 'Properties'});
 		this.publishButton = page.getByRole('button', {name: 'Publish'});
+		this.redoButton = page.getByTitle('Redo', {exact: true});
 		this.submitForWorkflowButton = page.getByRole('button', {
 			name: 'Submit for Workflow',
 		});
-		this.titlePlaceholder = page.getByPlaceholder(
-			'Untitled Basic Web Content'
-		);
+		this.titleInput = page.getByPlaceholder('Untitled ');
+		this.undoButton = page.getByTitle('Undo', {exact: true});
 	}
 
 	async goto({
@@ -121,12 +127,12 @@ export class JournalEditArticlePage {
 	}
 
 	async fillContent(content: string) {
-		await this.journalPage.webContentBodyTextBox.fill(content);
-		await this.journalPage.webContentBodyTextBox.press('Backspace');
+		await this.journalPage.articleContentTextBox.fill(content);
+		await this.journalPage.articleContentTextBox.press('Backspace');
 	}
 
 	async fillTitle(title: string) {
-		await fillAndClickOutside(this.page, this.titlePlaceholder, title);
+		await fillAndClickOutside(this.page, this.titleInput, title);
 	}
 
 	async editAndPublishExistingBasicArticle(title: string) {

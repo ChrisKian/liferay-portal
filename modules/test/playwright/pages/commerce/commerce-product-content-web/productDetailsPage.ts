@@ -8,8 +8,12 @@ import {FrameLocator, Locator, Page} from '@playwright/test';
 import {CommerceLayoutsPage} from '../commerceLayoutsPage';
 
 export class ProductDetailsPage {
+	readonly addToCartButton: Locator;
 	readonly addSpecification: Locator;
 	readonly addSpecificationFrame: FrameLocator;
+	readonly attachments: Locator;
+	readonly attachmentItem: (title: string) => Promise<Locator>;
+	readonly attachmentItems: Locator;
 	readonly checkSpecificationProduct: (text: string) => Promise<Locator>;
 	readonly closeEditFrame: Locator;
 	readonly createNewSpecificationProduct: Locator;
@@ -42,6 +46,7 @@ export class ProductDetailsPage {
 	readonly menuItemSpecification: (
 		chooseAddOrCreate: string
 	) => Promise<Locator>;
+	readonly nameField: (name: string) => Promise<Locator>;
 	readonly optionSelector: (optionName: string) => Promise<Locator>;
 	readonly page: Page;
 	readonly pageTitle: Locator;
@@ -50,6 +55,7 @@ export class ProductDetailsPage {
 		price: string,
 		container?: Locator | Page
 	) => Promise<Locator>;
+	readonly productNameHeading: (productName: string) => Promise<Locator>;
 	readonly promoPriceField: (
 		promoPrice: string,
 		container?: Locator | Page
@@ -68,13 +74,23 @@ export class ProductDetailsPage {
 	readonly waitForEditScuccessMessage: Locator;
 
 	constructor(page: Page) {
+		this.addToCartButton = page
+			.getByRole('button', {exact: true, name: 'Add to Cart'})
+			.first();
 		this.addSpecification = page
 			.getByTestId('management-toolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
+		this.addSpecificationFrame = page.frameLocator('iframe >> nth=2');
+		this.attachments = page.locator(
+			'#_com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet_navCPMedia'
+		);
+		this.attachmentItem = async (title: string) => {
+			return page.getByText(title);
+		};
+		this.attachmentItems = this.attachments.locator('li.list-group-item');
 		this.checkSpecificationProduct = async (text: string) => {
 			return page.getByText(text);
 		};
-		this.addSpecificationFrame = page.frameLocator('iframe >> nth=2');
 		this.closeEditFrame = page
 			.frameLocator('iframe >> nth=1')
 			.getByRole('button')
@@ -133,6 +149,9 @@ export class ProductDetailsPage {
 		this.menuItemSpecification = async (chooseAddOrCreate: string) => {
 			return page.getByRole('menuitem', {name: chooseAddOrCreate});
 		};
+		this.nameField = async (name: string) => {
+			return page.getByRole('heading', {name});
+		};
 		this.optionSelector = async (optionName: string) => {
 			return page.getByLabel(optionName);
 		};
@@ -140,6 +159,9 @@ export class ProductDetailsPage {
 		this.priceContainer = page.locator('div.price-container');
 		this.priceField = async (price: string, container = this.page) => {
 			return container.getByText(price);
+		};
+		this.productNameHeading = async (productName) => {
+			return page.getByRole('heading', {name: productName});
 		};
 		this.promoPriceField = async (
 			promoPrice: string,
@@ -176,7 +198,7 @@ export class ProductDetailsPage {
 		await this.layoutsPage.addWidgetToPage('Product Details');
 	}
 
-	async addSPecificationToProduct(
+	async addSpecificationToProduct(
 		chooseAddOrEdit: string,
 		specificationName: string,
 		specificationValue: string

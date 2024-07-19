@@ -9,7 +9,7 @@ import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 type TAccount = {
 	externalReferenceCode?: string;
 	id?: number;
-	name: string;
+	name?: string;
 	type?: string;
 };
 
@@ -183,6 +183,22 @@ export class HeadlessAdminUserApiHelper {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/roles/${roleId}/association/user-account/${userAccountId}`
 		);
+	}
+
+	async getAccountByName(accountName: string): Promise<TAccount> {
+		const accountResponse = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/accounts?filter=name eq '${accountName}'`
+		);
+
+		return accountResponse?.items?.at(0);
+	}
+
+	async getOrganizationByName(organizationName: string): Promise<TAccount> {
+		const organizationResponse = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/organizations?filter=name eq '${organizationName}'&flatten=true`
+		);
+
+		return organizationResponse?.items?.at(0);
 	}
 
 	async getSiteByFriendlyUrlPath(friendlyUrlPath: string) {
@@ -425,6 +441,17 @@ export class HeadlessAdminUserApiHelper {
 	) {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/by-external-reference-code/${accountERC}/account-roles/${roleId}/user-accounts/by-email-address/${userEmail}`,
+			{data: {}, failOnStatusCode: true}
+		);
+	}
+
+	async assignUserToSite(
+		roleId: number | string,
+		siteId: number | string,
+		userId: number | string
+	) {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}roles/${roleId}/association/user-account/${userId}/site/${siteId}`,
 			{data: {}, failOnStatusCode: true}
 		);
 	}

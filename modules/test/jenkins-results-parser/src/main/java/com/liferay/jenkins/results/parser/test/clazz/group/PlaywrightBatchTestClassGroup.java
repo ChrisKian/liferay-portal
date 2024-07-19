@@ -80,15 +80,28 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 		String batchName, PlaywrightTestBatch playwrightTestBatch,
 		PortalTestClassJob portalTestClassJob) {
 
-		this(
-			batchName, _DEFAULT_PLAYWRIGHT_RELATIVE_DIR_PATH,
-			portalTestClassJob);
+		super(batchName, portalTestClassJob);
 
 		PlaywrightTestSelector playwrightTestSelector =
 			playwrightTestBatch.getTestSelector();
 
-		_projectNames.addAll(
-			playwrightTestSelector.getPlaywrightProjectNames());
+		_playwrightRelativeDirPath = _DEFAULT_PLAYWRIGHT_RELATIVE_DIR_PATH;
+
+		Set<JobProperty> playwrightJobProperties =
+			playwrightTestSelector.getPlaywrightJobProperties();
+
+		playwrightJobProperties.removeAll(Collections.singleton(null));
+
+		for (JobProperty jobProperty : playwrightJobProperties) {
+			Collections.addAll(
+				_projectNames,
+				jobProperty.getValue(
+				).split(
+					","
+				));
+		}
+
+		recordJobProperties(new ArrayList<>(playwrightJobProperties));
 
 		setTestClasses();
 	}
@@ -358,10 +371,19 @@ public class PlaywrightBatchTestClassGroup extends BatchTestClassGroup {
 
 			Job job = getJob();
 
-			GitRepositoryJob gitRepositoryJob = (GitRepositoryJob)job;
+			GitWorkingDirectory gitWorkingDirectory = null;
 
-			GitWorkingDirectory gitWorkingDirectory =
-				gitRepositoryJob.getGitWorkingDirectory();
+			if (job instanceof PortalTestClassJob) {
+				PortalTestClassJob portalReleaseJob = (PortalTestClassJob)job;
+
+				gitWorkingDirectory =
+					portalReleaseJob.getPortalGitWorkingDirectory();
+			}
+			else {
+				GitRepositoryJob gitRepositoryJob = (GitRepositoryJob)job;
+
+				gitWorkingDirectory = gitRepositoryJob.getGitWorkingDirectory();
+			}
 
 			File workingDirectory = gitWorkingDirectory.getWorkingDirectory();
 

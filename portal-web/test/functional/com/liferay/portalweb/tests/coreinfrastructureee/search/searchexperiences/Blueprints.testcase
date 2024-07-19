@@ -84,7 +84,6 @@ definition {
 	@priority = 3
 	test AddElementToQueryBuilder {
 		property environment.acceptance = "true";
-		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
 		property portal.acceptance = "true";
 
 		Blueprints.openBlueprintsAdmin();
@@ -3372,6 +3371,10 @@ definition {
 		WaitForElementPresent.waitForLastScript();
 
 		Button.click(button = "Seleccionar");
+
+		WaitForElementPresent(
+			key_blueprintTitle = "Título en Español",
+			locator1 = "Blueprints#BLUEPRINTS_OPTION_WIDGET_TITLE");
 
 		AssertTextEquals(
 			key_blueprintTitle = "Título en Español",

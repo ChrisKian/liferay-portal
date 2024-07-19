@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.language.rest.client.dto.v1_0.Message;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
 import java.io.File;
@@ -32,6 +33,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Thiago Buarque
  */
+@FeatureFlags("LPD-27222")
 @RunWith(Arquillian.class)
 public class MessageResourceTest extends BaseMessageResourceTestCase {
 
@@ -47,6 +49,7 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 		}
 	}
 
+	@Override
 	@Test
 	public void testDeleteMessage() throws Exception {
 		Message message = _createMessage();
@@ -62,6 +65,7 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 				message.getLanguageId()));
 	}
 
+	@Override
 	@Test
 	public void testGetMessage() throws Exception {
 		Message message1 = _createMessage();
@@ -74,6 +78,7 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 		Assert.assertEquals(message1, message2);
 	}
 
+	@Override
 	@Test
 	public void testPostMessage() throws Exception {
 		testGetMessage();
@@ -130,6 +135,7 @@ public class MessageResourceTest extends BaseMessageResourceTestCase {
 		}
 	}
 
+	@Override
 	@Test
 	public void testPutMessage() throws Exception {
 		Message message1 = _createMessage();

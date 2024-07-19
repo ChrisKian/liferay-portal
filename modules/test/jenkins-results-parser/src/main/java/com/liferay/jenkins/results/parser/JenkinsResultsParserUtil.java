@@ -4057,7 +4057,7 @@ public class JenkinsResultsParserUtil {
 	public static void pullDockerImageDependencies(
 		File baseDir, String[] excludedDockerImageNames) {
 
-		String dockerEnabled = System.getenv("DOCKER_ENABLED");
+		String dockerEnabled = System.getenv("LIFERAY_DOCKER_ENABLED");
 
 		if (isNullOrEmpty(dockerEnabled) || !dockerEnabled.equals("true")) {
 			return;
@@ -6758,7 +6758,7 @@ public class JenkinsResultsParserUtil {
 	private static final Pattern _dockerFilePattern = Pattern.compile(
 		".*FROM (?<dockerImageName>[^\\s]+)( AS builder)?\\n[\\s\\S]*");
 	private static final List<String> _forbiddenRedactTokens = Arrays.asList(
-		"liferay", "test");
+		"admin", "liferay", "test");
 	private static JSONArray _gitDirectoriesJSONArray;
 	private static final Pattern _gitHubAPIURLPattern = Pattern.compile(
 		"https\\:\\/\\/api\\.github\\.com(.*)");

@@ -30,6 +30,7 @@ export class ApplicationsMenuPage {
 	private readonly jobSchedulerMenuItem: Locator;
 	private readonly oAuth2Administration: Locator;
 	private readonly objectsMenuItem: Locator;
+	private readonly metricsItem: Locator;
 	private readonly page: Page;
 	private readonly paymentsMenuItem: Locator;
 	private readonly picklistsMenuItem: Locator;
@@ -121,6 +122,10 @@ export class ApplicationsMenuPage {
 			exact: true,
 			name: 'Job Scheduler',
 		});
+		this.metricsItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Metrics',
+		});
 		this.oAuth2Administration = page.getByRole('menuitem', {
 			exact: true,
 			name: 'OAuth 2 Administration',
@@ -192,11 +197,13 @@ export class ApplicationsMenuPage {
 		});
 	}
 
-	async goto() {
+	async goto(checkTabVisibility = true) {
 		await this.homePage.goto();
 		await this.homePage.openApplicationMenu();
 
-		await expect(this.applicationsMenuTabButton).toBeVisible();
+		if (checkTabVisibility) {
+			await expect(this.applicationsMenuTabButton).toBeVisible();
+		}
 	}
 
 	async goToAccounts() {
@@ -250,6 +257,11 @@ export class ApplicationsMenuPage {
 		await this.gogoShellItem.click();
 	}
 
+	async goToMetrics() {
+		await this.goToApplicationsMenu();
+		await this.metricsItem.click();
+	}
+
 	async goToObjects() {
 		await this.goToControlPanel();
 		await this.objectsMenuItem.click();
@@ -295,8 +307,8 @@ export class ApplicationsMenuPage {
 		await this.jobSchedulerMenuItem.click();
 	}
 
-	async goToCommerceChannels() {
-		await this.goToCommercePanel();
+	async goToCommerceChannels(checkTabVisibility = true) {
+		await this.goToCommercePanel(checkTabVisibility);
 		await this.commerceChannelsMenuItem.click();
 	}
 
@@ -305,8 +317,8 @@ export class ApplicationsMenuPage {
 		await this.commerceDiscountsMenuItem.click();
 	}
 
-	async goToCommercePanel() {
-		await this.goto();
+	async goToCommercePanel(checkTabVisibility = true) {
+		await this.goto(checkTabVisibility);
 		await this.commercePanelButton.click();
 	}
 

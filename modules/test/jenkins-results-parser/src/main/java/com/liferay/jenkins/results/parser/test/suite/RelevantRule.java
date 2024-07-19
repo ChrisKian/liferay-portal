@@ -21,12 +21,17 @@ import java.util.Properties;
 /**
  * @author Kenji Heigel
  */
-public class RelevantRule {
+public class RelevantRule implements Comparable<RelevantRule> {
 
 	public RelevantRule(String filePath, String name, Properties properties) {
 		_filePath = filePath;
 		_name = name;
 		_properties = properties;
+	}
+
+	@Override
+	public int compareTo(RelevantRule relevantRule) {
+		return _name.compareTo(relevantRule.getName());
 	}
 
 	public String getFilePath() {
@@ -82,7 +87,9 @@ public class RelevantRule {
 			getProperties(), "modified.files.includes", getName(),
 			getTestSuiteName());
 
-		if (modifiedFilesIncludes == null) {
+		if ((modifiedFilesIncludes == null) ||
+			modifiedFilesIncludes.isEmpty()) {
+
 			_modifiedFilesIncludesPathMatchers = Collections.emptyList();
 		}
 		else {
@@ -150,6 +157,27 @@ public class RelevantRule {
 		return JenkinsResultsParserUtil.isFileIncluded(
 			getModifiedFilesExcludesPathMatchers(),
 			getModifiedFilesIncludesPathMatchers(), modifiedFile);
+	}
+
+	public void validate() throws RelevantRuleConfigurationException {
+		List<TestBatch> testBatches = getTestBatches();
+
+		if (testBatches.isEmpty()) {
+			throw new RelevantRuleConfigurationException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find test.batch.names for relevant rule \"",
+					getName(), "\" in ", _filePath));
+		}
+
+		List<PathMatcher> modifiedFilesIncludes =
+			getModifiedFilesIncludesPathMatchers();
+
+		if (modifiedFilesIncludes.isEmpty()) {
+			throw new RelevantRuleConfigurationException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find modified.files.includes for relevant ",
+					"rule \"", getName(), "\" in ", _filePath));
+		}
 	}
 
 	private String _getBaseDirTestProperty(String propertyName) {

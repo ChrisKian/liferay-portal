@@ -6,9 +6,13 @@
 package com.liferay.jenkins.results.parser.test.batch;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.job.property.JobProperty;
+import com.liferay.jenkins.results.parser.test.suite.RelevantRuleConfigurationException;
 
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -16,21 +20,79 @@ import java.util.Properties;
  */
 public class PoshiTestSelector extends BaseTestSelector {
 
+	public static final String TEST_BATCH_RUN_PROPERTY_GLOBAL_QUERY =
+		"test.batch.run.property.global.query";
+
 	public static final String TEST_BATCH_RUN_PROPERTY_QUERY =
 		"test.batch.run.property.query";
 
 	public PoshiTestSelector(
-		File propertiesFile, Properties properties, String batchName,
-		String relevantRuleName, String testSuiteName) {
+			File propertiesFile, Properties properties, String batchName,
+			String relevantRuleName, String testSuiteName)
+		throws RelevantRuleConfigurationException {
 
 		super(
 			propertiesFile, properties, batchName, relevantRuleName,
 			testSuiteName);
 
 		validate();
+
+		addPoshiQuery();
+
+		JenkinsResultsParserUtil.validatePQL(_poshiQuery, propertiesFile);
+	}
+
+	public void addPoshiQuery() {
+		JobProperty poshiJobProperty = getJobProperty(
+			TEST_BATCH_RUN_PROPERTY_QUERY, JobProperty.Type.MODULE_TEST_DIR);
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(
+				poshiJobProperty.getValue())) {
+
+			_poshiJobProperties.add(poshiJobProperty);
+
+			_poshiQuery = poshiJobProperty.getValue();
+		}
+	}
+
+	public String getGlobalPoshiQuery() {
+		if (_globalPoshiQuery != null) {
+			return _globalPoshiQuery;
+		}
+
+		JobProperty globalJobProperty = getGlobalJobProperty(
+			TEST_BATCH_RUN_PROPERTY_GLOBAL_QUERY);
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(
+				globalJobProperty.getValue())) {
+
+			_poshiJobProperties.add(globalJobProperty);
+		}
+
+		_globalPoshiQuery = globalJobProperty.getValue();
+
+		return _globalPoshiQuery;
+	}
+
+	public List<JobProperty> getPoshiJobProperties() {
+		return _poshiJobProperties;
 	}
 
 	public String getPoshiQuery() {
+		return getPoshiQuery(true);
+	}
+
+	public String getPoshiQuery(boolean includeGlobalPoshiQuery) {
+		String globalPoshiQuery = getGlobalPoshiQuery();
+
+		if (includeGlobalPoshiQuery &&
+			!JenkinsResultsParserUtil.isNullOrEmpty(globalPoshiQuery) &&
+			!_poshiQuery.contains(globalPoshiQuery)) {
+
+			return JenkinsResultsParserUtil.combine(
+				"(", globalPoshiQuery, ") AND (", _poshiQuery, ")");
+		}
+
 		return _poshiQuery;
 	}
 
@@ -42,16 +104,29 @@ public class PoshiTestSelector extends BaseTestSelector {
 
 		PoshiTestSelector poshiTestSelector = (PoshiTestSelector)testSelector;
 
-		_poshiQuery = JenkinsResultsParserUtil.combine(
-			"(", _poshiQuery, ") AND (", poshiTestSelector.getPoshiQuery(),
-			")");
+		String newPoshiQuery = poshiTestSelector.getPoshiQuery(false);
+
+		_poshiJobProperties.addAll(poshiTestSelector.getPoshiJobProperties());
+
+		JenkinsResultsParserUtil.validatePQL(
+			newPoshiQuery, getPropertiesFile());
+
+		if (newPoshiQuery.contains(_poshiQuery)) {
+			_poshiQuery = newPoshiQuery;
+		}
+		else if (!_poshiQuery.contains(newPoshiQuery)) {
+			_poshiQuery += JenkinsResultsParserUtil.combine(
+				" OR (", newPoshiQuery, ")");
+		}
 	}
 
 	@Override
-	public void validate() {
+	public void validate() throws RelevantRuleConfigurationException {
 		validate(TEST_BATCH_RUN_PROPERTY_QUERY);
 	}
 
+	private String _globalPoshiQuery;
+	private final List<JobProperty> _poshiJobProperties = new ArrayList<>();
 	private String _poshiQuery;
 
 }

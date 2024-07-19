@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.test.batch;
 
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
+import com.liferay.jenkins.results.parser.test.suite.RelevantRuleConfigurationException;
 
 import java.io.File;
 
@@ -27,8 +28,9 @@ public class JUnitTestSelector extends BaseTestSelector {
 			"modules.includes.required.test.batch.class.names.includes";
 
 	public JUnitTestSelector(
-		File propertiesFile, Properties properties, String batchName,
-		String relevantRuleName, String testSuiteName) {
+			File propertiesFile, Properties properties, String batchName,
+			String relevantRuleName, String testSuiteName)
+		throws RelevantRuleConfigurationException {
 
 		super(
 			propertiesFile, properties, batchName, relevantRuleName,
@@ -72,12 +74,23 @@ public class JUnitTestSelector extends BaseTestSelector {
 
 		JUnitTestSelector jUnitTestSelector = (JUnitTestSelector)testSelector;
 
-		_excludesJobProperties.add(jUnitTestSelector.getExcludesJobProperty());
-		_includesJobProperties.add(jUnitTestSelector.getIncludesJobProperty());
+		if (!_includesJobProperties.contains(
+				jUnitTestSelector.getIncludesJobProperty())) {
+
+			_includesJobProperties.add(
+				jUnitTestSelector.getIncludesJobProperty());
+		}
+
+		if (!_excludesJobProperties.contains(
+				jUnitTestSelector.getExcludesJobProperty())) {
+
+			_excludesJobProperties.add(
+				jUnitTestSelector.getExcludesJobProperty());
+		}
 	}
 
 	@Override
-	public void validate() {
+	public void validate() throws RelevantRuleConfigurationException {
 		validate(MODULES_INCLUDES_REQUIRED_TEST_BATCH_CLASS_NAMES_INCLUDES);
 	}
 
