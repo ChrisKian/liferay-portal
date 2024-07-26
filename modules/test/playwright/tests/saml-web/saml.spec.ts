@@ -15,7 +15,7 @@ import {
 	DEFAULT_IDP_URL,
 	DEFAULT_SP_NAME,
 	DEFAULT_SP_URL,
-	createSpAndIdpUser,
+	createIdpUser,
 	deleteVirtualInstance,
 	resetSamlKeystoreManagerTarget,
 	setupSamlInstances,
@@ -45,19 +45,16 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 
 	// Create a user with identical credentials on each instance
 
-	const userAccount = await createSpAndIdpUser(
+	const userAccount = await createIdpUser(
 		browser,
 		DEFAULT_IDP_NAME,
-		DEFAULT_SP_NAME
 	);
 
-	// Create new page on SP virtual instance
+    // Perform SP initiated SSO
 
 	const spInstancePage = await browser.newPage({
 		baseURL: DEFAULT_SP_URL,
 	});
-
-	// Login as the new user from SP
 
 	await spInstancePage.goto('/');
 
@@ -75,9 +72,9 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 		)
 	).toBeVisible();
 
-	// Wait a few seconds for redirection, otherwise the expect clause will fail
+	// Wait for redirection to complete, otherwise the expect clause will fail
 
-	await spInstancePage.waitForTimeout(4000);
+	await spInstancePage.waitForTimeout(8000);
 
 	// Verify user has been successfully redirected
 
@@ -94,19 +91,25 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 
 	// Wait for authentication to complete, verify user is redirected back to SP
 
-	await spInstancePage.waitForTimeout(4000);
+	await spInstancePage.waitForTimeout(8000);
 
 	expect(await spInstancePage.url()).toContain(DEFAULT_SP_URL);
 
-	// Verify user is logged in
+	// Verify user has been imported to SP and logged in
 
-	await expect(await page.getByTitle('User Profile Menu')).toBeVisible();
+	await expect(
+		await spInstancePage.getByTitle('User Profile Menu')
+	).toBeVisible();
 
-	// Logout, verify user is also logged out of IdP
+	// Perform SP initiated SLO
 
 	await performLogout(spInstancePage);
 
-	expect(
+	await spInstancePage.waitForTimeout(8000);
+
+	// Verify user has been logged out of SP and IdP
+
+	await expect(
 		await spInstancePage.getByRole('button', {name: 'Sign In'})
 	).toBeVisible();
 
