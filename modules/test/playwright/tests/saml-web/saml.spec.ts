@@ -45,12 +45,9 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 
 	// Create a user with identical credentials on each instance
 
-	const userAccount = await createIdpUser(
-		browser,
-		DEFAULT_IDP_NAME,
-	);
+	const userAccount = await createIdpUser(browser, DEFAULT_IDP_NAME);
 
-    // Perform SP initiated SSO
+	// Perform SP initiated SSO
 
 	const spInstancePage = await browser.newPage({
 		baseURL: DEFAULT_SP_URL,
@@ -66,15 +63,15 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 
 	// Verify user is redirected to the IdP instance
 
-	expect(
-		await spInstancePage.getByText(
-			'Redirecting to your identity provider...'
-		)
-	).toBeVisible();
+	await spInstancePage
+		.getByText('Redirecting to your identity provider...')
+		.waitFor({timeout: 30 * 1000});
 
 	// Wait for redirection to complete, otherwise the expect clause will fail
 
-	await spInstancePage.waitForTimeout(8000);
+	await spInstancePage
+		.getByLabel('Email Address')
+		.waitFor({timeout: 30 * 1000});
 
 	// Verify user has been successfully redirected
 
@@ -89,35 +86,30 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 	await spInstancePage.getByLabel('Remember Me').check();
 	await spInstancePage.getByRole('button', {name: 'Sign In'}).click();
 
-	// Wait for authentication to complete, verify user is redirected back to SP
+	// Wait for authentication to complete, verify user is signed in and
+	// redirected back to SP
 
-	await spInstancePage.waitForTimeout(8000);
+	await spInstancePage
+		.getByTitle('User Profile Menu')
+		.waitFor({timeout: 30 * 1000});
 
 	expect(await spInstancePage.url()).toContain(DEFAULT_SP_URL);
-
-	// Verify user has been imported to SP and logged in
-
-	await expect(
-		await spInstancePage.getByTitle('User Profile Menu')
-	).toBeVisible();
 
 	// Perform SP initiated SLO
 
 	await performLogout(spInstancePage);
 
-	await spInstancePage.waitForTimeout(8000);
-
 	// Verify user has been logged out of SP and IdP
 
-	await expect(
-		await spInstancePage.getByRole('button', {name: 'Sign In'})
-	).toBeVisible();
+	await spInstancePage
+		.getByRole('button', {name: 'Sign In'})
+		.waitFor({timeout: 30 * 1000});
 
 	await spInstancePage.goto(DEFAULT_IDP_URL);
 
-	expect(
-		await spInstancePage.getByRole('button', {name: 'Sign In'})
-	).toBeVisible();
+	await spInstancePage
+		.getByRole('button', {name: 'Sign In'})
+		.waitFor({timeout: 30 * 1000});
 
 	// Lastly, delete both virtual instances and reset the keystore target
 
