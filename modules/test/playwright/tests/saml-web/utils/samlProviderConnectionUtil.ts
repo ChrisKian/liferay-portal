@@ -6,59 +6,48 @@
 import {liferayConfig} from '../../../liferay.config';
 import {IdentityProviderConnectionsPage} from '../../../pages/saml-web/IdentityProviderConnectionsPage';
 import {ServiceProviderConnectionsPage} from '../../../pages/saml-web/ServiceProviderConnectionsPage';
+import {
+	DEFAULT_IDP_CONNECTION_VALUES,
+	DEFAULT_SP_CONNECTION_VALUES,
+	TIdpConnection,
+	TSpConnection
+} from "../../../helpers/SamlProviderConnectionHelper";
 
 const _DEFAULT_METADATA_PATH = '/c/portal/saml/metadata';
 
 async function addIdentityProviderConnection(
-	idpName: string,
+	idpConnection: TIdpConnection,
 	page,
-	spDomain: string,
-	idpDomain = idpName,
-	idpEntityId = idpName
 ) {
 	const defaultBaseUrl = liferayConfig.environment.baseUrl;
 
-	liferayConfig.environment.baseUrl = `http://${spDomain}:8080`;
+	liferayConfig.environment.baseUrl = idpConnection.spDomain;
 
 	const identityProviderConnectionsPage = new IdentityProviderConnectionsPage(
 		page
 	);
 
 	await identityProviderConnectionsPage.addIdentityProviderConnection(
-		`http://${idpDomain}:8080${_DEFAULT_METADATA_PATH}`,
-		idpName,
-		undefined,
-		undefined,
-		idpEntityId
+		idpConnection
 	);
 
 	liferayConfig.environment.baseUrl = defaultBaseUrl;
 }
 
 async function addServiceProviderConnection(
-	idpDomain: string,
 	page,
-	spName: string,
-	spDomain = spName,
-	spEntityId = spName
+	spConnection: TSpConnection
 ) {
 	const defaultBaseUrl = liferayConfig.environment.baseUrl;
 
-	liferayConfig.environment.baseUrl = `http://${idpDomain}:8080`;
+	liferayConfig.environment.baseUrl = spConnection.idpDomain;
 
 	const serviceProviderConnectionsPage = new ServiceProviderConnectionsPage(
 		page
 	);
 
 	await serviceProviderConnectionsPage.addServiceProviderConnection(
-		`http://${spDomain}:8080${_DEFAULT_METADATA_PATH}`,
-		spName,
-		undefined,
-		undefined,
-		undefined,
-		undefined,
-		undefined,
-		spEntityId
+		spConnection
 	);
 
 	liferayConfig.environment.baseUrl = defaultBaseUrl;
@@ -71,19 +60,31 @@ export async function connectSpAndIdp(
 	idpEntityId = idpName,
 	spEntityId = spName
 ) {
+	const spConnection: TSpConnection = {
+		entityId: spEntityId,
+		idpDomain: `http://${idpName}:8080`,
+		metadataURL: `http://${spName}:8080${_DEFAULT_METADATA_PATH}`,
+		spDomain: `http://${spName}:8080`,
+		spName: spName,
+		...DEFAULT_SP_CONNECTION_VALUES
+	}
+
 	await addServiceProviderConnection(
-		idpName,
 		page,
-		spName,
-		spName,
-		spEntityId
+		spConnection
 	);
 
+	const idpConnection: TIdpConnection = {
+		entityId: idpEntityId,
+		idpDomain: `http://${idpName}:8080`,
+		idpName: idpName,
+		metadataURL: `http://${idpName}:8080${_DEFAULT_METADATA_PATH}`,
+		spDomain: `http://${spName}:8080`,
+		...DEFAULT_IDP_CONNECTION_VALUES
+	}
+
 	await addIdentityProviderConnection(
-		idpName,
+		idpConnection,
 		page,
-		spName,
-		idpName,
-		idpEntityId
 	);
 }
