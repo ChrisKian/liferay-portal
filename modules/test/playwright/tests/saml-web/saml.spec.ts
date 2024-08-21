@@ -30,6 +30,7 @@ import {UsersAndOrganizationsPage} from '../../pages/users-admin-web/UsersAndOrg
 import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
+import {reloadUntilVisible} from '../../utils/reloadUntilVisible';
 import {performSpInitiatedSSO} from './utils/samlAuthUtil';
 import {
 	connectSpAndIdp,
@@ -609,4 +610,75 @@ test('SAML connection cannot be saved if a custom field value is used more than 
 		'User Custom Fields: Each user field can only be mapped to one SAML attribute.';
 
 	await editIdentityProviderConnection(browser, idpConnection, errorMessage);
+});
+
+test('Verify IdP initiated SLO also logs out of authenticated SP when Require Authn Request Signature and Sign Metadata are enabled.  See LPS-128578.', async ({
+	browser,
+}) => {
+	await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(browser, DEFAULT_IDP_NAME, DEFAULT_SP_NAME);
+
+	// Create IdP User
+
+	const randomInt = getRandomInt();
+
+	const userAccount = await createUser(browser, DEFAULT_IDP_NAME, randomInt);
+
+	await createUser(browser, DEFAULT_SP_NAME, randomInt);
+
+	// Login to IdP.  The Remember Me checkbox must be disabled.
+
+	const newPage = await performSamlSafeLogin(
+		browser,
+		DEFAULT_IDP_NAME,
+		'@liferay.com',
+		false,
+		userAccount.alternateName
+	);
+
+	// Clicking Sign In button on SP page should automatically authenticate
+
+	await newPage.goto(DEFAULT_SP_URL);
+
+	const signInButton = await newPage.getByRole('button', {
+		name: 'Sign In',
+	});
+
+	await signInButton.waitFor();
+
+	await signInButton.click();
+
+	await newPage.getByTitle('User Profile Menu').waitFor({timeout: 30 * 1000});
+
+	// Idp initiated SLO
+
+	await newPage.goto(DEFAULT_IDP_URL);
+
+	await newPage.getByTitle('User Profile Menu').click();
+
+	await newPage.getByRole('menuitem', {name: 'Sign Out'}).click();
+
+	await newPage.waitForTimeout(8000);
+
+	// SP should also be logged out after IdP initiated SLO
+
+	await newPage.goto(DEFAULT_SP_URL);
+
+	await reloadUntilVisible({
+		myLocator: signInButton,
+		page: newPage,
+	});
+
+	expect(await signInButton).toBeVisible();
 });
