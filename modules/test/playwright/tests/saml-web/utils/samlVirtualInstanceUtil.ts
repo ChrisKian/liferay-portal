@@ -178,6 +178,26 @@ export async function performSamlSafeLogin(
 	return page;
 }
 
+export async function resetSamlConfiguration(page) {
+	const systemSettingsPage = new SystemSettingsPage(page);
+
+	await systemSettingsPage.goToSystemSetting('SSO', 'SAML Configuration');
+
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: systemSettingsPage.page.getByRole('button', {name: 'Actions'}),
+		trigger: systemSettingsPage.page.getByRole('link', {
+			name: 'Reset Default Values',
+		}),
+	});
+
+	await systemSettingsPage.page
+		.getByRole('link', {name: 'Reset Default Values'})
+		.click();
+
+	await waitForSuccessAlert(systemSettingsPage.page);
+}
+
 export async function resetSamlKeystoreManagerTarget(page) {
 	const systemSettingsPage = new SystemSettingsPage(page);
 
@@ -234,6 +254,33 @@ export async function setupSamlInstances(
 		idpEntityId,
 		spEntityId
 	);
+}
+
+export async function updateRuntimeMetadataRefreshInterval(
+	page,
+	value: string
+) {
+	const systemSettingsPage = new SystemSettingsPage(page);
+
+	await systemSettingsPage.goToSystemSetting('SSO', 'SAML Configuration');
+
+	await systemSettingsPage.page
+		.getByText('Runtime Metadata Refresh Interval')
+		.fill(value);
+
+	let updateButton = await systemSettingsPage.page.getByRole('button', {
+		name: 'Update',
+	});
+
+	if (!(await updateButton.isVisible())) {
+		updateButton = await systemSettingsPage.page.getByRole('button', {
+			name: 'Save',
+		});
+	}
+
+	await updateButton.click();
+
+	await waitForSuccessAlert(systemSettingsPage.page);
 }
 
 export async function updateSamlKeystoreManagerTarget(page, target: string) {
