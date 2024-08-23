@@ -167,19 +167,24 @@ test.beforeAll(async ({browser}) => {
 test('Create two virtual instances, one IdP and one SP, connect them, perform SP initiated SSO, perform SP initiated SLO', async ({
 	browser,
 }) => {
-	await configureVirtualInstanceForSaml(
+	const idpAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_IDP_NAME,
 		'Identity Provider'
 	);
 
-	await configureVirtualInstanceForSaml(
+	const spAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_SP_NAME,
 		'Service Provider'
 	);
 
-	await connectSpAndIdp(browser, DEFAULT_IDP_NAME, DEFAULT_SP_NAME);
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
 
 	// Create a user with identical credentials on each instance
 
@@ -264,19 +269,24 @@ test('Create two virtual instances, one IdP and one SP, and verify Custom User A
 	searchAdminPage,
 	usersAndOrganizationsPage,
 }) => {
-	await configureVirtualInstanceForSaml(
+	const idpAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_IDP_NAME,
 		'Identity Provider'
 	);
 
-	await configureVirtualInstanceForSaml(
+	const spAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_SP_NAME,
 		'Service Provider'
 	);
 
-	await connectSpAndIdp(browser, DEFAULT_IDP_NAME, DEFAULT_SP_NAME);
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
 
 	// Create identical Custom Fields for both instances, except starting value
 
@@ -394,27 +404,37 @@ test('Create two virtual instances, set localhost and one to IdP and one SP, and
 	searchAdminPage,
 	usersAndOrganizationsPage,
 }) => {
-	await configureVirtualInstanceForSaml(
+	const idpAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_IDP_NAME,
 		'Identity Provider'
 	);
 
-	await configureVirtualInstanceForSaml(
+	const localhostIdpAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		'localhost',
 		'Identity Provider'
 	);
 
-	await configureVirtualInstanceForSaml(
+	const spAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_SP_NAME,
 		'Service Provider'
 	);
 
-	await connectSpAndIdp(browser, 'localhost', DEFAULT_SP_NAME);
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
 
-	await connectSpAndIdp(browser, DEFAULT_IDP_NAME, DEFAULT_SP_NAME);
+	await connectSpAndIdp(
+		localhostIdpAdminPage,
+		'localhost',
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
 
 	// Create identical Custom Fields for all instances, except starting value
 
@@ -567,19 +587,24 @@ test('Create two virtual instances, set localhost and one to IdP and one SP, and
 test('SAML connection cannot be saved if a custom field value is used more than once', async ({
 	browser,
 }) => {
-	await configureVirtualInstanceForSaml(
+	const idpAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_IDP_NAME,
 		'Identity Provider'
 	);
 
-	await configureVirtualInstanceForSaml(
+	const spAdminPage = await configureVirtualInstanceForSaml(
 		browser,
 		DEFAULT_SP_NAME,
 		'Service Provider'
 	);
 
-	await connectSpAndIdp(browser, DEFAULT_IDP_NAME, DEFAULT_SP_NAME);
+	await connectSpAndIdp(
+		idpAdminPage,
+		DEFAULT_IDP_NAME,
+		spAdminPage,
+		DEFAULT_SP_NAME
+	);
 
 	const customFieldName = 'CustomField' + getRandomInt();
 

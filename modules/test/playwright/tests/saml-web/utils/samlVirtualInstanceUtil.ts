@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Page} from '@playwright/test';
+
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {TCustomField} from '../../../helpers/CustomFieldTypesHelper';
 import {liferayConfig} from '../../../liferay.config';
@@ -118,7 +120,7 @@ export async function configureVirtualInstanceForSaml(
 	browser,
 	entityId: string,
 	samlRole: string
-) {
+): Promise<Page> {
 	deleteAfterTestProviderConnections.push(entityId);
 
 	const defaultBaseUrl = liferayConfig.environment.baseUrl;
@@ -132,6 +134,8 @@ export async function configureVirtualInstanceForSaml(
 	await samlAdminPage.configureSAML(true, entityId, samlRole);
 
 	liferayConfig.environment.baseUrl = defaultBaseUrl;
+
+	return newPage;
 }
 
 export async function createServiceProviderVirtualInstance(
@@ -256,8 +260,9 @@ export async function setupSamlInstances(
 	// Add a new connection for each provider, of the opposite provider
 
 	await connectSpAndIdp(
-		browser,
+		'idpPage',
 		idpInstanceName,
+		'spPage',
 		spInstanceName,
 		idpEntityId,
 		spEntityId
