@@ -32,7 +32,18 @@ import {getRandomInt} from '../../utils/getRandomInt';
 import getRandomString from '../../utils/getRandomString';
 import performLogin, {performLogout} from '../../utils/performLogin';
 import {reloadUntilVisible} from '../../utils/reloadUntilVisible';
-import {performSpInitiatedSSO} from './utils/samlAuthUtil';
+import {
+	TIdentityProvider,
+	configureIdentityProvider,
+} from './utils/IdentityProviderUtil';
+import {
+	TServiceProvider,
+	configureServiceProvider,
+} from './utils/ServiceProviderUtil';
+import {
+	performIdpInitiatedSSO,
+	performSpInitiatedSSO,
+} from './utils/samlAuthUtil';
 import {
 	connectSpAndIdp,
 	editIdentityProviderConnection,
@@ -48,8 +59,10 @@ import {
 	createUser,
 	deleteVirtualInstance,
 	performSamlSafeLogin,
+	resetSamlConfiguration,
 	resetSamlKeystoreManagerTarget,
 	setupSamlInstances,
+	updateRuntimeMetadataRefreshInterval,
 	updateSamlKeystoreManagerTarget,
 } from './utils/samlVirtualInstanceUtil';
 
@@ -678,4 +691,161 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 	});
 
 	expect(await signInButton).toBeVisible();
+});
+
+test('Verify a Message context is not authenticated when Require Authn Request Signature and Sign Authn Requests are disabled.  Replaces SAML.AssertSSOWithSignAuthnRequests, see LPD-32545.', async ({
+	browser,
+}) => {
+	await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_IDP_NAME,
+		'Identity Provider'
+	);
+
+	await configureVirtualInstanceForSaml(
+		browser,
+		DEFAULT_SP_NAME,
+		'Service Provider'
+	);
+
+	await connectSpAndIdp(browser, DEFAULT_IDP_NAME, DEFAULT_SP_NAME);
+
+	// Disable auth and request signature required on IdP
+
+	const identityProvider: TIdentityProvider = {
+		requireAuthnRequestSignature: false,
+	};
+
+	await configureIdentityProvider(browser, identityProvider);
+
+	// Update Runtime Metadata Refresh Interval value to a low value, otherwise
+	// the test may run faster than the interval
+
+	const newPage = await browser.newPage();
+
+	await performLogin(newPage, 'test');
+
+	await updateRuntimeMetadataRefreshInterval(newPage, '5');
+
+	// Create new user in IdP instance
+
+	const userAccount = await createUser(browser, DEFAULT_IDP_NAME);
+
+	// Execute IdP initiated SSO
+
+	const idpInstancePage = await performIdpInitiatedSSO(
+		browser,
+		userAccount.emailAddress,
+		DEFAULT_IDP_URL,
+		DEFAULT_SP_URL,
+		DEFAULT_SP_NAME
+	);
+
+	// Assert authentication and SP redirection
+
+	expect(await idpInstancePage.getByTitle('User Profile Menu')).toBeVisible();
+
+	expect(await idpInstancePage.url()).toContain(DEFAULT_SP_URL);
+
+	// Reset IdP configuration settings
+
+	await configureIdentityProvider(browser);
+
+	// Execute SP initiated SLO and assert logged out
+
+	await idpInstancePage.getByTitle('User Profile Menu').click();
+
+	await idpInstancePage.getByRole('menuitem', {name: 'Sign Out'}).click();
+
+	await expect(
+		await idpInstancePage.getByRole('button', {name: 'Sign In'})
+	).toBeVisible();
+
+	// Execute SP initiated SSO
+
+	let spInstancePage = await performSpInitiatedSSO(
+		browser,
+		userAccount.emailAddress,
+		DEFAULT_SP_URL
+	);
+
+	// Assert authentication and SP redirection
+
+	expect(await spInstancePage.getByTitle('User Profile Menu')).toBeVisible();
+
+	expect(await spInstancePage.url()).toContain(DEFAULT_SP_URL);
+
+	// Disable auth and request signature required on IdP
+
+	await configureIdentityProvider(browser, identityProvider);
+
+	// Disable Sign Authn Requests on SP
+
+	const serviceProvider: TServiceProvider = {
+		signAuthnRequests: false,
+	};
+
+	await configureServiceProvider(browser, serviceProvider);
+
+	// Execute SP initiated SLO and assert logged out
+
+	await spInstancePage.getByTitle('User Profile Menu').click();
+
+	await spInstancePage.getByRole('menuitem', {name: 'Sign Out'}).click();
+
+	await expect(
+		await spInstancePage.getByRole('button', {name: 'Sign In'})
+	).toBeVisible();
+
+	// Execute SP initiated SSO
+
+	spInstancePage = await performSpInitiatedSSO(
+		browser,
+		userAccount.emailAddress,
+		DEFAULT_SP_URL
+	);
+
+	// Assert logged in
+
+	expect(await spInstancePage.getByTitle('User Profile Menu')).toBeVisible();
+
+	// Update Runtime Metadata Refresh Interval value to a high value
+
+	await updateRuntimeMetadataRefreshInterval(newPage, '9999');
+
+	// Reset IdP configuration settings
+
+	await configureIdentityProvider(browser);
+
+	// Execute SP initiated SLO
+
+	await spInstancePage.getByTitle('User Profile Menu').click();
+
+	await spInstancePage.getByRole('menuitem', {name: 'Sign Out'}).click();
+
+	await spInstancePage
+		.getByRole('button', {name: 'Sign In'})
+		.waitFor({timeout: 30 * 1000});
+
+	// Go to SP, click Sign in, and assert error message
+
+	await spInstancePage
+		.getByRole('button', {
+			name: 'Sign In',
+		})
+		.click();
+
+	// Before final assert, reset SAML Configuration
+
+	await resetSamlConfiguration(newPage);
+
+	// Assert the SAML Message context was not authenticated, because the IdP
+	// requires Authn Request Signature, but the SP didn't have a chance to
+	// refresh and pull the IdP configuration change
+
+	expect(
+		await spInstancePage.getByRole('heading', {
+			name: 'Unable to process SAML',
+		})
+	).toBeVisible();
 });
