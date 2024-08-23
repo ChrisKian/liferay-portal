@@ -23,7 +23,6 @@ import {
 	AttributeMapping,
 	IdentityProviderConnectionsPage,
 } from '../../pages/saml-web/IdentityProviderConnectionsPage';
-import {IdentityProviderPage} from '../../pages/saml-web/IdentityProviderPage';
 import {SamlAdminPage} from '../../pages/saml-web/SamlAdminPage';
 import {ServiceProviderConnectionsPage} from '../../pages/saml-web/ServiceProviderConnectionsPage';
 import {EditUserPage} from '../../pages/users-admin-web/EditUserPage';
