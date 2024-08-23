@@ -24,7 +24,7 @@ export type TServiceProvider = {
 
 export async function configureServiceProvider(
 	browser,
-	serviceProvider: TServiceProvider,
+	serviceProvider: TServiceProvider = {},
 	spName = DEFAULT_SP_NAME,
 	spUrl = DEFAULT_SP_URL
 ) {
