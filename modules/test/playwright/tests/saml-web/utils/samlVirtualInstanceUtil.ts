@@ -183,19 +183,27 @@ export async function resetSamlConfiguration(page) {
 
 	await systemSettingsPage.goToSystemSetting('SSO', 'SAML Configuration');
 
-	await clickAndExpectToBeVisible({
-		autoClick: true,
-		target: systemSettingsPage.page.getByRole('button', {name: 'Actions'}),
-		trigger: systemSettingsPage.page.getByRole('link', {
-			name: 'Reset Default Values',
-		}),
-	});
+	if (
+		await systemSettingsPage.page
+			.getByRole('button', {name: 'Actions'})
+			.isVisible()
+	) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: systemSettingsPage.page.getByRole('button', {
+				name: 'Actions',
+			}),
+			trigger: systemSettingsPage.page.getByRole('link', {
+				name: 'Reset Default Values',
+			}),
+		});
 
-	await systemSettingsPage.page
-		.getByRole('link', {name: 'Reset Default Values'})
-		.click();
+		await systemSettingsPage.page
+			.getByRole('link', {name: 'Reset Default Values'})
+			.click();
 
-	await waitForSuccessAlert(systemSettingsPage.page);
+		await waitForSuccessAlert(systemSettingsPage.page);
+	}
 }
 
 export async function resetSamlKeystoreManagerTarget(page) {
