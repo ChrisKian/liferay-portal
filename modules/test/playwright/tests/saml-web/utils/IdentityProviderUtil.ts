@@ -3,14 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {liferayConfig} from '../../../liferay.config';
 import {IdentityProviderPage} from '../../../pages/saml-web/IdentityProviderPage';
-import {performLogout} from '../../../utils/performLogin';
-import {
-	DEFAULT_IDP_NAME,
-	DEFAULT_IDP_URL,
-	performSamlSafeLogin,
-} from './samlVirtualInstanceUtil';
 
 export type TIdentityProvider = {
 	authnRequestSigningAllowsDynamicAcsUrl?: boolean;
@@ -22,20 +15,10 @@ export type TIdentityProvider = {
 };
 
 export async function configureIdentityProvider(
-	browser,
+	page,
 	identityProvider: TIdentityProvider = {},
-	idpName = DEFAULT_IDP_NAME,
-	idpUrl = DEFAULT_IDP_URL
 ) {
-	const defaultBaseUrl = liferayConfig.environment.baseUrl;
-
-	liferayConfig.environment.baseUrl = idpUrl;
-
-	const idpInstancePage = await performSamlSafeLogin(browser, idpName);
-
-	const identityProviderPage = await new IdentityProviderPage(
-		idpInstancePage
-	);
+	const identityProviderPage = await new IdentityProviderPage(page);
 
 	await identityProviderPage.goTo();
 
@@ -96,8 +79,4 @@ export async function configureIdentityProvider(
 	await identityProviderPage.saveButton.click();
 
 	await identityProviderPage.successMessage.waitFor();
-
-	await performLogout(identityProviderPage.page);
-
-	liferayConfig.environment.baseUrl = defaultBaseUrl;
 }

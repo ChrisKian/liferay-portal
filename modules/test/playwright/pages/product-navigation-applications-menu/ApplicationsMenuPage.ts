@@ -399,8 +399,16 @@ export class ApplicationsMenuPage {
 		await this.rolesItem.click();
 	}
 
-	async goToSamlAdmin() {
-		await this.goto();
+	async goToSamlAdmin(forceReload = true) {
+		if (forceReload) {
+			await this.goto();
+		}
+		else {
+			await this.homePage.openApplicationMenu();
+
+			await expect(this.applicationsMenuTabButton).toBeVisible();
+		}
+
 		await this.controlPanelButton.click();
 		await this.samlAdminItem.click();
 	}

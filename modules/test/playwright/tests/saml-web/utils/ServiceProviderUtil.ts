@@ -3,14 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {liferayConfig} from '../../../liferay.config';
 import {ServiceProviderPage} from '../../../pages/saml-web/ServiceProviderPage';
-import {performLogout} from '../../../utils/performLogin';
-import {
-	DEFAULT_SP_NAME,
-	DEFAULT_SP_URL,
-	performSamlSafeLogin,
-} from './samlVirtualInstanceUtil';
 
 export type TServiceProvider = {
 	allowShowingTheLoginPortlet?: boolean;
@@ -23,18 +16,10 @@ export type TServiceProvider = {
 };
 
 export async function configureServiceProvider(
-	browser,
-	serviceProvider: TServiceProvider = {},
-	spName = DEFAULT_SP_NAME,
-	spUrl = DEFAULT_SP_URL
+	page,
+	serviceProvider: TServiceProvider = {}
 ) {
-	const defaultBaseUrl = liferayConfig.environment.baseUrl;
-
-	liferayConfig.environment.baseUrl = spUrl;
-
-	const spInstancePage = await performSamlSafeLogin(browser, spName);
-
-	const serviceProviderPage = await new ServiceProviderPage(spInstancePage);
+	const serviceProviderPage = await new ServiceProviderPage(page);
 
 	await serviceProviderPage.goTo();
 
@@ -90,8 +75,4 @@ export async function configureServiceProvider(
 	await serviceProviderPage.saveButton.click();
 
 	await serviceProviderPage.successMessage.waitFor();
-
-	await performLogout(serviceProviderPage.page);
-
-	liferayConfig.environment.baseUrl = defaultBaseUrl;
 }
