@@ -14,10 +14,7 @@ import {VirtualInstancesPage} from '../../../pages/portal-instances-web/VirtualI
 import {SamlAdminPage} from '../../../pages/saml-web/SamlAdminPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
-import performLogin, {
-	performLogout,
-	userData,
-} from '../../../utils/performLogin';
+import performLogin, {userData} from '../../../utils/performLogin';
 import {waitForSuccessAlert} from '../../../utils/waitForSuccessAlert';
 import {deleteAfterTestProviderConnections} from '../saml.spec';
 import {connectSpAndIdp} from './samlProviderConnectionUtil';
@@ -27,24 +24,10 @@ export const DEFAULT_IDP_URL = `http://${DEFAULT_IDP_NAME}:8080`;
 export const DEFAULT_SP_NAME = 'www.baker.com';
 export const DEFAULT_SP_URL = `http://${DEFAULT_SP_NAME}:8080`;
 
-export async function createCustomField(
-	browser,
-	customField: TCustomField,
-	instanceName: string
-) {
-	const defaultBaseUrl = liferayConfig.environment.baseUrl;
-
-	liferayConfig.environment.baseUrl = `http://${instanceName}:8080`;
-
-	const page = await performSamlSafeLogin(browser, instanceName);
-
-	const addCustomFieldPage = new AddCustomFieldPage(page);
+export async function createCustomField(adminpage, customField: TCustomField) {
+	const addCustomFieldPage = new AddCustomFieldPage(adminpage);
 
 	await addCustomFieldPage.addCustomField(customField);
-
-	await performLogout(page);
-
-	liferayConfig.environment.baseUrl = defaultBaseUrl;
 }
 
 export async function createIdentityProviderVirtualInstance(
@@ -63,7 +46,7 @@ export async function createIdentityProviderVirtualInstance(
 }
 
 export async function createUser(
-	browser,
+	adminPage,
 	instanceName: string,
 	userId = getRandomInt()
 ) {
@@ -71,14 +54,9 @@ export async function createUser(
 
 	liferayConfig.environment.baseUrl = `http://${instanceName}:8080`;
 
-	// Create new page and apiHelper implementation for the given instance
+	// Create apiHelper implementation for the given instance
 
-	const virtualInstancePage = await performSamlSafeLogin(
-		browser,
-		instanceName
-	);
-
-	const apiHelpers = new ApiHelpers(virtualInstancePage);
+	const apiHelpers = new ApiHelpers(adminPage);
 
 	// Create user in given instance
 
@@ -94,8 +72,6 @@ export async function createUser(
 		password: 'test',
 		surname: userAccount.familyName,
 	};
-
-	await performLogout(virtualInstancePage);
 
 	liferayConfig.environment.baseUrl = defaultBaseUrl;
 

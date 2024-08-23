@@ -188,7 +188,7 @@ test('Create two virtual instances, one IdP and one SP, connect them, perform SP
 
 	// Create a user with identical credentials on each instance
 
-	const userAccount = await createUser(browser, DEFAULT_IDP_NAME);
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
 
 	// Perform SP initiated SSO
 
@@ -303,13 +303,13 @@ test('Create two virtual instances, one IdP and one SP, and verify Custom User A
 		resource: 'User',
 	};
 
-	await createCustomField(browser, customField, DEFAULT_IDP_NAME);
+	await createCustomField(idpAdminPage, customField);
 
 	fieldValues.startingValue = 'spStartingValue';
 
 	customField.fieldValues = fieldValues;
 
-	await createCustomField(browser, customField, DEFAULT_SP_NAME);
+	await createCustomField(spAdminPage, customField);
 
 	// Edit IdP Connection to include User Custom Field attribute mapping
 
@@ -349,7 +349,7 @@ test('Create two virtual instances, one IdP and one SP, and verify Custom User A
 
 	// Create a user on the IdP instance
 
-	const userAccount = await createUser(browser, DEFAULT_IDP_NAME);
+	const userAccount = await createUser(idpAdminPage, DEFAULT_IDP_NAME);
 
 	// Perform Sp initiated SSO with the new user
 
@@ -451,7 +451,7 @@ test('Create two virtual instances, set localhost and one to IdP and one SP, and
 		resource: 'User',
 	};
 
-	await createCustomField(browser, customField, DEFAULT_IDP_NAME);
+	await createCustomField(idpAdminPage, customField);
 
 	fieldValues.startingValue = 'localhostStartingValue';
 
@@ -459,13 +459,13 @@ test('Create two virtual instances, set localhost and one to IdP and one SP, and
 
 	deleteAfterTestCustomFields.push(customFieldName);
 
-	await createCustomField(browser, customField, 'localhost');
+	await createCustomField(localhostIdpAdminPage, customField);
 
 	fieldValues.startingValue = 'bakerStartingValue';
 
 	customField.fieldValues = fieldValues;
 
-	await createCustomField(browser, customField, DEFAULT_SP_NAME);
+	await createCustomField(spAdminPage, customField);
 
 	// Edit IdP Connections to include User Custom Field attribute mapping
 
@@ -518,11 +518,15 @@ test('Create two virtual instances, set localhost and one to IdP and one SP, and
 
 	const userId = getRandomInt();
 
-	const userAccount = await createUser(browser, 'localhost', userId);
+	const userAccount = await createUser(
+		localhostIdpAdminPage,
+		'localhost',
+		userId
+	);
 
 	deleteAfterTestUserIds.push(userAccount.id);
 
-	await createUser(browser, DEFAULT_IDP_NAME, userId);
+	await createUser(idpAdminPage, DEFAULT_IDP_NAME, userId);
 
 	// Perform SP initiated SSO, using localhost as the IdP
 
@@ -614,9 +618,9 @@ test('SAML connection cannot be saved if a custom field value is used more than 
 		resource: 'User',
 	};
 
-	await createCustomField(browser, customField, DEFAULT_IDP_NAME);
+	await createCustomField(idpAdminPage, customField);
 
-	await createCustomField(browser, customField, DEFAULT_SP_NAME);
+	await createCustomField(spAdminPage, customField);
 
 	// Edit IdP Connection to include duplicate Custom Field attribute mappings
 
