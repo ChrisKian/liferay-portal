@@ -21,6 +21,7 @@ export type TServiceProvider = {
 	signMetadata?: boolean;
 	sslRequired?: boolean;
 };
+//Maybe pass authenticated page instead?  So we don't re-authenticate every time
 
 export async function configureServiceProvider(
 	browser,

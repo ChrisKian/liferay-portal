@@ -110,6 +110,10 @@ test.afterAll(async ({browser}) => {
 });
 
 test.afterEach(async ({browser}) => {
+	const localhostPage = await performSamlSafeLogin(browser, 'localhost');
+
+	await resetSamlConfiguration(localhostPage);
+
 	const defaultBaseUrl = liferayConfig.environment.baseUrl;
 
 	for (const instanceName of deleteAfterTestProviderConnections) {
@@ -117,7 +121,14 @@ test.afterEach(async ({browser}) => {
 
 		// Reset general tab
 
-		const newPage = await performSamlSafeLogin(browser, instanceName);
+		let newPage;
+
+		if (instanceName === 'localhost') {
+			newPage = localhostPage
+		}
+		else {
+			newPage = await performSamlSafeLogin(browser, instanceName);
+		}
 
 		const samlAdminPage = new SamlAdminPage(newPage);
 
@@ -130,12 +141,16 @@ test.afterEach(async ({browser}) => {
 				new ServiceProviderConnectionsPage(samlAdminPage.page);
 
 			await serviceProviderConnectionsPage.deleteServiceProviderConnections();
+
+			await configureIdentityProvider(browser);
 		}
 		else {
 			const identityProviderConnectionsPage =
 				new IdentityProviderConnectionsPage(samlAdminPage.page);
 
 			await identityProviderConnectionsPage.deleteIdentityProviderConnections();
+
+			await configureServiceProvider(browser);
 		}
 	}
 
@@ -640,6 +655,7 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 
 	// Create IdP User
 
+	console.log('Create IdP User');
 	const randomInt = getRandomInt();
 
 	const userAccount = await createUser(browser, DEFAULT_IDP_NAME, randomInt);
@@ -648,6 +664,7 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 
 	// Login to IdP.  The Remember Me checkbox must be disabled.
 
+	console.log('Login to IdP.  The Remember Me checkbox must be disabled.');
 	const newPage = await performSamlSafeLogin(
 		browser,
 		DEFAULT_IDP_NAME,
@@ -658,6 +675,7 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 
 	// Clicking Sign In button on SP page should automatically authenticate
 
+	console.log('Clicking');
 	await newPage.goto(DEFAULT_SP_URL);
 
 	const signInButton = await newPage.getByRole('button', {
@@ -672,6 +690,7 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 
 	// Idp initiated SLO
 
+	console.log('Idp initiated SLO');
 	await newPage.goto(DEFAULT_IDP_URL);
 
 	await newPage.getByTitle('User Profile Menu').click();
@@ -682,6 +701,7 @@ test('Verify IdP initiated SLO also logs out of authenticated SP when Require Au
 
 	// SP should also be logged out after IdP initiated SLO
 
+	console.log('SP should also be logged out after IdP initiated SLO');
 	await newPage.goto(DEFAULT_SP_URL);
 
 	await reloadUntilVisible({
@@ -714,7 +734,7 @@ test('Verify a Message context is not authenticated when Require Authn Request S
 	const identityProvider: TIdentityProvider = {
 		requireAuthnRequestSignature: false,
 	};
-
+//const adminIdpPage =
 	await configureIdentityProvider(browser, identityProvider);
 
 	// Update Runtime Metadata Refresh Interval value to a low value, otherwise
