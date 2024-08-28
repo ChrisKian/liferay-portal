@@ -9,14 +9,16 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cookies.CookiesManager;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.RememberMeToken;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RememberMeTokenLocalService;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -131,11 +133,12 @@ public class AuthenticatedSessionManagerUtilTest {
 			CookiesConstants.CONSENT_TYPE_FUNCTIONAL, cookie,
 			mockHttpServletRequest, mockHttpServletResponse);
 
+		Group group = GroupTestUtil.addGroup();
+
 		ThemeDisplay themeDisplay = ThemeDisplayFactory.create();
 
-		themeDisplay.setCompany(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setCompany(CompanyTestUtil.addCompany());
+		themeDisplay.setSiteGroupId(group.getGroupId());
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
@@ -166,9 +169,6 @@ public class AuthenticatedSessionManagerUtilTest {
 	}
 
 	private static final String _PASSWORD = RandomTestUtil.randomString();
-
-	@Inject
-	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private CookiesManager _cookiesManager;
