@@ -49,9 +49,9 @@ export async function performSpInitiatedSSO(
 		baseURL: spDomain,
 	});
 
-	await newPage.goto('/');
+	await newPage.goto(spDomain);
 
-	await this.clickSignInButton(newPage, idpSelection);
+	await clickSignInButton(newPage, idpSelection);
 
 	await newPage.getByLabel('Email Address').waitFor({timeout: 30 * 1000});
 
