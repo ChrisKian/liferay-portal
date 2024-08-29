@@ -83,6 +83,7 @@ export const test = mergeTests(
 const deleteAfterTestCustomFields: string[] = [];
 export const deleteAfterTestProviderConnections: string[] = [];
 const deleteAfterTestUserIds: string[] = [];
+export const deleteAfterTestVirtualInstances = new Set<string>();
 
 test.afterAll(async ({browser}) => {
 
@@ -92,9 +93,9 @@ test.afterAll(async ({browser}) => {
 
 	await performLogin(newPage, 'test');
 
-	await deleteVirtualInstance(DEFAULT_IDP_NAME, newPage);
-
-	await deleteVirtualInstance(DEFAULT_SP_NAME, newPage);
+	for (const virtualInstanceName of deleteAfterTestVirtualInstances) {
+		await deleteVirtualInstance(virtualInstanceName, newPage);
+	}
 
 	await newPage.waitForTimeout(60 * 1000);
 
@@ -1320,5 +1321,9 @@ test('Verify SSO login and logout mechanism works the same when having multiple 
 
 	await deleteVirtualInstance(idp2Name, localhostAdminPage);
 
+	await deleteAfterTestVirtualInstances.delete(idp2Name);
+
 	await deleteVirtualInstance(sp2Name, localhostAdminPage);
+
+	await deleteAfterTestVirtualInstances.delete(sp2Name);
 });
