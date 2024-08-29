@@ -77,6 +77,7 @@ export const test = mergeTests(
 const deleteAfterTestCustomFields: string[] = [];
 export const deleteAfterTestProviderConnections: string[] = [];
 const deleteAfterTestUserIds: string[] = [];
+export const deleteAfterTestVirtualInstances = new Set<string>();
 
 test.afterAll(async ({browser}) => {
 
@@ -86,9 +87,9 @@ test.afterAll(async ({browser}) => {
 
 	await performLogin(newPage, 'test');
 
-	await deleteVirtualInstance(DEFAULT_IDP_NAME, newPage);
-
-	await deleteVirtualInstance(DEFAULT_SP_NAME, newPage);
+	for (const virtualInstanceName of deleteAfterTestVirtualInstances) {
+		await deleteVirtualInstance(virtualInstanceName, newPage);
+	}
 
 	await newPage.waitForTimeout(60 * 1000);
 
