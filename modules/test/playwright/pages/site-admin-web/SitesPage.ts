@@ -60,7 +60,9 @@ export class SitesPage {
 			.getByRole('button', {name: `Select Template: ${templateName}`})
 			.click();
 		await this.nameBox.fill(siteName);
-		await this.defaultPagesAsPrivateCheck.check();
+		if (isCustomSiteTemplate) {
+			await this.defaultPagesAsPrivateCheck.check();
+		}
 		await this.addButton.click();
 		await this.page.waitForURL(/(.)settings(.)/);
 		await this.page.getByRole('link', {name: 'Site Configuration'}).click();
