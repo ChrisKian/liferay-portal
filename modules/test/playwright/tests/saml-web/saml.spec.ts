@@ -75,7 +75,7 @@ export const test = mergeTests(
 );
 
 const deleteAfterTestCustomFields: string[] = [];
-export const deleteAfterTestProviderConnections: string[] = [];
+export const deleteAfterTestProviderConnections = new Set<string>();
 const deleteAfterTestUserIds: string[] = [];
 export const deleteAfterTestVirtualInstances = new Set<string>();
 
@@ -157,7 +157,6 @@ test.afterEach(async ({browser}) => {
 
 		await newPage.close();
 	}
-	deleteAfterTestProviderConnections.length = 0;
 
 	liferayConfig.environment.baseUrl = defaultBaseUrl;
 });
