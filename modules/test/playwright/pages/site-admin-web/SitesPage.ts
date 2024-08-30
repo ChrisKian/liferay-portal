@@ -15,6 +15,7 @@ export class SitesPage {
 	readonly addSiteIFrame: FrameLocator;
 	readonly customSiteTemplatesItem: Locator;
 	readonly defaultPagesAsPrivateCheck: Locator;
+	readonly liferayTemplatesItem: Locator;
 	readonly nameBox: Locator;
 	readonly uiElementsPage: UIElementsPage;
 
@@ -34,6 +35,9 @@ export class SitesPage {
 			.getByLabel(
 				'Create default pages as private (available only to members). If unchecked, they will be public (available to anyone).'
 			);
+		this.liferayTemplatesItem = page.getByRole('menuitem', {
+			name: 'Provided by Liferay',
+		});
 		this.nameBox = page
 			.frameLocator('iframe[title="Add Site"]')
 			.getByLabel('Name Required');
@@ -42,10 +46,16 @@ export class SitesPage {
 
 	async createSiteFromTemplate(
 		templateName: string,
-		siteName: string
+		siteName: string,
+		isCustomSiteTemplate: boolean = true
 	): Promise<string> {
 		await this.addSiteButton.click();
-		await this.customSiteTemplatesItem.click();
+		if (isCustomSiteTemplate) {
+			await this.customSiteTemplatesItem.click();
+		}
+		else {
+			await this.liferayTemplatesItem.click();
+		}
 		await this.page
 			.getByRole('button', {name: `Select Template: ${templateName}`})
 			.click();
