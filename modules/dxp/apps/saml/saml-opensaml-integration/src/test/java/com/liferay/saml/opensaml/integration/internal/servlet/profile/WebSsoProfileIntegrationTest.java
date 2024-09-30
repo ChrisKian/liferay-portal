@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.cookies.CookiesManager;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LRUMap;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.saml.constants.SamlWebKeys;
 import com.liferay.saml.opensaml.integration.internal.BaseSamlTestCase;
@@ -365,8 +366,13 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		SamlSsoRequestContext samlSsoRequestContext = new SamlSsoRequestContext(
 			SP_ENTITY_ID, RELAY_STATE, null);
 
+		LRUMap<String, SamlSsoRequestContext> samlSsoRequestContexts =
+			new LRUMap<>(1);
+
+		samlSsoRequestContexts.put("idpInitiated", samlSsoRequestContext);
+
 		mockHttpSession.setAttribute(
-			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContext);
+			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContexts);
 
 		samlSsoRequestContext = _webSsoProfileImpl.decodeAuthnRequest(
 			mockHttpServletRequest, new MockHttpServletResponse());
@@ -482,8 +488,13 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		samlSsoRequestContext.setSAMLMessageContext(null);
 
+		LRUMap<String, SamlSsoRequestContext> samlSsoRequestContexts =
+			new LRUMap<>(1);
+
+		samlSsoRequestContexts.put(inboundSamlMessageId, samlSsoRequestContext);
+
 		mockHttpSession.setAttribute(
-			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContext);
+			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContexts);
 
 		Mockito.when(
 			portal.getUserId(Mockito.any(MockHttpServletRequest.class))
@@ -520,8 +531,14 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			_relayStateHelperImpl.getRedirectFromRelayStateToken(
 				samlBindingContext.getRelayState()));
 
-		Assert.assertNull(
-			mockHttpSession.getAttribute(SamlWebKeys.SAML_SSO_REQUEST_CONTEXT));
+		samlSsoRequestContexts =
+			(LRUMap<String, SamlSsoRequestContext>)mockHttpSession.getAttribute(
+				SamlWebKeys.SAML_SSO_REQUEST_CONTEXT);
+
+		Assert.assertEquals(
+			samlSsoRequestContexts.toString(), 0,
+			samlSsoRequestContexts.size());
+
 		Assert.assertEquals(
 			SamlSsoRequestContext.STAGE_AUTHENTICATED,
 			samlSsoRequestContext.getStage());
