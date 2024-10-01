@@ -5,6 +5,7 @@
 
 package com.liferay.saml.opensaml.integration.internal.servlet.profile;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.cache.test.util.TestPortalCache;
 import com.liferay.portal.kernel.cache.PortalCache;
@@ -359,7 +360,10 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		prepareIdentityProvider(IDP_ENTITY_ID);
 
 		MockHttpServletRequest mockHttpServletRequest =
-			getMockHttpServletRequest(SSO_URL + "?entityId=" + SP_ENTITY_ID);
+			getMockHttpServletRequest(
+				StringBundler.concat(
+					SSO_URL, "?entityId=", SP_ENTITY_ID,
+					"&idp_initiated_saml_message_id=testMessageId"));
 
 		HttpSession mockHttpSession = mockHttpServletRequest.getSession();
 
@@ -369,7 +373,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		LRUMap<String, SamlSsoRequestContext> samlSsoRequestContexts =
 			new LRUMap<>(1);
 
-		samlSsoRequestContexts.put("idpInitiated", samlSsoRequestContext);
+		samlSsoRequestContexts.put("testMessageId", samlSsoRequestContext);
 
 		mockHttpSession.setAttribute(
 			SamlWebKeys.SAML_SSO_REQUEST_CONTEXT, samlSsoRequestContexts);

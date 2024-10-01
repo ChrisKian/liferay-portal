@@ -1119,7 +1119,8 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			httpServletRequest, "saml_message_id");
 
 		if (Validator.isBlank(samlMessageId)) {
-			samlMessageId = "idpInitiated";
+			samlMessageId = ParamUtil.getString(
+				httpServletRequest, "idp_initiated_saml_message_id");
 		}
 
 		HttpSession httpSession = httpServletRequest.getSession();
@@ -1958,7 +1959,7 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 
 		sb.append("/portal/login?redirect=");
 
-		StringBundler redirectSB = new StringBundler(4);
+		StringBundler redirectSB = new StringBundler(6);
 
 		redirectSB.append(themeDisplay.getPathMain());
 		redirectSB.append("/portal/saml/sso");
@@ -1991,12 +1992,16 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			}
 		}
 		else if (samlPeerEntityContext.getEntityId() != null) {
+			String idpInitiatedSamlMessageId = generateIdentifier(20);
+
 			_bindSamlSsoRequestContext(
-				"idpInitiated", httpSession, samlSsoRequestContext);
+				idpInitiatedSamlMessageId, httpSession, samlSsoRequestContext);
 
 			redirectSB.append("?entityId=");
 			redirectSB.append(
 				URLCodec.encodeURL(samlPeerEntityContext.getEntityId()));
+			redirectSB.append("&idp_initiated_saml_message_id=");
+			redirectSB.append(idpInitiatedSamlMessageId);
 		}
 
 		sb.append(URLCodec.encodeURL(redirectSB.toString()));
