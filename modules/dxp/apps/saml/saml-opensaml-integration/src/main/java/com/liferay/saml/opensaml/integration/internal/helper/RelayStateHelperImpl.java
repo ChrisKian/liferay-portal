@@ -5,8 +5,8 @@
 
 package com.liferay.saml.opensaml.integration.internal.helper;
 
+import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.cache.SingleVMPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.saml.helper.RelayStateHelper;
@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -63,19 +64,30 @@ public class RelayStateHelperImpl implements RelayStateHelper {
 	@Activate
 	protected void activate() {
 		_redirectsToRelayStateTokensPortalCache =
-			(PortalCache<String, String>)_singleVMPool.getPortalCache(
+			(PortalCache<String, String>)_multiVMPool.getPortalCache(
 				RelayStateHelperImpl.class.getName() +
 					"#_redirectsToRelayStateTokens");
 		_relayStateTokensToRedirectsPortalCache =
-			(PortalCache<String, String>)_singleVMPool.getPortalCache(
+			(PortalCache<String, String>)_multiVMPool.getPortalCache(
 				RelayStateHelperImpl.class.getName() +
 					"#_relayStateTokensToRedirects");
 	}
 
-	private PortalCache<String, String> _redirectsToRelayStateTokensPortalCache;
-	private PortalCache<String, String> _relayStateTokensToRedirectsPortalCache;
+	@Deactivate
+	protected void deactivate() {
+		_multiVMPool.removePortalCache(
+			RelayStateHelperImpl.class.getName() +
+				"#_redirectsToRelayStateTokens");
+
+		_multiVMPool.removePortalCache(
+			RelayStateHelperImpl.class.getName() +
+				"#_relayStateTokensToRedirects");
+	}
 
 	@Reference
-	private SingleVMPool _singleVMPool;
+	private MultiVMPool _multiVMPool;
+
+	private PortalCache<String, String> _redirectsToRelayStateTokensPortalCache;
+	private PortalCache<String, String> _relayStateTokensToRedirectsPortalCache;
 
 }
