@@ -7,8 +7,9 @@ package com.liferay.saml.internal.servlet.filter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -57,7 +58,10 @@ public class SamlSameSiteLaxCookiesFilterTest {
 	public static void setUpClass() throws Exception {
 		_companyId = CompanyThreadLocal.getCompanyId();
 
-		CompanyThreadLocal.setCompanyId(CompanyConstants.SYSTEM);
+		VirtualHost virtualHost = VirtualHostLocalServiceUtil.fetchVirtualHost(
+			"localhost");
+
+		CompanyThreadLocal.setCompanyId(virtualHost.getCompanyId());
 
 		samlProviderConfigurationHelper =
 			SamlProviderConfigurationHelperUtil.
