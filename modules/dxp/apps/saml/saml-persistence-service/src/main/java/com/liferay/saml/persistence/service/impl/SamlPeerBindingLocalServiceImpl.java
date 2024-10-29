@@ -123,6 +123,15 @@ public class SamlPeerBindingLocalServiceImpl
 					samlPeerBinding.getSamlNameIdNameQualifier()));
 	}
 
+	@Override
+	public List<SamlPeerBinding> getUserSamlPeerBindings(
+			long companyId, long userId, boolean deleted)
+		throws PortalException {
+
+		return samlPeerBindingPersistence.findByC_U_D(
+			companyId, userId, deleted);
+	}
+
 	@Reference
 	private UserLocalService _userLocalService;
 
