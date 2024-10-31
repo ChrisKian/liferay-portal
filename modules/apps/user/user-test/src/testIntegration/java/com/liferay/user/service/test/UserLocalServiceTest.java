@@ -176,7 +176,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			User user = _createUser(_INVALID_PASSWORD, true);
+			User user = _createUser(true, _INVALID_PASSWORD);
 
 			Assert.assertEquals(
 				"User was created with incorrect LDAP Server Id", 1,
@@ -223,9 +223,9 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
 
-			_assertUserPasswordException(_INVALID_PASSWORD, true);
+			_assertUserPasswordException(true, _INVALID_PASSWORD);
 
-			_assertUserCreatedWithPasswordPolicy(_VALID_PASSWORD, true);
+			_assertUserCreatedWithPasswordPolicy(true, _VALID_PASSWORD);
 		}
 		finally {
 			passwordPolicy.setChangeRequired(false);
@@ -252,9 +252,9 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			_assertUserPasswordException(_INVALID_PASSWORD, false);
+			_assertUserPasswordException(false, _INVALID_PASSWORD);
 
-			_assertUserCreatedWithPasswordPolicy(_VALID_PASSWORD, false);
+			_assertUserCreatedWithPasswordPolicy(false, _VALID_PASSWORD);
 		}
 		finally {
 			passwordPolicy.setChangeRequired(false);
@@ -467,7 +467,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(true)) {
 
-			User user = _createUser(_VALID_PASSWORD, true);
+			User user = _createUser(true, _VALID_PASSWORD);
 
 			_userLocalService.checkPasswordExpired(user);
 
@@ -500,7 +500,7 @@ public class UserLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				_setLDAPAuthConfigurationWithSafeCloseable(false)) {
 
-			User user = _createUser(_VALID_PASSWORD, true);
+			User user = _createUser(true, _VALID_PASSWORD);
 
 			_userLocalService.checkPasswordExpired(user);
 
@@ -1522,11 +1522,11 @@ public class UserLocalServiceTest {
 	}
 
 	private void _assertUserCreatedWithPasswordPolicy(
-			String password, boolean ldapUser)
+			boolean ldapUser, String password)
 		throws Exception {
 
 		try {
-			User user = _createUser(password, ldapUser);
+			User user = _createUser(ldapUser, password);
 
 			Assert.assertEquals(
 				"User was created with incorrect LDAP Server Id",
@@ -1543,11 +1543,11 @@ public class UserLocalServiceTest {
 		}
 	}
 
-	private void _assertUserPasswordException(String password, boolean ldapUser)
+	private void _assertUserPasswordException(boolean ldapUser, String password)
 		throws Exception {
 
 		try {
-			_createUser(password, ldapUser);
+			_createUser(ldapUser, password);
 
 			Assert.fail("Password policy is not being applied to user");
 		}
@@ -1560,7 +1560,7 @@ public class UserLocalServiceTest {
 		}
 	}
 
-	private User _createUser(String password, boolean ldapUser)
+	private User _createUser(boolean ldapUser, String password)
 		throws Exception {
 
 		long ldapServerId = -1;
