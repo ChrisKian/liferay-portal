@@ -367,6 +367,16 @@ public class SamlPeerBindingLocalServiceWrapper
 			samlPeerEntityId);
 	}
 
+	@Override
+	public java.util.List<com.liferay.saml.persistence.model.SamlPeerBinding>
+			getUserSamlPeerBindings(
+				long companyId, long userId, boolean deleted)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _samlPeerBindingLocalService.getUserSamlPeerBindings(
+			companyId, userId, deleted);
+	}
+
 	/**
 	 * Updates the saml peer binding in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

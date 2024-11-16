@@ -270,6 +270,11 @@ public interface SamlPeerBindingLocalService
 			String samlNameIdNameQualifier, String samlPeerEntityId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SamlPeerBinding> getUserSamlPeerBindings(
+			long companyId, long userId, boolean deleted)
+		throws PortalException;
+
 	/**
 	 * Updates the saml peer binding in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

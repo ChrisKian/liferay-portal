@@ -111,6 +111,213 @@ public class SamlPeerBindingUtil {
 	}
 
 	/**
+	 * Returns all the saml peer bindings where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @return the matching saml peer bindings
+	 */
+	public static List<SamlPeerBinding> findByC_U_D(
+		long companyId, long userId, boolean deleted) {
+
+		return getPersistence().findByC_U_D(companyId, userId, deleted);
+	}
+
+	/**
+	 * Returns a range of all the saml peer bindings where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SamlPeerBindingModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param start the lower bound of the range of saml peer bindings
+	 * @param end the upper bound of the range of saml peer bindings (not inclusive)
+	 * @return the range of matching saml peer bindings
+	 */
+	public static List<SamlPeerBinding> findByC_U_D(
+		long companyId, long userId, boolean deleted, int start, int end) {
+
+		return getPersistence().findByC_U_D(
+			companyId, userId, deleted, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the saml peer bindings where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SamlPeerBindingModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param start the lower bound of the range of saml peer bindings
+	 * @param end the upper bound of the range of saml peer bindings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching saml peer bindings
+	 */
+	public static List<SamlPeerBinding> findByC_U_D(
+		long companyId, long userId, boolean deleted, int start, int end,
+		OrderByComparator<SamlPeerBinding> orderByComparator) {
+
+		return getPersistence().findByC_U_D(
+			companyId, userId, deleted, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the saml peer bindings where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SamlPeerBindingModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param start the lower bound of the range of saml peer bindings
+	 * @param end the upper bound of the range of saml peer bindings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching saml peer bindings
+	 */
+	public static List<SamlPeerBinding> findByC_U_D(
+		long companyId, long userId, boolean deleted, int start, int end,
+		OrderByComparator<SamlPeerBinding> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_U_D(
+			companyId, userId, deleted, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first saml peer binding in the ordered set where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching saml peer binding
+	 * @throws NoSuchPeerBindingException if a matching saml peer binding could not be found
+	 */
+	public static SamlPeerBinding findByC_U_D_First(
+			long companyId, long userId, boolean deleted,
+			OrderByComparator<SamlPeerBinding> orderByComparator)
+		throws com.liferay.saml.persistence.exception.
+			NoSuchPeerBindingException {
+
+		return getPersistence().findByC_U_D_First(
+			companyId, userId, deleted, orderByComparator);
+	}
+
+	/**
+	 * Returns the first saml peer binding in the ordered set where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching saml peer binding, or <code>null</code> if a matching saml peer binding could not be found
+	 */
+	public static SamlPeerBinding fetchByC_U_D_First(
+		long companyId, long userId, boolean deleted,
+		OrderByComparator<SamlPeerBinding> orderByComparator) {
+
+		return getPersistence().fetchByC_U_D_First(
+			companyId, userId, deleted, orderByComparator);
+	}
+
+	/**
+	 * Returns the last saml peer binding in the ordered set where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching saml peer binding
+	 * @throws NoSuchPeerBindingException if a matching saml peer binding could not be found
+	 */
+	public static SamlPeerBinding findByC_U_D_Last(
+			long companyId, long userId, boolean deleted,
+			OrderByComparator<SamlPeerBinding> orderByComparator)
+		throws com.liferay.saml.persistence.exception.
+			NoSuchPeerBindingException {
+
+		return getPersistence().findByC_U_D_Last(
+			companyId, userId, deleted, orderByComparator);
+	}
+
+	/**
+	 * Returns the last saml peer binding in the ordered set where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching saml peer binding, or <code>null</code> if a matching saml peer binding could not be found
+	 */
+	public static SamlPeerBinding fetchByC_U_D_Last(
+		long companyId, long userId, boolean deleted,
+		OrderByComparator<SamlPeerBinding> orderByComparator) {
+
+		return getPersistence().fetchByC_U_D_Last(
+			companyId, userId, deleted, orderByComparator);
+	}
+
+	/**
+	 * Returns the saml peer bindings before and after the current saml peer binding in the ordered set where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param samlPeerBindingId the primary key of the current saml peer binding
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next saml peer binding
+	 * @throws NoSuchPeerBindingException if a saml peer binding with the primary key could not be found
+	 */
+	public static SamlPeerBinding[] findByC_U_D_PrevAndNext(
+			long samlPeerBindingId, long companyId, long userId,
+			boolean deleted,
+			OrderByComparator<SamlPeerBinding> orderByComparator)
+		throws com.liferay.saml.persistence.exception.
+			NoSuchPeerBindingException {
+
+		return getPersistence().findByC_U_D_PrevAndNext(
+			samlPeerBindingId, companyId, userId, deleted, orderByComparator);
+	}
+
+	/**
+	 * Removes all the saml peer bindings where companyId = &#63; and userId = &#63; and deleted = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 */
+	public static void removeByC_U_D(
+		long companyId, long userId, boolean deleted) {
+
+		getPersistence().removeByC_U_D(companyId, userId, deleted);
+	}
+
+	/**
+	 * Returns the number of saml peer bindings where companyId = &#63; and userId = &#63; and deleted = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @param deleted the deleted
+	 * @return the number of matching saml peer bindings
+	 */
+	public static int countByC_U_D(
+		long companyId, long userId, boolean deleted) {
+
+		return getPersistence().countByC_U_D(companyId, userId, deleted);
+	}
+
+	/**
 	 * Returns all the saml peer bindings where companyId = &#63; and deleted = &#63; and samlNameIdValue = &#63;.
 	 *
 	 * @param companyId the company ID

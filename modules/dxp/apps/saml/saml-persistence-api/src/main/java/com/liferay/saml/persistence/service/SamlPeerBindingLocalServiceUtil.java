@@ -319,6 +319,13 @@ public class SamlPeerBindingLocalServiceUtil {
 			samlPeerEntityId);
 	}
 
+	public static List<SamlPeerBinding> getUserSamlPeerBindings(
+			long companyId, long userId, boolean deleted)
+		throws PortalException {
+
+		return getService().getUserSamlPeerBindings(companyId, userId, deleted);
+	}
+
 	/**
 	 * Updates the saml peer binding in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
