@@ -108,7 +108,7 @@ public class CaptchaConfigurationTest {
 		return mockHttpServletRequest;
 	}
 
-	private boolean _isCaptchaRendered() {
+	private boolean _isCaptchaRendered() throws Exception {
 		String portletURL = PortletURLBuilder.create(
 			PortletURLFactoryUtil.create(
 				_getMockHttpServletRequest(), PortletKeys.LOGIN,
