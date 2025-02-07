@@ -59,4 +59,6 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
+
+	await expect(false);
 });
