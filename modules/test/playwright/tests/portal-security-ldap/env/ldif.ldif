@@ -1,0 +1,48 @@
+changetype: add
+cn: testGroup1
+dn: cn=testGroup1,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=testUser1,dc=example,dc=com
+uniqueMember: cn=testUser3,dc=example,dc=com
+
+changetype: add
+cn: testGroup2
+dn: cn=testGroup2,dc=example,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+uniqueMember: cn=testUser2,dc=example,dc=com
+uniqueMember: cn=testUser3,dc=example,dc=com
+
+changetype: add
+cn: testUser1
+dn: cn=testUser1,dc=example,dc=com
+mail: testUser1@liferay.com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+sn: lastName1
+userPassword: test
+
+changetype: add
+cn: testUser2
+dn: cn=testUser2,dc=example,dc=com
+mail: testUser2@liferay.com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+sn: lastName2
+userPassword: test
+
+changetype: add
+cn: testUser3
+dn: cn=testUser3,dc=example,dc=com
+mail: testUser3@liferay.com
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+sn: lastName3
+userPassword: test
