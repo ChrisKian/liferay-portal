@@ -46,6 +46,12 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 
 	await instanceSettingsPage.page.getByText('Apache Directory Server').click();
 
+	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+
+	await instanceSettingsPage.page.waitForTimeout(2000);
+
+	await instanceSettingsPage.page.getByLabel('close').click();
+
 	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://0.0.0.0:10389")
 
 	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
@@ -57,6 +63,10 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 	//testing OpenLDAP Server
 
 	await instanceSettingsPage.page.getByLabel('OpenLDAP').click();
+
+	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+
+	await instanceSettingsPage.page.waitForTimeout(2000);
 
 	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://localhost:389")
 
