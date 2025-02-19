@@ -56,9 +56,59 @@ public class LDAPUserImporterImplTest {
 	}
 
 	@Test
+	public void testApacheDSNewPrincipal() throws Exception {
+		String baseProviderURL = "ldap://localhost:10389";
+		String principal = "uid=admin,dc=example,dc=com";
+		String credentials = "secret";
+
+		SafeLdapContext safeLdapContext = _safePortalLDAP.getSafeLdapContext(
+			TestPropsValues.getCompanyId(), baseProviderURL, principal,
+			credentials);
+
+		if (safeLdapContext != null) {
+			Assert.fail("Found the correct mapping!");
+		}
+
+		baseProviderURL = "ldap://0.0.0.0:10389";
+
+		safeLdapContext = _safePortalLDAP.getSafeLdapContext(
+			TestPropsValues.getCompanyId(), baseProviderURL, principal,
+			credentials);
+
+		if (safeLdapContext != null) {
+			Assert.fail("Found the correct mapping!");
+		}
+	}
+
+	@Test
 	public void testOpenLDAP() throws Exception {
 		String baseProviderURL = "ldap://localhost:389";
 		String principal = "cn=admin,ou=test";
+		String credentials = "secret";
+
+		SafeLdapContext safeLdapContext = _safePortalLDAP.getSafeLdapContext(
+			TestPropsValues.getCompanyId(), baseProviderURL, principal,
+			credentials);
+
+		if (safeLdapContext != null) {
+			Assert.fail("Found the correct mapping!");
+		}
+
+		baseProviderURL = "ldap://0.0.0.0:389";
+
+		safeLdapContext = _safePortalLDAP.getSafeLdapContext(
+			TestPropsValues.getCompanyId(), baseProviderURL, principal,
+			credentials);
+
+		if (safeLdapContext != null) {
+			Assert.fail("Found the correct mapping!");
+		}
+	}
+
+	@Test
+	public void testOpenLDAPNewPrincipal() throws Exception {
+		String baseProviderURL = "ldap://localhost:389";
+		String principal = "cn=admin,dc=example,dc=com";
 		String credentials = "secret";
 
 		SafeLdapContext safeLdapContext = _safePortalLDAP.getSafeLdapContext(
