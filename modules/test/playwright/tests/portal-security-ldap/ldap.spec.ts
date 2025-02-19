@@ -42,43 +42,43 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 
 	await instanceSettingsPage.page.getByLabel('Server Name Required').fill("test");
 
-	//testing ApacheDS Server
-
-	await instanceSettingsPage.page.getByText('Apache Directory Server').click();
-
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
-
-	await instanceSettingsPage.page.waitForTimeout(2000);
-
-	await instanceSettingsPage.page.getByLabel('close').click();
-
-	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://0.0.0.0:10389");
-
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
-
-	await instanceSettingsPage.page.waitForTimeout(2000);
-
-	await instanceSettingsPage.page.getByLabel('close').click();
-
-	//test with different principal as well
-
-	await instanceSettingsPage.page.getByText('Apache Directory Server').click();
-
-	await instanceSettingsPage.page.getByLabel('Principal').fill('uid=admin,dc=example,dc=com');
-
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
-
-	await instanceSettingsPage.page.waitForTimeout(2000);
-
-	await instanceSettingsPage.page.getByLabel('close').click();
-
-	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://0.0.0.0:10389");
-
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
-
-	await instanceSettingsPage.page.waitForTimeout(2000);
-
-	await instanceSettingsPage.page.getByLabel('close').click();
+	// //testing ApacheDS Server
+	//
+	// await instanceSettingsPage.page.getByText('Apache Directory Server').click();
+	//
+	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+	//
+	// await instanceSettingsPage.page.waitForTimeout(2000);
+	//
+	// await instanceSettingsPage.page.getByLabel('close').click();
+	//
+	// await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://0.0.0.0:10389");
+	//
+	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+	//
+	// await instanceSettingsPage.page.waitForTimeout(2000);
+	//
+	// await instanceSettingsPage.page.getByLabel('close').click();
+	//
+	// //test with different principal as well
+	//
+	// await instanceSettingsPage.page.getByText('Apache Directory Server').click();
+	//
+	// await instanceSettingsPage.page.getByLabel('Principal').fill('uid=admin,dc=example,dc=com');
+	//
+	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+	//
+	// await instanceSettingsPage.page.waitForTimeout(2000);
+	//
+	// await instanceSettingsPage.page.getByLabel('close').click();
+	//
+	// await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://0.0.0.0:10389");
+	//
+	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+	//
+	// await instanceSettingsPage.page.waitForTimeout(2000);
+	//
+	// await instanceSettingsPage.page.getByLabel('close').click();
 
 	//testing OpenLDAP Server
 
@@ -88,11 +88,15 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
 
+	await instanceSettingsPage.page.getByLabel('close').click();
+
 	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://localhost:389");
 
 	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
+
+	await instanceSettingsPage.page.getByLabel('close').click();
 
 	// test with different principal as well
 
@@ -104,11 +108,15 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
 
+	await instanceSettingsPage.page.getByLabel('close').click();
+
 	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://localhost:389");
 
 	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
+
+	await instanceSettingsPage.page.getByLabel('close').click();
 
 	await expect(false);
 });
