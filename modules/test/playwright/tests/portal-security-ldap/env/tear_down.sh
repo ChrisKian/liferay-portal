@@ -29,18 +29,22 @@ function simple_ldap_tear_down {
 	# Remove trailing database definition from slapd.ldif
 	head -n ${diffwc} ${slapdLdif} > temp.ldif && mv temp.ldif ${slapdLdif}
 
+	echo "CI's slapd.ldif after tear_down:"
+	echo "$(<${slapdLdif})"
+
 	# Test since dir might be different
-	echo "LDAP Test 3:"
+	#echo "LDAP Test 3:"
 
 	# Stop slapd service
 	kill -INT `cat /usr/local/var/run/slapd.pid`
 
-	if [ $? -ne 0 ]; then
-		echo "Command failed with exit status $?"
-		kill -INT `cat /usr/local/var/slapd.pid`
-	else
-		echo "Command succeeded"
-	fi
+	# Not needed since above is correct dir
+	#if [ $? -ne 0 ]; then
+	#	echo "Command failed with exit status $?"
+	#	kill -INT `cat /usr/local/var/slapd.pid`
+	#else
+	#	echo "Command succeeded"
+	#fi
 
 	# Delete slapd.d dir (will need to be modified instead after release,
 	# or maybe just a file or two removed, not sure yet)

@@ -34,7 +34,7 @@ function simple_ldap_set_up {
 	fi
 
 	# Compare final line of both files and append only if necessary
-	test "tail -1 ${slapdLdif}" -eq "tail -1 ${databaseDefinition}"
+	test `tail -1 "${slapdLdif}"` == `tail -1 "${databaseDefinition}"`
 
 	if [ $? -ne 0 ]; then
 		echo "files are different, appending our DB def"
@@ -64,6 +64,7 @@ function simple_ldap_set_up {
 
 	# Import configuration database
 
+	echo "Performing slapadd:"
 	/usr/local/sbin/slapadd -n 0 -F /usr/local/etc/slapd.d -l ${slapdLdif}
 
 	# These steps will always be needed
@@ -80,6 +81,10 @@ function simple_ldap_set_up {
 		echo "Command succeeded"
 	fi
 
+	echo "LDAP Test 1.5:"
+
+	ldapsearch -x -b '' -s base '(objectclass=*)' namingContexts
+
 	# Add user via ldif file
 	# Check if exists
 	local ldifFile="${CURRENT_DIR_NAME}/simple.ldif"
@@ -92,11 +97,12 @@ function simple_ldap_set_up {
 		echo "simple.ldif does not exist"
 	fi
 
-	ldapadd -x -D "cn=admin,dc=example,dc=com" -W -f ${ldifFile}
+	ldapadd -x -D "cn=admin,dc=example,dc=com" -f ${ldifFile} -w secret
 
 	# Test 2
 	echo "LDAP Test 2:"
 
+	# May need -w arg here too, but not sure
 	ldapsearch -x -b 'dc=example,dc=com' '(objectclass=*)'
 
 	if [ $? -ne 0 ]; then
