@@ -19,21 +19,22 @@ function simple_ldap_tear_down {
 
 	# Find slapd.ldif file and count it's lines
 	local slapdLdif="/usr/local/etc/openldap/slapd.ldif"
-	local slapdwc="wc -l ${slapdLdif} | awk '{print $1}'"
+	local slapdwc=$(grep -c "^" ${slapdLdif})
 
 	# Count our DB definition lines
 	local databaseDefinition="${CURRENT_DIR_NAME}/slapd.ldif"
-	local ddwc="wc -l ${databaseDefinition} | awk '{print $1}'"
-	local diffwc="${slapdwc}-${ddwc}"
+	local ddwc=$(grep -c "^" ${databaseDefinition})
+	local diffwc=$(echo $((${slapdwc}-${ddwc})))
 
 	# Remove trailing database definition from slapd.ldif
 	head -n ${diffwc} ${slapdLdif} > temp.ldif && mv temp.ldif ${slapdLdif}
 
+	# Test since dir might be different
+	echo "LDAP Test 3:"
+
 	# Stop slapd service
 	kill -INT `cat /usr/local/var/run/slapd.pid`
 
-	# Test since dir might be different
-	echo "LDAP Test 3:"
 	if [ $? -ne 0 ]; then
 		echo "Command failed with exit status $?"
 		kill -INT `cat /usr/local/var/slapd.pid`
