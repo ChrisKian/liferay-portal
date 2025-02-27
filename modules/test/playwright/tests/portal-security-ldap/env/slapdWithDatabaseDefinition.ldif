@@ -99,3 +99,20 @@ objectClass: olcDatabaseConfig
 olcDatabase: monitor
 olcRootDN: cn=config
 olcMonitoring: FALSE
+
+########################################################
+# Start new MDB database definition
+########################################################
+dn: olcDatabase=mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: mdb
+OlcDbMaxSize: 1073741824
+olcSuffix: dc=example,dc=com
+olcRootDN: cn=admin,dc=example,dc=com
+olcRootPW: secret
+olcDbDirectory: /usr/local/var/openldap-data
+olcDbIndex: objectClass eq
+#######################################################
+# End new MDB database definition
+#######################################################
