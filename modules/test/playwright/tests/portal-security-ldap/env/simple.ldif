@@ -3,6 +3,7 @@ objectclass: dcObject
 objectclass: organization
 o: Example Company
 dc: example
+
 dn: cn=admin,dc=example,dc=com
 objectclass: organizationalRole
 cn: admin
