@@ -10,38 +10,45 @@ function simple_ldap_set_up {
 
 	# These steps will no longer be needed with next CI release
 	# Find slapd.ldif file
+#	local slapdLdif="/usr/local/etc/openldap/slapd.ldif"
+#
+#	# Check if exists
+#	if [ -e ${slapdLdif} ]
+#	then
+#		echo "CI's slapd.ldif:"
+#		echo "$(<${slapdLdif})"
+#	else
+#		echo "slapd.ldif does not exist"
+#	fi
+#
+#	# Append our DB definition
+#	local databaseDefinition="${CURRENT_DIR_NAME}/slapd.ldif"
+#
+#	# Check if exists
+#	if [ -e ${databaseDefinition} ]
+#	then
+#		echo "database definition:"
+#		echo "$(<${databaseDefinition})"
+#	else
+#		echo "database definition does not exist"
+#	fi
+#
+#	# Compare final line of both files and append only if necessary
+#	test `tail -1 "${slapdLdif}"` == `tail -1 "${databaseDefinition}"`
+#
+#	if [ $? -ne 0 ]; then
+#		echo "files are different, appending our DB def"
+#		echo ${databaseDefinition} >> ${slapdLdif}
+#	else
+#		echo "DB def already appended, skipping"
+#	fi
+
+	# Make life easy and just copy the entire correct file
 	local slapdLdif="/usr/local/etc/openldap/slapd.ldif"
+	local slapdWithDatabaseDefinitionLdif="${CURRENT_DIR_NAME}/slapdWithDatabaseDefinition.ldif"
 
-	# Check if exists
-	if [ -e ${slapdLdif} ]
-	then
-		echo "CI's slapd.ldif:"
-		echo "$(<${slapdLdif})"
-	else
-		echo "slapd.ldif does not exist"
-	fi
+	cp ${slapdWithDatabaseDefinitionLdif} ${slapdLdif}
 
-	# Append our DB definition
-	local databaseDefinition="${CURRENT_DIR_NAME}/slapd.ldif"
-
-	# Check if exists
-	if [ -e ${databaseDefinition} ]
-	then
-		echo "database definition:"
-		echo "$(<${databaseDefinition})"
-	else
-		echo "database definition does not exist"
-	fi
-
-	# Compare final line of both files and append only if necessary
-	test `tail -1 "${slapdLdif}"` == `tail -1 "${databaseDefinition}"`
-
-	if [ $? -ne 0 ]; then
-		echo "files are different, appending our DB def"
-		echo ${databaseDefinition} >> ${slapdLdif}
-	else
-		echo "DB def already appended, skipping"
-	fi
 
 	# Delete slapd.d dir if it exists
 	if [ -d /usr/local/etc/slapd.d ]
@@ -97,7 +104,7 @@ function simple_ldap_set_up {
 		echo "simple.ldif does not exist"
 	fi
 
-	ldapadd -x -D "cn=admin,dc=example,dc=com" -f ${ldifFile} -w secret
+	ldapadd -x -D "cn=admin,dc=example,dc=com" -w "secret" -f ${ldifFile}
 
 	# Test 2
 	echo "LDAP Test 2:"

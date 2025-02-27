@@ -19,15 +19,18 @@ function simple_ldap_tear_down {
 
 	# Find slapd.ldif file and count it's lines
 	local slapdLdif="/usr/local/etc/openldap/slapd.ldif"
-	local slapdwc=$(grep -c "^" ${slapdLdif})
+	local originalSlapdLdif="${CURRENT_DIR_NAME}/slapd.ldif"
+#	local slapdwc=$(grep -c "^" ${slapdLdif})
+#
+#	# Count our DB definition lines
+#	local databaseDefinition="${CURRENT_DIR_NAME}/slapd.ldif"
+#	local ddwc=$(grep -c "^" ${databaseDefinition})
+#	local diffwc=$(echo $((${slapdwc}-${ddwc})))
+#
+#	# Remove trailing database definition from slapd.ldif
+#	head -n ${diffwc} ${slapdLdif} > temp.ldif && mv temp.ldif ${slapdLdif}
 
-	# Count our DB definition lines
-	local databaseDefinition="${CURRENT_DIR_NAME}/slapd.ldif"
-	local ddwc=$(grep -c "^" ${databaseDefinition})
-	local diffwc=$(echo $((${slapdwc}-${ddwc})))
-
-	# Remove trailing database definition from slapd.ldif
-	head -n ${diffwc} ${slapdLdif} > temp.ldif && mv temp.ldif ${slapdLdif}
+	cp ${slapdLdif} ${originalSlapdLdif}
 
 	echo "CI's slapd.ldif after tear_down:"
 	echo "$(<${slapdLdif})"
