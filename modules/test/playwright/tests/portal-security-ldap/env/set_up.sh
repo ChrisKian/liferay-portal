@@ -106,6 +106,10 @@ function simple_ldap_set_up {
 
 	ldapadd -x -D "cn=admin,dc=example,dc=com" -w "secret" -f ${ldifFile}
 
+	local usersAndGroupsLdif="${CURRENT_DIR_NAME}/addUsersAndGroups.ldif"
+
+	ldapadd -x -D "cn=admin,dc=example,dc=com" -w "secret" -f ${usersAndGroupsLdif}
+
 	# Test 2
 	echo "LDAP Test 2:"
 

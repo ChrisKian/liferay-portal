@@ -39,35 +39,23 @@ test('setting up LDAP server connection', async ({page, instanceSettingsPage}) =
 
 	await instanceSettingsPage.page.getByLabel('close').click();
 
-	// 0.0.0.0
+	await instanceSettingsPage.page.waitForTimeout(500);
 
-	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://0.0.0.0:389");
+	// Testing users
 
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
-
-	await instanceSettingsPage.page.waitForTimeout(2000);
-
-	await instanceSettingsPage.page.getByLabel('close').click();
-
-	// test with 127.0.0.1 as well
-
-	await instanceSettingsPage.page.getByLabel('Base Provider URL The LDAP').fill("ldap://127.0.0.1:389");
-
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Users' }).click();
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
 
 	await instanceSettingsPage.page.getByLabel('close').click();
 
-	// last-ditch effort
+	await instanceSettingsPage.page.waitForTimeout(500);
 
-	await instanceSettingsPage.page.getByLabel('Credentials').fill("secret");
+	// Testing Groups
 
-	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
+	await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Groups' }).click();
 
 	await instanceSettingsPage.page.waitForTimeout(2000);
-
-	await instanceSettingsPage.page.getByLabel('close').click();
 
 	await expect(false);
 });

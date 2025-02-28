@@ -14,6 +14,12 @@ function main {
 
 function simple_ldap_tear_down {
 
+	# Remove Groups and Users (may not be needed if slapd.d removal takes care of it)
+
+	local deleteGroupsAndUsersLdif="${CURRENT_DIR_NAME}/deleteGroupsAndUsers.ldif"
+
+	ldapdelete -x -D "cn=admin,dc=example,dc=com" -w "secret" -f ${deleteGroupsAndUsersLdif}
+
 	# These steps will no longer be needed with next CI release
 	# Remove DB changes
 
