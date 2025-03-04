@@ -5,7 +5,10 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {TLdapConfiguration} from '../../helpers/LdapConfigurationHelper';
+import {
+	DEFAULT_LDAP_CONFIGURATION_VALUES,
+	TLdapConfiguration,
+} from '../../helpers/LdapConfigurationHelper';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 
@@ -48,7 +51,7 @@ export class LdapConfigurationPage {
 			'Enable Group Cache on Import'
 		);
 		this.enableGroupExport = page.getByText('Enable Group Export');
-		this.enableImport = page.getByText('Enable Import', {exact: true});
+		this.enableImport = page.getByText('Enable Import').first();
 		this.enableImportOnStartup = page.getByText('Enable Import on Startup');
 		this.enableUserPasswordOnImport = page.getByText(
 			'Enable User Password on Import'
@@ -96,6 +99,20 @@ export class LdapConfigurationPage {
 		await this.page.getByRole('menuitem', {name: 'Servers'}).click();
 
 		await this.addLdapServerButton.waitFor();
+	}
+
+	async resetLdapConfiguration() {
+		await this.goTo();
+
+		const defaultLdapConfiguration: TLdapConfiguration = {
+			...DEFAULT_LDAP_CONFIGURATION_VALUES,
+		};
+
+		await this.updateLDAPGeneralConfiguration(defaultLdapConfiguration);
+
+		await this.updateLDAPExportConfiguration(defaultLdapConfiguration);
+
+		await this.updateLDAPImportConfiguration(defaultLdapConfiguration);
 	}
 
 	async updateLDAPConfiguration(

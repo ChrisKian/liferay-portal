@@ -1,5 +1,4 @@
-cn=group1,ou=Groups,dc=example,dc=com
-cn=group2,ou=Groups,dc=example,dc=com
-cn=group3,ou=Groups,dc=example,dc=com
-uid=user1,ou=People,dc=example,dc=com
-uid=user2,ou=People,dc=example,dc=com
+cn=ldapGroup1,ou=Groups,dc=example,dc=com
+cn=ldapGroup2,ou=Groups,dc=example,dc=com
+uid=ldapUser1,ou=People,dc=example,dc=com
+uid=ldapUser2,ou=People,dc=example,dc=com

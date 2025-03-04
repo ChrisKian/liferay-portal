@@ -3,6 +3,28 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export const DEFAULT_LDAP_CONFIGURATION_VALUES = {
+	autogenerateUserPasswordOnImport: false,
+	createRolePerGroupOnImport: false,
+	defaultUserPassword: 'test',
+	enableExport: false,
+	enableGroupCacheOnImport: true,
+	enableGroupExport: true,
+	enableImport: false,
+	enableImportOnStartup: false,
+	enableUserPasswordOnImport: true,
+	enabled: false,
+	importInterval: 10,
+	importMethod: 'User',
+	importUserSyncStrategy: 'Auth Type',
+	lockExpirationTime: 86400000,
+	method: 'Bind',
+	passwordEncryptionAlgorithm: 'None',
+	required: false,
+	userLdapPasswordPolicy: false,
+};
+
+
 export type TLdapConfiguration = {
 	autogenerateUserPasswordOnImport?: boolean;
 	createRolePerGroupOnImport?: boolean;
@@ -15,11 +37,12 @@ export type TLdapConfiguration = {
 	enableUserPasswordOnImport?: boolean;
 	enabled?: boolean;
 	importInterval?: number;
-	importMethod?: 'Group' | 'User';
-	importUserSyncStrategy?: 'Auth Type' | 'UUID';
+	importMethod?: string | 'Group' | 'User';
+	importUserSyncStrategy?: string | 'Auth Type' | 'UUID';
 	lockExpirationTime?: number;
-	method?: 'Bind' | 'Password Compare';
+	method?: string | 'Bind' | 'Password Compare';
 	passwordEncryptionAlgorithm?:
+		| string
 		| 'BCRYPT'
 		| 'MD2'
 		| 'MD5'

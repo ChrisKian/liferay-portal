@@ -3,50 +3,44 @@ dn: ou=People,dc=example,dc=com
 objectClass: organizationalUnit
 ou: People
 
-# User user1
-dn: uid=user1,ou=People,dc=example,dc=com
-cn: user1
+# User ldapUser1
+dn: uid=ldapUser1,ou=People,dc=example,dc=com
+cn: ldapUser1
 givenName: first
 sn: last
-mail: user1@liferay.com
-uid: user1
+mail: ldapUser1@liferay.com
+uid: ldapUser1
 objectClass: top
 objectClass: inetOrgPerson
 userPassword: test
 
-# User user2
-dn: uid=user2,ou=People,dc=example,dc=com
-cn: user2
+# User ldapUser2
+dn: uid=ldapUser2,ou=People,dc=example,dc=com
+cn: ldapUser2
 givenName: first
 sn: last
-mail: user2@liferay.com
-uid: user2
+mail: ldapUser2@liferay.com
+uid: ldapUser2
 objectClass: top
 objectClass: inetOrgPerson
 userPassword: test
 
-#Define Groups
+# Define Groups
 dn: ou=Groups,dc=example,dc=com
 objectClass: organizationalUnit
 ou: Groups
 
-# Group group1
-dn: cn=group1,ou=Groups,dc=example,dc=com
-cn: group1
-uniqueMember: uid=user1,ou=People,dc=example,dc=com
+# Group ldapGroup1
+dn: cn=ldapGroup1,ou=Groups,dc=example,dc=com
+cn: ldapGroup1
+uniqueMember: uid=ldapUser1,ou=People,dc=example,dc=com
 objectClass: groupOfUniqueNames
 objectClass: top
 
-# Group group2
-dn: cn=group2,ou=Groups,dc=example,dc=com
-cn: group2
-uniqueMember: uid=user2,ou=People,dc=example,dc=com
-objectClass: groupOfUniqueNames
-objectClass: top
-
-# Group group3
-dn: cn=group3,ou=Groups,dc=example,dc=com
-cn: group3
-uniqueMember: uid=user1,ou=People,dc=example,dc=com
+# Group ldapGroup2
+dn: cn=ldapGroup2,ou=Groups,dc=example,dc=com
+cn: ldapGroup2
+uniqueMember: uid=ldapUser1,ou=People,dc=example,dc=com
+uniqueMember: uid=ldapUser2,ou=People,dc=example,dc=com
 objectClass: groupOfUniqueNames
 objectClass: top
