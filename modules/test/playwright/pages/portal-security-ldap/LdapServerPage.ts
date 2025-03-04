@@ -13,6 +13,8 @@ export class LdapServerPage {
 	readonly authenticationSearchFilter: Locator;
 	readonly baseDn: Locator;
 	readonly baseProviderUrl: Locator;
+	readonly cancelButton: Locator;
+	readonly closeButton: Locator;
 	readonly clockSkew: Locator;
 	readonly credentials: Locator;
 	readonly customContactMapping: Locator;
@@ -55,6 +57,8 @@ export class LdapServerPage {
 		);
 		this.baseDn = page.getByLabel('Base DN The LDAP Base');
 		this.baseProviderUrl = page.getByLabel('Base Provider URL The LDAP');
+		this.cancelButton = page.getByRole('button', {name: 'Cancel'});
+		this.closeButton = page.getByLabel('close');
 		this.clockSkew = page.getByLabel('Clock Skew The system time');
 		this.credentials = page.getByLabel('Credentials');
 		this.customContactMapping = page.getByLabel('Custom Contact Mapping');
@@ -108,9 +112,81 @@ export class LdapServerPage {
 		this.uuid = page.getByLabel('UUID');
 	}
 
-	async addLdapServer(ldapServer: TLdapServer) {
-		await this.ldapConfigurationPage.addLdapServer();
+	async addLdapServer(ldapServer: TLdapServer, forceReload = true) {
+		await this.ldapConfigurationPage.addLdapServer(forceReload);
 
+		await this.populateLdapServerValues(ldapServer);
+
+		await this.saveButton.click();
+
+		await waitForAlert(
+			this.page,
+			`Success:Your request completed successfully.`
+		);
+	}
+
+	async deleteLdapServer(serverName: string, forceReload = true) {
+		if (forceReload) {
+			await this.ldapConfigurationPage.goToServersTab();
+		}
+
+		this.page.once('dialog', async (dialog) => {
+			dialog.accept();
+		});
+
+		await this.ldapConfigurationPage.page
+			.getByRole('row', {name: serverName})
+			.locator('div')
+			.getByTitle('Delete')
+			.click();
+
+		await waitForAlert(
+			this.page,
+			`Success:Your request completed successfully.`
+		);
+	}
+
+	async deleteLdapServers(forceReload = true) {
+		if (forceReload) {
+			await this.ldapConfigurationPage.goToServersTab();
+		}
+
+		this.page.on('dialog', async (dialog) => {
+			dialog.accept();
+		});
+
+		const ldapServerDeleteButton = await this.ldapConfigurationPage.page
+			.getByRole('link', {name: 'Delete'})
+			.first();
+
+		while (await ldapServerDeleteButton.isVisible()) {
+			await ldapServerDeleteButton.click();
+
+			await waitForAlert(
+				this.page,
+				`Success:Your request completed successfully.`
+			);
+		}
+	}
+
+	async editLdapServer(
+		ldapServer: TLdapServer,
+		existingServerName = ldapServer.serverName,
+		forceReload = true
+	) {
+		await this.viewLdapServer(existingServerName, forceReload);
+
+		await this.populateLdapServerValues(ldapServer);
+
+		await this.saveButton.click();
+
+		await waitForAlert(
+			this.page,
+			`Success:Your request completed successfully.`
+		);
+	}
+
+	async populateLdapServerValues(ldapServer: TLdapServer) {
 		await this.serverName.waitFor();
 
 		if (ldapServer.defaultValues) {
@@ -228,22 +304,19 @@ export class LdapServerPage {
 		if (ldapServer.uuid) {
 			await this.uuid.fill(ldapServer.uuid);
 		}
-
-		await this.saveButton.click();
-
-		await waitForAlert(
-			this.page,
-			`Success:Your request completed successfully.`
-		);
 	}
 
-	async testLdapServer(
-		assertSuccessfulConnection = true,
-		serverName: string
-	) {
-		await this.ldapConfigurationPage.goToServersTab();
+	async viewLdapServer(serverName: string, forceReload = true) {
+		if (forceReload) {
+			await this.ldapConfigurationPage.goToServersTab();
+		}
 
-		// Need to be able to locate existing LDAP server here
+		await this.ldapConfigurationPage.page
+			.getByRole('row', {name: serverName})
+			.locator('div')
+			.getByTitle('Edit')
+			.click();
 
+		await this.serverName.waitFor();
 	}
 }

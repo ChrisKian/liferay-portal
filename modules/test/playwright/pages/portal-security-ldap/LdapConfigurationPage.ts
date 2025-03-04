@@ -72,8 +72,8 @@ export class LdapConfigurationPage {
 		this.useLdapPasswordPolicy = page.getByText('Use LDAP Password Policy');
 	}
 
-	async addLdapServer() {
-		await this.goToServersTab();
+	async addLdapServer(forceReload = true) {
+		await this.goToServersTab(forceReload);
 
 		await this.addLdapServerButton.click();
 	}
@@ -81,23 +81,30 @@ export class LdapConfigurationPage {
 	async goTo() {
 		await this.instanceSettingsPage.goToInstanceSetting(
 			'LDAP',
-			'Servers',
+			'General',
 			false
 		);
 
 		await this.enabled.waitFor();
 	}
 
-	async goToServersTab() {
-		await this.goTo();
+	async goToServersTab(forceReload = true) {
+		if (forceReload) {
+			await this.goTo();
+		}
 
 		await this.page.getByRole('menuitem', {name: 'Servers'}).click();
 
 		await this.addLdapServerButton.waitFor();
 	}
 
-	async updateLDAPConfiguration(ldapConfiguration: TLdapConfiguration) {
-		await this.goTo();
+	async updateLDAPConfiguration(
+		ldapConfiguration: TLdapConfiguration,
+		forceReload = true
+	) {
+		if (forceReload) {
+			await this.goTo();
+		}
 
 		await this.updateLDAPGeneralConfiguration(ldapConfiguration);
 

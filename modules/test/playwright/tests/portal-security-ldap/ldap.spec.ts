@@ -17,61 +17,81 @@ export const test = mergeTests(
 	ldapConfigurationPagesTest
 );
 
-test('setting up LDAP server connection', async ({
+test.afterEach(async ({ldapServerPage}) => {
+	await ldapServerPage.deleteLdapServers();
+});
+
+test('smoke: Add LDAP server, verify connection, users, and groups are mapped properly, edit LDAP server, then delete LDAP server', async ({
 	ldapConfigurationPage,
 	ldapServerPage,
 }) => {
+	const serverName = getRandomString();
+
 	const ldapServer: TLdapServer = {
 		defaultValues: 'OpenLDAP',
 		principal: 'cn=admin,dc=example,dc=com',
-		serverName: getRandomString(),
+		serverName,
 	};
 
-	await ldapServerPage.addLdapServer(ldapServer);
+	await test.step('Add LDAP Server', async () => {
+		await ldapServerPage.addLdapServer(ldapServer);
+	});
 
-	// await instanceSettingsPage.page.getByRole('button', {name: 'Add'}).click();
-	//
-	// await instanceSettingsPage.page.waitForTimeout(2000);
-	//
-	// await instanceSettingsPage.page
-	// 	.getByLabel('Server Name Required')
-	// 	.fill('test');
-	//
-	// // testing OpenLDAP Server default with correct principal
-	//
-	// await instanceSettingsPage.page.getByLabel('OpenLDAP').click();
-	//
-	// await instanceSettingsPage.page
-	// 	.getByLabel('Principal')
-	// 	.fill('cn=admin,dc=example,dc=com');
+	await test.step('Test LDAP Server connections', async () => {
+		await ldapServerPage.viewLdapServer(serverName, false);
 
-	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Connection' }).click();
-	//
-	// await instanceSettingsPage.page.waitForTimeout(2000);
-	//
-	// await instanceSettingsPage.page.getByLabel('close').click();
-	//
-	// await instanceSettingsPage.page.waitForTimeout(500);
-	//
-	// // Testing users
-	//
-	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Users' }).click();
-	//
-	// await instanceSettingsPage.page.waitForTimeout(2000);
-	//
-	// await instanceSettingsPage.page.getByLabel('close').click();
-	//
-	// await instanceSettingsPage.page.waitForTimeout(500);
-	//
-	// // Testing Groups
-	//
-	// await instanceSettingsPage.page.getByRole('button', { name: 'Test LDAP Groups' }).click();
-	//
-	// await instanceSettingsPage.page.waitForTimeout(2000);
-	//
-	// await expect(false);
+		await ldapServerPage.testLdapConnection.click();
 
-	// This is the next thing to get to, I need to build the LDAP page infrastructure,
-	// at least enough to test this issue cleanly, then a PR is ok.
+		await expect(
+			await ldapServerPage.page.getByText(
+				'Liferay has successfully connected to the LDAP server'
+			)
+		).toBeVisible();
 
+		await ldapServerPage.closeButton.click();
+
+		await ldapServerPage.testLdapUsers.click();
+
+		await expect(
+			await ldapServerPage.page.getByText(
+				'A subset of users has been displayed for you to review'
+			)
+		).toBeVisible();
+
+		await ldapServerPage.closeButton.click();
+
+		await ldapServerPage.testLdapGroups.click();
+
+		await expect(
+			await ldapServerPage.page.getByText(
+				'A subset of groups has been displayed for you to review'
+			)
+		).toBeVisible();
+
+		await ldapServerPage.closeButton.click();
+
+		await ldapServerPage.cancelButton.click();
+	});
+
+	await test.step('Edit LDAP Server by changing server name', async () => {
+		ldapServer.serverName = 'newServerName';
+
+		await ldapServerPage.editLdapServer(ldapServer, serverName, false);
+
+		await expect(
+			await ldapConfigurationPage.page.getByRole('row', {
+				name: 'newServerName',
+			})
+		).toBeVisible();
+	});
+
+	await test.step('Delete LDAP server', async () => {
+		await ldapServerPage.deleteLdapServer('newServerName', false);
+
+		await expect(
+			await ldapConfigurationPage.page.getByRole('row', {
+				name: 'newServerName',
+			})
+		).toBeHidden();
+	});
 });
