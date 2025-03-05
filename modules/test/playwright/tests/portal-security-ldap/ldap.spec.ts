@@ -29,7 +29,6 @@ export const test = mergeTests(
 const LDAP_GROUP_1 = 'ldapgroup1';
 const LDAP_GROUP_2 = 'ldapgroup2';
 const LDAP_USER_1 = 'ldapuser1';
-const LDAP_USER_2 = 'ldapuser2';
 
 test.afterAll(async ({systemSettingsPage}) => {
 	await test.step('Reset System Settings LDAP configuration', async () => {
@@ -86,7 +85,6 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 	editUserPage,
 	ldapConfigurationPage,
 	ldapServerPage,
-	systemSettingsPage,
 	usersAndOrganizationsPage,
 }) => {
 	const ldapServer1: TLdapServer = {
@@ -157,22 +155,6 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 		});
 	});
 
-	// // We must also update the System LDAP configuration import interval
-	//
-	// await systemSettingsPage.goToSystemSetting(
-	// 	'LDAP',
-	// 	'Import'
-	// );
-	//
-	// await systemSettingsPage.page.getByLabel('Import Interval').fill('1');
-	//
-	// await systemSettingsPage.page.getByRole('button', {name: 'Save'}).click();
-	//
-	// await waitForAlert(
-	// 	systemSettingsPage.page,
-	// 	`Success:Your request completed successfully.`
-	// );
-
 	await test.step('Enable LDAP and wait for 1 minute, so import interval can be reached, triggering a bulk import', async () => {
 		const ldapConfiguration: TLdapConfiguration = {
 			enableImport: true,
@@ -185,11 +167,6 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 
 		await ldapConfigurationPage.page.waitForTimeout(60 * 1000);
 	});
-
-	// There is no way to trigger a bulk import via playwright, so we must wait
-	// a full minute for the import interval to be reached
-
-	// Go to the imported LDAP user and verify the user groups are imported
 
 	await test.step('View User Groups associated with the LDAP user, and verify they were correctly imported', async () => {
 		await usersAndOrganizationsPage.goToUsers(false);
@@ -261,10 +238,6 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 			).row
 		).toBeVisible();
 	});
-
-	// reindex users and user groups if needed
-	// verify user groups are correct
-
 });
 
 test('smoke: Add LDAP server, verify connection, users, and groups are mapped properly, edit LDAP server, then delete LDAP server', async ({
