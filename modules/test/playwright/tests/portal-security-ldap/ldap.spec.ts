@@ -9,6 +9,7 @@ import {instanceSettingsPagesTest} from '../../fixtures/instanceSettingsPagesTes
 import {ldapConfigurationPagesTest} from '../../fixtures/ldapConfigurationPagesTest';
 import {loginTest} from '../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
+import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
 import {
 	TLdapConfiguration,
 	TLdapServer
@@ -20,13 +21,14 @@ export const test = mergeTests(
 	loginTest(),
 	instanceSettingsPagesTest,
 	ldapConfigurationPagesTest,
-	systemSettingsPageTest
+	systemSettingsPageTest,
+	usersAndOrganizationsPagesTest
 );
 
-const LDAP_GROUP_1 = 'ldapGroup1';
-const LDAP_GROUP_2 = 'ldapGroup2';
-const LDAP_USER_1 = 'ldapUser1';
-const LDAP_USER_2 = 'ldapUser2';
+const LDAP_GROUP_1 = 'ldapgroup1';
+const LDAP_GROUP_2 = 'ldapgroup2';
+const LDAP_USER_1 = 'ldapuser1';
+const LDAP_USER_2 = 'ldapuser2';
 
 test.afterEach(async ({ldapConfigurationPage, ldapServerPage}) => {
 	await ldapServerPage.deleteLdapServers();
@@ -34,9 +36,12 @@ test.afterEach(async ({ldapConfigurationPage, ldapServerPage}) => {
 });
 
 test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups imported from LDAP', async ({
+	browser,
+	editUserPage,
 	ldapConfigurationPage,
 	ldapServerPage,
 	systemSettingsPage,
+	usersAndOrganizationsPage,
 }) => {
 	const ldapServer1: TLdapServer = {
 		defaultValues: 'OpenLDAP',
@@ -131,9 +136,72 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 
 	await ldapConfigurationPage.page.waitForTimeout(60 * 1000);
 
-	//reindex users and user groups if needed
-	//verify user groups are correct
+	// Go to the imported LDAP user and verify the user groups are imported
+
+	await usersAndOrganizationsPage.goToUsers(false);
+
+	await(
+		await usersAndOrganizationsPage.usersTableRowLink(LDAP_USER_1)
+	).click();
+
+	await editUserPage.membershipsLink.click();
+
+	await expect(
+		(
+			await editUserPage.membershipsUserGroupsTableRow(
+				0,
+				LDAP_GROUP_1,
+				true
+			)
+		).row
+	).toBeVisible();
+
+	await expect(
+		(
+			await editUserPage.membershipsUserGroupsTableRow(
+				0,
+				LDAP_GROUP_2,
+				true
+			)
+		).row
+	).toBeVisible();
+
 	//login as ldapUser1 with bad credentials
+
+	const page = await browser.newPage();
+
+	await page.goto('/');
+
+	await page.getByRole('button', {name: 'Sign In'}).last().click();
+
+	await page.getByLabel('Email Address').fill(`${LDAP_USER_1}@liferay.com`);
+	await page.getByLabel('Password').fill('badPassword');
+
+	await page.getByRole('button', {name: 'Sign In'}).last().click();
+
+	await editUserPage.page.waitForTimeout(5000);
+
+	await await editUserPage.page.reload();
+
+	await expect(
+		(
+			await editUserPage.membershipsUserGroupsTableRow(
+				0,
+				LDAP_GROUP_1,
+				true
+			)
+		).row
+	).toBeVisible();
+
+	await expect(
+		(
+			await editUserPage.membershipsUserGroupsTableRow(
+				0,
+				LDAP_GROUP_2,
+				true
+			)
+		).row
+	).toBeVisible();
 
 	//reindex users and user groups if needed
 	//verify user groups are correct
