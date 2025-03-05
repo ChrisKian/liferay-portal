@@ -12,10 +12,11 @@ import {systemSettingsPageTest} from '../../fixtures/systemSettingsPageTest';
 import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
 import {
 	TLdapConfiguration,
-	TLdapServer
+	TLdapServer,
 } from '../../helpers/LdapConfigurationHelper';
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
-import {waitForAlert} from "../../utils/waitForAlert";
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export const test = mergeTests(
 	loginTest(),
@@ -30,9 +31,54 @@ const LDAP_GROUP_2 = 'ldapgroup2';
 const LDAP_USER_1 = 'ldapuser1';
 const LDAP_USER_2 = 'ldapuser2';
 
+test.afterAll(async ({systemSettingsPage}) => {
+	await test.step('Reset System Settings LDAP configuration', async () => {
+		await systemSettingsPage.goToSystemSetting('LDAP', 'Import');
+
+		if (
+			await systemSettingsPage.page
+				.getByRole('button', {name: 'Actions'})
+				.isVisible()
+		) {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: systemSettingsPage.page.getByRole('link', {
+					name: 'Reset Default Values',
+				}),
+				trigger: systemSettingsPage.page.getByRole('button', {
+					name: 'Actions',
+				}),
+			});
+
+			await waitForAlert(systemSettingsPage.page);
+		}
+	});
+});
+
 test.afterEach(async ({ldapConfigurationPage, ldapServerPage}) => {
 	await ldapServerPage.deleteLdapServers();
 	await ldapConfigurationPage.resetLdapConfiguration();
+});
+
+test.beforeAll(async ({systemSettingsPage}) => {
+
+	// The import interval at the System Settings level controls the scheduled
+	// job trigger.  Set it low so we can trigger imports during tests.
+
+	await test.step('Set LDAP Import Interval to 1 at System level', async () => {
+		await systemSettingsPage.goToSystemSetting('LDAP', 'Import');
+
+		await systemSettingsPage.page.getByLabel('Import Interval').fill('1');
+
+		await systemSettingsPage.page
+			.getByRole('button', {name: 'Save'})
+			.click();
+
+		await waitForAlert(
+			systemSettingsPage.page,
+			`Success:Your request completed successfully.`
+		);
+	});
 });
 
 test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups imported from LDAP', async ({
@@ -45,16 +91,14 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 }) => {
 	const ldapServer1: TLdapServer = {
 		defaultValues: 'OpenLDAP',
-		importSearchFilterGroup:
-			`(&(objectClass=groupOfUniqueNames)(cn=${LDAP_GROUP_1}))`,
+		importSearchFilterGroup: `(&(objectClass=groupOfUniqueNames)(cn=${LDAP_GROUP_1}))`,
 		principal: 'cn=admin,dc=example,dc=com',
 		serverName: getRandomString(),
 	};
 
 	const ldapServer2: TLdapServer = {
 		defaultValues: 'OpenLDAP',
-		importSearchFilterGroup:
-			`(&(objectClass=groupOfUniqueNames)(cn=${LDAP_GROUP_2}))`,
+		importSearchFilterGroup: `(&(objectClass=groupOfUniqueNames)(cn=${LDAP_GROUP_2}))`,
 		principal: 'cn=admin,dc=example,dc=com',
 		serverName: getRandomString(),
 	};
@@ -70,11 +114,15 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 			await ldapServerPage.testLdapGroups.click();
 
 			await expect(
-				await ldapServerPage.page.getByRole('cell', {name: LDAP_GROUP_1})
+				await ldapServerPage.page.getByRole('cell', {
+					name: LDAP_GROUP_1,
+				})
 			).toBeVisible();
 
 			await expect(
-				await ldapServerPage.page.getByRole('cell', {name: LDAP_GROUP_2})
+				await ldapServerPage.page.getByRole('cell', {
+					name: LDAP_GROUP_2,
+				})
 			).not.toBeVisible();
 
 			await ldapServerPage.closeButton.click();
@@ -87,17 +135,20 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 		});
 
 		await test.step('Verify second LDAP server it only imports the second group', async () => {
-
 			await ldapServerPage.viewLdapServer(ldapServer2.serverName, false);
 
 			await ldapServerPage.testLdapGroups.click();
 
 			await expect(
-				await ldapServerPage.page.getByRole('cell', {name: LDAP_GROUP_2})
+				await ldapServerPage.page.getByRole('cell', {
+					name: LDAP_GROUP_2,
+				})
 			).toBeVisible();
 
 			await expect(
-				await ldapServerPage.page.getByRole('cell', {name: LDAP_GROUP_1})
+				await ldapServerPage.page.getByRole('cell', {
+					name: LDAP_GROUP_1,
+				})
 			).not.toBeVisible();
 
 			await ldapServerPage.closeButton.click();
@@ -106,113 +157,113 @@ test('LPD-47428: Verify a single LDAP user can belong to multiple User Groups im
 		});
 	});
 
-	// We must also update the System LDAP configuration import interval
+	// // We must also update the System LDAP configuration import interval
+	//
+	// await systemSettingsPage.goToSystemSetting(
+	// 	'LDAP',
+	// 	'Import'
+	// );
+	//
+	// await systemSettingsPage.page.getByLabel('Import Interval').fill('1');
+	//
+	// await systemSettingsPage.page.getByRole('button', {name: 'Save'}).click();
+	//
+	// await waitForAlert(
+	// 	systemSettingsPage.page,
+	// 	`Success:Your request completed successfully.`
+	// );
 
-	await systemSettingsPage.goToSystemSetting(
-		'LDAP',
-		'Import'
-	);
+	await test.step('Enable LDAP and wait for 1 minute, so import interval can be reached, triggering a bulk import', async () => {
+		const ldapConfiguration: TLdapConfiguration = {
+			enableImport: true,
+			enabled: true,
+			importInterval: 1,
+			importMethod: 'Group',
+		};
 
-	await systemSettingsPage.page.getByLabel('Import Interval').fill('1');
+		await ldapConfigurationPage.updateLDAPConfiguration(ldapConfiguration);
 
-	await systemSettingsPage.page.getByRole('button', {name: 'Save'}).click();
-
-	await waitForAlert(
-		systemSettingsPage.page,
-		`Success:Your request completed successfully.`
-	);
-
-	const ldapConfiguration: TLdapConfiguration ={
-		enableImport: true,
-		enabled: true,
-		importInterval: 1,
-		importMethod: 'Group',
-	}
-
-	await ldapConfigurationPage.updateLDAPConfiguration(ldapConfiguration);
+		await ldapConfigurationPage.page.waitForTimeout(60 * 1000);
+	});
 
 	// There is no way to trigger a bulk import via playwright, so we must wait
 	// a full minute for the import interval to be reached
 
-	await ldapConfigurationPage.page.waitForTimeout(60 * 1000);
-
 	// Go to the imported LDAP user and verify the user groups are imported
 
-	await usersAndOrganizationsPage.goToUsers(false);
+	await test.step('View User Groups associated with the LDAP user, and verify they were correctly imported', async () => {
+		await usersAndOrganizationsPage.goToUsers(false);
 
-	await(
-		await usersAndOrganizationsPage.usersTableRowLink(LDAP_USER_1)
-	).click();
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(LDAP_USER_1)
+		).click();
 
-	await editUserPage.membershipsLink.click();
+		await editUserPage.membershipsLink.click();
 
-	await expect(
-		(
-			await editUserPage.membershipsUserGroupsTableRow(
-				0,
-				LDAP_GROUP_1,
-				true
-			)
-		).row
-	).toBeVisible();
+		await expect(
+			(
+				await editUserPage.membershipsUserGroupsTableRow(
+					0,
+					LDAP_GROUP_1,
+					true
+				)
+			).row
+		).toBeVisible();
 
-	await expect(
-		(
-			await editUserPage.membershipsUserGroupsTableRow(
-				0,
-				LDAP_GROUP_2,
-				true
-			)
-		).row
-	).toBeVisible();
+		await expect(
+			(
+				await editUserPage.membershipsUserGroupsTableRow(
+					0,
+					LDAP_GROUP_2,
+					true
+				)
+			).row
+		).toBeVisible();
+	});
 
-	//login as ldapUser1 with bad credentials
+	await test.step('Attempt login with ldap user, but use incorrect password.  This reproduces the bug described in LPD-47428.', async () => {
+		const page = await browser.newPage();
 
-	const page = await browser.newPage();
+		await page.goto('/');
 
-	await page.goto('/');
+		await page.getByRole('button', {name: 'Sign In'}).last().click();
 
-	await page.getByRole('button', {name: 'Sign In'}).last().click();
+		await page
+			.getByLabel('Email Address')
+			.fill(`${LDAP_USER_1}@liferay.com`);
+		await page.getByLabel('Password').fill('badPassword');
 
-	await page.getByLabel('Email Address').fill(`${LDAP_USER_1}@liferay.com`);
-	await page.getByLabel('Password').fill('badPassword');
+		await page.getByRole('button', {name: 'Sign In'}).last().click();
 
-	await page.getByRole('button', {name: 'Sign In'}).last().click();
+		await waitForAlert(page, 'Authentication failed');
+	});
 
-	await editUserPage.page.waitForTimeout(5000);
+	await test.step('Verify both User Groups are still associated with the LDAP user.', async () => {
+		await await editUserPage.page.reload();
 
-	await await editUserPage.page.reload();
+		await expect(
+			(
+				await editUserPage.membershipsUserGroupsTableRow(
+					0,
+					LDAP_GROUP_1,
+					true
+				)
+			).row
+		).toBeVisible();
 
-	await expect(
-		(
-			await editUserPage.membershipsUserGroupsTableRow(
-				0,
-				LDAP_GROUP_1,
-				true
-			)
-		).row
-	).toBeVisible();
+		await expect(
+			(
+				await editUserPage.membershipsUserGroupsTableRow(
+					0,
+					LDAP_GROUP_2,
+					true
+				)
+			).row
+		).toBeVisible();
+	});
 
-	await expect(
-		(
-			await editUserPage.membershipsUserGroupsTableRow(
-				0,
-				LDAP_GROUP_2,
-				true
-			)
-		).row
-	).toBeVisible();
-
-	//reindex users and user groups if needed
-	//verify user groups are correct
-
-
-
-
-
-
-
-
+	// reindex users and user groups if needed
+	// verify user groups are correct
 
 });
 
