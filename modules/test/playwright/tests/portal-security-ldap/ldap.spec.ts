@@ -18,6 +18,7 @@ import {
 	TLdapConfiguration,
 	TLdapServer,
 } from '../../helpers/LdapConfigurationHelper';
+import {liferayConfig} from '../../liferay.config';
 import {SystemSettingsPage} from '../../pages/configuration-admin-web/SystemSettingsPage';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../utils/getRandomString';
@@ -87,7 +88,9 @@ const LDAP_USER_4: TUserAccount = {
 };
 
 test.afterAll(async ({browser}) => {
-	const page = await browser.newPage();
+	const page = await browser.newPage({
+		baseURL: liferayConfig.environment.baseUrl,
+	});
 
 	await performLogin(page, 'test');
 
@@ -166,7 +169,9 @@ test.afterEach(
 );
 
 test.beforeAll(async ({browser}) => {
-	const page = await browser.newPage();
+	const page = await browser.newPage({
+		baseURL: liferayConfig.environment.baseUrl,
+	});
 
 	await performLogin(page, 'test');
 
