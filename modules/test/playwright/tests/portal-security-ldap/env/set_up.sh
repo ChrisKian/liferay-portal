@@ -6,47 +6,36 @@ echo CURRENT_DIR_NAME=${CURRENT_DIR_NAME}
 
 source ${CURRENT_DIR_NAME}/../../../env/common.sh
 
+function echo_command_output {
+	if [ $? -ne 0 ]
+	 then
+		echo "Command failed with exit status $?"
+	else
+		echo "Command succeeded"
+	fi
+}
+
 function ldap_set_up {
 	echo "Starting slapd:"
 	/usr/local/libexec/slapd -F /usr/local/etc/slapd.d
 
-	if [ $? -ne 0 ]; then
-		echo "Command failed with exit status $?"
-	else
-		echo "Command succeeded"
-	fi
+	echo_command_output
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -f ${CURRENT_DIR_NAME}/exampleCompany.ldif -w "secret"
 
-	if [ $? -ne 0 ]; then
-		echo "Command failed with exit status $?"
-	else
-		echo "Command succeeded"
-	fi
+	echo_command_output
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -f ${CURRENT_DIR_NAME}/admin.ldif -w "secret"
 
-	if [ $? -ne 0 ]; then
-		echo "Command failed with exit status $?"
-	else
-		echo "Command succeeded"
-	fi
+	echo_command_output
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -f ${CURRENT_DIR_NAME}/addUsers.ldif -w "secret"
 
-	if [ $? -ne 0 ]; then
-		echo "Command failed with exit status $?"
-	else
-		echo "Command succeeded"
-	fi
+	echo_command_output
 
 	ldapadd -cx -D "cn=admin,dc=example,dc=com" -f ${CURRENT_DIR_NAME}/addGroups.ldif -w "secret"
 
-	if [ $? -ne 0 ]; then
-		echo "Command failed with exit status $?"
-	else
-		echo "Command succeeded"
-	fi
+	echo_command_output
 }
 
 function main {
