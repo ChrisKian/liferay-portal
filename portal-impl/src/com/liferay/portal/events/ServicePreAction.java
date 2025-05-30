@@ -1145,9 +1145,6 @@ public class ServicePreAction extends Action {
 					layout.getGroupId(), layout.isPrivateLayout(),
 					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 			}
-			else if ((!viewableGroup || !viewableSourceGroup) && stagingGroup) {
-				layout = null;
-			}
 			else if (!loginRequest &&
 					 (!viewableGroup || !viewableSourceGroup ||
 					  (!redirectToDefaultLayout &&
