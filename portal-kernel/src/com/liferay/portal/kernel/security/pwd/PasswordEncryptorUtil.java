@@ -234,6 +234,8 @@ public class PasswordEncryptorUtil {
 						"Upgraded password to use algorithm " + algorithm);
 				}
 
+				System.out.println("algorithm is: " + algorithm);
+
 				return algorithm;
 			}
 		}

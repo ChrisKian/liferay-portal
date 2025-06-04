@@ -5989,6 +5989,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				login, password, user.getPassword());
 
 			if (authenticated) {
+				System.out.println(
+					"_PASSWORDS_ENCRYPTION_ALGORITHM is: " +
+					_PASSWORDS_ENCRYPTION_ALGORITHM);
+
 				if (!StringUtil.equalsIgnoreCase(
 						PasswordEncryptorUtil.
 							getEncryptedPasswordAlgorithmSettings(
