@@ -9,7 +9,17 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.struts.LastPath;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -88,6 +98,20 @@ public class SpSsoSamlPortalFilter extends BaseSamlPortalFilter {
 				filterChain.doFilter(httpServletRequest, httpServletResponse);
 
 				return;
+			}
+
+			try {
+				if (_isPrivateLayout(httpServletRequest)) {
+					filterChain.doFilter(
+						httpServletRequest, httpServletResponse);
+
+					return;
+				}
+			}
+			catch (PortalException portalException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(portalException);
+				}
 			}
 
 			RequestDispatcher requestDispatcher =
@@ -176,6 +200,75 @@ public class SpSsoSamlPortalFilter extends BaseSamlPortalFilter {
 		return _log;
 	}
 
+	private boolean _hasGuestViewPermission(Layout layout)
+		throws PortalException {
+
+		Role role = _roleLocalService.getRole(
+			layout.getCompanyId(), RoleConstants.GUEST);
+
+		return _resourcePermissionLocalService.hasResourcePermission(
+			layout.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), role.getRoleId(),
+			ActionKeys.VIEW);
+	}
+
+	private boolean _isPrivateLayout(HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		Layout layout = null;
+
+		long refererPlid = ParamUtil.getLong(httpServletRequest, "refererPlid");
+
+		if (refererPlid > 0) {
+			layout = _layoutLocalService.fetchLayout(refererPlid);
+
+			if (layout != null) {
+				if (layout.isPrivateLayout()) {
+					return true;
+				}
+
+				return !_hasGuestViewPermission(layout);
+			}
+
+			return false;
+		}
+
+		String referer = GetterUtil.getString(
+			httpServletRequest.getHeader(HttpHeaders.REFERER));
+
+		if (Validator.isNull(referer)) {
+			return false;
+		}
+
+		int pos = referer.lastIndexOf('/');
+
+		if (pos == -1) {
+			return false;
+		}
+
+		String friendlyUrl = referer.substring(pos);
+
+		LayoutSet layoutSet = (LayoutSet)httpServletRequest.getAttribute(
+			WebKeys.VIRTUAL_HOST_LAYOUT_SET);
+
+		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			layoutSet.getGroupId(), true, friendlyUrl);
+
+		if (layout != null) {
+			return true;
+		}
+
+		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			layoutSet.getGroupId(), false, friendlyUrl);
+
+		if (layout == null) {
+			return false;
+		}
+
+		return !_hasGuestViewPermission(layout);
+	}
+
 	private void _login(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
@@ -213,7 +306,16 @@ public class SpSsoSamlPortalFilter extends BaseSamlPortalFilter {
 		SpSsoSamlPortalFilter.class);
 
 	@Reference
+	private LayoutLocalService _layoutLocalService;
+
+	@Reference
 	private Portal _portal;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private SamlHttpRequestHelper _samlHttpRequestHelper;
