@@ -10,17 +10,15 @@
 <%
 CookiesBannerConfigurationDisplayContext cookiesBannerConfigurationDisplayContext = (CookiesBannerConfigurationDisplayContext)request.getAttribute(CookiesBannerWebKeys.COOKIES_BANNER_CONFIGURATION_DISPLAY_CONTEXT);
 
-if (!portletName.equals(UsersAdminPortletKeys.MY_ACCOUNT)) {
-	PortletURL viewURL = renderResponse.createRenderURL();
+PortletURL viewURL = renderResponse.createRenderURL();
 
-	portletDisplay.setShowBackIcon(true);
-	portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", viewURL.toString()));
-	portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
+portletDisplay.setShowBackIcon(true);
+portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", viewURL.toString()));
+portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
-	User selUser = PortalUtil.getSelectedUser(request);
+User selUser = PortalUtil.getSelectedUser(request);
 
-	renderResponse.setTitle((selUser == null) ? LanguageUtil.get(request, "add-user") : LanguageUtil.format(request, "edit-user-x", selUser.getFullName(), false));
-}
+renderResponse.setTitle((selUser == null) ? LanguageUtil.get(request, "add-user") : LanguageUtil.format(request, "edit-user-x", selUser.getFullName(), false));
 %>
 
 <clay:row>

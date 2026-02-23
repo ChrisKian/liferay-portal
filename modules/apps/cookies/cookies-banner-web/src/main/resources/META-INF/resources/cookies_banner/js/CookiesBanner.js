@@ -54,17 +54,13 @@ export default function ({
 			);
 		}
 
-		const consentManager = document.getElementById(
-			'_com_liferay_my_account_web_portlet_MyAccountPortlet_cookiesBannerConfigurationForm'
-		);
 		const productAnalyticsBanner = document.querySelector(
 			'.product-analytics-banner'
 		);
 
 		if (
-			consentManager ||
-			(productAnalyticsBanner &&
-				productAnalyticsBanner.style.display === 'block')
+			productAnalyticsBanner &&
+			productAnalyticsBanner.style.display === 'block'
 		) {
 			cookieBanner.style.display = 'none';
 		}
