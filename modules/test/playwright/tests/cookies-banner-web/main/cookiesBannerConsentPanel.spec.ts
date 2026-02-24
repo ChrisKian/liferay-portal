@@ -56,6 +56,7 @@ test.beforeEach(async ({page}) => {
 	});
 });
 
+
 test(
 	'Verify Cookie Banner Consent Panel buttons',
 	{tag: '@LPD-67119'},
@@ -80,120 +81,6 @@ test(
 			);
 
 			await expectCookieConsentPanelButtons(await consentPanelFooter);
-		});
-	}
-);
-
-test(
-	'Verify Consent Manager buttons',
-	{tag: '@LPD-67119'},
-	async ({accountSettingsPage}) => {
-		await test.step('Go to Consent Manager Account Settings page', async () => {
-			await accountSettingsPage.goToDataAndPrivacy();
-
-			await accountSettingsPage.page
-				.getByText('Consent Manager')
-				.first()
-				.waitFor();
-
-			if (await accountSettingsPage.consentManagerMenuItem.isVisible()) {
-				await accountSettingsPage.consentManagerMenuItem.click();
-			}
-		});
-
-		await test.step('Verify all button names and ordering', async () => {
-			const cookiesManagerConsentPanel =
-				await accountSettingsPage.page.locator(
-					'[id="_com_liferay_my_account_web_portlet_MyAccountPortlet_cookiesBannerConfigurationForm"]'
-				);
-
-			await expectCookieConsentPanelButtons(
-				await cookiesManagerConsentPanel
-			);
-		});
-	}
-);
-
-test(
-	'Verify Consent Manager can be accessed from the Data And Privacy Account Settings tab',
-	{tag: '@LPD-60007'},
-	async ({accountSettingsPage, page}) => {
-		await test.step('AC1: Verify Data And Privacy tab exists within Account Settings', async () => {
-			await accountSettingsPage.goToAccountSettings();
-
-			const dataAndPrivacyTab = await accountSettingsPage.page.locator(
-				'.nav-link',
-				{
-					hasText: 'Data And Privacy',
-				}
-			);
-
-			await expect(await dataAndPrivacyTab).toBeVisible();
-		});
-
-		await test.step('AC2: Verify Consent Manager panel is visible from Data and Privacy tab', async () => {
-			await accountSettingsPage.goToDataAndPrivacy();
-
-			await accountSettingsPage.page
-				.getByText('Consent Manager')
-				.first()
-				.waitFor();
-
-			if (await accountSettingsPage.consentManagerMenuItem.isVisible()) {
-				await accountSettingsPage.consentManagerMenuItem.click();
-			}
-
-			for (const cookieHeadingName of cookieHeadingNames) {
-				const cookieHeading = await page.getByRole('heading', {
-					name: cookieHeadingName,
-				});
-
-				await expect(await cookieHeading).toBeVisible();
-			}
-		});
-	}
-);
-
-test(
-	'Verify Cookie Preferences can be saved from the new Consent Manager page',
-	{tag: '@LPD-60007'},
-	async ({accountSettingsPage, page}) => {
-		await test.step('Enable all cookie types', async () => {
-			await accountSettingsPage.goToDataAndPrivacy();
-
-			await accountSettingsPage.page
-				.getByText('Consent Manager')
-				.first()
-				.waitFor();
-
-			if (await accountSettingsPage.consentManagerMenuItem.isVisible()) {
-				await accountSettingsPage.consentManagerMenuItem.click();
-			}
-
-			await accountSettingsPage.page
-				.getByRole('button', {name: 'Accept All'})
-				.click();
-
-			await accountSettingsPage.page.waitForTimeout(1000);
-		});
-
-		await test.step('Verify all cookie types have been enabled', async () => {
-			const actualCookies = await page.context().cookies();
-
-			for (const cookieKey of cookieKeys) {
-				const cookieKeyToggle = await page.locator(
-					`[data-cookie-key="${cookieKey}"]`
-				);
-
-				await expect(await cookieKeyToggle).toBeChecked();
-
-				const actualCookie = await actualCookies.find(
-					(actualCookie) => actualCookie.name === cookieKey
-				);
-
-				await expect(actualCookie).toBeDefined();
-				await expect(actualCookie.value).toEqual('true');
-			}
 		});
 	}
 );

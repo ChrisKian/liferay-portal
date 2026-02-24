@@ -5,6 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+
 import {liferayConfig} from '../../liferay.config';
 import {waitForAlert} from '../../utils/waitForAlert';
 
@@ -12,7 +13,6 @@ export class AccountSettingsPage {
 	readonly accountSettingsMenuItem: Locator;
 	readonly consentManagerMenuItem: Locator;
 	readonly currentPasswordInput: Locator;
-	private readonly dataAndPrivacyNavigationItem: Locator;
 	private readonly displayMenuItem: Locator;
 	readonly formSubmitButton: Locator;
 	readonly languageSelect: Locator;
@@ -41,9 +41,6 @@ export class AccountSettingsPage {
 			name: 'Consent Manager',
 		});
 		this.currentPasswordInput = page.getByLabel('Current Password');
-		this.dataAndPrivacyNavigationItem = page.locator('.nav-link', {
-			hasText: 'Data And Privacy',
-		});
 		this.displayMenuItem = page.getByRole('link', {
 			name: 'Display Settings',
 		});
@@ -114,12 +111,6 @@ export class AccountSettingsPage {
 					resp.url().includes('screenNavigationEntryKey=roles')
 			),
 		]);
-	}
-
-	async goToDataAndPrivacy() {
-		await this.goToAccountSettings();
-
-		await this.dataAndPrivacyNavigationItem.click();
 	}
 
 	async goToDisplaySettings() {

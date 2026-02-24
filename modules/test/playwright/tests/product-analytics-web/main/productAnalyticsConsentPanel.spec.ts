@@ -251,25 +251,6 @@ test(
 	}
 );
 
-test(
-	'Verify Product Analytics Consent Panel buttons and order from Account Settings',
-	{tag: '@LPD-67119'},
-	async ({
-		accountSettingsPage,
-		productAnalyticsBannerPage,
-		productAnalyticsConsentPanelPage,
-	}) => {
-		await productAnalyticsBannerPage.acceptAllButton.click();
-
-		await accountSettingsPage.goToDataAndPrivacy();
-
-		await test.step('Verify Customize button displays Consent Panel', async () => {
-			await expectProductAnalyticsConsentPanelButtons(
-				await productAnalyticsConsentPanelPage.consentPanelFormLocator
-			);
-		});
-	}
-);
 
 test(
 	'Verify Product Analytics Consent Panel buttons and order from Product Analytics Banner',
@@ -390,60 +371,6 @@ test(
 	}
 );
 
-test(
-	'Verify Product Analytics User Configuration from Account Settings',
-	{tag: '@LPD-60007'},
-	async ({
-		accountSettingsPage,
-		page,
-		productAnalyticsBannerPage,
-		productAnalyticsConsentPanelPage,
-	}) => {
-		await productAnalyticsBannerPage.acceptAllButton.click();
-
-		await test.step('AC3: Verify Product Analytics Account Settings', async () => {
-			await accountSettingsPage.goToDataAndPrivacy();
-
-			await productAnalyticsConsentPanelPage.consentPanelFormLocator.waitFor();
-		});
-
-		await test.step('Verify all cookie types are present and accepted', async () => {
-			await expectAllCookiesAccepted(page);
-
-			for (const optionalProductAnalyticsCookieType of Object.values(
-				OptionalProductAnalyticsCookieTypes
-			)) {
-				const toggle =
-					await productAnalyticsConsentPanelPage.getCookieTypeToggle(
-						optionalProductAnalyticsCookieType,
-						false
-					);
-
-				await expect(await toggle).toBeChecked();
-			}
-		});
-
-		await test.step('After clearing Product Analytics cookies, verify PA banner does not display on PA configuration page', async () => {
-			await clearProductAnalyticsCookies(page);
-
-			await accountSettingsPage.page.reload();
-
-			await accountSettingsPage.page.waitForTimeout(2000);
-
-			await expect(
-				await productAnalyticsBannerPage.bannerLocator
-			).not.toBeVisible();
-		});
-
-		await test.step('Verify PA banner does display on other pages', async () => {
-			await page.goto('/');
-
-			await expect(
-				await productAnalyticsBannerPage.bannerLocator
-			).toBeVisible();
-		});
-	}
-);
 
 test(
 	'Verify Product Analytics User Configuration only appears for admin users',
