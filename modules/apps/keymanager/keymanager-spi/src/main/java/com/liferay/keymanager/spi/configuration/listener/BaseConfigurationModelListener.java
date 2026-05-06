@@ -1,0 +1,114 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.keymanager.spi.configuration.listener;
+
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
+import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Dictionary;
+import java.util.Objects;
+
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * Convenience base for provider-config listeners that need to enforce
+ * uniqueness of <code>providerId</code> per scope (i.e., reject saves that
+ * would create two configurations with the same provider id and same
+ * <code>companyId</code>).
+ *
+ * <p>
+ * This is independent of the FIPS validator chain: this base reads the
+ * proposed configuration's <code>providerId</code> (or the kebab-case
+ * <code>provider-id</code> alias) and consults
+ * <code>ConfigurationAdmin</code> for any other configuration of the same
+ * type with the same id. Provider modules subclass this listener and
+ * register it with their own <code>model.class.name</code> property.
+ * </p>
+ *
+ * @author Tomas Polesovsky
+ */
+public abstract class BaseConfigurationModelListener<T>
+	implements ConfigurationModelListener {
+
+	public BaseConfigurationModelListener(Class<T> configurationClass) {
+		_configurationClass = configurationClass;
+	}
+
+	@Override
+	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
+		throws ConfigurationModelListenerException {
+
+		String providerId = GetterUtil.getString(properties.get("providerId"));
+
+		if (Validator.isNull(providerId)) {
+			providerId = GetterUtil.getString(properties.get("provider-id"));
+		}
+
+		if (Validator.isNull(providerId)) {
+			return;
+		}
+
+		long companyId = GetterUtil.getLong(properties.get("companyId"));
+
+		try {
+			Configuration[] configurations =
+				configurationAdmin.listConfigurations(
+					StringBundler.concat(
+						"(&(providerId=", providerId, ")(service.pid=*",
+						_configurationClass.getSimpleName(), "*))"));
+
+			if (configurations == null) {
+				configurations = configurationAdmin.listConfigurations(
+					StringBundler.concat(
+						"(&(provider-id=", providerId, ")(service.pid=*",
+						_configurationClass.getSimpleName(), "*))"));
+			}
+
+			if (configurations != null) {
+				for (Configuration configuration : configurations) {
+					String existingPid = configuration.getPid();
+
+					if (Objects.equals(pid, existingPid)) {
+						continue;
+					}
+
+					Dictionary<String, Object> existingProperties =
+						configuration.getProperties();
+
+					long existingCompanyId = GetterUtil.getLong(
+						existingProperties.get("companyId"));
+
+					if (companyId == existingCompanyId) {
+						throw new ConfigurationModelListenerException(
+							"A provider with ID '" + providerId +
+								"' already exists for this scope.",
+							_configurationClass, getClass(), properties);
+					}
+				}
+			}
+		}
+		catch (ConfigurationModelListenerException
+					configurationModelListenerException) {
+
+			throw configurationModelListenerException;
+		}
+		catch (Exception exception) {
+			throw new ConfigurationModelListenerException(
+				exception, _configurationClass, getClass(), properties);
+		}
+	}
+
+	@Reference
+	protected ConfigurationAdmin configurationAdmin;
+
+	private final Class<T> _configurationClass;
+
+}
