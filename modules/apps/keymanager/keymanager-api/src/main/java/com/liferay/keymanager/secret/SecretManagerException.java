@@ -1,0 +1,34 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.keymanager.secret;
+
+import com.liferay.portal.kernel.exception.PortalException;
+
+/**
+ * Thrown when the {@link SecretManager} cannot complete an operation
+ * (no provider registered for the requested role / company, FIPS compliance
+ * violation, provider failure).
+ *
+ * @author Tomas Polesovsky
+ */
+public class SecretManagerException extends PortalException {
+
+	public SecretManagerException() {
+	}
+
+	public SecretManagerException(String msg) {
+		super(msg);
+	}
+
+	public SecretManagerException(String msg, Throwable throwable) {
+		super(msg, throwable);
+	}
+
+	public SecretManagerException(Throwable throwable) {
+		super(throwable);
+	}
+
+}

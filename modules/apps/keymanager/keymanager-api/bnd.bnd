@@ -1,0 +1,11 @@
+Bundle-Description: Liferay Key Manager API: CryptoManager and SecretManager facades, value types, and diagnostic SPI
+Bundle-Name: Liferay Key Manager API
+Bundle-SymbolicName: com.liferay.keymanager.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.keymanager,\
+	com.liferay.keymanager.crypto,\
+	com.liferay.keymanager.diagnostic,\
+	com.liferay.keymanager.secret,\
+	com.liferay.keymanager.util
+Liferay-Releng-Module-Group-Title: Key Manager
