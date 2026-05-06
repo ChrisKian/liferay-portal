@@ -5,7 +5,6 @@
 
 package com.liferay.keymanager.internal.audit;
 
-import com.liferay.keymanager.KeyReference;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
@@ -133,7 +132,7 @@ public class KeyManagerAuditEvents {
 	 */
 	public static void route(
 		AuditRouter auditRouter, String eventType, long companyId,
-		String className, String classPK, JSONObject additionalInfo) {
+		String className, String classPK, JSONObject additionalInfoJSONObject) {
 
 		if (auditRouter == null) {
 			return;
@@ -147,13 +146,13 @@ public class KeyManagerAuditEvents {
 			userId = GetterUtil.getLong(principalName);
 		}
 
-		if (additionalInfo == null) {
-			additionalInfo = JSONFactoryUtil.createJSONObject();
+		if (additionalInfoJSONObject == null) {
+			additionalInfoJSONObject = JSONFactoryUtil.createJSONObject();
 		}
 
 		AuditMessage auditMessage = new AuditMessage(
 			eventType, companyId, 0, userId, null, className, classPK, null,
-			null, additionalInfo);
+			null, additionalInfoJSONObject);
 
 		try {
 			auditRouter.route(auditMessage);

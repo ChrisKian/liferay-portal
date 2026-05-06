@@ -98,9 +98,7 @@ public class ProfileOrchestratorImpl implements ProfileOrchestrator {
 		_bootstrap(getActiveProfile());
 	}
 
-	private synchronized void _bootstrap(
-		KeyManagerProfile keyManagerProfile) {
-
+	private synchronized void _bootstrap(KeyManagerProfile keyManagerProfile) {
 		if ((keyManagerProfile == null) ||
 			(_keyManagerGlobalConfiguration == null)) {
 
@@ -111,12 +109,9 @@ public class ProfileOrchestratorImpl implements ProfileOrchestrator {
 			_keyManagerGlobalConfiguration.activeProfileId();
 
 		if (!Objects.equals(
-				activeProfileId, keyManagerProfile.getProfileId())) {
+				activeProfileId, keyManagerProfile.getProfileId()) ||
+			Objects.equals(_lastBootstrappedProfileId, activeProfileId)) {
 
-			return;
-		}
-
-		if (Objects.equals(_lastBootstrappedProfileId, activeProfileId)) {
 			return;
 		}
 
@@ -142,7 +137,7 @@ public class ProfileOrchestratorImpl implements ProfileOrchestrator {
 
 	private volatile KeyManagerGlobalConfiguration
 		_keyManagerGlobalConfiguration;
-	private String _lastBootstrappedProfileId;
+	private volatile String _lastBootstrappedProfileId;
 	private ServiceTrackerMap<String, KeyManagerProfile> _serviceTrackerMap;
 
 }

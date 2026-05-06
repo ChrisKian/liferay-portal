@@ -21,7 +21,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.audit.AuditRouter;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -37,8 +37,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Tomas Polesovsky
@@ -280,29 +278,31 @@ public class SecretManagerImpl implements SecretManager {
 		String eventType, long companyId, KeyReference keyReference,
 		String resolvedProviderId, byte[] inputBytes) {
 
-		JSONObject additionalInfo = JSONFactoryUtil.createJSONObject(
-		).put(
-			"operation", eventType
+		JSONObject additionalInfoJSONObject = _jsonFactory.createJSONObject(
 		).put(
 			"companyId", companyId
+		).put(
+			"operation", eventType
 		);
 
 		if (resolvedProviderId != null) {
-			additionalInfo.put("providerId", resolvedProviderId);
+			additionalInfoJSONObject.put("providerId", resolvedProviderId);
 		}
 
 		if (keyReference != null) {
-			additionalInfo.put(
+			additionalInfoJSONObject.put(
 				"identifier", keyReference.getIdentifier()
 			).put(
-				"keyReferenceType", keyReference.getType().name()
+				"keyReferenceType",
+				keyReference.getType(
+				).name()
 			).put(
 				"requestedProviderId", keyReference.getProviderId()
 			);
 		}
 
 		if (inputBytes != null) {
-			additionalInfo.put(
+			additionalInfoJSONObject.put(
 				"inputByteLength", inputBytes.length
 			).put(
 				"inputHashSHA256", KeyManagerAuditEvents.hashInput(inputBytes)
@@ -317,7 +317,7 @@ public class SecretManagerImpl implements SecretManager {
 
 		KeyManagerAuditEvents.route(
 			_auditRouter, eventType, companyId, _CLASS_NAME, classPK,
-			additionalInfo);
+			additionalInfoJSONObject);
 	}
 
 	private Collection<String> _getProviderIds(
@@ -426,14 +426,14 @@ public class SecretManagerImpl implements SecretManager {
 	private static final Log _log = LogFactoryUtil.getLog(
 		SecretManagerImpl.class);
 
-	@Reference(
-		cardinality = ReferenceCardinality.OPTIONAL,
-		policyOption = ReferencePolicyOption.GREEDY
-	)
-	private volatile AuditRouter _auditRouter;
+	@Reference
+	private AuditRouter _auditRouter;
 
 	@Reference
 	private FipsComplianceChecker _fipsComplianceChecker;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ProfileOrchestrator _profileOrchestrator;

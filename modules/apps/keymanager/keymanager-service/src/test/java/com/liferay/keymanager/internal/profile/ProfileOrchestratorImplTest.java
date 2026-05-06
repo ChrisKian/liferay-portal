@@ -13,9 +13,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,7 +31,7 @@ public class ProfileOrchestratorImplTest {
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 
-		_profileOrchestrator = new ProfileOrchestratorImpl();
+		_profileOrchestratorImpl = new ProfileOrchestratorImpl();
 
 		_setActiveProfileId("custom");
 
@@ -72,6 +69,7 @@ public class ProfileOrchestratorImplTest {
 		).thenReturn(
 			null
 		);
+
 		Mockito.when(
 			_serviceTrackerMap.getService("custom")
 		).thenReturn(
@@ -79,7 +77,7 @@ public class ProfileOrchestratorImplTest {
 		);
 
 		Assert.assertSame(
-			_keyManagerProfile, _profileOrchestrator.getActiveProfile());
+			_keyManagerProfile, _profileOrchestratorImpl.getActiveProfile());
 	}
 
 	@Test
@@ -91,7 +89,7 @@ public class ProfileOrchestratorImplTest {
 		);
 
 		Assert.assertSame(
-			_keyManagerProfile, _profileOrchestrator.getActiveProfile());
+			_keyManagerProfile, _profileOrchestratorImpl.getActiveProfile());
 	}
 
 	@Test
@@ -120,14 +118,10 @@ public class ProfileOrchestratorImplTest {
 			"_bootstrap", KeyManagerProfile.class);
 
 		method.setAccessible(true);
-		method.invoke(_profileOrchestrator, keyManagerProfile);
+		method.invoke(_profileOrchestratorImpl, keyManagerProfile);
 	}
 
 	private void _setActiveProfileId(String activeProfileId) {
-		Map<String, Object> properties = new HashMap<>();
-
-		properties.put("activeProfileId", activeProfileId);
-
 		KeyManagerGlobalConfiguration keyManagerGlobalConfiguration =
 			() -> activeProfileId;
 
@@ -136,7 +130,7 @@ public class ProfileOrchestratorImplTest {
 				"_keyManagerGlobalConfiguration");
 
 			field.setAccessible(true);
-			field.set(_profileOrchestrator, keyManagerGlobalConfiguration);
+			field.set(_profileOrchestratorImpl, keyManagerGlobalConfiguration);
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
@@ -151,7 +145,7 @@ public class ProfileOrchestratorImplTest {
 				"_serviceTrackerMap");
 
 			field.setAccessible(true);
-			field.set(_profileOrchestrator, serviceTrackerMap);
+			field.set(_profileOrchestratorImpl, serviceTrackerMap);
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
@@ -161,7 +155,7 @@ public class ProfileOrchestratorImplTest {
 	@Mock
 	private KeyManagerProfile _keyManagerProfile;
 
-	private ProfileOrchestratorImpl _profileOrchestrator;
+	private ProfileOrchestratorImpl _profileOrchestratorImpl;
 
 	@Mock
 	private ServiceTrackerMap<String, KeyManagerProfile> _serviceTrackerMap;

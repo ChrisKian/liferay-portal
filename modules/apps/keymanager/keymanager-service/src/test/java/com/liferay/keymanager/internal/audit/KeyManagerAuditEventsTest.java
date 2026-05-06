@@ -73,15 +73,13 @@ public class KeyManagerAuditEventsTest {
 
 	@Test
 	public void testRouteUsesExplicitCompanyId() throws Exception {
-		JSONObject additionalInfo = JSONFactoryUtil.createJSONObject(
-		).put(
-			"operation", "keymanager.crypto.encrypt"
-		);
-
 		KeyManagerAuditEvents.route(
 			_auditRouter, "keymanager.crypto.encrypt", 42L,
 			"com.liferay.keymanager.crypto.CryptoManager", "${keyRef:db:k}",
-			additionalInfo);
+			JSONFactoryUtil.createJSONObject(
+			).put(
+				"operation", "keymanager.crypto.encrypt"
+			));
 
 		ArgumentCaptor<AuditMessage> argumentCaptor = ArgumentCaptor.forClass(
 			AuditMessage.class);
@@ -103,12 +101,12 @@ public class KeyManagerAuditEventsTest {
 			auditMessage.getClassName());
 		Assert.assertEquals("${keyRef:db:k}", auditMessage.getClassPK());
 
-		JSONObject capturedAdditionalInfo =
+		JSONObject capturedAdditionalInfoJSONObject =
 			auditMessage.getAdditionalInfo();
 
 		Assert.assertEquals(
 			"keymanager.crypto.encrypt",
-			capturedAdditionalInfo.getString("operation"));
+			capturedAdditionalInfoJSONObject.getString("operation"));
 	}
 
 	@Mock

@@ -69,21 +69,7 @@ public class KeyManagerConfigurationModelListenerTest {
 	}
 
 	@Test
-	public void testNoValidatorRegisteredIsNoOp() throws Exception {
-		Mockito.when(
-			_serviceTrackerMap.getService(Mockito.anyString())
-		).thenReturn(
-			null
-		);
-
-		_keyManagerConfigurationModelListener.onBeforeSave(
-			"any.pid", _properties("k", "v"));
-
-		Mockito.verifyNoInteractions(_fipsComplianceChecker, _fipsValidator);
-	}
-
-	@Test
-	public void testNonCompliantStandardModeWarnsAndPasses() throws Exception {
+	public void testNoncompliantStandardModeWarnsAndPasses() throws Exception {
 		String pid = "com.example.Pid";
 
 		Mockito.when(
@@ -111,7 +97,7 @@ public class KeyManagerConfigurationModelListenerTest {
 	}
 
 	@Test
-	public void testNonCompliantStrictModeRejects() {
+	public void testNoncompliantStrictModeRejects() {
 		String pid =
 			"com.liferay.keymanager.provider.gcp.internal.configuration." +
 				"GcpKmsCompanyCryptoVaultProviderConfiguration";
@@ -154,7 +140,8 @@ public class KeyManagerConfigurationModelListenerTest {
 	}
 
 	@Test
-	public void testNonKeymanagerPidWithValidatorIsValidated() throws Exception {
+	public void testNonkeymanagerPidWithValidatorIsValidated()
+		throws Exception {
 
 		// Hardening: drop the prefix filter — any PID with a registered
 		// FipsValidator is validated, regardless of namespace.
@@ -183,13 +170,25 @@ public class KeyManagerConfigurationModelListenerTest {
 		);
 	}
 
+	@Test
+	public void testNoValidatorRegisteredIsNoOp() throws Exception {
+		Mockito.when(
+			_serviceTrackerMap.getService(Mockito.anyString())
+		).thenReturn(
+			null
+		);
+
+		_keyManagerConfigurationModelListener.onBeforeSave(
+			"any.pid", _properties("k", "v"));
+
+		Mockito.verifyNoInteractions(_fipsComplianceChecker, _fipsValidator);
+	}
+
 	@Rule
 	public final LiferayUnitTestRule liferayUnitTestRule =
 		new LiferayUnitTestRule();
 
-	private void _injectField(
-		Object target, String fieldName, Object value) {
-
+	private void _injectField(Object target, String fieldName, Object value) {
 		try {
 			Field field = target.getClass(
 			).getDeclaredField(

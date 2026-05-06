@@ -30,8 +30,7 @@ public class ConfigurationKeyReferenceTest {
 			new ConfigurationKeyReference("com.example.Pid", "myKey");
 
 		Assert.assertEquals(
-			CompanyConstants.SYSTEM,
-			configurationKeyReference.getCompanyId());
+			CompanyConstants.SYSTEM, configurationKeyReference.getCompanyId());
 		Assert.assertEquals(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			configurationKeyReference.getGroupId());
@@ -80,6 +79,7 @@ public class ConfigurationKeyReferenceTest {
 		Assert.assertTrue(
 			ConfigurationKeyReference.isConfigurationKeyReference(
 				configurationKeyReference.toString()));
+
 		Assert.assertFalse(
 			ConfigurationKeyReference.isConfigurationKeyReference(
 				"${secretRef:*:plain}"));

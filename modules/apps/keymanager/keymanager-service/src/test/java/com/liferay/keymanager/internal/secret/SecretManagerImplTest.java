@@ -17,6 +17,7 @@ import com.liferay.keymanager.spi.secret.SecretVaultWriter;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -39,6 +40,11 @@ import org.mockito.MockitoAnnotations;
  */
 public class SecretManagerImplTest {
 
+	@ClassRule
+	@Rule
+	public static final LiferayUnitTestRule liferayUnitTestRule =
+		LiferayUnitTestRule.INSTANCE;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -47,11 +53,10 @@ public class SecretManagerImplTest {
 
 		_inject("_auditRouter", _auditRouter);
 		_inject("_fipsComplianceChecker", _fipsComplianceChecker);
+		_inject("_jsonFactory", JSONFactoryUtil.getJSONFactory());
 		_inject("_profileOrchestrator", _profileOrchestrator);
-		_inject(
-			"_readerServiceTrackerMap", _readerServiceTrackerMap);
-		_inject(
-			"_writerServiceTrackerMap", _writerServiceTrackerMap);
+		_inject("_readerServiceTrackerMap", _readerServiceTrackerMap);
+		_inject("_writerServiceTrackerMap", _writerServiceTrackerMap);
 	}
 
 	@Test(expected = SecretManagerException.class)
@@ -73,11 +78,13 @@ public class SecretManagerImplTest {
 		).thenReturn(
 			_secretVaultReader
 		);
+
 		Mockito.when(
 			_secretVaultReader.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
 			true
 		);
+
 		Mockito.when(
 			_secretVaultReader.getSecret(7L, "k")
 		).thenReturn(
@@ -95,6 +102,7 @@ public class SecretManagerImplTest {
 		).route(
 			Mockito.any(AuditMessage.class)
 		);
+
 		inOrder.verify(
 			_secretVaultReader
 		).getSecret(
@@ -109,6 +117,7 @@ public class SecretManagerImplTest {
 		).thenReturn(
 			_secretVaultWriter
 		);
+
 		Mockito.when(
 			_secretVaultWriter.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
@@ -141,12 +150,14 @@ public class SecretManagerImplTest {
 		Assert.assertEquals(
 			SecretManager.class.getName(), auditMessage.getClassName());
 
-		JSONObject additionalInfo = auditMessage.getAdditionalInfo();
+		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
-		Assert.assertEquals("db", additionalInfo.getString("providerId"));
 		Assert.assertEquals(
-			"my-secret", additionalInfo.getString("identifier"));
-		Assert.assertNotNull(additionalInfo.getString("inputHashSHA256"));
+			"db", additionalInfoJSONObject.getString("providerId"));
+		Assert.assertEquals(
+			"my-secret", additionalInfoJSONObject.getString("identifier"));
+		Assert.assertNotNull(
+			additionalInfoJSONObject.getString("inputHashSHA256"));
 
 		Mockito.verify(
 			_secretVaultWriter
@@ -164,16 +175,19 @@ public class SecretManagerImplTest {
 		).thenReturn(
 			_keyManagerProfile
 		);
+
 		Mockito.when(
 			_keyManagerProfile.getCompanySecretProviderId()
 		).thenReturn(
 			"company-db"
 		);
+
 		Mockito.when(
 			_writerServiceTrackerMap.getService("company-db")
 		).thenReturn(
 			_secretVaultWriter
 		);
+
 		Mockito.when(
 			_secretVaultWriter.isAllowedCompany(7L)
 		).thenReturn(
@@ -189,18 +203,16 @@ public class SecretManagerImplTest {
 			_secretManagerImpl.putSecret(7L, secureSecret);
 		}
 
-		Mockito.verify(_keyManagerProfile).getCompanySecretProviderId();
+		Mockito.verify(
+			_keyManagerProfile
+		).getCompanySecretProviderId();
+
 		Mockito.verify(
 			_secretVaultWriter
 		).putSecret(
 			Mockito.eq(7L), Mockito.any(SecureSecret.class)
 		);
 	}
-
-	@ClassRule
-	@Rule
-	public static final LiferayUnitTestRule liferayUnitTestRule =
-		LiferayUnitTestRule.INSTANCE;
 
 	private void _inject(String fieldName, Object value) {
 		try {

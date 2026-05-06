@@ -25,18 +25,14 @@ public class KeyReferenceTest {
 
 	@Test
 	public void testEqualsAndHashCode() {
-		KeyReference keyReference1 = KeyReference.fromString(
-			"${keyRef:p1:i1}");
-		KeyReference keyReference2 = KeyReference.fromString(
-			"${keyRef:p1:i1}");
+		KeyReference keyReference1 = KeyReference.fromString("${keyRef:p1:i1}");
+		KeyReference keyReference2 = KeyReference.fromString("${keyRef:p1:i1}");
 		KeyReference keyReference3 = KeyReference.fromString(
 			"${secretRef:p1:i1}");
-		KeyReference keyReference4 = KeyReference.fromString(
-			"${keyRef:p2:i1}");
+		KeyReference keyReference4 = KeyReference.fromString("${keyRef:p2:i1}");
 
 		Assert.assertEquals(keyReference1, keyReference2);
-		Assert.assertEquals(
-			keyReference1.hashCode(), keyReference2.hashCode());
+		Assert.assertEquals(keyReference1.hashCode(), keyReference2.hashCode());
 
 		Assert.assertNotEquals(keyReference1, keyReference3);
 		Assert.assertNotEquals(keyReference1, keyReference4);

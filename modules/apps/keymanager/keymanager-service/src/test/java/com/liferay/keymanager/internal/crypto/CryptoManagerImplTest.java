@@ -16,6 +16,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -38,6 +39,11 @@ import org.mockito.MockitoAnnotations;
  */
 public class CryptoManagerImplTest {
 
+	@ClassRule
+	@Rule
+	public static final LiferayUnitTestRule liferayUnitTestRule =
+		LiferayUnitTestRule.INSTANCE;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -46,6 +52,7 @@ public class CryptoManagerImplTest {
 
 		_inject("_auditRouter", _auditRouter);
 		_inject("_fipsComplianceChecker", _fipsComplianceChecker);
+		_inject("_jsonFactory", JSONFactoryUtil.getJSONFactory());
 		_inject("_profileOrchestrator", _profileOrchestrator);
 		_inject("_serviceTrackerMap", _serviceTrackerMap);
 	}
@@ -71,10 +78,12 @@ public class CryptoManagerImplTest {
 		).route(
 			Mockito.any(AuditMessage.class)
 		);
+
 		inOrder.verify(
 			_cryptoVaultProvider
 		).encrypt(
-			Mockito.anyLong(), Mockito.anyString(), Mockito.any(byte[].class));
+			Mockito.anyLong(), Mockito.anyString(), Mockito.any(byte[].class)
+		);
 	}
 
 	@Test
@@ -135,13 +144,16 @@ public class CryptoManagerImplTest {
 		Assert.assertEquals(
 			CryptoManager.class.getName(), auditMessage.getClassName());
 
-		JSONObject additionalInfo = auditMessage.getAdditionalInfo();
+		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
-		Assert.assertEquals("db", additionalInfo.getString("providerId"));
-		Assert.assertEquals("k", additionalInfo.getString("identifier"));
 		Assert.assertEquals(
-			2, additionalInfo.getInt("inputByteLength"));
-		Assert.assertNotNull(additionalInfo.getString("inputHashSHA256"));
+			"db", additionalInfoJSONObject.getString("providerId"));
+		Assert.assertEquals(
+			"k", additionalInfoJSONObject.getString("identifier"));
+		Assert.assertEquals(
+			2, additionalInfoJSONObject.getInt("inputByteLength"));
+		Assert.assertNotNull(
+			additionalInfoJSONObject.getString("inputHashSHA256"));
 	}
 
 	@Test(expected = CryptoManagerException.class)
@@ -174,11 +186,15 @@ public class CryptoManagerImplTest {
 		InOrder inOrder = Mockito.inOrder(
 			_fipsComplianceChecker, _cryptoVaultProvider);
 
-		inOrder.verify(_fipsComplianceChecker).check();
+		inOrder.verify(
+			_fipsComplianceChecker
+		).check();
+
 		inOrder.verify(
 			_cryptoVaultProvider
 		).encrypt(
-			Mockito.anyLong(), Mockito.anyString(), Mockito.any(byte[].class));
+			Mockito.anyLong(), Mockito.anyString(), Mockito.any(byte[].class)
+		);
 	}
 
 	@Test
@@ -217,21 +233,25 @@ public class CryptoManagerImplTest {
 		).thenReturn(
 			_keyManagerProfile
 		);
+
 		Mockito.when(
 			_keyManagerProfile.getSystemDekProviderId()
 		).thenReturn(
 			"system-db"
 		);
+
 		Mockito.when(
 			_serviceTrackerMap.getService("system-db")
 		).thenReturn(
 			_cryptoVaultProvider
 		);
+
 		Mockito.when(
 			_cryptoVaultProvider.isAllowedCompany(0L)
 		).thenReturn(
 			true
 		);
+
 		Mockito.when(
 			_cryptoVaultProvider.encrypt(
 				Mockito.eq(0L), Mockito.eq("k"), Mockito.any(byte[].class))
@@ -246,11 +266,6 @@ public class CryptoManagerImplTest {
 			_keyManagerProfile, Mockito.atLeastOnce()
 		).getSystemDekProviderId();
 	}
-
-	@ClassRule
-	@Rule
-	public static final LiferayUnitTestRule liferayUnitTestRule =
-		LiferayUnitTestRule.INSTANCE;
 
 	private void _inject(String fieldName, Object value) {
 		try {
@@ -270,6 +285,7 @@ public class CryptoManagerImplTest {
 		).thenReturn(
 			_cryptoVaultProvider
 		);
+
 		Mockito.when(
 			_cryptoVaultProvider.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
